@@ -1438,13 +1438,13 @@ def sentinel1_timeseries(
     frequency="year",
     clip=False,
     band="VV",
+    orbit=["ascending", "descending"],
     **kwargs,
 ):
     """
-        Generates a Sentinel 1 ImageCollection,
-        based on mean composites following a steady frequency (f.e. 1 image per month)
+    Generates a Sentinel 1 ImageCollection,
+    based on mean composites following a steady frequency (f.e. 1 image per month)
     Adapted from https://code.earthengine.google.com/?scriptPath=Examples:Datasets/COPERNICUS_S1_GRD
-
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to a polygon partially covering Las Vegas and Lake Mead.
         start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
@@ -1452,31 +1452,41 @@ def sentinel1_timeseries(
         start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
         end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
         frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.  Can be 'year', 'quarter' or 'month'.
+        clip (bool, optional): Whether to clip images to ROI. Defaults to False.
         band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land.
+        orbit (list, optional): List of orbit directions to include. Can be ['ascending'], ['descending'], or ['ascending', 'descending']. Defaults to both.
         **kwargs: Arguments for sentinel1_filtering().
-
     Returns:
         object: Returns an ImageCollection of Sentinel 1 images.
     """
-
     CURRENT_YEAR, ROI_DEFAULT = sentinel1_defaults()
     roi = roi or ROI_DEFAULT
     end_year = end_year or CURRENT_YEAR
     roi = valid_roi(roi)
-
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
-
     dates = date_sequence(start, end, frequency)
+
+    # Load and filter Sentinel-1 collection
     col = ee.ImageCollection("COPERNICUS/S1_GRD").filterBounds(roi)
+
+    # Apply orbit filtering
+    if orbit:
+        # Convert orbit strings to uppercase for consistency
+        orbit_upper = [o.upper() for o in orbit]
+        orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
+        col = col.filter(orbit_filter)
+
+    # Apply additional filtering and select band
     col = sentinel1_filtering(col, band=band, **kwargs).select(band)
 
+    # Set up frequency parameters
     n = 1
     if frequency == "quarter":
         n = 3
         frequency = "month"
 
-    def transform(date):  # coll, frequency
+    def transform(date):
         start = date
         end = ee.Date(date).advance(n, frequency).advance(-1, "day")
         return (
@@ -1493,8 +1503,10 @@ def sentinel1_timeseries(
 
     imgList = dates.map(lambda date: transform(date))
     imgColl = ee.ImageCollection.fromImages(imgList)
+
     if clip:
         imgColl = imgColl.map(lambda img: img.clip(roi))
+
     return imgColl
 
 
@@ -1650,12 +1662,6 @@ def sentinel2_timeseries_legacy(
         end_year = datetime.date.today().year
 
     if roi is None:
-        # roi = ee.Geometry.Polygon(
-        #     [[[-180, -80],
-        #       [-180, 80],
-        #         [180, 80],
-        #         [180, -80],
-        #         [-180, -80]]], None, False)
         roi = ee.Geometry.Polygon(
             [
                 [
@@ -3213,6 +3219,7 @@ def sentinel1_timelapse_legacy(
     overlay_width=1,
     overlay_opacity=1.0,
     frequency="year",
+    orbit=["ascending", "descending"],
     title=None,
     title_xy=("2%", "90%"),
     add_text=True,
@@ -3246,6 +3253,7 @@ def sentinel1_timelapse_legacy(
         overlay_width (int, optional): Line width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
         frequency (str, optional): Frequency of the timelapse. Defaults to 'year'. Can be year, quarter or month.
+        orbit (list, optional): List of orbit directions to include. Can be ['ascending'], ['descending'], or ['ascending', 'descending']. Defaults to both.
         title (str, optional): The title of the timelapse. Defaults to None.
         title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
@@ -3276,6 +3284,7 @@ def sentinel1_timelapse_legacy(
         start_date=start_date,
         end_date=end_date,
         frequency=frequency,
+        orbit=orbit,
         clip=True,
     )
 
@@ -4917,6 +4926,7 @@ def sentinel1_timelapse(
     overlay_color="black",
     overlay_width=1,
     overlay_opacity=1.0,
+    orbit=["ascending", "descending"],
     title=None,
     title_xy=("2%", "90%"),
     add_text=True,
@@ -4968,6 +4978,7 @@ def sentinel1_timelapse(
         overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
         overlay_width (int, optional): Width of the overlay. Defaults to 1.
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        orbit (list, optional): List of orbit directions to include. Can be ['ascending'], ['descending'], or ['ascending', 'descending']. Defaults to both.
         title (str, optional): The title of the timelapse. Defaults to None.
         title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
@@ -5027,6 +5038,14 @@ def sentinel1_timelapse(
     collection = (
         ee.ImageCollection("COPERNICUS/S1_GRD").filterDate(start, end).filterBounds(roi)
     )
+
+    # Apply orbit filtering
+    if orbit:
+        # Convert orbit strings to uppercase for consistency
+        orbit_upper = [o.upper() for o in orbit]
+        orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
+        collection = collection.filter(orbit_filter)
+
     collection = sentinel1_filtering(collection, band, **kwargs)
 
     return create_timelapse(
@@ -5322,3 +5341,3560 @@ def vector_to_gif(
 
     if verbose:
         print(f"Done. The GIF is saved to {out_gif}.")
+
+
+def sentinel1_timelapse_with_samples(
+    roi,
+    out_gif=None,
+    start_year=2015,
+    end_year=None,
+    start_date="01-01",
+    end_date="12-31",
+    bands=["VV"],
+    frequency="year",
+    reducer="median",
+    date_format=None,
+    palette="Greys",
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=10,
+    crs="EPSG:3857",
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    orbit=["ascending", "descending"],
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    add_colorbar=False,
+    colorbar_width=6.0,
+    colorbar_height=0.4,
+    colorbar_label=None,
+    colorbar_label_size=12,
+    colorbar_label_weight="normal",
+    colorbar_tick_size=10,
+    colorbar_bg_color=None,
+    colorbar_orientation="horizontal",
+    colorbar_dpi="figure",
+    colorbar_xy=None,
+    colorbar_size=(300, 300),
+    loop=0,
+    mp4=False,
+    fading=False,
+    sample_points=None,
+    sample_point_crs="EPSG:4326",
+    marker_colors=None,
+    marker_size=50,
+    marker_style="cross",
+    show_sample_markers=True,
+    chart_title="Sentinel-1 Time Series",
+    chart_ylabel="Backscatter (dB)",
+    chart_position="right",
+    chart_size_ratio=0.7,
+    spacer_width=20,
+    chart_xlabel_format="auto",
+    chart_xlabel_interval="auto",
+    **kwargs,
+):
+    """Create a Sentinel-1 timelapse with optional sample points and time series chart.
+
+    Args:
+        roi (ee.Geometry): The region to use to filter the collection of images.
+        out_gif (str): The output gif file path. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to the current year.
+        start_date (str, optional): Starting date (month-day) each year. Defaults to '01-01'.
+        end_date (str, optional): Ending date (month-day) each year. Defaults to '12-31'.
+        bands (list, optional): A list of band names. Can be ['VV'],['HV'],['VH'],['HH'],['VV','VH'] or ['HH','HV']
+        frequency (str, optional): The frequency of the timeseries. Defaults to 'year'.
+        reducer (str, optional): The reducer to use. Defaults to 'median'.
+        date_format (str, optional): Date format pattern. Defaults to None.
+        palette (str, optional): Color palette for single-band visualization. Defaults to 'Greys'.
+        vis_params (dict, optional): Visualization parameters. Defaults to None.
+        dimensions (int, optional): Maximum dimensions of the thumbnail. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): Coordinate reference system. Defaults to "EPSG:3857".
+        overlay_data (optional): Administrative boundary overlay. Defaults to None.
+        overlay_color (str, optional): Color for overlay data. Defaults to 'black'.
+        overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        orbit (list, optional): Orbit directions to include. Defaults to ["ascending", "descending"].
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Position of the title. Defaults to ("2%", "90%").
+        add_text (bool, optional): Whether to add animated text. Defaults to True.
+        text_xy (tuple, optional): Position of the text. Defaults to ("2%", "2%").
+        text_sequence (optional): Text to be drawn. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. Defaults to 'white'.
+        add_progress_bar (bool, optional): Whether to add progress bar. Defaults to True.
+        progress_bar_color (str, optional): Color for progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of progress bar. Defaults to 5.
+        add_colorbar (bool, optional): Whether to add colorbar. Defaults to False.
+        colorbar_width (float, optional): Width of colorbar. Defaults to 6.0.
+        colorbar_height (float, optional): Height of colorbar. Defaults to 0.4.
+        colorbar_label (str, optional): Label for colorbar. Defaults to None.
+        colorbar_label_size (int, optional): Font size for colorbar label. Defaults to 12.
+        colorbar_label_weight (str, optional): Font weight for colorbar label. Defaults to 'normal'.
+        colorbar_tick_size (int, optional): Font size for colorbar ticks. Defaults to 10.
+        colorbar_bg_color (str, optional): Background color for colorbar. Defaults to None.
+        colorbar_orientation (str, optional): Orientation of colorbar. Defaults to 'horizontal'.
+        colorbar_dpi (str, optional): DPI for colorbar. Defaults to 'figure'.
+        colorbar_xy (tuple, optional): Position of colorbar. Defaults to None.
+        colorbar_size (tuple, optional): Size of colorbar. Defaults to (300, 300).
+        loop (int, optional): Number of animation loops. Defaults to 0.
+        mp4 (bool, optional): Whether to create mp4 file. Defaults to False.
+        fading (bool, optional): Whether to add fading effect. Defaults to False.
+        sample_points (list, optional): List of [lon, lat] coordinates for sampling (max 5 points). Defaults to None.
+        sample_point_crs (str, optional): CRS for sample points. Defaults to "EPSG:4326".
+        marker_colors (list, optional): Colors for markers. Defaults to None (uses default colors).
+        marker_size (int, optional): Size of markers. Defaults to 50.
+        marker_style (str, optional): Style of markers ('cross', 'circle', 'square'). Defaults to 'cross'.
+        show_sample_markers (bool, optional): Whether to show markers on map. Defaults to True.
+        chart_title (str, optional): Title for the time series chart. Defaults to "Sentinel-1 Time Series".
+        chart_ylabel (str, optional): Y-axis label for chart. Defaults to "Backscatter (dB)".
+        chart_position (str, optional): Position of chart ('right', 'left', 'bottom'). Defaults to 'right'.
+        chart_size_ratio (float, optional): Size ratio of chart to gif. Defaults to 0.7.
+        spacer_width (int, optional): Width of spacer between gif and chart. Defaults to 20.
+        chart_xlabel_format (str, optional): Format for x-axis labels ('auto', '%Y-%m', '%m-%d', '%Y-%m-%d'). Defaults to 'auto'.
+        chart_xlabel_interval (str, optional): Interval for x-axis labels ('auto', 'day', 'week', 'month', 'year'). Defaults to 'auto'.
+        **kwargs: Additional arguments for sentinel1_filtering().
+
+    Returns:
+        str: File path to the output GIF with optional chart.
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+    import numpy as np
+    from datetime import datetime, date
+    import tempfile
+    import math
+
+    # Validate sample points
+    if sample_points is not None:
+        if not isinstance(sample_points, list):
+            raise ValueError("sample_points must be a list of [lon, lat] coordinates")
+        if len(sample_points) > 5:
+            raise ValueError("Maximum 5 sample points are supported")
+        if len(sample_points) == 0:
+            sample_points = None
+
+    # Set default marker colors if not provided
+    if sample_points is not None and marker_colors is None:
+        marker_colors = ["red", "blue", "green", "orange", "purple"][
+            : len(sample_points)
+        ]
+    elif sample_points is not None and len(marker_colors) < len(sample_points):
+        default_colors = ["red", "blue", "green", "orange", "purple"]
+        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
+
+    # Adjust dimensions to avoid Earth Engine limits
+    # Calculate optimal dimensions based on ROI
+    if isinstance(roi, ee.Geometry):
+        roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+        min_lon = min([coord[0] for coord in roi_bounds])
+        max_lon = max([coord[0] for coord in roi_bounds])
+        min_lat = min([coord[1] for coord in roi_bounds])
+        max_lat = max([coord[1] for coord in roi_bounds])
+
+        # Calculate aspect ratio
+        lon_range = max_lon - min_lon
+        lat_range = max_lat - min_lat
+        aspect_ratio = lon_range / lat_range if lat_range > 0 else 1
+
+        # Adjust dimensions to stay within Earth Engine limits
+        # Max pixels = 26,214,400 (approximately 5120x5120)
+        max_pixels = 26214400
+
+        if isinstance(dimensions, int):
+            # Single dimension - calculate based on aspect ratio
+            if aspect_ratio > 1:
+                # Wider than tall
+                width = min(dimensions, int(math.sqrt(max_pixels * aspect_ratio)))
+                height = int(width / aspect_ratio)
+            else:
+                # Taller than wide
+                height = min(dimensions, int(math.sqrt(max_pixels / aspect_ratio)))
+                width = int(height * aspect_ratio)
+
+            # Ensure minimum size
+            width = max(256, width)
+            height = max(256, height)
+
+            # Final check
+            if width * height > max_pixels:
+                scale_factor = math.sqrt(max_pixels / (width * height))
+                width = int(width * scale_factor)
+                height = int(height * scale_factor)
+
+            adjusted_dimensions = f"{width}x{height}"
+        else:
+            # Already in WxH format
+            adjusted_dimensions = dimensions
+
+        print(f"Adjusted dimensions: {adjusted_dimensions}")
+    else:
+        adjusted_dimensions = dimensions
+
+    # Create the base timelapse
+    try:
+        base_gif = sentinel1_timelapse(
+            roi=roi,
+            out_gif=out_gif,
+            start_year=start_year,
+            end_year=end_year,
+            start_date=start_date,
+            end_date=end_date,
+            bands=bands,
+            frequency=frequency,
+            reducer=reducer,
+            date_format=date_format,
+            palette=palette,
+            vis_params=vis_params,
+            dimensions=adjusted_dimensions,
+            frames_per_second=frames_per_second,
+            crs=crs,
+            overlay_data=overlay_data,
+            overlay_color=overlay_color,
+            overlay_width=overlay_width,
+            overlay_opacity=overlay_opacity,
+            orbit=orbit,
+            title=title,
+            title_xy=title_xy,
+            add_text=add_text,
+            text_xy=text_xy,
+            text_sequence=text_sequence,
+            font_type=font_type,
+            font_size=font_size,
+            font_color=font_color,
+            add_progress_bar=add_progress_bar,
+            progress_bar_color=progress_bar_color,
+            progress_bar_height=progress_bar_height,
+            add_colorbar=add_colorbar,
+            colorbar_width=colorbar_width,
+            colorbar_height=colorbar_height,
+            colorbar_label=colorbar_label,
+            colorbar_label_size=colorbar_label_size,
+            colorbar_label_weight=colorbar_label_weight,
+            colorbar_tick_size=colorbar_tick_size,
+            colorbar_bg_color=colorbar_bg_color,
+            colorbar_orientation=colorbar_orientation,
+            colorbar_dpi=colorbar_dpi,
+            colorbar_xy=colorbar_xy,
+            colorbar_size=colorbar_size,
+            loop=loop,
+            mp4=False,
+            fading=fading,
+            **kwargs,
+        )
+    except Exception as e:
+        print(f"Error creating base timelapse: {str(e)}")
+        raise e
+
+    # Check if base GIF was created successfully
+    if not os.path.exists(base_gif):
+        raise FileNotFoundError(f"Base timelapse GIF was not created: {base_gif}")
+
+    # If no sample points, return the base gif (map only)
+    if sample_points is None or len(sample_points) == 0:
+        print("No sample points provided. Returning map-only timelapse.")
+        if mp4:
+            gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+        return base_gif
+
+    # Get the Sentinel-1 time series for sampling
+    if end_year is None:
+        end_year = date.today().year
+
+    start = f"{start_year}-{start_date}"
+    end = f"{end_year}-{end_date}"
+
+    # Create collection with error handling
+    try:
+        collection = (
+            ee.ImageCollection("COPERNICUS/S1_GRD")
+            .filterDate(start, end)
+            .filterBounds(roi)
+        )
+
+        # Apply orbit filtering
+        if orbit:
+            orbit_upper = [o.upper() for o in orbit]
+            orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
+            collection = collection.filter(orbit_filter)
+
+        band = bands[0]
+        collection = sentinel1_filtering(collection, band, **kwargs)
+
+        # Check if collection is empty
+        collection_size = collection.size().getInfo()
+        if collection_size == 0:
+            print("Warning: No Sentinel-1 images found for the specified parameters")
+            # Return base gif without sampling
+            if mp4:
+                gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+            return base_gif
+
+        print(f"Found {collection_size} Sentinel-1 images for sampling")
+
+        # Create time series
+        ts_collection = create_timeseries(
+            collection,
+            start,
+            end,
+            roi,
+            bands,
+            frequency,
+            reducer,
+            True,  # drop_empty
+            date_format,
+            1,
+            1,
+        )
+
+        # Check if time series is empty
+        ts_size = ts_collection.size().getInfo()
+        if ts_size == 0:
+            print("Warning: No time series data generated")
+            if mp4:
+                gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+            return base_gif
+
+        print(f"Generated {ts_size} time series images")
+
+    except Exception as e:
+        print(f"Error creating time series: {str(e)}")
+        # Return base gif without sampling
+        if mp4:
+            gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+        return base_gif
+
+    # Sample points from the time series
+    sample_data = {}
+    point_geometries = []
+
+    if sample_points is not None and len(sample_points) > 0:
+        try:
+            for i, point in enumerate(sample_points):
+                if sample_point_crs == "EPSG:4326":
+                    geometry = ee.Geometry.Point([point[0], point[1]])
+                else:
+                    geometry = ee.Geometry.Point([point[0], point[1]], sample_point_crs)
+
+                point_geometries.append(geometry)
+
+                # Sample the time series at this point
+                def sample_point(image):
+                    sampled = image.sample(geometry, 30)
+                    return sampled.first().set(
+                        {
+                            "system:time_start": image.get("system:time_start"),
+                            "system:date": image.get("system:date"),
+                        }
+                    )
+
+                sampled = ts_collection.map(sample_point)
+
+                # Get the time series data with error handling
+                try:
+                    time_series = sampled.aggregate_array("system:time_start").getInfo()
+                    values = sampled.aggregate_array(band).getInfo()
+                    dates = sampled.aggregate_array("system:date").getInfo()
+
+                    # Filter out null values
+                    valid_data = [
+                        (t, v, d)
+                        for t, v, d in zip(time_series, values, dates)
+                        if v is not None
+                    ]
+
+                    if valid_data:
+                        time_series, values, dates = zip(*valid_data)
+
+                        # Convert timestamps to datetime objects
+                        datetimes = [
+                            datetime.fromtimestamp(ts / 1000) for ts in time_series
+                        ]
+
+                        sample_data[f"Point_{i+1}"] = {
+                            "dates": datetimes,
+                            "values": list(values),
+                            "date_strings": list(dates),
+                            "color": marker_colors[i],
+                            "geometry": geometry,
+                        }
+
+                        print(f"Point {i+1}: {len(values)} valid samples")
+                    else:
+                        print(f"Warning: No valid data for point {i+1}")
+
+                except Exception as e:
+                    print(f"Error sampling point {i+1}: {str(e)}")
+                    continue
+
+        except Exception as e:
+            print(f"Error during point sampling: {str(e)}")
+            sample_data = {}
+    else:
+        print("No sample points provided. Skipping sampling step.")
+
+    # Add sample point markers to the base gif if requested
+    if show_sample_markers and sample_points is not None and len(sample_points) > 0:
+        try:
+            # Get ROI bounds for coordinate conversion
+            roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+            min_lon = min([coord[0] for coord in roi_bounds])
+            max_lon = max([coord[0] for coord in roi_bounds])
+            min_lat = min([coord[1] for coord in roi_bounds])
+            max_lat = max([coord[1] for coord in roi_bounds])
+            bounds = [min_lon, min_lat, max_lon, max_lat]
+
+            # Add markers to the gif
+            add_sample_markers_to_gif(
+                base_gif,
+                base_gif,
+                sample_points,
+                marker_colors,
+                marker_size,
+                marker_style,
+                bounds,
+                (
+                    adjusted_dimensions
+                    if "adjusted_dimensions" in locals()
+                    else dimensions
+                ),
+            )
+            print("Added sample markers to GIF")
+
+        except Exception as e:
+            print(f"Error adding markers to GIF: {str(e)}")
+
+    # Create the time series chart if we have sample data
+    if sample_data and len(sample_data) > 0:
+        try:
+            chart_frames = create_time_series_chart_frames(
+                sample_data,
+                chart_title,
+                chart_ylabel,
+                (
+                    adjusted_dimensions
+                    if "adjusted_dimensions" in locals()
+                    else dimensions
+                ),
+                frames_per_second,
+                chart_xlabel_format,
+                chart_xlabel_interval,
+            )
+
+            # Combine gif and chart
+            final_gif = combine_gif_with_chart(
+                base_gif,
+                chart_frames,
+                chart_position,
+                chart_size_ratio,
+                spacer_width,
+                frames_per_second,
+                loop,
+            )
+
+            print("Created time series chart and combined with GIF")
+
+        except Exception as e:
+            print(f"Error creating chart: {str(e)}")
+            final_gif = base_gif
+    else:
+        print("No sample data available. Returning map-only timelapse.")
+        final_gif = base_gif
+
+    # Handle MP4 conversion
+    if mp4:
+        gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
+
+    return final_gif
+
+
+def add_sample_markers_to_gif(
+    in_gif,
+    out_gif,
+    sample_points,
+    marker_colors,
+    marker_size,
+    marker_style,
+    roi_bounds,
+    gif_dimensions,
+):
+    """Add sample point markers to a GIF.
+
+    Args:
+        in_gif (str): Path to input GIF file
+        out_gif (str): Path to output GIF file
+        sample_points (list): List of [lon, lat] coordinates
+        marker_colors (list): List of colors for each marker
+        marker_size (int): Size of markers in pixels
+        marker_style (str): Style of markers ('cross', 'circle', 'square')
+        roi_bounds (list): [min_lon, min_lat, max_lon, max_lat] bounds of the ROI
+        gif_dimensions (int): Dimensions of the GIF
+    """
+    import io
+    import warnings
+    from PIL import Image, ImageDraw, ImageSequence
+    import math
+
+    warnings.simplefilter("ignore")
+
+    in_gif = os.path.abspath(in_gif)
+    out_gif = os.path.abspath(out_gif)
+
+    if not os.path.exists(in_gif):
+        raise FileNotFoundError(f"Input GIF file does not exist: {in_gif}")
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    try:
+        # Open the GIF
+        gif = Image.open(in_gif)
+
+        # Get GIF properties
+        gif_width, gif_height = gif.size
+
+        # Convert sample points to pixel coordinates
+        sample_points_pixel = []
+
+        for i, point in enumerate(sample_points):
+            lon, lat = point[0], point[1]
+
+            # Convert geographic coordinates to pixel coordinates
+            pixel_x, pixel_y = get_pixel_coordinates_from_geo(
+                lon, lat, roi_bounds, gif_width, gif_height
+            )
+
+            sample_points_pixel.append(
+                {
+                    "x": pixel_x,
+                    "y": pixel_y,
+                    "color": marker_colors[i] if i < len(marker_colors) else "red",
+                }
+            )
+
+        # Process each frame
+        frames = []
+        frame_count = 0
+
+        try:
+            while True:
+                frame = gif.copy()
+                frame = frame.convert("RGB")
+
+                # Draw markers on the frame
+                draw = ImageDraw.Draw(frame)
+
+                for point in sample_points_pixel:
+                    x, y = point["x"], point["y"]
+                    color = point["color"]
+
+                    # Draw marker based on style
+                    if marker_style == "circle":
+                        draw_circle_marker(draw, x, y, marker_size, color)
+                    elif marker_style == "square":
+                        draw_square_marker(draw, x, y, marker_size, color)
+                    else:  # default to cross
+                        draw_cross_marker(draw, x, y, marker_size, color)
+
+                # Convert back to GIF frame format
+                b = io.BytesIO()
+                frame.save(b, format="GIF")
+                frame = Image.open(b)
+                frames.append(frame)
+
+                # Move to next frame
+                gif.seek(gif.tell() + 1)
+                frame_count += 1
+
+        except EOFError:
+            # End of GIF frames
+            pass
+
+        # Save the new GIF with markers
+        if frames:
+            frames[0].save(
+                out_gif,
+                save_all=True,
+                append_images=frames[1:],
+                duration=gif.info.get("duration", 100),
+                loop=gif.info.get("loop", 0),
+                optimize=True,
+            )
+
+    except Exception as e:
+        raise Exception(f"Error processing GIF: {str(e)}")
+
+
+def draw_cross_marker(draw, x, y, size, color):
+    """Draw a cross marker."""
+    half_size = size // 2
+    # Horizontal line
+    draw.line([x - half_size, y, x + half_size, y], fill=color, width=3)
+    # Vertical line
+    draw.line([x, y - half_size, x, y + half_size], fill=color, width=3)
+    # Add outline for better visibility
+    draw.line([x - half_size, y, x + half_size, y], fill="white", width=1)
+    draw.line([x, y - half_size, x, y + half_size], fill="white", width=1)
+
+
+def draw_circle_marker(draw, x, y, size, color):
+    """Draw a circle marker."""
+    half_size = size // 2
+    # Outer circle (outline)
+    draw.ellipse(
+        [x - half_size, y - half_size, x + half_size, y + half_size],
+        outline="white",
+        width=3,
+    )
+    # Inner circle (fill)
+    draw.ellipse(
+        [x - half_size + 2, y - half_size + 2, x + half_size - 2, y + half_size - 2],
+        fill=color,
+        outline=color,
+    )
+
+
+def draw_square_marker(draw, x, y, size, color):
+    """Draw a square marker."""
+    half_size = size // 2
+    # Outer square (outline)
+    draw.rectangle(
+        [x - half_size, y - half_size, x + half_size, y + half_size],
+        outline="white",
+        width=3,
+    )
+    # Inner square (fill)
+    draw.rectangle(
+        [x - half_size + 2, y - half_size + 2, x + half_size - 2, y + half_size - 2],
+        fill=color,
+        outline=color,
+    )
+
+
+def get_pixel_coordinates_from_geo(lon, lat, roi_bounds, gif_width, gif_height):
+    """Convert geographic coordinates to pixel coordinates.
+
+    Args:
+        lon (float): Longitude
+        lat (float): Latitude
+        roi_bounds (list): [min_lon, min_lat, max_lon, max_lat]
+        gif_width (int): Width of GIF in pixels
+        gif_height (int): Height of GIF in pixels
+
+    Returns:
+        tuple: (pixel_x, pixel_y)
+    """
+    min_lon, min_lat, max_lon, max_lat = roi_bounds
+
+    # Linear transformation from geographic to pixel coordinates
+    pixel_x = int(((lon - min_lon) / (max_lon - min_lon)) * gif_width)
+    pixel_y = int(((max_lat - lat) / (max_lat - min_lat)) * gif_height)  # Flip Y axis
+
+    # Ensure coordinates are within bounds
+    pixel_x = max(0, min(gif_width - 1, pixel_x))
+    pixel_y = max(0, min(gif_height - 1, pixel_y))
+
+    return pixel_x, pixel_y
+
+
+def create_time_series_chart_frames(
+    sample_data,
+    chart_title,
+    chart_ylabel,
+    dimensions,
+    fps,
+    xlabel_format="auto",
+    xlabel_interval="auto",
+):
+    """Create frames for the time series chart with current time indicator."""
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+    import numpy as np
+    from datetime import datetime
+    import tempfile
+
+    if not sample_data:
+        return []
+
+    # Get all unique dates across all points
+    all_dates = set()
+    for point_data in sample_data.values():
+        all_dates.update(point_data["dates"])
+
+    if not all_dates:
+        return []
+
+    sorted_dates = sorted(list(all_dates))
+
+    # Create chart frames
+    chart_frames = []
+    temp_dir = tempfile.mkdtemp()
+
+    # Calculate chart dimensions
+    if isinstance(dimensions, str) and "x" in dimensions:
+        width, height = map(int, dimensions.split("x"))
+    else:
+        width = height = int(dimensions) if isinstance(dimensions, int) else 768
+
+    chart_width = int(width * 0.8)  # 80% of gif width
+    chart_height = height
+
+    try:
+        for frame_idx, current_date in enumerate(sorted_dates):
+            fig, ax = plt.subplots(
+                figsize=(chart_width / 100, chart_height / 100), dpi=100
+            )
+
+            # Plot all time series
+            for point_name, point_data in sample_data.items():
+                if point_data["dates"] and point_data["values"]:
+                    ax.plot(
+                        point_data["dates"],
+                        point_data["values"],
+                        color=point_data["color"],
+                        label=point_name,
+                        linewidth=2,
+                        marker="o",
+                        markersize=4,
+                    )
+
+            # Add vertical line for current time
+            ax.axvline(
+                x=current_date, color="red", linestyle="--", linewidth=2, alpha=0.8
+            )
+
+            # Formatting
+            ax.set_xlabel("Date", fontsize=10)
+            ax.set_ylabel(chart_ylabel, fontsize=10)
+            ax.set_title(chart_title, fontsize=12)
+            ax.legend(fontsize=8)
+            ax.grid(True, alpha=0.3)
+
+            # Format x-axis based on parameters or auto-detect
+            date_range = (max(sorted_dates) - min(sorted_dates)).days
+
+            if xlabel_format == "auto" or xlabel_interval == "auto":
+                # Auto-detect based on data characteristics
+                if date_range <= 30:  # Less than 1 month - likely daily/weekly data
+                    format_str = "%m-%d"
+                    if len(sorted_dates) <= 10:
+                        # Few points, show all
+                        locator = mdates.DayLocator(interval=max(1, date_range // 10))
+                    else:
+                        # Many points, show weekly
+                        locator = mdates.WeekdayLocator(interval=1)
+                elif date_range <= 90:  # Less than 3 months - likely weekly data
+                    format_str = "%m-%d"
+                    if len(sorted_dates) <= 15:
+                        # Weekly data with few points
+                        locator = mdates.WeekdayLocator(interval=1)
+                    else:
+                        # Weekly data with many points
+                        locator = mdates.WeekdayLocator(
+                            interval=max(1, len(sorted_dates) // 10)
+                        )
+                elif date_range <= 365:  # Less than 1 year - likely monthly data
+                    format_str = "%Y-%m"
+                    locator = mdates.MonthLocator(
+                        interval=max(1, len(sorted_dates) // 8)
+                    )
+                else:  # More than 1 year - yearly data
+                    format_str = "%Y"
+                    locator = mdates.YearLocator()
+            else:
+                # Use manual settings
+                format_str = xlabel_format if xlabel_format != "auto" else "%Y-%m-%d"
+
+                if xlabel_interval == "day":
+                    locator = mdates.DayLocator(
+                        interval=max(1, len(sorted_dates) // 15)
+                    )
+                elif xlabel_interval == "week":
+                    locator = mdates.WeekdayLocator(
+                        interval=max(1, len(sorted_dates) // 10)
+                    )
+                elif xlabel_interval == "month":
+                    locator = mdates.MonthLocator(
+                        interval=max(1, len(sorted_dates) // 8)
+                    )
+                elif xlabel_interval == "year":
+                    locator = mdates.YearLocator()
+                else:
+                    locator = mdates.WeekdayLocator(
+                        interval=max(1, len(sorted_dates) // 10)
+                    )
+
+            ax.xaxis.set_major_formatter(mdates.DateFormatter(format_str))
+            ax.xaxis.set_major_locator(locator)
+
+            # Add minor ticks for better granularity on weekly data
+            if date_range <= 90:
+                ax.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+
+            plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, fontsize=8)
+
+            # Set consistent y-axis limits
+            all_values = []
+            for point_data in sample_data.values():
+                all_values.extend([v for v in point_data["values"] if v is not None])
+
+            if all_values:
+                y_min, y_max = min(all_values), max(all_values)
+                y_range = y_max - y_min
+                if y_range > 0:
+                    ax.set_ylim(y_min - y_range * 0.1, y_max + y_range * 0.1)
+                else:
+                    ax.set_ylim(y_min - 1, y_max + 1)
+
+            plt.tight_layout()
+
+            # Save frame
+            frame_path = os.path.join(temp_dir, f"chart_frame_{frame_idx:04d}.png")
+            plt.savefig(frame_path, dpi=100, bbox_inches="tight", facecolor="white")
+            plt.close()
+
+            chart_frames.append(frame_path)
+
+    except Exception as e:
+        print(f"Error creating chart frames: {str(e)}")
+        # Clean up any created frames
+        for frame_path in chart_frames:
+            if os.path.exists(frame_path):
+                os.remove(frame_path)
+        return []
+
+    return chart_frames
+
+
+def combine_gif_with_chart(
+    base_gif, chart_frames, chart_position, chart_size_ratio, spacer_width, fps, loop
+):
+    """Combine GIF with chart frames."""
+    from PIL import Image, ImageDraw
+    import tempfile
+
+    # Open the base gif
+    base_image = Image.open(base_gif)
+    base_frames = []
+
+    # Extract all frames from base gif
+    try:
+        while True:
+            base_frames.append(base_image.copy())
+            base_image.seek(base_image.tell() + 1)
+    except EOFError:
+        pass
+
+    # Create combined frames
+    combined_frames = []
+    temp_dir = tempfile.mkdtemp()
+
+    for i, base_frame in enumerate(base_frames):
+        base_frame = base_frame.convert("RGB")
+
+        # Get corresponding chart frame (cycle if needed)
+        chart_idx = i % len(chart_frames) if chart_frames else 0
+
+        if chart_frames:
+            chart_frame = Image.open(chart_frames[chart_idx])
+            chart_frame = chart_frame.convert("RGB")
+
+            # Calculate dimensions
+            base_width, base_height = base_frame.size
+            chart_width, chart_height = chart_frame.size
+
+            # Create combined image based on position
+            if chart_position == "right":
+                combined_width = base_width + spacer_width + chart_width
+                combined_height = max(base_height, chart_height)
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(base_frame, (0, 0))
+                combined_frame.paste(chart_frame, (base_width + spacer_width, 0))
+
+            elif chart_position == "left":
+                combined_width = chart_width + spacer_width + base_width
+                combined_height = max(base_height, chart_height)
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(chart_frame, (0, 0))
+                combined_frame.paste(base_frame, (chart_width + spacer_width, 0))
+
+            elif chart_position == "bottom":
+                combined_width = max(base_width, chart_width)
+                combined_height = base_height + spacer_width + chart_height
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(base_frame, (0, 0))
+                combined_frame.paste(chart_frame, (0, base_height + spacer_width))
+
+            else:  # default to right
+                combined_width = base_width + spacer_width + chart_width
+                combined_height = max(base_height, chart_height)
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(base_frame, (0, 0))
+                combined_frame.paste(chart_frame, (base_width + spacer_width, 0))
+
+        else:
+            combined_frame = base_frame
+
+        combined_frames.append(combined_frame)
+
+    # Save combined gif
+    output_path = base_gif.replace(".gif", "_with_chart.gif")
+
+    if combined_frames:
+        combined_frames[0].save(
+            output_path,
+            save_all=True,
+            append_images=combined_frames[1:],
+            duration=int(1000 / fps),
+            loop=loop,
+            optimize=True,
+        )
+
+    # Clean up chart frames
+    for frame_path in chart_frames:
+        if os.path.exists(frame_path):
+            os.remove(frame_path)
+
+    return output_path
+
+
+def sentinel2_timelapse_with_samples(
+    roi,
+    out_gif=None,
+    start_year=2015,
+    end_year=None,
+    start_date="06-10",
+    end_date="09-20",
+    bands=["NIR", "Red", "Green"],
+    frequency="year",
+    reducer="median",
+    date_format=None,
+    palette=None,
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=10,
+    crs="EPSG:3857",
+    mask_cloud=True,
+    cloud_pct=30,
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    add_colorbar=False,
+    colorbar_width=6.0,
+    colorbar_height=0.4,
+    colorbar_label=None,
+    colorbar_label_size=12,
+    colorbar_label_weight="normal",
+    colorbar_tick_size=10,
+    colorbar_bg_color=None,
+    colorbar_orientation="horizontal",
+    colorbar_dpi="figure",
+    colorbar_xy=None,
+    colorbar_size=(300, 300),
+    loop=0,
+    mp4=False,
+    fading=False,
+    sample_points=None,
+    sample_point_crs="EPSG:4326",
+    marker_colors=None,
+    marker_size=50,
+    marker_style="cross",
+    show_sample_markers=True,
+    chart_title="Sentinel-2 Time Series",
+    chart_ylabel="Reflectance",
+    chart_position="right",
+    chart_size_ratio=0.7,
+    spacer_width=20,
+    chart_xlabel_format="auto",
+    chart_xlabel_interval="auto",
+    sample_bands=None,
+    chart_band_labels=None,
+    indices=None,
+    index_vis_params=None,
+    **kwargs,
+):
+    """Create a Sentinel-2 timelapse with optional sample points and time series chart.
+
+    Args:
+        roi (ee.Geometry): The region to use to filter the collection of images.
+        out_gif (str): The output gif file path. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
+        end_year (int, optional): Ending year for the timelapse. Defaults to the current year.
+        start_date (str, optional): Starting date (month-day) each year. Defaults to '06-10'.
+        end_date (str, optional): Ending date (month-day) each year. Defaults to '09-20'.
+        bands (list, optional): Three bands for visualization. Defaults to ["NIR", "Red", "Green"].
+        frequency (str, optional): The frequency of the timeseries. Defaults to 'year'.
+        reducer (str, optional): The reducer to use. Defaults to 'median'.
+        date_format (str, optional): Date format pattern. Defaults to None.
+        palette (str, optional): Color palette for single-band visualization. Defaults to None.
+        vis_params (dict, optional): Visualization parameters. Defaults to None.
+        dimensions (int, optional): Maximum dimensions of the thumbnail. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): Coordinate reference system. Defaults to "EPSG:3857".
+        mask_cloud (bool, optional): Whether to mask clouds. Defaults to True.
+        cloud_pct (int, optional): Maximum cloud percentage. Defaults to 30.
+        overlay_data (optional): Administrative boundary overlay. Defaults to None.
+        overlay_color (str, optional): Color for overlay data. Defaults to 'black'.
+        overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Position of the title. Defaults to ("2%", "90%").
+        add_text (bool, optional): Whether to add animated text. Defaults to True.
+        text_xy (tuple, optional): Position of the text. Defaults to ("2%", "2%").
+        text_sequence (optional): Text to be drawn. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. Defaults to 'white'.
+        add_progress_bar (bool, optional): Whether to add progress bar. Defaults to True.
+        progress_bar_color (str, optional): Color for progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of progress bar. Defaults to 5.
+        add_colorbar (bool, optional): Whether to add colorbar. Defaults to False.
+        colorbar_width (float, optional): Width of colorbar. Defaults to 6.0.
+        colorbar_height (float, optional): Height of colorbar. Defaults to 0.4.
+        colorbar_label (str, optional): Label for colorbar. Defaults to None.
+        colorbar_label_size (int, optional): Font size for colorbar label. Defaults to 12.
+        colorbar_label_weight (str, optional): Font weight for colorbar label. Defaults to 'normal'.
+        colorbar_tick_size (int, optional): Font size for colorbar ticks. Defaults to 10.
+        colorbar_bg_color (str, optional): Background color for colorbar. Defaults to None.
+        colorbar_orientation (str, optional): Orientation of colorbar. Defaults to 'horizontal'.
+        colorbar_dpi (str, optional): DPI for colorbar. Defaults to 'figure'.
+        colorbar_xy (tuple, optional): Position of colorbar. Defaults to None.
+        colorbar_size (tuple, optional): Size of colorbar. Defaults to (300, 300).
+        loop (int, optional): Number of animation loops. Defaults to 0.
+        mp4 (bool, optional): Whether to create mp4 file. Defaults to False.
+        fading (bool, optional): Whether to add fading effect. Defaults to False.
+        sample_points (list, optional): List of [lon, lat] coordinates for sampling (max 5 points). Defaults to None.
+        sample_point_crs (str, optional): CRS for sample points. Defaults to "EPSG:4326".
+        marker_colors (list, optional): Colors for markers. Defaults to None (uses default colors).
+        marker_size (int, optional): Size of markers. Defaults to 50.
+        marker_style (str, optional): Style of markers ('cross', 'circle', 'square'). Defaults to 'cross'.
+        show_sample_markers (bool, optional): Whether to show markers on map. Defaults to True.
+        chart_title (str, optional): Title for the time series chart. Defaults to "Sentinel-2 Time Series".
+        chart_ylabel (str, optional): Y-axis label for chart. Defaults to "Reflectance".
+        chart_position (str, optional): Position of chart ('right', 'left', 'bottom'). Defaults to 'right'.
+        chart_size_ratio (float, optional): Size ratio of chart to gif. Defaults to 0.7.
+        spacer_width (int, optional): Width of spacer between gif and chart. Defaults to 20.
+        chart_xlabel_format (str, optional): Format for x-axis labels ('auto', '%Y-%m', '%m-%d', '%Y-%m-%d'). Defaults to 'auto'.
+        chart_xlabel_interval (str, optional): Interval for x-axis labels ('auto', 'day', 'week', 'month', 'year'). Defaults to 'auto'.
+        sample_bands (list, optional): Which bands to sample for the chart. Defaults to first band only.
+        chart_band_labels (dict, optional): Custom labels for bands in chart. Defaults to None.
+        indices (list, optional): List of indices to calculate ['NDVI', 'EVI', 'NDWI', 'NDBI', 'MNDWI', 'NBR']. Defaults to None.
+        index_vis_params (dict, optional): Visualization parameters for indices. Defaults to None.
+        **kwargs: Additional arguments for create_timeseries().
+
+    Returns:
+        str: File path to the output GIF with optional chart.
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+    import numpy as np
+    from datetime import datetime, date
+    import tempfile
+    import math
+
+    # Handle indices parameter
+    if indices is not None:
+        if not isinstance(indices, list):
+            indices = [indices]
+
+        # Validate indices
+        valid_indices = [
+            "NDVI",
+            "EVI",
+            "NDWI",
+            "MNDWI",
+            "NDBI",
+            "NBR",
+            "SAVI",
+            "GNDVI",
+            "NDRE",
+            "CIRE",
+        ]
+        for idx in indices:
+            if idx not in valid_indices:
+                raise ValueError(
+                    f"Index '{idx}' not supported. Valid indices: {valid_indices}"
+                )
+
+        # If using indices, update defaults
+        if sample_bands is None:
+            sample_bands = indices[:1]  # Default to first index
+
+        if chart_ylabel == "Reflectance":
+            chart_ylabel = "Index Value"
+
+        # Set up index visualization if not provided
+        if index_vis_params is None:
+            index_vis_params = get_default_index_vis_params()
+
+        # For single index visualization, set up palette and vis_params
+        if len(indices) == 1 and vis_params is None:
+            index_name = indices[0]
+            if palette is None and index_name in index_vis_params:
+                palette = index_vis_params[index_name]["palette"]
+                vis_params = {
+                    "min": index_vis_params[index_name]["min"],
+                    "max": index_vis_params[index_name]["max"],
+                    "palette": palette,
+                }
+
+        # If visualizing an index, update bands for visualization
+        if len(indices) == 1 and len(bands) == 3:
+            # For single index, use that index for visualization
+            bands = indices
+
+    # Validate sample points
+    if sample_points is not None:
+        if not isinstance(sample_points, list):
+            raise ValueError("sample_points must be a list of [lon, lat] coordinates")
+        if len(sample_points) > 5:
+            raise ValueError("Maximum 5 sample points are supported")
+        if len(sample_points) == 0:
+            sample_points = None
+
+    # Set default marker colors if not provided
+    if sample_points is not None and marker_colors is None:
+        marker_colors = ["red", "blue", "green", "orange", "purple"][
+            : len(sample_points)
+        ]
+    elif sample_points is not None and len(marker_colors) < len(sample_points):
+        default_colors = ["red", "blue", "green", "orange", "purple"]
+        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
+
+    # Set default sample bands if not provided
+    if sample_bands is None:
+        sample_bands = [bands[0]] if bands else ["B4"]  # Default to first band or Red
+
+    # Set default chart band labels
+    if chart_band_labels is None:
+        chart_band_labels = {
+            "B2": "Blue",
+            "B3": "Green",
+            "B4": "Red",
+            "B5": "Red Edge 1",
+            "B6": "Red Edge 2",
+            "B7": "Red Edge 3",
+            "B8": "NIR",
+            "B8A": "Red Edge 4",
+            "B11": "SWIR1",
+            "B12": "SWIR2",
+        }
+        # Add index labels
+        index_labels = get_index_chart_labels()
+        chart_band_labels.update(index_labels)
+
+    # Adjust dimensions to avoid Earth Engine limits
+    if isinstance(roi, ee.Geometry):
+        roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+        min_lon = min([coord[0] for coord in roi_bounds])
+        max_lon = max([coord[0] for coord in roi_bounds])
+        min_lat = min([coord[1] for coord in roi_bounds])
+        max_lat = max([coord[1] for coord in roi_bounds])
+
+        # Calculate aspect ratio and adjust dimensions
+        lon_range = max_lon - min_lon
+        lat_range = max_lat - min_lat
+        aspect_ratio = lon_range / lat_range if lat_range > 0 else 1
+
+        max_pixels = 26214400  # Earth Engine limit
+
+        if isinstance(dimensions, int):
+            if aspect_ratio > 1:
+                width = min(dimensions, int(math.sqrt(max_pixels * aspect_ratio)))
+                height = int(width / aspect_ratio)
+            else:
+                height = min(dimensions, int(math.sqrt(max_pixels / aspect_ratio)))
+                width = int(height * aspect_ratio)
+
+            width = max(256, width)
+            height = max(256, height)
+
+            if width * height > max_pixels:
+                scale_factor = math.sqrt(max_pixels / (width * height))
+                width = int(width * scale_factor)
+                height = int(height * scale_factor)
+
+            adjusted_dimensions = f"{width}x{height}"
+        else:
+            adjusted_dimensions = dimensions
+
+        print(f"Adjusted dimensions: {adjusted_dimensions}")
+    else:
+        adjusted_dimensions = dimensions
+
+    # Create the base timelapse
+    try:
+        # If using indices, we need to create a custom timelapse that includes index calculation
+        if indices is not None:
+            base_gif = create_sentinel2_index_timelapse(
+                roi=roi,
+                out_gif=out_gif,
+                start_year=start_year,
+                end_year=end_year,
+                start_date=start_date,
+                end_date=end_date,
+                bands=bands,
+                indices=indices,
+                vis_params=vis_params,
+                dimensions=adjusted_dimensions,
+                frames_per_second=frames_per_second,
+                crs=crs,
+                mask_cloud=mask_cloud,
+                cloud_pct=cloud_pct,
+                overlay_data=overlay_data,
+                overlay_color=overlay_color,
+                overlay_width=overlay_width,
+                overlay_opacity=overlay_opacity,
+                frequency=frequency,
+                reducer=reducer,
+                date_format=date_format,
+                title=title,
+                title_xy=title_xy,
+                add_text=add_text,
+                text_xy=text_xy,
+                text_sequence=text_sequence,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                add_colorbar=add_colorbar,
+                colorbar_width=colorbar_width,
+                colorbar_height=colorbar_height,
+                colorbar_label=colorbar_label,
+                colorbar_label_size=colorbar_label_size,
+                colorbar_label_weight=colorbar_label_weight,
+                colorbar_tick_size=colorbar_tick_size,
+                colorbar_bg_color=colorbar_bg_color,
+                colorbar_orientation=colorbar_orientation,
+                colorbar_dpi=colorbar_dpi,
+                colorbar_xy=colorbar_xy,
+                colorbar_size=colorbar_size,
+                loop=loop,
+                fading=fading,
+                **kwargs,
+            )
+        else:
+            # Use standard Sentinel-2 timelapse
+            base_gif = sentinel2_timelapse(
+                roi=roi,
+                out_gif=out_gif,
+                start_year=start_year,
+                end_year=end_year,
+                start_date=start_date,
+                end_date=end_date,
+                bands=bands,
+                vis_params=vis_params,
+                dimensions=adjusted_dimensions,
+                frames_per_second=frames_per_second,
+                crs=crs,
+                apply_fmask=mask_cloud,
+                cloud_pct=cloud_pct,
+                overlay_data=overlay_data,
+                overlay_color=overlay_color,
+                overlay_width=overlay_width,
+                overlay_opacity=overlay_opacity,
+                frequency=frequency,
+                date_format=date_format,
+                title=title,
+                title_xy=title_xy,
+                add_text=add_text,
+                text_xy=text_xy,
+                text_sequence=text_sequence,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                loop=loop,
+                mp4=False,
+                fading=fading,
+                **kwargs,
+            )
+    except Exception as e:
+        print(f"Error creating base timelapse: {str(e)}")
+        raise e
+
+    # Check if base GIF was created successfully
+    if not os.path.exists(base_gif):
+        raise FileNotFoundError(f"Base timelapse GIF was not created: {base_gif}")
+
+    # If no sample points, return the base gif (map only)
+    if sample_points is None or len(sample_points) == 0:
+        print("No sample points provided. Returning map-only timelapse.")
+        if mp4:
+            gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+        return base_gif
+
+    # Get the Sentinel-2 time series for sampling
+    if end_year is None:
+        end_year = date.today().year
+
+    start = f"{start_year}-{start_date}"
+    end = f"{end_year}-{end_date}"
+
+    # Create collection with error handling
+    try:
+        # Map band names to Sentinel-2 band names
+        allowed_bands = {
+            "Blue": "B2",
+            "Green": "B3",
+            "Red": "B4",
+            "Red Edge 1": "B5",
+            "Red Edge 2": "B6",
+            "Red Edge 3": "B7",
+            "NIR": "B8",
+            "Red Edge 4": "B8A",
+            "SWIR1": "B11",
+            "SWIR2": "B12",
+            "QA60": "QA60",
+        }
+
+        # Convert sample band names if needed (include indices)
+        s2_sample_bands = []
+        for band in sample_bands:
+            if band in allowed_bands:
+                s2_sample_bands.append(allowed_bands[band])
+            elif band in [
+                "NDVI",
+                "EVI",
+                "NDWI",
+                "MNDWI",
+                "NDBI",
+                "NBR",
+                "SAVI",
+                "GNDVI",
+                "NDRE",
+                "CIRE",
+            ]:
+                s2_sample_bands.append(band)  # Keep index names as-is
+            else:
+                s2_sample_bands.append(band)
+
+        # Create time series - if using indices, we need to add index calculation
+        if indices is not None:
+            # Create base time series first
+            base_ts_collection = sentinel2_timeseries(
+                roi,
+                start_year,
+                end_year,
+                start_date,
+                end_date,
+                None,  # Get all bands first
+                mask_cloud,
+                cloud_pct,
+                frequency,
+                reducer,
+                True,  # drop_empty
+                date_format,
+                1,
+                1,
+            )
+
+            # Add indices to each image
+            ts_collection = base_ts_collection.map(calculate_sentinel2_indices)
+
+            # Select only the bands we need for sampling
+            ts_collection = ts_collection.select(s2_sample_bands)
+        else:
+            # Standard time series without indices
+            ts_collection = sentinel2_timeseries(
+                roi,
+                start_year,
+                end_year,
+                start_date,
+                end_date,
+                s2_sample_bands,
+                mask_cloud,
+                cloud_pct,
+                frequency,
+                reducer,
+                True,  # drop_empty
+                date_format,
+                1,
+                1,
+            )
+
+        # Check if time series is empty
+        ts_size = ts_collection.size().getInfo()
+        if ts_size == 0:
+            print("Warning: No time series data generated")
+            if mp4:
+                gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+            return base_gif
+
+        print(f"Generated {ts_size} time series images")
+
+    except Exception as e:
+        print(f"Error creating time series: {str(e)}")
+        # Return base gif without sampling
+        if mp4:
+            gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+        return base_gif
+
+    # Sample points from the time series
+    sample_data = {}
+    point_geometries = []
+
+    if sample_points is not None and len(sample_points) > 0:
+        try:
+            for i, point in enumerate(sample_points):
+                if sample_point_crs == "EPSG:4326":
+                    geometry = ee.Geometry.Point([point[0], point[1]])
+                else:
+                    geometry = ee.Geometry.Point([point[0], point[1]], sample_point_crs)
+
+                point_geometries.append(geometry)
+
+                # Sample the time series at this point for each band
+                for band_idx, band in enumerate(s2_sample_bands):
+
+                    def sample_point_band(image):
+                        sampled = image.select(band).sample(geometry, 30)
+                        return sampled.first().set(
+                            {
+                                "system:time_start": image.get("system:time_start"),
+                                "system:date": image.get("system:date"),
+                            }
+                        )
+
+                    sampled = ts_collection.map(sample_point_band)
+
+                    # Get the time series data with error handling
+                    try:
+                        time_series = sampled.aggregate_array(
+                            "system:time_start"
+                        ).getInfo()
+                        values = sampled.aggregate_array(band).getInfo()
+                        dates = sampled.aggregate_array("system:date").getInfo()
+
+                        # Filter out null values
+                        valid_data = [
+                            (t, v, d)
+                            for t, v, d in zip(time_series, values, dates)
+                            if v is not None
+                        ]
+
+                        if valid_data:
+                            time_series, values, dates = zip(*valid_data)
+
+                            # Convert timestamps to datetime objects
+                            datetimes = [
+                                datetime.fromtimestamp(ts / 1000) for ts in time_series
+                            ]
+
+                            # Create unique key for point and band combination
+                            point_band_key = f"Point_{i+1}_{band}"
+                            if len(s2_sample_bands) == 1:
+                                point_band_key = f"Point_{i+1}"
+
+                            # Get display name for band
+                            band_display = chart_band_labels.get(band, band)
+                            if len(s2_sample_bands) > 1:
+                                label = f"Point {i+1} ({band_display})"
+                            else:
+                                label = f"Point {i+1}"
+
+                            # Color assignment for multi-band sampling
+                            if len(s2_sample_bands) > 1:
+                                base_color = (
+                                    marker_colors[i]
+                                    if i < len(marker_colors)
+                                    else "red"
+                                )
+                                # Modify color for different bands
+                                if band_idx == 0:
+                                    color = base_color
+                                elif band_idx == 1:
+                                    color = (
+                                        f"dark{base_color}"
+                                        if base_color != "red"
+                                        else "darkred"
+                                    )
+                                else:
+                                    color = (
+                                        f"light{base_color}"
+                                        if base_color != "red"
+                                        else "lightcoral"
+                                    )
+                            else:
+                                color = (
+                                    marker_colors[i]
+                                    if i < len(marker_colors)
+                                    else "red"
+                                )
+
+                            sample_data[point_band_key] = {
+                                "dates": datetimes,
+                                "values": list(values),
+                                "date_strings": list(dates),
+                                "color": color,
+                                "geometry": geometry,
+                                "label": label,
+                                "band": band,
+                                "point_idx": i,
+                            }
+
+                            print(f"Point {i+1} ({band}): {len(values)} valid samples")
+                        else:
+                            print(f"Warning: No valid data for point {i+1} ({band})")
+
+                    except Exception as e:
+                        print(f"Error sampling point {i+1} ({band}): {str(e)}")
+                        continue
+
+        except Exception as e:
+            print(f"Error during point sampling: {str(e)}")
+            sample_data = {}
+    else:
+        print("No sample points provided. Skipping sampling step.")
+
+    # Add sample point markers to the base gif if requested
+    if show_sample_markers and sample_points is not None and len(sample_points) > 0:
+        try:
+            # Get ROI bounds for coordinate conversion
+            roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+            min_lon = min([coord[0] for coord in roi_bounds])
+            max_lon = max([coord[0] for coord in roi_bounds])
+            min_lat = min([coord[1] for coord in roi_bounds])
+            max_lat = max([coord[1] for coord in roi_bounds])
+            bounds = [min_lon, min_lat, max_lon, max_lat]
+
+            # Add markers to the gif
+            add_sample_markers_to_gif(
+                base_gif,
+                base_gif,
+                sample_points,
+                marker_colors,
+                marker_size,
+                marker_style,
+                bounds,
+                (
+                    adjusted_dimensions
+                    if "adjusted_dimensions" in locals()
+                    else dimensions
+                ),
+            )
+            print("Added sample markers to GIF")
+
+        except Exception as e:
+            print(f"Error adding markers to GIF: {str(e)}")
+
+    # Create the time series chart if we have sample data
+    if sample_data and len(sample_data) > 0:
+        try:
+            chart_frames = create_s2_time_series_chart_frames(
+                sample_data,
+                chart_title,
+                chart_ylabel,
+                (
+                    adjusted_dimensions
+                    if "adjusted_dimensions" in locals()
+                    else dimensions
+                ),
+                frames_per_second,
+                chart_xlabel_format,
+                chart_xlabel_interval,
+            )
+
+            # Combine gif and chart
+            final_gif = combine_gif_with_chart(
+                base_gif,
+                chart_frames,
+                chart_position,
+                chart_size_ratio,
+                spacer_width,
+                frames_per_second,
+                loop,
+            )
+
+            print("Created time series chart and combined with GIF")
+
+        except Exception as e:
+            print(f"Error creating chart: {str(e)}")
+            final_gif = base_gif
+    else:
+        print("No sample data available. Returning map-only timelapse.")
+        final_gif = base_gif
+
+    # Handle MP4 conversion
+    if mp4:
+        gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
+
+    return final_gif
+
+
+def calculate_sentinel2_indices(image):
+    """Calculate common vegetation and water indices for Sentinel-2 images.
+
+    Args:
+        image (ee.Image): Sentinel-2 image with bands B2, B3, B4, B5, B6, B7, B8, B8A, B11, B12
+
+    Returns:
+        ee.Image: Image with added index bands
+    """
+    # Normalized Difference Vegetation Index
+    ndvi = image.normalizedDifference(["B8", "B4"]).rename("NDVI")
+
+    # Enhanced Vegetation Index
+    evi = image.expression(
+        "2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))",
+        {
+            "NIR": image.select("B8"),
+            "RED": image.select("B4"),
+            "BLUE": image.select("B2"),
+        },
+    ).rename("EVI")
+
+    # Normalized Difference Water Index
+    ndwi = image.normalizedDifference(["B3", "B8"]).rename("NDWI")
+
+    # Modified Normalized Difference Water Index
+    mndwi = image.normalizedDifference(["B3", "B11"]).rename("MNDWI")
+
+    # Normalized Difference Built-up Index
+    ndbi = image.normalizedDifference(["B11", "B8"]).rename("NDBI")
+
+    # Normalized Burn Ratio
+    nbr = image.normalizedDifference(["B8", "B12"]).rename("NBR")
+
+    # Soil Adjusted Vegetation Index
+    savi = image.expression(
+        "((NIR - RED) / (NIR + RED + 0.5)) * (1.5)",
+        {"NIR": image.select("B8"), "RED": image.select("B4")},
+    ).rename("SAVI")
+
+    # Green Normalized Difference Vegetation Index
+    gndvi = image.normalizedDifference(["B8", "B3"]).rename("GNDVI")
+
+    # Normalized Difference Red Edge
+    ndre = image.normalizedDifference(["B8", "B5"]).rename("NDRE")
+
+    # Chlorophyll Index Red Edge
+    cire = image.expression(
+        "(NIR / RE1) - 1", {"NIR": image.select("B8"), "RE1": image.select("B5")}
+    ).rename("CIRE")
+
+    return image.addBands([ndvi, evi, ndwi, mndwi, ndbi, nbr, savi, gndvi, ndre, cire])
+
+
+def get_default_index_vis_params():
+    """Get default visualization parameters for different indices."""
+    return {
+        "NDVI": {
+            "min": -0.1,
+            "max": 1,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "EVI": {
+            "min": -0.2,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "NDWI": {
+            "min": -0.3,
+            "max": 0.8,
+            "palette": ["#8b4513", "#daa520", "#ffffbf", "#87ceeb", "#0000ff"],
+        },
+        "MNDWI": {
+            "min": -0.3,
+            "max": 0.8,
+            "palette": ["#8b4513", "#daa520", "#ffffbf", "#87ceeb", "#0000ff"],
+        },
+        "NDBI": {
+            "min": -0.5,
+            "max": 0.5,
+            "palette": ["#0000ff", "#87ceeb", "#ffffbf", "#daa520", "#8b4513"],
+        },
+        "NBR": {
+            "min": -0.5,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "SAVI": {
+            "min": -0.2,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "GNDVI": {
+            "min": -0.2,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "NDRE": {
+            "min": -0.2,
+            "max": 0.6,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "CIRE": {
+            "min": 0,
+            "max": 5,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+    }
+
+
+def get_index_chart_labels():
+    """Get chart labels for different indices."""
+    return {
+        "NDVI": "NDVI",
+        "EVI": "EVI",
+        "NDWI": "NDWI",
+        "MNDWI": "MNDWI",
+        "NDBI": "NDBI",
+        "NBR": "NBR",
+        "SAVI": "SAVI",
+        "GNDVI": "GNDVI",
+        "NDRE": "NDRE",
+        "CIRE": "CIre",
+    }
+
+
+def create_sentinel2_index_timelapse(
+    roi,
+    out_gif,
+    start_year,
+    end_year,
+    start_date,
+    end_date,
+    bands,
+    indices,
+    vis_params,
+    dimensions,
+    frames_per_second,
+    crs,
+    mask_cloud,
+    cloud_pct,
+    overlay_data,
+    overlay_color,
+    overlay_width,
+    overlay_opacity,
+    frequency,
+    reducer,
+    date_format,
+    title,
+    title_xy,
+    add_text,
+    text_xy,
+    text_sequence,
+    font_type,
+    font_size,
+    font_color,
+    add_progress_bar,
+    progress_bar_color,
+    progress_bar_height,
+    add_colorbar,
+    colorbar_width,
+    colorbar_height,
+    colorbar_label,
+    colorbar_label_size,
+    colorbar_label_weight,
+    colorbar_tick_size,
+    colorbar_bg_color,
+    colorbar_orientation,
+    colorbar_dpi,
+    colorbar_xy,
+    colorbar_size,
+    loop,
+    fading,
+    **kwargs,
+):
+    """Create a Sentinel-2 timelapse with indices."""
+    import datetime
+
+    if end_year is None:
+        end_year = datetime.datetime.now().year
+
+    start = f"{start_year}-{start_date}"
+    end = f"{end_year}-{end_date}"
+
+    # Create time series with indices
+    base_ts_collection = sentinel2_timeseries(
+        roi,
+        start_year,
+        end_year,
+        start_date,
+        end_date,
+        None,  # Get all bands first
+        mask_cloud,
+        cloud_pct,
+        frequency,
+        reducer,
+        True,  # drop_empty
+        date_format,
+        1,
+        1,
+    )
+
+    # Add indices to each image
+    ts_collection = base_ts_collection.map(calculate_sentinel2_indices)
+
+    # Use create_timelapse with the index collection
+    return create_timelapse(
+        ts_collection,
+        start,
+        end,
+        roi,
+        bands,
+        frequency,
+        reducer,
+        date_format,
+        out_gif,
+        None,
+        vis_params,
+        dimensions,
+        frames_per_second,
+        crs,
+        overlay_data,
+        overlay_color,
+        overlay_width,
+        overlay_opacity,
+        title,
+        title_xy,
+        add_text,
+        text_xy,
+        text_sequence,
+        font_type,
+        font_size,
+        font_color,
+        add_progress_bar,
+        progress_bar_color,
+        progress_bar_height,
+        add_colorbar,
+        colorbar_width,
+        colorbar_height,
+        colorbar_label,
+        colorbar_label_size,
+        colorbar_label_weight,
+        colorbar_tick_size,
+        colorbar_bg_color,
+        colorbar_orientation,
+        colorbar_dpi,
+        colorbar_xy,
+        colorbar_size,
+        loop,
+        False,
+        fading,
+        1,
+        1,
+    )
+
+
+def create_s2_time_series_chart_frames(
+    sample_data,
+    chart_title,
+    chart_ylabel,
+    dimensions,
+    fps,
+    xlabel_format="auto",
+    xlabel_interval="auto",
+):
+    """Create frames for the Sentinel-2 time series chart with current time indicator.
+
+    Args:
+        sample_data (dict): Dictionary containing sample data for each point/band combination
+        chart_title (str): Title for the chart
+        chart_ylabel (str): Y-axis label
+        dimensions (int/str): Dimensions for the chart
+        fps (int): Frames per second
+        xlabel_format (str): Format for x-axis labels
+        xlabel_interval (str): Interval for x-axis labels
+
+    Returns:
+        list: List of paths to chart frame images
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+    import numpy as np
+    from datetime import datetime
+    import tempfile
+
+    if not sample_data:
+        return []
+
+    # Get all unique dates across all points/bands
+    all_dates = set()
+    for point_data in sample_data.values():
+        all_dates.update(point_data["dates"])
+
+    if not all_dates:
+        return []
+
+    sorted_dates = sorted(list(all_dates))
+
+    # Create chart frames
+    chart_frames = []
+    temp_dir = tempfile.mkdtemp()
+
+    # Calculate chart dimensions
+    if isinstance(dimensions, str) and "x" in dimensions:
+        width, height = map(int, dimensions.split("x"))
+    else:
+        width = height = int(dimensions) if isinstance(dimensions, int) else 768
+
+    chart_width = int(width * 0.8)  # 80% of gif width
+    chart_height = height
+
+    try:
+        for frame_idx, current_date in enumerate(sorted_dates):
+            fig, ax = plt.subplots(
+                figsize=(chart_width / 100, chart_height / 100), dpi=100
+            )
+
+            # Plot all time series
+            for point_key, point_data in sample_data.items():
+                if point_data["dates"] and point_data["values"]:
+                    # Use custom label if available, otherwise use point_key
+                    label = point_data.get("label", point_key)
+
+                    ax.plot(
+                        point_data["dates"],
+                        point_data["values"],
+                        color=point_data["color"],
+                        label=label,
+                        linewidth=2,
+                        marker="o",
+                        markersize=4,
+                    )
+
+            # Add vertical line for current time
+            ax.axvline(
+                x=current_date, color="red", linestyle="--", linewidth=2, alpha=0.8
+            )
+
+            # Formatting
+            ax.set_xlabel("Date", fontsize=10)
+            ax.set_ylabel(chart_ylabel, fontsize=10)
+            ax.set_title(chart_title, fontsize=12)
+            ax.legend(fontsize=8, loc="upper left")
+            ax.grid(True, alpha=0.3)
+
+            # Format x-axis based on parameters or auto-detect
+            date_range = (max(sorted_dates) - min(sorted_dates)).days
+
+            if xlabel_format == "auto" or xlabel_interval == "auto":
+                # Auto-detect based on data characteristics
+                if date_range <= 30:  # Less than 1 month
+                    format_str = "%m-%d"
+                    if len(sorted_dates) <= 10:
+                        locator = mdates.DayLocator(interval=max(1, date_range // 10))
+                    else:
+                        locator = mdates.WeekdayLocator(interval=1)
+                elif date_range <= 90:  # Less than 3 months
+                    format_str = "%m-%d"
+                    if len(sorted_dates) <= 15:
+                        locator = mdates.WeekdayLocator(interval=1)
+                    else:
+                        locator = mdates.WeekdayLocator(
+                            interval=max(1, len(sorted_dates) // 10)
+                        )
+                elif date_range <= 365:  # Less than 1 year
+                    format_str = "%Y-%m"
+                    locator = mdates.MonthLocator(
+                        interval=max(1, len(sorted_dates) // 8)
+                    )
+                else:  # More than 1 year
+                    format_str = "%Y"
+                    locator = mdates.YearLocator()
+            else:
+                # Use manual settings
+                format_str = xlabel_format if xlabel_format != "auto" else "%Y-%m-%d"
+
+                if xlabel_interval == "day":
+                    locator = mdates.DayLocator(
+                        interval=max(1, len(sorted_dates) // 15)
+                    )
+                elif xlabel_interval == "week":
+                    locator = mdates.WeekdayLocator(
+                        interval=max(1, len(sorted_dates) // 10)
+                    )
+                elif xlabel_interval == "month":
+                    locator = mdates.MonthLocator(
+                        interval=max(1, len(sorted_dates) // 8)
+                    )
+                elif xlabel_interval == "year":
+                    locator = mdates.YearLocator()
+                else:
+                    locator = mdates.WeekdayLocator(
+                        interval=max(1, len(sorted_dates) // 10)
+                    )
+
+            ax.xaxis.set_major_formatter(mdates.DateFormatter(format_str))
+            ax.xaxis.set_major_locator(locator)
+
+            # Add minor ticks for better granularity
+            if date_range <= 90:
+                ax.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
+
+            plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, fontsize=8)
+
+            # Set consistent y-axis limits
+            all_values = []
+            for point_data in sample_data.values():
+                all_values.extend([v for v in point_data["values"] if v is not None])
+
+            if all_values:
+                y_min, y_max = min(all_values), max(all_values)
+                y_range = y_max - y_min
+                if y_range > 0:
+                    ax.set_ylim(y_min - y_range * 0.1, y_max + y_range * 0.1)
+                else:
+                    ax.set_ylim(y_min - 0.01, y_max + 0.01)
+
+            plt.tight_layout()
+
+            # Save frame
+            frame_path = os.path.join(temp_dir, f"chart_frame_{frame_idx:04d}.png")
+            plt.savefig(frame_path, dpi=100, bbox_inches="tight", facecolor="white")
+            plt.close()
+
+            chart_frames.append(frame_path)
+
+    except Exception as e:
+        print(f"Error creating chart frames: {str(e)}")
+        # Clean up any created frames
+        for frame_path in chart_frames:
+            if os.path.exists(frame_path):
+                os.remove(frame_path)
+        return []
+
+    return chart_frames
+
+
+def add_sample_markers_to_gif(
+    in_gif,
+    out_gif,
+    sample_points,
+    marker_colors,
+    marker_size,
+    marker_style,
+    roi_bounds,
+    gif_dimensions,
+):
+    """Add sample point markers to a GIF.
+
+    Args:
+        in_gif (str): Path to input GIF file
+        out_gif (str): Path to output GIF file
+        sample_points (list): List of [lon, lat] coordinates
+        marker_colors (list): List of colors for each marker
+        marker_size (int): Size of markers in pixels
+        marker_style (str): Style of markers ('cross', 'circle', 'square')
+        roi_bounds (list): [min_lon, min_lat, max_lon, max_lat] bounds of the ROI
+        gif_dimensions (int): Dimensions of the GIF
+    """
+    import io
+    import warnings
+    from PIL import Image, ImageDraw, ImageSequence
+    import math
+
+    warnings.simplefilter("ignore")
+
+    in_gif = os.path.abspath(in_gif)
+    out_gif = os.path.abspath(out_gif)
+
+    if not os.path.exists(in_gif):
+        raise FileNotFoundError(f"Input GIF file does not exist: {in_gif}")
+
+    if not os.path.exists(os.path.dirname(out_gif)):
+        os.makedirs(os.path.dirname(out_gif))
+
+    try:
+        # Open the GIF
+        gif = Image.open(in_gif)
+
+        # Get GIF properties
+        gif_width, gif_height = gif.size
+
+        # Convert sample points to pixel coordinates
+        sample_points_pixel = []
+
+        for i, point in enumerate(sample_points):
+            lon, lat = point[0], point[1]
+
+            # Convert geographic coordinates to pixel coordinates
+            pixel_x, pixel_y = get_pixel_coordinates_from_geo(
+                lon, lat, roi_bounds, gif_width, gif_height
+            )
+
+            sample_points_pixel.append(
+                {
+                    "x": pixel_x,
+                    "y": pixel_y,
+                    "color": marker_colors[i] if i < len(marker_colors) else "red",
+                }
+            )
+
+        # Process each frame
+        frames = []
+        frame_count = 0
+
+        try:
+            while True:
+                frame = gif.copy()
+                frame = frame.convert("RGB")
+
+                # Draw markers on the frame
+                draw = ImageDraw.Draw(frame)
+
+                for point in sample_points_pixel:
+                    x, y = point["x"], point["y"]
+                    color = point["color"]
+
+                    # Draw marker based on style
+                    if marker_style == "circle":
+                        draw_circle_marker(draw, x, y, marker_size, color)
+                    elif marker_style == "square":
+                        draw_square_marker(draw, x, y, marker_size, color)
+                    else:  # default to cross
+                        draw_cross_marker(draw, x, y, marker_size, color)
+
+                # Convert back to GIF frame format
+                b = io.BytesIO()
+                frame.save(b, format="GIF")
+                frame = Image.open(b)
+                frames.append(frame)
+
+                # Move to next frame
+                gif.seek(gif.tell() + 1)
+                frame_count += 1
+
+        except EOFError:
+            # End of GIF frames
+            pass
+
+        # Save the new GIF with markers
+        if frames:
+            frames[0].save(
+                out_gif,
+                save_all=True,
+                append_images=frames[1:],
+                duration=gif.info.get("duration", 100),
+                loop=gif.info.get("loop", 0),
+                optimize=True,
+            )
+
+    except Exception as e:
+        raise Exception(f"Error processing GIF: {str(e)}")
+
+
+def draw_cross_marker(draw, x, y, size, color):
+    """Draw a cross marker."""
+    half_size = size // 2
+    # Horizontal line
+    draw.line([x - half_size, y, x + half_size, y], fill=color, width=3)
+    # Vertical line
+    draw.line([x, y - half_size, x, y + half_size], fill=color, width=3)
+    # Add outline for better visibility
+    draw.line([x - half_size, y, x + half_size, y], fill="white", width=1)
+    draw.line([x, y - half_size, x, y + half_size], fill="white", width=1)
+
+
+def draw_circle_marker(draw, x, y, size, color):
+    """Draw a circle marker."""
+    half_size = size // 2
+    # Outer circle (outline)
+    draw.ellipse(
+        [x - half_size, y - half_size, x + half_size, y + half_size],
+        outline="white",
+        width=3,
+    )
+    # Inner circle (fill)
+    draw.ellipse(
+        [x - half_size + 2, y - half_size + 2, x + half_size - 2, y + half_size - 2],
+        fill=color,
+        outline=color,
+    )
+
+
+def draw_square_marker(draw, x, y, size, color):
+    """Draw a square marker."""
+    half_size = size // 2
+    # Outer square (outline)
+    draw.rectangle(
+        [x - half_size, y - half_size, x + half_size, y + half_size],
+        outline="white",
+        width=3,
+    )
+    # Inner square (fill)
+    draw.rectangle(
+        [x - half_size + 2, y - half_size + 2, x + half_size - 2, y + half_size - 2],
+        fill=color,
+        outline=color,
+    )
+
+
+def get_pixel_coordinates_from_geo(lon, lat, roi_bounds, gif_width, gif_height):
+    """Convert geographic coordinates to pixel coordinates.
+
+    Args:
+        lon (float): Longitude
+        lat (float): Latitude
+        roi_bounds (list): [min_lon, min_lat, max_lon, max_lat]
+        gif_width (int): Width of GIF in pixels
+        gif_height (int): Height of GIF in pixels
+
+    Returns:
+        tuple: (pixel_x, pixel_y)
+    """
+    min_lon, min_lat, max_lon, max_lat = roi_bounds
+
+    # Linear transformation from geographic to pixel coordinates
+    pixel_x = int(((lon - min_lon) / (max_lon - min_lon)) * gif_width)
+    pixel_y = int(((max_lat - lat) / (max_lat - min_lat)) * gif_height)  # Flip Y axis
+
+    # Ensure coordinates are within bounds
+    pixel_x = max(0, min(gif_width - 1, pixel_x))
+    pixel_y = max(0, min(gif_height - 1, pixel_y))
+
+    return pixel_x, pixel_y
+
+
+def combine_gif_with_chart(
+    base_gif, chart_frames, chart_position, chart_size_ratio, spacer_width, fps, loop
+):
+    """Combine GIF with chart frames."""
+    from PIL import Image, ImageDraw
+    import tempfile
+
+    # Open the base gif
+    base_image = Image.open(base_gif)
+    base_frames = []
+
+    # Extract all frames from base gif
+    try:
+        while True:
+            base_frames.append(base_image.copy())
+            base_image.seek(base_image.tell() + 1)
+    except EOFError:
+        pass
+
+    # Create combined frames
+    combined_frames = []
+    temp_dir = tempfile.mkdtemp()
+
+    for i, base_frame in enumerate(base_frames):
+        base_frame = base_frame.convert("RGB")
+
+        # Get corresponding chart frame (cycle if needed)
+        chart_idx = i % len(chart_frames) if chart_frames else 0
+
+        if chart_frames:
+            chart_frame = Image.open(chart_frames[chart_idx])
+            chart_frame = chart_frame.convert("RGB")
+
+            # Calculate dimensions
+            base_width, base_height = base_frame.size
+            chart_width, chart_height = chart_frame.size
+
+            # Create combined image based on position
+            if chart_position == "right":
+                combined_width = base_width + spacer_width + chart_width
+                combined_height = max(base_height, chart_height)
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(base_frame, (0, 0))
+                combined_frame.paste(chart_frame, (base_width + spacer_width, 0))
+
+            elif chart_position == "left":
+                combined_width = chart_width + spacer_width + base_width
+                combined_height = max(base_height, chart_height)
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(chart_frame, (0, 0))
+                combined_frame.paste(base_frame, (chart_width + spacer_width, 0))
+
+            elif chart_position == "bottom":
+                combined_width = max(base_width, chart_width)
+                combined_height = base_height + spacer_width + chart_height
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(base_frame, (0, 0))
+                combined_frame.paste(chart_frame, (0, base_height + spacer_width))
+
+            else:  # default to right
+                combined_width = base_width + spacer_width + chart_width
+                combined_height = max(base_height, chart_height)
+                combined_frame = Image.new(
+                    "RGB", (combined_width, combined_height), "white"
+                )
+                combined_frame.paste(base_frame, (0, 0))
+                combined_frame.paste(chart_frame, (base_width + spacer_width, 0))
+
+        else:
+            combined_frame = base_frame
+
+        combined_frames.append(combined_frame)
+
+    # Save combined gif
+    output_path = base_gif.replace(".gif", "_with_chart.gif")
+
+    if combined_frames:
+        combined_frames[0].save(
+            output_path,
+            save_all=True,
+            append_images=combined_frames[1:],
+            duration=int(1000 / fps),
+            loop=loop,
+            optimize=True,
+        )
+
+    # Clean up chart frames
+    for frame_path in chart_frames:
+        if os.path.exists(frame_path):
+            os.remove(frame_path)
+
+    return output_path
+
+
+def landsat_timelapse_with_samples(
+    roi,
+    out_gif=None,
+    start_year=1984,
+    end_year=None,
+    start_date="06-10",
+    end_date="09-20",
+    bands=["NIR", "Red", "Green"],
+    frequency="year",
+    reducer="median",
+    date_format=None,
+    palette=None,
+    vis_params=None,
+    dimensions=768,
+    frames_per_second=10,
+    crs="EPSG:3857",
+    apply_fmask=True,
+    overlay_data=None,
+    overlay_color="black",
+    overlay_width=1,
+    overlay_opacity=1.0,
+    title=None,
+    title_xy=("2%", "90%"),
+    add_text=True,
+    text_xy=("2%", "2%"),
+    text_sequence=None,
+    font_type="arial.ttf",
+    font_size=20,
+    font_color="white",
+    add_progress_bar=True,
+    progress_bar_color="white",
+    progress_bar_height=5,
+    add_colorbar=False,
+    colorbar_width=6.0,
+    colorbar_height=0.4,
+    colorbar_label=None,
+    colorbar_label_size=12,
+    colorbar_label_weight="normal",
+    colorbar_tick_size=10,
+    colorbar_bg_color=None,
+    colorbar_orientation="horizontal",
+    colorbar_dpi="figure",
+    colorbar_xy=None,
+    colorbar_size=(300, 300),
+    loop=0,
+    mp4=False,
+    fading=False,
+    step=1,
+    sample_points=None,
+    sample_point_crs="EPSG:4326",
+    marker_colors=None,
+    marker_size=50,
+    marker_style="cross",
+    show_sample_markers=True,
+    chart_title="Landsat Time Series",
+    chart_ylabel="Reflectance/Index Value",
+    chart_position="right",
+    chart_size_ratio=0.7,
+    spacer_width=20,
+    chart_xlabel_format="auto",
+    chart_xlabel_interval="auto",
+    sample_bands=None,
+    chart_band_labels=None,
+    indices=None,
+    index_vis_params=None,
+    **kwargs,
+):
+    """Create a Landsat timelapse with optional sample points and time series chart.
+
+    Args:
+        roi (ee.Geometry): The region to use to filter the collection of images.
+        out_gif (str): The output gif file path. Defaults to None.
+        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
+        end_year (int, optional): Ending year for the timelapse. Defaults to the current year.
+        start_date (str, optional): Starting date (month-day) each year. Defaults to '06-10'.
+        end_date (str, optional): Ending date (month-day) each year. Defaults to '09-20'.
+        bands (list, optional): Three bands for visualization. Defaults to ["NIR", "Red", "Green"].
+        frequency (str, optional): The frequency of the timeseries. Defaults to 'year'.
+        reducer (str, optional): The reducer to use. Defaults to 'median'.
+        date_format (str, optional): Date format pattern. Defaults to None.
+        palette (str, optional): Color palette for single-band visualization. Defaults to None.
+        vis_params (dict, optional): Visualization parameters. Defaults to None.
+        dimensions (int, optional): Maximum dimensions of the thumbnail. Defaults to 768.
+        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        crs (str, optional): Coordinate reference system. Defaults to "EPSG:3857".
+        apply_fmask (bool, optional): Whether to apply Fmask for cloud masking. Defaults to True.
+        overlay_data (optional): Administrative boundary overlay. Defaults to None.
+        overlay_color (str, optional): Color for overlay data. Defaults to 'black'.
+        overlay_width (int, optional): Width of the overlay. Defaults to 1.
+        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
+        title (str, optional): The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Position of the title. Defaults to ("2%", "90%").
+        add_text (bool, optional): Whether to add animated text. Defaults to True.
+        text_xy (tuple, optional): Position of the text. Defaults to ("2%", "2%").
+        text_sequence (optional): Text to be drawn. Defaults to None.
+        font_type (str, optional): Font type. Defaults to "arial.ttf".
+        font_size (int, optional): Font size. Defaults to 20.
+        font_color (str, optional): Font color. Defaults to 'white'.
+        add_progress_bar (bool, optional): Whether to add progress bar. Defaults to True.
+        progress_bar_color (str, optional): Color for progress bar. Defaults to 'white'.
+        progress_bar_height (int, optional): Height of progress bar. Defaults to 5.
+        add_colorbar (bool, optional): Whether to add colorbar. Defaults to False.
+        colorbar_width (float, optional): Width of colorbar. Defaults to 6.0.
+        colorbar_height (float, optional): Height of colorbar. Defaults to 0.4.
+        colorbar_label (str, optional): Label for colorbar. Defaults to None.
+        colorbar_label_size (int, optional): Font size for colorbar label. Defaults to 12.
+        colorbar_label_weight (str, optional): Font weight for colorbar label. Defaults to 'normal'.
+        colorbar_tick_size (int, optional): Font size for colorbar ticks. Defaults to 10.
+        colorbar_bg_color (str, optional): Background color for colorbar. Defaults to None.
+        colorbar_orientation (str, optional): Orientation of colorbar. Defaults to 'horizontal'.
+        colorbar_dpi (str, optional): DPI for colorbar. Defaults to 'figure'.
+        colorbar_xy (tuple, optional): Position of colorbar. Defaults to None.
+        colorbar_size (tuple, optional): Size of colorbar. Defaults to (300, 300).
+        loop (int, optional): Number of animation loops. Defaults to 0.
+        mp4 (bool, optional): Whether to create mp4 file. Defaults to False.
+        fading (bool, optional): Whether to add fading effect. Defaults to False.
+        step (int, optional): Step size for the timelapse. Defaults to 1.
+        sample_points (list, optional): List of [lon, lat] coordinates for sampling (max 5 points). Defaults to None.
+        sample_point_crs (str, optional): CRS for sample points. Defaults to "EPSG:4326".
+        marker_colors (list, optional): Colors for markers. Defaults to None (uses default colors).
+        marker_size (int, optional): Size of markers. Defaults to 50.
+        marker_style (str, optional): Style of markers ('cross', 'circle', 'square'). Defaults to 'cross'.
+        show_sample_markers (bool, optional): Whether to show markers on map. Defaults to True.
+        chart_title (str, optional): Title for the time series chart. Defaults to "Landsat Time Series".
+        chart_ylabel (str, optional): Y-axis label for chart. Defaults to "Reflectance/Index Value".
+        chart_position (str, optional): Position of chart ('right', 'left', 'bottom'). Defaults to 'right'.
+        chart_size_ratio (float, optional): Size ratio of chart to gif. Defaults to 0.7.
+        spacer_width (int, optional): Width of spacer between gif and chart. Defaults to 20.
+        chart_xlabel_format (str, optional): Format for x-axis labels ('auto', '%Y-%m', '%m-%d', '%Y-%m-%d'). Defaults to 'auto'.
+        chart_xlabel_interval (str, optional): Interval for x-axis labels ('auto', 'day', 'week', 'month', 'year'). Defaults to 'auto'.
+        sample_bands (list, optional): Which bands to sample for the chart. Defaults to first band only.
+        chart_band_labels (dict, optional): Custom labels for bands in chart. Defaults to None.
+        indices (list, optional): List of indices to calculate ['NDVI', 'EVI', 'NDWI', 'NDBI', 'MNDWI', 'NBR', 'SAVI', 'GNDVI', 'TCB', 'TCG', 'TCW']. Defaults to None.
+        index_vis_params (dict, optional): Visualization parameters for indices. Defaults to None.
+        **kwargs: Additional arguments for create_timeseries().
+
+    Returns:
+        str: File path to the output GIF with optional chart.
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+    import numpy as np
+    from datetime import datetime, date
+    import tempfile
+    import math
+
+    # Handle indices parameter
+    if indices is not None:
+        if not isinstance(indices, list):
+            indices = [indices]
+
+        # Validate indices
+        valid_indices = [
+            "NDVI",
+            "EVI",
+            "NDWI",
+            "MNDWI",
+            "NDBI",
+            "NBR",
+            "SAVI",
+            "GNDVI",
+            "NDMI",
+            "TCB",
+            "TCG",
+            "TCW",
+            "MSAVI2",
+            "VARI",
+            "MCARI",
+        ]
+        for idx in indices:
+            if idx not in valid_indices:
+                raise ValueError(
+                    f"Index '{idx}' not supported. Valid indices: {valid_indices}"
+                )
+
+        # If using indices, update defaults
+        if sample_bands is None:
+            sample_bands = indices[:1]  # Default to first index
+
+        if chart_ylabel == "Reflectance/Index Value":
+            if any(
+                idx
+                in [
+                    "NDVI",
+                    "EVI",
+                    "NDWI",
+                    "MNDWI",
+                    "NDBI",
+                    "NBR",
+                    "SAVI",
+                    "GNDVI",
+                    "NDMI",
+                    "MSAVI2",
+                    "VARI",
+                    "MCARI",
+                ]
+                for idx in indices
+            ):
+                chart_ylabel = "Index Value"
+            elif any(idx in ["TCB", "TCG", "TCW"] for idx in indices):
+                chart_ylabel = "Tasseled Cap Component"
+
+        # Set up index visualization if not provided
+        if index_vis_params is None:
+            index_vis_params = get_default_landsat_index_vis_params()
+
+        # For single index visualization, set up palette and vis_params
+        if len(indices) == 1 and vis_params is None:
+            index_name = indices[0]
+            if palette is None and index_name in index_vis_params:
+                palette = index_vis_params[index_name]["palette"]
+                vis_params = {
+                    "min": index_vis_params[index_name]["min"],
+                    "max": index_vis_params[index_name]["max"],
+                    "palette": palette,
+                }
+
+        # If visualizing an index, update bands for visualization
+        if len(indices) == 1 and len(bands) == 3:
+            # For single index, use that index for visualization
+            bands = indices
+
+    # Validate sample points
+    if sample_points is not None:
+        if not isinstance(sample_points, list):
+            raise ValueError("sample_points must be a list of [lon, lat] coordinates")
+        if len(sample_points) > 5:
+            raise ValueError("Maximum 5 sample points are supported")
+        if len(sample_points) == 0:
+            sample_points = None
+
+    # Set default marker colors if not provided
+    if sample_points is not None and marker_colors is None:
+        marker_colors = ["red", "blue", "green", "orange", "purple"][
+            : len(sample_points)
+        ]
+    elif sample_points is not None and len(marker_colors) < len(sample_points):
+        default_colors = ["red", "blue", "green", "orange", "purple"]
+        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
+
+    # Set default sample bands if not provided
+    if sample_bands is None:
+        sample_bands = [bands[0]] if bands else ["Red"]  # Default to first band or Red
+
+    # Set default chart band labels
+    if chart_band_labels is None:
+        chart_band_labels = get_default_landsat_band_labels()
+        # Add index labels
+        index_labels = get_landsat_index_chart_labels()
+        chart_band_labels.update(index_labels)
+
+    # Adjust dimensions to avoid Earth Engine limits
+    if isinstance(roi, ee.Geometry):
+        roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+        min_lon = min([coord[0] for coord in roi_bounds])
+        max_lon = max([coord[0] for coord in roi_bounds])
+        min_lat = min([coord[1] for coord in roi_bounds])
+        max_lat = max([coord[1] for coord in roi_bounds])
+
+        # Calculate aspect ratio and adjust dimensions
+        lon_range = max_lon - min_lon
+        lat_range = max_lat - min_lat
+        aspect_ratio = lon_range / lat_range if lat_range > 0 else 1
+
+        max_pixels = 26214400  # Earth Engine limit
+
+        if isinstance(dimensions, int):
+            if aspect_ratio > 1:
+                width = min(dimensions, int(math.sqrt(max_pixels * aspect_ratio)))
+                height = int(width / aspect_ratio)
+            else:
+                height = min(dimensions, int(math.sqrt(max_pixels / aspect_ratio)))
+                width = int(height * aspect_ratio)
+
+            width = max(256, width)
+            height = max(256, height)
+
+            if width * height > max_pixels:
+                scale_factor = math.sqrt(max_pixels / (width * height))
+                width = int(width * scale_factor)
+                height = int(height * scale_factor)
+
+            adjusted_dimensions = f"{width}x{height}"
+        else:
+            adjusted_dimensions = dimensions
+
+        print(f"Adjusted dimensions: {adjusted_dimensions}")
+    else:
+        adjusted_dimensions = dimensions
+
+    # Create the base timelapse
+    try:
+        # If using indices, we need to create a custom timelapse that includes index calculation
+        if indices is not None:
+            base_gif = create_landsat_index_timelapse(
+                roi=roi,
+                out_gif=out_gif,
+                start_year=start_year,
+                end_year=end_year,
+                start_date=start_date,
+                end_date=end_date,
+                bands=bands,
+                indices=indices,
+                vis_params=vis_params,
+                dimensions=adjusted_dimensions,
+                frames_per_second=frames_per_second,
+                crs=crs,
+                apply_fmask=apply_fmask,
+                overlay_data=overlay_data,
+                overlay_color=overlay_color,
+                overlay_width=overlay_width,
+                overlay_opacity=overlay_opacity,
+                frequency=frequency,
+                reducer=reducer,
+                date_format=date_format,
+                title=title,
+                title_xy=title_xy,
+                add_text=add_text,
+                text_xy=text_xy,
+                text_sequence=text_sequence,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                add_colorbar=add_colorbar,
+                colorbar_width=colorbar_width,
+                colorbar_height=colorbar_height,
+                colorbar_label=colorbar_label,
+                colorbar_label_size=colorbar_label_size,
+                colorbar_label_weight=colorbar_label_weight,
+                colorbar_tick_size=colorbar_tick_size,
+                colorbar_bg_color=colorbar_bg_color,
+                colorbar_orientation=colorbar_orientation,
+                colorbar_dpi=colorbar_dpi,
+                colorbar_xy=colorbar_xy,
+                colorbar_size=colorbar_size,
+                loop=loop,
+                fading=fading,
+                step=step,
+                **kwargs,
+            )
+        else:
+            # Use standard Landsat timelapse
+            base_gif = landsat_timelapse(
+                roi=roi,
+                out_gif=out_gif,
+                start_year=start_year,
+                end_year=end_year,
+                start_date=start_date,
+                end_date=end_date,
+                bands=bands,
+                vis_params=vis_params,
+                dimensions=adjusted_dimensions,
+                frames_per_second=frames_per_second,
+                crs=crs,
+                apply_fmask=apply_fmask,
+                overlay_data=overlay_data,
+                overlay_color=overlay_color,
+                overlay_width=overlay_width,
+                overlay_opacity=overlay_opacity,
+                frequency=frequency,
+                date_format=date_format,
+                title=title,
+                title_xy=title_xy,
+                add_text=add_text,
+                text_xy=text_xy,
+                text_sequence=text_sequence,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                loop=loop,
+                mp4=False,
+                fading=fading,
+                step=step,
+            )
+    except Exception as e:
+        print(f"Error creating base timelapse: {str(e)}")
+        raise e
+
+    # Check if base GIF was created successfully
+    if not os.path.exists(base_gif):
+        raise FileNotFoundError(f"Base timelapse GIF was not created: {base_gif}")
+
+    # If no sample points, return the base gif (map only)
+    if sample_points is None or len(sample_points) == 0:
+        print("No sample points provided. Returning map-only timelapse.")
+        if mp4:
+            gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+        return base_gif
+
+    # Get the Landsat time series for sampling
+    if end_year is None:
+        end_year = get_current_year()
+
+    # Convert sample band names to Landsat band names if needed
+    landsat_sample_bands = []
+    for band in sample_bands:
+        if band in chart_band_labels:
+            # Try to map display names back to actual band names
+            reverse_mapping = {v: k for k, v in chart_band_labels.items()}
+            if band in reverse_mapping:
+                landsat_sample_bands.append(reverse_mapping[band])
+            else:
+                landsat_sample_bands.append(band)
+        elif band in [
+            "NDVI",
+            "EVI",
+            "NDWI",
+            "MNDWI",
+            "NDBI",
+            "NBR",
+            "SAVI",
+            "GNDVI",
+            "NDMI",
+            "TCB",
+            "TCG",
+            "TCW",
+            "MSAVI2",
+            "VARI",
+            "MCARI",
+        ]:
+            landsat_sample_bands.append(band)  # Keep index names as-is
+        else:
+            landsat_sample_bands.append(band)
+
+    # Create collection with error handling
+    try:
+        # Create time series - if using indices, we need to add index calculation
+        if indices is not None:
+            # Create base time series first
+            base_ts_collection = landsat_timeseries(
+                roi,
+                start_year,
+                end_year,
+                start_date,
+                end_date,
+                apply_fmask,
+                frequency,
+                date_format,
+                step,
+            )
+
+            # Add indices to each image
+            ts_collection = base_ts_collection.map(calculate_landsat_indices)
+
+            # Select only the bands we need for sampling
+            ts_collection = ts_collection.select(landsat_sample_bands)
+        else:
+            # Standard time series without indices - use create_timeseries for consistency
+            base_landsat_collection = landsat_timeseries(
+                roi,
+                start_year,
+                end_year,
+                start_date,
+                end_date,
+                apply_fmask,
+                frequency,
+                date_format,
+                step,
+            )
+
+            # Select the sample bands
+            ts_collection = base_landsat_collection.select(landsat_sample_bands)
+
+        # Check if time series is empty
+        ts_size = ts_collection.size().getInfo()
+        if ts_size == 0:
+            print("Warning: No time series data generated")
+            if mp4:
+                gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+            return base_gif
+
+        print(f"Generated {ts_size} time series images")
+
+    except Exception as e:
+        print(f"Error creating time series: {str(e)}")
+        # Return base gif without sampling
+        if mp4:
+            gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+        return base_gif
+
+    # Sample points from the time series
+    sample_data = {}
+    point_geometries = []
+
+    if sample_points is not None and len(sample_points) > 0:
+        try:
+            for i, point in enumerate(sample_points):
+                if sample_point_crs == "EPSG:4326":
+                    geometry = ee.Geometry.Point([point[0], point[1]])
+                else:
+                    geometry = ee.Geometry.Point([point[0], point[1]], sample_point_crs)
+
+                point_geometries.append(geometry)
+
+                # Sample the time series at this point for each band
+                for band_idx, band in enumerate(landsat_sample_bands):
+
+                    def sample_point_band(image):
+                        sampled = image.select(band).sample(geometry, 30)
+                        return sampled.first().set(
+                            {
+                                "system:time_start": image.get("system:time_start"),
+                                "system:date": image.get("system:date"),
+                            }
+                        )
+
+                    sampled = ts_collection.map(sample_point_band)
+
+                    # Get the time series data with error handling
+                    try:
+                        time_series = sampled.aggregate_array(
+                            "system:time_start"
+                        ).getInfo()
+                        values = sampled.aggregate_array(band).getInfo()
+                        dates = sampled.aggregate_array("system:date").getInfo()
+
+                        # Filter out null values
+                        valid_data = [
+                            (t, v, d)
+                            for t, v, d in zip(time_series, values, dates)
+                            if v is not None
+                        ]
+
+                        if valid_data:
+                            time_series, values, dates = zip(*valid_data)
+
+                            # Convert timestamps to datetime objects
+                            datetimes = [
+                                datetime.fromtimestamp(ts / 1000) for ts in time_series
+                            ]
+
+                            # Create unique key for point and band combination
+                            point_band_key = f"Point_{i+1}_{band}"
+                            if len(landsat_sample_bands) == 1:
+                                point_band_key = f"Point_{i+1}"
+
+                            # Get display name for band
+                            band_display = chart_band_labels.get(band, band)
+                            if len(landsat_sample_bands) > 1:
+                                label = f"Point {i+1} ({band_display})"
+                            else:
+                                label = f"Point {i+1}"
+
+                            # Color assignment for multi-band sampling
+                            if len(landsat_sample_bands) > 1:
+                                base_color = (
+                                    marker_colors[i]
+                                    if i < len(marker_colors)
+                                    else "red"
+                                )
+                                # Modify color for different bands
+                                if band_idx == 0:
+                                    color = base_color
+                                elif band_idx == 1:
+                                    color = (
+                                        f"dark{base_color}"
+                                        if base_color != "red"
+                                        else "darkred"
+                                    )
+                                else:
+                                    color = (
+                                        f"light{base_color}"
+                                        if base_color != "red"
+                                        else "lightcoral"
+                                    )
+                            else:
+                                color = (
+                                    marker_colors[i]
+                                    if i < len(marker_colors)
+                                    else "red"
+                                )
+
+                            sample_data[point_band_key] = {
+                                "dates": datetimes,
+                                "values": list(values),
+                                "date_strings": list(dates),
+                                "color": color,
+                                "geometry": geometry,
+                                "label": label,
+                                "band": band,
+                                "point_idx": i,
+                            }
+
+                            print(f"Point {i+1} ({band}): {len(values)} valid samples")
+                        else:
+                            print(f"Warning: No valid data for point {i+1} ({band})")
+
+                    except Exception as e:
+                        print(f"Error sampling point {i+1} ({band}): {str(e)}")
+                        continue
+
+        except Exception as e:
+            print(f"Error during point sampling: {str(e)}")
+            sample_data = {}
+    else:
+        print("No sample points provided. Skipping sampling step.")
+
+    # Add sample point markers to the base gif if requested
+    if show_sample_markers and sample_points is not None and len(sample_points) > 0:
+        try:
+            # Get ROI bounds for coordinate conversion
+            roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+            min_lon = min([coord[0] for coord in roi_bounds])
+            max_lon = max([coord[0] for coord in roi_bounds])
+            min_lat = min([coord[1] for coord in roi_bounds])
+            max_lat = max([coord[1] for coord in roi_bounds])
+            bounds = [min_lon, min_lat, max_lon, max_lat]
+
+            # Add markers to the gif
+            add_sample_markers_to_gif(
+                base_gif,
+                base_gif,
+                sample_points,
+                marker_colors,
+                marker_size,
+                marker_style,
+                bounds,
+                (
+                    adjusted_dimensions
+                    if "adjusted_dimensions" in locals()
+                    else dimensions
+                ),
+            )
+            print("Added sample markers to GIF")
+
+        except Exception as e:
+            print(f"Error adding markers to GIF: {str(e)}")
+
+    # Create the time series chart if we have sample data
+    if sample_data and len(sample_data) > 0:
+        try:
+            chart_frames = create_landsat_time_series_chart_frames(
+                sample_data,
+                chart_title,
+                chart_ylabel,
+                (
+                    adjusted_dimensions
+                    if "adjusted_dimensions" in locals()
+                    else dimensions
+                ),
+                frames_per_second,
+                chart_xlabel_format,
+                chart_xlabel_interval,
+            )
+
+            # Combine gif and chart
+            final_gif = combine_gif_with_chart(
+                base_gif,
+                chart_frames,
+                chart_position,
+                chart_size_ratio,
+                spacer_width,
+                frames_per_second,
+                loop,
+            )
+
+            print("Created time series chart and combined with GIF")
+
+        except Exception as e:
+            print(f"Error creating chart: {str(e)}")
+            final_gif = base_gif
+    else:
+        print("No sample data available. Returning map-only timelapse.")
+        final_gif = base_gif
+
+    # Handle MP4 conversion
+    if mp4:
+        gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
+
+    return final_gif
+
+
+def calculate_landsat_indices(image):
+    """Calculate common vegetation and spectral indices for Landsat images.
+
+    Args:
+        image (ee.Image): Landsat image with bands Blue, Green, Red, NIR, SWIR1, SWIR2
+
+    Returns:
+        ee.Image: Image with added index bands
+    """
+    # Normalized Difference Vegetation Index
+    ndvi = image.normalizedDifference(["NIR", "Red"]).rename("NDVI")
+
+    # Enhanced Vegetation Index
+    evi = image.expression(
+        "2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))",
+        {
+            "NIR": image.select("NIR"),
+            "RED": image.select("Red"),
+            "BLUE": image.select("Blue"),
+        },
+    ).rename("EVI")
+
+    # Normalized Difference Water Index
+    ndwi = image.normalizedDifference(["Green", "NIR"]).rename("NDWI")
+
+    # Modified Normalized Difference Water Index
+    mndwi = image.normalizedDifference(["Green", "SWIR1"]).rename("MNDWI")
+
+    # Normalized Difference Built-up Index
+    ndbi = image.normalizedDifference(["SWIR1", "NIR"]).rename("NDBI")
+
+    # Normalized Burn Ratio
+    nbr = image.normalizedDifference(["NIR", "SWIR2"]).rename("NBR")
+
+    # Soil Adjusted Vegetation Index
+    savi = image.expression(
+        "((NIR - RED) / (NIR + RED + 0.5)) * (1.5)",
+        {"NIR": image.select("NIR"), "RED": image.select("Red")},
+    ).rename("SAVI")
+
+    # Green Normalized Difference Vegetation Index
+    gndvi = image.normalizedDifference(["NIR", "Green"]).rename("GNDVI")
+
+    # Normalized Difference Moisture Index
+    ndmi = image.normalizedDifference(["NIR", "SWIR1"]).rename("NDMI")
+
+    # Modified Soil Adjusted Vegetation Index 2
+    msavi2 = image.expression(
+        "(2 * NIR + 1 - sqrt(pow((2 * NIR + 1), 2) - 8 * (NIR - RED))) / 2",
+        {"NIR": image.select("NIR"), "RED": image.select("Red")},
+    ).rename("MSAVI2")
+
+    # Visible Atmospherically Resistant Index
+    vari = image.expression(
+        "(GREEN - RED) / (GREEN + RED - BLUE)",
+        {
+            "GREEN": image.select("Green"),
+            "RED": image.select("Red"),
+            "BLUE": image.select("Blue"),
+        },
+    ).rename("VARI")
+
+    # Modified Chlorophyll Absorption Ratio Index
+    mcari = image.expression(
+        "((RE - RED) - 0.2 * (RE - GREEN)) * (RE / RED)",
+        {
+            "RE": image.select("NIR"),  # Using NIR as proxy for Red Edge
+            "RED": image.select("Red"),
+            "GREEN": image.select("Green"),
+        },
+    ).rename("MCARI")
+
+    # Tasseled Cap Transformation coefficients for Landsat 8 OLI
+    # These coefficients are for surface reflectance data
+    tcb = image.expression(
+        "0.3037*BLUE + 0.2793*GREEN + 0.4743*RED + 0.5585*NIR + 0.5082*SWIR1 + 0.1863*SWIR2",
+        {
+            "BLUE": image.select("Blue"),
+            "GREEN": image.select("Green"),
+            "RED": image.select("Red"),
+            "NIR": image.select("NIR"),
+            "SWIR1": image.select("SWIR1"),
+            "SWIR2": image.select("SWIR2"),
+        },
+    ).rename("TCB")
+
+    tcg = image.expression(
+        "-0.2848*BLUE - 0.2435*GREEN - 0.5436*RED + 0.7243*NIR + 0.0840*SWIR1 - 0.1800*SWIR2",
+        {
+            "BLUE": image.select("Blue"),
+            "GREEN": image.select("Green"),
+            "RED": image.select("Red"),
+            "NIR": image.select("NIR"),
+            "SWIR1": image.select("SWIR1"),
+            "SWIR2": image.select("SWIR2"),
+        },
+    ).rename("TCG")
+
+    tcw = image.expression(
+        "0.1509*BLUE + 0.1973*GREEN + 0.3279*RED + 0.3406*NIR - 0.7112*SWIR1 - 0.4572*SWIR2",
+        {
+            "BLUE": image.select("Blue"),
+            "GREEN": image.select("Green"),
+            "RED": image.select("Red"),
+            "NIR": image.select("NIR"),
+            "SWIR1": image.select("SWIR1"),
+            "SWIR2": image.select("SWIR2"),
+        },
+    ).rename("TCW")
+
+    return image.addBands(
+        [
+            ndvi,
+            evi,
+            ndwi,
+            mndwi,
+            ndbi,
+            nbr,
+            savi,
+            gndvi,
+            ndmi,
+            msavi2,
+            vari,
+            mcari,
+            tcb,
+            tcg,
+            tcw,
+        ]
+    )
+
+
+def get_default_landsat_index_vis_params():
+    """Get default visualization parameters for different Landsat indices."""
+    return {
+        "NDVI": {
+            "min": -0.1,
+            "max": 1,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "EVI": {
+            "min": -0.2,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "NDWI": {
+            "min": -0.3,
+            "max": 0.8,
+            "palette": ["#8b4513", "#daa520", "#ffffbf", "#87ceeb", "#0000ff"],
+        },
+        "MNDWI": {
+            "min": -0.3,
+            "max": 0.8,
+            "palette": ["#8b4513", "#daa520", "#ffffbf", "#87ceeb", "#0000ff"],
+        },
+        "NDBI": {
+            "min": -0.5,
+            "max": 0.5,
+            "palette": ["#0000ff", "#87ceeb", "#ffffbf", "#daa520", "#8b4513"],
+        },
+        "NBR": {
+            "min": -0.5,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "SAVI": {
+            "min": -0.2,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "GNDVI": {
+            "min": -0.2,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "NDMI": {
+            "min": -0.2,
+            "max": 0.6,
+            "palette": ["#8b4513", "#daa520", "#ffffbf", "#87ceeb", "#0000ff"],
+        },
+        "MSAVI2": {
+            "min": -0.2,
+            "max": 0.8,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "VARI": {
+            "min": -0.2,
+            "max": 0.6,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "MCARI": {
+            "min": 0,
+            "max": 2,
+            "palette": ["#d7191c", "#fdae61", "#ffffbf", "#abd9e9", "#2c7bb6"],
+        },
+        "TCB": {
+            "min": 0,
+            "max": 0.4,
+            "palette": ["#000000", "#404040", "#808080", "#c0c0c0", "#ffffff"],
+        },
+        "TCG": {
+            "min": -0.1,
+            "max": 0.1,
+            "palette": ["#8b4513", "#daa520", "#ffffbf", "#90ee90", "#006400"],
+        },
+        "TCW": {
+            "min": -0.2,
+            "max": 0.1,
+            "palette": ["#8b4513", "#daa520", "#ffffbf", "#87ceeb", "#0000ff"],
+        },
+    }
+
+
+def get_default_landsat_band_labels():
+    """Get default chart labels for Landsat bands."""
+    return {
+        "Blue": "Blue",
+        "Green": "Green",
+        "Red": "Red",
+        "NIR": "NIR",
+        "SWIR1": "SWIR1",
+        "SWIR2": "SWIR2",
+    }
+
+
+def get_landsat_index_chart_labels():
+    """Get chart labels for different Landsat indices."""
+    return {
+        "NDVI": "NDVI",
+        "EVI": "EVI",
+        "NDWI": "NDWI",
+        "MNDWI": "MNDWI",
+        "NDBI": "NDBI",
+        "NBR": "NBR",
+        "SAVI": "SAVI",
+        "GNDVI": "GNDVI",
+        "NDMI": "NDMI",
+        "MSAVI2": "MSAVI2",
+        "VARI": "VARI",
+        "MCARI": "MCARI",
+        "TCB": "Tasseled Cap Brightness",
+        "TCG": "Tasseled Cap Greenness",
+        "TCW": "Tasseled Cap Wetness",
+    }
+
+
+def create_landsat_index_timelapse(
+    roi,
+    out_gif,
+    start_year,
+    end_year,
+    start_date,
+    end_date,
+    bands,
+    indices,
+    vis_params,
+    dimensions,
+    frames_per_second,
+    crs,
+    apply_fmask,
+    overlay_data,
+    overlay_color,
+    overlay_width,
+    overlay_opacity,
+    frequency,
+    reducer,
+    date_format,
+    title,
+    title_xy,
+    add_text,
+    text_xy,
+    text_sequence,
+    font_type,
+    font_size,
+    font_color,
+    add_progress_bar,
+    progress_bar_color,
+    progress_bar_height,
+    add_colorbar,
+    colorbar_width,
+    colorbar_height,
+    colorbar_label,
+    colorbar_label_size,
+    colorbar_label_weight,
+    colorbar_tick_size,
+    colorbar_bg_color,
+    colorbar_orientation,
+    colorbar_dpi,
+    colorbar_xy,
+    colorbar_size,
+    loop,
+    fading,
+    step,
+    **kwargs,
+):
+    """Create a Landsat timelapse with indices."""
+    if end_year is None:
+        end_year = get_current_year()
+
+    # Create time series with indices
+    base_ts_collection = landsat_timeseries(
+        roi,
+        start_year,
+        end_year,
+        start_date,
+        end_date,
+        apply_fmask,
+        frequency,
+        date_format,
+        step,
+    )
+
+    # Add indices to each image
+    ts_collection = base_ts_collection.map(calculate_landsat_indices)
+
+    # Use create_timelapse with the index collection
+    start = f"{start_year}-{start_date}"
+    end = f"{end_year}-{end_date}"
+
+    return create_timelapse(
+        ts_collection,
+        start,
+        end,
+        roi,
+        bands,
+        frequency,
+        reducer,
+        date_format,
+        out_gif,
+        None,
+        vis_params,
+        dimensions,
+        frames_per_second,
+        crs,
+        overlay_data,
+        overlay_color,
+        overlay_width,
+        overlay_opacity,
+        title,
+        title_xy,
+        add_text,
+        text_xy,
+        text_sequence,
+        font_type,
+        font_size,
+        font_color,
+        add_progress_bar,
+        progress_bar_color,
+        progress_bar_height,
+        add_colorbar,
+        colorbar_width,
+        colorbar_height,
+        colorbar_label,
+        colorbar_label_size,
+        colorbar_label_weight,
+        colorbar_tick_size,
+        colorbar_bg_color,
+        colorbar_orientation,
+        colorbar_dpi,
+        colorbar_xy,
+        colorbar_size,
+        loop,
+        False,
+        fading,
+        1,
+        1,
+    )
+
+
+def create_landsat_time_series_chart_frames(
+    sample_data,
+    chart_title,
+    chart_ylabel,
+    dimensions,
+    fps,
+    xlabel_format="auto",
+    xlabel_interval="auto",
+):
+    """Create frames for the Landsat time series chart with current time indicator.
+
+    Args:
+        sample_data (dict): Dictionary containing sample data for each point/band combination
+        chart_title (str): Title for the chart
+        chart_ylabel (str): Y-axis label
+        dimensions (int/str): Dimensions for the chart
+        fps (int): Frames per second
+        xlabel_format (str): Format for x-axis labels
+        xlabel_interval (str): Interval for x-axis labels
+
+    Returns:
+        list: List of paths to chart frame images
+    """
+    import matplotlib.pyplot as plt
+    import matplotlib.dates as mdates
+    import numpy as np
+    from datetime import datetime
+    import tempfile
+
+    if not sample_data:
+        return []
+
+    # Get all unique dates across all points/bands
+    all_dates = set()
+    for point_data in sample_data.values():
+        all_dates.update(point_data["dates"])
+
+    if not all_dates:
+        return []
+
+    sorted_dates = sorted(list(all_dates))
+
+    # Create chart frames
+    chart_frames = []
+    temp_dir = tempfile.mkdtemp()
+
+    # Calculate chart dimensions
+    if isinstance(dimensions, str) and "x" in dimensions:
+        width, height = map(int, dimensions.split("x"))
+    else:
+        width = height = int(dimensions) if isinstance(dimensions, int) else 768
+
+    chart_width = int(width * 0.8)  # 80% of gif width
+    chart_height = height
+
+    try:
+        for frame_idx, current_date in enumerate(sorted_dates):
+            fig, ax = plt.subplots(
+                figsize=(chart_width / 100, chart_height / 100), dpi=100
+            )
+
+            # Plot all time series
+            for point_key, point_data in sample_data.items():
+                if point_data["dates"] and point_data["values"]:
+                    # Use custom label if available, otherwise use point_key
+                    label = point_data.get("label", point_key)
+
+                    ax.plot(
+                        point_data["dates"],
+                        point_data["values"],
+                        color=point_data["color"],
+                        label=label,
+                        linewidth=2,
+                        marker="o",
+                        markersize=4,
+                    )
+
+            # Add vertical line for current time
+            ax.axvline(
+                x=current_date, color="red", linestyle="--", linewidth=2, alpha=0.8
+            )
+
+            # Formatting
+            ax.set_xlabel("Date", fontsize=10)
+            ax.set_ylabel(chart_ylabel, fontsize=10)
+            ax.set_title(chart_title, fontsize=12)
+            ax.legend(fontsize=8, loc="upper left")
+            ax.grid(True, alpha=0.3)
+
+            # Format x-axis based on parameters or auto-detect
+            date_range = (max(sorted_dates) - min(sorted_dates)).days
+
+            if xlabel_format == "auto" or xlabel_interval == "auto":
+                # Auto-detect based on data characteristics
+                # Landsat typically has longer time series (annual data)
+                if (
+                    date_range <= 365
+                ):  # Less than 1 year - likely monthly/quarterly data
+                    format_str = "%Y-%m"
+                    locator = mdates.MonthLocator(
+                        interval=max(1, len(sorted_dates) // 8)
+                    )
+                elif date_range <= 1825:  # Less than 5 years - yearly data
+                    format_str = "%Y"
+                    locator = mdates.YearLocator()
+                else:  # Long time series - multi-year intervals
+                    format_str = "%Y"
+                    year_interval = max(1, len(sorted_dates) // 15)
+                    locator = mdates.YearLocator(interval=year_interval)
+            else:
+                # Use manual settings
+                format_str = xlabel_format if xlabel_format != "auto" else "%Y"
+
+                if xlabel_interval == "day":
+                    locator = mdates.DayLocator(
+                        interval=max(1, len(sorted_dates) // 15)
+                    )
+                elif xlabel_interval == "week":
+                    locator = mdates.WeekdayLocator(
+                        interval=max(1, len(sorted_dates) // 10)
+                    )
+                elif xlabel_interval == "month":
+                    locator = mdates.MonthLocator(
+                        interval=max(1, len(sorted_dates) // 8)
+                    )
+                elif xlabel_interval == "year":
+                    locator = mdates.YearLocator()
+                else:
+                    locator = mdates.YearLocator()
+
+            ax.xaxis.set_major_formatter(mdates.DateFormatter(format_str))
+            ax.xaxis.set_major_locator(locator)
+
+            plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, fontsize=8)
+
+            # Set consistent y-axis limits
+            all_values = []
+            for point_data in sample_data.values():
+                all_values.extend([v for v in point_data["values"] if v is not None])
+
+            if all_values:
+                y_min, y_max = min(all_values), max(all_values)
+                y_range = y_max - y_min
+                if y_range > 0:
+                    ax.set_ylim(y_min - y_range * 0.1, y_max + y_range * 0.1)
+                else:
+                    ax.set_ylim(y_min - 0.01, y_max + 0.01)
+
+            plt.tight_layout()
+
+            # Save frame
+            frame_path = os.path.join(temp_dir, f"chart_frame_{frame_idx:04d}.png")
+            plt.savefig(frame_path, dpi=100, bbox_inches="tight", facecolor="white")
+            plt.close()
+
+            chart_frames.append(frame_path)
+
+    except Exception as e:
+        print(f"Error creating chart frames: {str(e)}")
+        # Clean up any created frames
+        for frame_path in chart_frames:
+            if os.path.exists(frame_path):
+                os.remove(frame_path)
+        return []
+
+    return chart_frames
