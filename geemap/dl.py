@@ -92,13 +92,21 @@ def _detect_image(
 
         baseImg = gd.download.BaseImage(image)
 
-        kwargs.setdefault('set_nodata', True)
-        kwargs.setdefault('crs', "EPSG:4326")
-        kwargs.setdefault('region', image.geometry().bounds())
-        kwargs.setdefault('epsilon', 0.2)
-        kwargs.setdefault('min_segments', 4)
-        kwargs.setdefault('area_tolerance', 0.7)
-        kwargs.setdefault('detect_triangles', True)
+        if kwargs.get('set_nodata') is None:
+            kwargs['set_nodata'] = True
+        if kwargs.get('crs') is None:
+            kwargs['crs'] = "EPSG:4326"
+        if kwargs.get('region') is None:
+            kwargs['region'] = image.geometry().bounds()
+        if kwargs.get('epsilon') is None:
+            kwargs['epsilon'] = 0.2
+        if kwargs.get('min_segments') is None:
+            kwargs['min_segments'] = 4
+        if kwargs.get('area_tolerance') is None:
+            kwargs['area_tolerance'] = 0.7
+        if kwargs.get('detect_triangles') is None:
+            kwargs['detect_triangles'] = True
+
 
 
         exp_img, profile = baseImg._prepare_for_download(
