@@ -35,6 +35,8 @@ from .timelapse import *
 from .legends import builtin_legends
 from . import examples
 
+from .dl import detect_instance_segmentation,detect_semantic_segmentation
+
 
 basemaps = Box(xyz_to_leaflet(), frozen_box=True)
 
