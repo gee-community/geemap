@@ -14,11 +14,12 @@ import logging
 import warnings
 import threading
 
+
 def _detect_image(
     image,
     model_path,
     scale,
-    segment_fn,  
+    segment_fn,
     segment_args: dict,
     num_thread=None,
     bands=None,
@@ -31,7 +32,7 @@ def _detect_image(
     min_area=0,
     max_tile_size=None,
     max_tile_dim=None,
-    **kwargs
+    **kwargs,
 ):
     """
     Perform object detection on an Earth Engine image using a deep learning model.
@@ -46,7 +47,7 @@ def _detect_image(
             all are resampled to this scale.  Defaults to the minimum scale of image bands.
         segment_fn (Callable): A segmentation post-processing function that processes the model's raw output.
         segment_args (dict): A dictionary of keyword arguments to pass to the segmentation function.
-        num_threads (int, optional): Number of tiles to download concurrently.  Defaults to a sensible auto value.    
+        num_threads (int, optional): Number of tiles to download concurrently.  Defaults to a sensible auto value.
         bands (list, optional): A list of band names to use in the timelapse.
         window_size (int): Size of sliding window for inference.
         overlap (int): Overlap between adjacent windows.
@@ -63,20 +64,22 @@ def _detect_image(
 
     Returns:
         ee.FeatureCollection: A FeatureCollection containing vectorized object detection results, reprojected to WGS84.
-    
+
     Note:
         This function relies on the `geedim`, `rasterio`, and `geoai` packages for tiling, downloading, inference,
         and raster-to-vector conversion. Ensure the Earth Engine image is processed and scaled appropriately before passing to this function.
     """
-    logging.basicConfig(level=logging.INFO, format='[%(levelname)s] %(message)s')
+    logging.basicConfig(level=logging.INFO, format="[%(levelname)s] %(message)s")
     warnings.filterwarnings("ignore", category=UserWarning, module="rasterio._env")
-    logging.getLogger('rasterio').setLevel(logging.ERROR)
+    logging.getLogger("rasterio").setLevel(logging.ERROR)
 
     out_lock = threading.Lock()
 
-    with tempfile.NamedTemporaryFile(suffix=".tif", delete=False) as temp_merged, \
-        tempfile.NamedTemporaryFile(suffix=".tif", delete=False) as temp_mask, \
-        tempfile.NamedTemporaryFile(suffix=".geojson", delete=False) as temp_geojson:
+    with (
+        tempfile.NamedTemporaryFile(suffix=".tif", delete=False) as temp_merged,
+        tempfile.NamedTemporaryFile(suffix=".tif", delete=False) as temp_mask,
+        tempfile.NamedTemporaryFile(suffix=".geojson", delete=False) as temp_geojson,
+    ):
 
         merged_path = temp_merged.name
         masks_path = temp_mask.name
@@ -92,31 +95,31 @@ def _detect_image(
 
         baseImg = gd.download.BaseImage(image)
 
-        if kwargs.get('set_nodata') is None:
-            kwargs['set_nodata'] = True
-        if kwargs.get('crs') is None:
-            kwargs['crs'] = "EPSG:4326"
-        if kwargs.get('region') is None:
-            kwargs['region'] = image.geometry().bounds()
-        if kwargs.get('epsilon') is None:
-            kwargs['epsilon'] = 0.2
-        if kwargs.get('min_segments') is None:
-            kwargs['min_segments'] = 4
-        if kwargs.get('area_tolerance') is None:
-            kwargs['area_tolerance'] = 0.7
-        if kwargs.get('detect_triangles') is None:
-            kwargs['detect_triangles'] = True
-
-
+        if kwargs.get("set_nodata") is None:
+            kwargs["set_nodata"] = True
+        if kwargs.get("crs") is None:
+            kwargs["crs"] = "EPSG:4326"
+        if kwargs.get("region") is None:
+            kwargs["region"] = image.geometry().bounds()
+        if kwargs.get("epsilon") is None:
+            kwargs["epsilon"] = 0.2
+        if kwargs.get("min_segments") is None:
+            kwargs["min_segments"] = 4
+        if kwargs.get("area_tolerance") is None:
+            kwargs["area_tolerance"] = 0.7
+        if kwargs.get("detect_triangles") is None:
+            kwargs["detect_triangles"] = True
 
         exp_img, profile = baseImg._prepare_for_download(
-            set_nodata=kwargs['set_nodata'],
-            crs=kwargs['crs'],
+            set_nodata=kwargs["set_nodata"],
+            crs=kwargs["crs"],
             scale=scale,
-            region=kwargs['region']
+            region=kwargs["region"],
         )
         print(exp_img.shape)
-        tile_shape, num_tiles = exp_img._get_tile_shape(max_tile_size=max_tile_size, max_tile_dim=max_tile_dim)
+        tile_shape, num_tiles = exp_img._get_tile_shape(
+            max_tile_size=max_tile_size, max_tile_dim=max_tile_dim
+        )
         tiles_list = list(exp_img._tiles(tile_shape))
 
         dtype_size = np.dtype(exp_img.dtype).itemsize
@@ -125,17 +128,22 @@ def _detect_image(
         raw_download_size = tile_pixel_size * len(tiles_list)
 
         bar = tqdm(
-            desc="🧩 Processing tiles", total=raw_download_size,
-            bar_format='{desc}: |{bar}| {n_fmt}/{total_fmt} (raw) [{percentage:5.1f}%] in {elapsed:>5s} (eta: {remaining:>5s})',
-            dynamic_ncols=True, unit_scale=True, unit='B'
+            desc="🧩 Processing tiles",
+            total=raw_download_size,
+            bar_format="{desc}: |{bar}| {n_fmt}/{total_fmt} (raw) [{percentage:5.1f}%] in {elapsed:>5s} (eta: {remaining:>5s})",
+            dynamic_ncols=True,
+            unit_scale=True,
+            unit="B",
         )
 
-        with rasterio.Env(GDAL_NUM_THREADS='ALL_CPUs', GTIFF_FORCE_RGBA=False):
+        with rasterio.Env(GDAL_NUM_THREADS="ALL_CPUs", GTIFF_FORCE_RGBA=False):
             with rasterio.open(merged_path, "w", **profile) as out_ds:
 
                 def process_tile(tile):
                     try:
-                        tile_array = tile.download(session=gd.utils.retry_session(),bar=bar)
+                        tile_array = tile.download(
+                            session=gd.utils.retry_session(), bar=bar
+                        )
                         with out_lock:
                             out_ds.write(tile_array, window=tile.window)
                         return True
@@ -143,7 +151,9 @@ def _detect_image(
                         return False
 
                 with ThreadPoolExecutor(max_workers=max_threads) as executor:
-                    futures = [executor.submit(process_tile, tile) for tile in tiles_list]
+                    futures = [
+                        executor.submit(process_tile, tile) for tile in tiles_list
+                    ]
                     for future in as_completed(futures):
                         future.result()
         bar.close()
@@ -157,24 +167,25 @@ def _detect_image(
             batch_size=batch_size,
             num_channels=num_channels,
             num_classes=num_classes,
-            **segment_args
+            **segment_args,
         )
 
         def silent(func, *args, **kwargs):
             f = io.StringIO()
             with redirect_stdout(f), redirect_stderr(f):
                 return func(*args, **kwargs)
-            
+
         gdf = silent(
             geoai.orthogonalize,
-            masks_path,output_path,
+            masks_path,
+            output_path,
             min_area=min_area,
-            epsilon=kwargs['epsilon'],
-            min_segments=kwargs['min_segments'],
-            area_tolerance=kwargs['area_tolerance'],
-            detect_triangles=kwargs['detect_triangles']
+            epsilon=kwargs["epsilon"],
+            min_segments=kwargs["min_segments"],
+            area_tolerance=kwargs["area_tolerance"],
+            detect_triangles=kwargs["detect_triangles"],
         )
-            
+
         gdf = geoai.add_geometric_properties(gdf)
         gdf_wgs84 = gdf.to_crs(epsg=4326)
         geojson_dict = gdf_wgs84.__geo_interface__
@@ -186,7 +197,7 @@ def _detect_image(
                 logging.warning(f"Failed to remove {path}: {e}")
 
         return geojson_to_ee(geojson_dict)
-    
+
 
 def detect_instance_segmentation(
     image,
@@ -203,7 +214,7 @@ def detect_instance_segmentation(
     min_area=0,
     max_tile_size=None,
     max_tile_dim=None,
-    **kwargs
+    **kwargs,
 ):
     """
     Perform instance segmentation on an Earth Engine image using a pre-trained Mask R-CNN model.
@@ -212,7 +223,7 @@ def detect_instance_segmentation(
         image: ee.Image object.
         model_path: Path to the trained model.
         scale: Resolution in meters.
-        num_threads: Number of tiles to download concurrently.  Defaults to a sensible auto value.    
+        num_threads: Number of tiles to download concurrently.  Defaults to a sensible auto value.
         bands: List of image bands to use.
         window_size: Size of the sliding window in pixels .
         overlap: Overlap between windows in pixels.
@@ -229,7 +240,7 @@ def detect_instance_segmentation(
         model_path=model_path,
         scale=scale,
         segment_fn=geoai.instance_segmentation,
-        segment_args={}, 
+        segment_args={},
         num_thread=num_thread,
         bands=bands,
         window_size=window_size,
@@ -241,8 +252,9 @@ def detect_instance_segmentation(
         min_area=min_area,
         max_tile_size=max_tile_size,
         max_tile_dim=max_tile_dim,
-        **kwargs
+        **kwargs,
     )
+
 
 def detect_semantic_segmentation(
     image,
@@ -263,7 +275,7 @@ def detect_semantic_segmentation(
     max_tile_dim=None,
     device=None,
     quiet=False,
-    **kwargs
+    **kwargs,
 ):
     """
     Perform semantic segmentation on an Earth Engine image.
@@ -274,7 +286,7 @@ def detect_semantic_segmentation(
         scale: Resolution in meters.
         architecture: Model architecture used for training.
         encoder_name: Encoder backbone name used for training.
-        num_threads: Number of tiles to download concurrently.  Defaults to a sensible auto value.    
+        num_threads: Number of tiles to download concurrently.  Defaults to a sensible auto value.
         bands: List of image bands to use.
         window_size: Size of the sliding window in pixels.
         overlap: Overlap between windows in pixels.
@@ -298,7 +310,7 @@ def detect_semantic_segmentation(
             "encoder_name": encoder_name,
             "device": device,
             "quiet": quiet,
-            **kwargs
+            **kwargs,
         },
         num_thread=num_thread,
         bands=bands,
@@ -311,5 +323,5 @@ def detect_semantic_segmentation(
         min_area=min_area,
         max_tile_size=max_tile_size,
         max_tile_dim=max_tile_dim,
-        **kwargs
+        **kwargs,
     )

@@ -4,6 +4,7 @@ bump-my-version
 codespell
 coverage
 deadlink
+geoai-py
 ipykernel
 livereload
 mkdocs
@@ -27,4 +28,3 @@ tox
 twine
 watchdog
 wheel
-geoai-py
