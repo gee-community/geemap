@@ -27,3 +27,4 @@ tox
 twine
 watchdog
 wheel
+geoai-py

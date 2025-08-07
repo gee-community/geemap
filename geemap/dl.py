@@ -165,8 +165,16 @@ def _detect_image(
             with redirect_stdout(f), redirect_stderr(f):
                 return func(*args, **kwargs)
             
-        gdf = silent(geoai.orthogonalize,masks_path,output_path,
-                     min_area=min_area,epsilon=kwargs['epsilon'],min_segments=kwargs['min_segments'],area_tolerance=kwargs['area_tolerance'],detect_triangles=kwargs['detect_triangles'])
+        gdf = silent(
+            geoai.orthogonalize,
+            masks_path,output_path,
+            min_area=min_area,
+            epsilon=kwargs['epsilon'],
+            min_segments=kwargs['min_segments'],
+            area_tolerance=kwargs['area_tolerance'],
+            detect_triangles=kwargs['detect_triangles']
+        )
+            
         gdf = geoai.add_geometric_properties(gdf)
         gdf_wgs84 = gdf.to_crs(epsg=4326)
         geojson_dict = gdf_wgs84.__geo_interface__
