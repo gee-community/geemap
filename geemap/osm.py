@@ -26,7 +26,7 @@ def osm_gdf_from_address(address, tags, dist=1000):
     check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
     import osmnx as ox
 
-    gdf = ox.geometries_from_address(address, tags, dist)
+    gdf = ox.features.features_from_address(address, tags, dist)
     return gdf
 
 
@@ -63,14 +63,13 @@ def osm_geojson_from_address(address, tags, filepath=None, dist=1000):
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_place(query, tags, which_result=None, buffer_dist=None):
+def osm_gdf_from_place(query, tags, which_result=None):
     """Create GeoDataFrame of OSM entities within boundaries of geocodable place(s).
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
         tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
         which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
 
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
@@ -80,11 +79,11 @@ def osm_gdf_from_place(query, tags, which_result=None, buffer_dist=None):
 
     ox.config(use_cache=True, log_console=True)
 
-    gdf = ox.geometries_from_place(query, tags, which_result, buffer_dist)
+    gdf = ox.features.features_from_place(query, tags, which_result)
     return gdf
 
 
-def osm_shp_from_place(query, tags, filepath, which_result=None, buffer_dist=None):
+def osm_shp_from_place(query, tags, filepath, which_result=None):
     """Download OSM entities within boundaries of geocodable place(s) as a shapefile.
 
     Args:
@@ -92,15 +91,12 @@ def osm_shp_from_place(query, tags, filepath, which_result=None, buffer_dist=Non
         tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
         filepath (str): File path to the output shapefile.
         which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
     """
-    gdf = osm_gdf_from_place(query, tags, which_result, buffer_dist)
+    gdf = osm_gdf_from_place(query, tags, which_result)
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_place(
-    query, tags, filepath=None, which_result=None, buffer_dist=None
-):
+def osm_geojson_from_place(query, tags, filepath=None, which_result=None):
     """Download OSM entities within boundaries of geocodable place(s) as a GeoJSON.
 
     Args:
@@ -108,13 +104,12 @@ def osm_geojson_from_place(
         tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
         filepath (str): File path to the output shapefile.
         which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
     """
 
-    gdf = osm_gdf_from_place(query, tags, which_result, buffer_dist)
+    gdf = osm_gdf_from_place(query, tags, which_result)
     if filepath is not None:
         gdf.to_file(filepath, driver="GeoJSON")
     else:
@@ -135,7 +130,7 @@ def osm_gdf_from_point(center_point, tags, dist=1000):
     check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
     import osmnx as ox
 
-    gdf = ox.geometries_from_point(center_point, tags, dist)
+    gdf = ox.features.features_from_point(center_point, tags, dist)
     return gdf
 
 
@@ -184,7 +179,7 @@ def osm_gdf_from_polygon(polygon, tags):
     check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
     import osmnx as ox
 
-    gdf = ox.geometries_from_polygon(polygon, tags)
+    gdf = ox.features.features_from_polygon(polygon, tags)
     return gdf
 
 
@@ -234,7 +229,7 @@ def osm_gdf_from_bbox(north, south, east, west, tags):
     check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
     import osmnx as ox
 
-    gdf = ox.geometries_from_bbox(north, south, east, west, tags)
+    gdf = ox.features.features_from_bbox(north, south, east, west, tags)
     return gdf
 
 
@@ -288,7 +283,7 @@ def osm_gdf_from_xml(filepath, polygon=None, tags=None):
     check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
     import osmnx as ox
 
-    gdf = ox.geometries_from_xml(filepath, polygon, tags)
+    gdf = ox.features.features_from_xml(filepath, polygon, tags)
     return gdf
 
 
@@ -296,7 +291,6 @@ def osm_gdf_from_geocode(
     query,
     which_result=None,
     by_osmid=False,
-    buffer_dist=None,
 ):
     """Retrieves place(s) by name or ID from the Nominatim API as a GeoDataFrame.
 
@@ -304,7 +298,6 @@ def osm_gdf_from_geocode(
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
         which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
         by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
 
     Returns:
         GeoDataFrame: A GeoPandas GeoDataFrame.
@@ -314,7 +307,9 @@ def osm_gdf_from_geocode(
 
     import osmnx as ox
 
-    gdf = ox.geocode_to_gdf(query, which_result, by_osmid, buffer_dist)
+    gdf = ox.geocoder.geocode_to_gdf(
+        query, which_result=which_result, by_osmid=by_osmid
+    )
     return gdf
 
 
@@ -323,7 +318,6 @@ def osm_shp_from_geocode(
     filepath,
     which_result=None,
     by_osmid=False,
-    buffer_dist=None,
 ):
     """Download place(s) by name or ID from the Nominatim API as a shapefile.
 
@@ -332,9 +326,8 @@ def osm_shp_from_geocode(
         filepath (str): File path to the output shapefile.
         which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
         by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
     """
-    gdf = osm_gdf_from_geocode(query, which_result, by_osmid, buffer_dist)
+    gdf = osm_gdf_from_geocode(query, which_result, by_osmid)
     gdf.to_file(filepath)
 
 
@@ -343,7 +336,6 @@ def osm_geojson_from_geocode(
     filepath=None,
     which_result=None,
     by_osmid=False,
-    buffer_dist=None,
 ):
     """Download place(s) by name or ID from the Nominatim API as a GeoJSON.
 
@@ -352,12 +344,11 @@ def osm_geojson_from_geocode(
         filepath (str): File path to the output GeoJSON.
         which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
         by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-        buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
     """
-    gdf = osm_gdf_from_geocode(query, which_result, by_osmid, buffer_dist)
+    gdf = osm_gdf_from_geocode(query, which_result, by_osmid)
     if filepath is not None:
         gdf.to_file(filepath, driver="GeoJSON")
     else:
