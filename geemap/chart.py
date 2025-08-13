@@ -22,7 +22,7 @@ class DataTable(pd.DataFrame):
 
     def __init__(
         self,
-        data: Union[Dict[str, List[Any]], pd.DataFrame, None] = None,
+        data: Union[dict[str, list[Any]], pd.DataFrame, None] = None,
         date_column: Optional[str] = None,
         date_format: Optional[str] = None,
         **kwargs: Any,
@@ -121,9 +121,9 @@ def pivot_df(df: pd.DataFrame, index: str, columns: str, values: str) -> pd.Data
 
 
 def array_to_df(
-    y_values: Union[ee.Array, ee.List, List[List[float]]],
-    x_values: Optional[Union[ee.Array, ee.List, List[float]]] = None,
-    y_labels: Optional[List[str]] = None,
+    y_values: Union[ee.Array, ee.List, list[list[float]]],
+    x_values: Optional[Union[ee.Array, ee.List, list[float]]] = None,
+    y_labels: Optional[list[str]] = None,
     x_label: str = "x",
     axis: int = 1,
     **kwargs: Any,
@@ -190,11 +190,11 @@ class Chart:
 
     def __init__(
         self,
-        data_table: Union[Dict[str, List[Any]], pd.DataFrame],
+        data_table: Union[dict[str, list[Any]], pd.DataFrame],
         chart_type: str = "LineChart",
-        x_cols: Optional[List[str]] = None,
-        y_cols: Optional[List[str]] = None,
-        colors: Optional[List[str]] = None,
+        x_cols: Optional[list[str]] = None,
+        y_cols: Optional[list[str]] = None,
+        colors: Optional[list[str]] = None,
         title: Optional[str] = None,
         x_label: Optional[str] = None,
         y_label: Optional[str] = None,
@@ -480,7 +480,7 @@ class Chart:
         """
         return self.data_table
 
-    def set_data_table(self, data: Union[Dict[str, List[Any]], pd.DataFrame]) -> None:
+    def set_data_table(self, data: Union[dict[str, list[Any]], pd.DataFrame]) -> None:
         """
         Set a new DataTable for the chart.
 
@@ -507,7 +507,7 @@ class BaseChartClass:
     def __init__(
         self,
         features: Union[ee.FeatureCollection, pd.DataFrame],
-        default_labels: List[str],
+        default_labels: list[str],
         name: str,
         **kwargs: Any,
     ):
@@ -590,7 +590,7 @@ class BarChart(BaseChartClass):
     def __init__(
         self,
         features: Union[ee.FeatureCollection, pd.DataFrame],
-        default_labels: List[str],
+        default_labels: list[str],
         name: str,
         type: str = "grouped",
         **kwargs: Any,
@@ -620,7 +620,7 @@ class BarChart(BaseChartClass):
         else:
             self.bar_chart.tooltip = Tooltip(fields=["x", "y"])
 
-    def get_ylim(self) -> Tuple[float, float]:
+    def get_ylim(self) -> tuple[float, float]:
         """
         Gets the y-axis limits for the bar chart.
 
@@ -681,7 +681,7 @@ class LineChart(BarChart):
     def __init__(
         self,
         features: Union[ee.FeatureCollection, pd.DataFrame],
-        labels: List[str],
+        labels: list[str],
         name: str = "line.chart",
         **kwargs: Any,
     ):
@@ -733,7 +733,7 @@ class Feature_ByFeature(BarChart):
         self,
         features: Union[ee.FeatureCollection, pd.DataFrame],
         x_property: str,
-        y_properties: List[str],
+        y_properties: list[str],
         name: str = "feature.byFeature",
         **kwargs: Any,
     ):
@@ -754,8 +754,8 @@ class Feature_ByFeature(BarChart):
         self.x_data, self.y_data = self.get_data(x_property, y_properties)
 
     def get_data(
-        self, x_property: str, y_properties: List[str]
-    ) -> Tuple[List[Any], List[Any]]:
+        self, x_property: str, y_properties: list[str]
+    ) -> tuple[list[Any], list[Any]]:
         """
         Gets the data for the chart.
 
@@ -777,7 +777,7 @@ class Feature_ByProperty(BarChart):
     def __init__(
         self,
         features: Union[ee.FeatureCollection, pd.DataFrame],
-        x_properties: Union[List[str], Dict[str, str]],
+        x_properties: Union[list[str], dict[str, str]],
         series_property: str,
         name: str = "feature.byProperty",
         **kwargs: Any,
@@ -807,8 +807,8 @@ class Feature_ByProperty(BarChart):
         self.x_data, self.y_data = self.get_data(x_properties)
 
     def get_data(
-        self, x_properties: Union[List[str], Dict[str, str]]
-    ) -> Tuple[List[Any], List[Any]]:
+        self, x_properties: Union[list[str], dict[str, str]]
+    ) -> tuple[list[Any], list[Any]]:
         """
         Gets the data for the chart.
 
@@ -870,7 +870,7 @@ class Feature_Groups(BarChart):
         self.new_column_names = self.get_column_names(series_property, y_property)
         self.x_data, self.y_data = self.get_data(x_property, self.new_column_names)
 
-    def get_column_names(self, series_property: str, y_property: str) -> List[str]:
+    def get_column_names(self, series_property: str, y_property: str) -> list[str]:
         """
         Gets the new column names for the DataFrame.
 
@@ -892,8 +892,8 @@ class Feature_Groups(BarChart):
         return new_column_names
 
     def get_data(
-        self, x_property: str, new_column_names: List[str]
-    ) -> Tuple[List[Any], List[Any]]:
+        self, x_property: str, new_column_names: list[str]
+    ) -> tuple[list[Any], list[Any]]:
         """
         Gets the data for the chart.
 
@@ -913,7 +913,7 @@ class Feature_Groups(BarChart):
 def feature_by_feature(
     features: ee.FeatureCollection,
     x_property: str,
-    y_properties: List[str],
+    y_properties: list[str],
     **kwargs: Any,
 ) -> None:
     """
@@ -1182,8 +1182,8 @@ def image_by_class(
     region: Union[ee.Geometry, ee.FeatureCollection],
     reducer: Union[str, ee.Reducer] = "MEAN",
     scale: Optional[int] = None,
-    class_labels: Optional[List[str]] = None,
-    x_labels: Optional[List[str]] = None,
+    class_labels: Optional[list[str]] = None,
+    x_labels: Optional[list[str]] = None,
     chart_type: str = "LineChart",
     **kwargs: Any,
 ) -> Any:
@@ -1277,7 +1277,7 @@ def image_doy_series(
     start_day: int = 1,
     end_day: int = 366,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
+    colors: Optional[list[str]] = None,
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
@@ -1409,7 +1409,7 @@ def image_doy_series_by_region(
     start_day: int = 1,
     end_day: int = 366,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
+    colors: Optional[list[str]] = None,
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
@@ -1538,7 +1538,7 @@ def doy_series_by_year(
     start_day: int = 1,
     end_day: int = 366,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
+    colors: Optional[list[str]] = None,
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
@@ -1664,8 +1664,8 @@ def image_histogram(
     min_bucket_width: float,
     max_raw: int,
     max_pixels: int,
-    reducer_args: Dict[str, Any] = {},
-    **kwargs: Dict[str, Any],
+    reducer_args: dict[str, Any] = {},
+    **kwargs: dict[str, Any],
 ) -> bq.Figure:
     """
     Creates a histogram for each band of the specified image within the given
@@ -1707,7 +1707,7 @@ def image_histogram(
 
     # Create bqplot histograms for each band.
     def create_histogram(
-        hist_data: Dict[str, Any], color: str, label: str
+        hist_data: dict[str, Any], color: str, label: str
     ) -> bq.Figure:
         """
         Creates a bqplot histogram for the given histogram data.
@@ -1771,7 +1771,7 @@ def image_regions(
     reducer: Union[str, ee.Reducer],
     scale: int,
     series_property: str,
-    x_labels: List[str],
+    x_labels: list[str],
     **kwargs: Any,
 ) -> None:
     """
@@ -1807,9 +1807,9 @@ def image_series(
     scale: Optional[int] = None,
     x_property: str = "system:time_start",
     chart_type: str = "LineChart",
-    x_cols: Optional[List[str]] = None,
-    y_cols: Optional[List[str]] = None,
-    colors: Optional[List[str]] = None,
+    x_cols: Optional[list[str]] = None,
+    y_cols: Optional[list[str]] = None,
+    colors: Optional[list[str]] = None,
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
@@ -1898,9 +1898,9 @@ def image_series_by_region(
     x_property: str = "system:time_start",
     series_property: str = "system:index",
     chart_type: str = "LineChart",
-    x_cols: Optional[List[str]] = None,
-    y_cols: Optional[List[str]] = None,
-    colors: Optional[List[str]] = None,
+    x_cols: Optional[list[str]] = None,
+    y_cols: Optional[list[str]] = None,
+    colors: Optional[list[str]] = None,
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
@@ -1980,12 +1980,12 @@ def image_series_by_region(
 
 
 def array_values(
-    array: Union[ee.Array, ee.List, List[List[float]]],
-    x_labels: Optional[Union[ee.Array, ee.List, List[float]]] = None,
+    array: Union[ee.Array, ee.List, list[list[float]]],
+    x_labels: Optional[Union[ee.Array, ee.List, list[float]]] = None,
     axis: int = 1,
-    series_names: Optional[List[str]] = None,
+    series_names: Optional[list[str]] = None,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
+    colors: Optional[list[str]] = None,
     title: Optional[str] = None,
     x_label: Optional[str] = None,
     y_label: Optional[str] = None,
