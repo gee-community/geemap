@@ -6,7 +6,6 @@ from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ee
 import ipywidgets as widgets
-from ipytree import Node, Tree
 
 try:
     from IPython.display import display, Javascript
@@ -245,7 +244,7 @@ def get_info(
     layer_name: str = "",
     opened: bool = False,
     return_node: bool = False,
-) -> Union[Node, Tree, None]:
+) -> Union["Node", "Tree", None]:
     """Print out the information for an Earth Engine object using a tree structure.
     The source code was adapted from https://github.com/google/earthengine-jupyter.
     Credits to Tyler Erickson.
@@ -262,6 +261,7 @@ def get_info(
         Union[Node, Tree, None]: The tree or node representing the Earth Engine
             object information.
     """
+    from ipytree import Node, Tree
 
     tree_json = build_computed_object_tree(ee_object, layer_name, opened)
 
