@@ -23,7 +23,7 @@ import importlib.resources
 
 import ee
 import ipywidgets as widgets
-from ipytree import Node, Tree
+
 from typing import Union, List, Dict, Optional, Any
 
 from .coreutils import *
@@ -4359,6 +4359,7 @@ def build_api_tree(api_dict, output_widget, layout_width="100%"):
     Returns:
         tuple: Returns a tuple containing two items: a tree Output widget and a tree dictionary.
     """
+    from ipytree import Node, Tree
 
     warnings.filterwarnings("ignore")
 
@@ -4412,6 +4413,7 @@ def search_api_tree(keywords, api_tree):
     Returns:
         object: An ipytree object/widget.
     """
+    from ipytree import Tree
 
     warnings.filterwarnings("ignore")
 
@@ -4578,6 +4580,8 @@ def ee_user_id():
 
 
 def build_asset_tree(limit=100):
+
+    from ipytree import Node, Tree
     import geeadd.ee_report as geeadd
 
     warnings.filterwarnings("ignore")
@@ -4825,6 +4829,7 @@ def file_browser(
         object: An ipywidget.
     """
     import platform
+    from ipytree import Node, Tree
 
     if in_dir is None:
         in_dir = os.getcwd()
