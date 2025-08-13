@@ -3066,7 +3066,6 @@ class Map(core.Map):
         info_mode="on_hover",
         which_result=None,
         by_osmid=False,
-        buffer_dist=None,
         to_ee=False,
         geodesic=True,
     ):
@@ -3082,20 +3081,17 @@ class Map(core.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
             by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-            buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
             to_ee (bool, optional): Whether to convert the csv to an ee.FeatureCollection.
             geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
 
         """
-        gdf = osm_to_gdf(
-            query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
-        )
+        gdf = osm_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
         geojson = gdf.__geo_interface__
 
         if to_ee:
             fc = geojson_to_ee(geojson, geodesic=geodesic)
             self.addLayer(fc, {}, layer_name)
-            self.zoomToObject(fc)
+            self.centerObject(fc)
         else:
             self.add_geojson(
                 geojson,
@@ -3114,7 +3110,6 @@ class Map(core.Map):
         query,
         which_result=None,
         by_osmid=False,
-        buffer_dist=None,
         layer_name="Untitled",
         style={},
         hover_style={},
@@ -3127,9 +3122,7 @@ class Map(core.Map):
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
             which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-            by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-            buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
             style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
             hover_style (dict, optional): Hover style dictionary. Defaults to {}.
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
@@ -3139,9 +3132,7 @@ class Map(core.Map):
         """
         from .osm import osm_gdf_from_geocode
 
-        gdf = osm_gdf_from_geocode(
-            query, which_result=which_result, by_osmid=by_osmid, buffer_dist=buffer_dist
-        )
+        gdf = osm_gdf_from_geocode(query, which_result=which_result, by_osmid=by_osmid)
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
@@ -3202,7 +3193,6 @@ class Map(core.Map):
         query,
         tags,
         which_result=None,
-        buffer_dist=None,
         layer_name="Untitled",
         style={},
         hover_style={},
@@ -3216,7 +3206,6 @@ class Map(core.Map):
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
             tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
             which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-            buffer_dist (float, optional): Distance to buffer around the place geometry, in meters. Defaults to None.
             layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
             style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
             hover_style (dict, optional): Hover style dictionary. Defaults to {}.
@@ -3227,7 +3216,7 @@ class Map(core.Map):
         """
         from .osm import osm_gdf_from_place
 
-        gdf = osm_gdf_from_place(query, tags, which_result, buffer_dist)
+        gdf = osm_gdf_from_place(query, tags, which_result)
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
