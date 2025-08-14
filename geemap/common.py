@@ -9069,7 +9069,7 @@ def vector_to_geojson(
         out_geojson (str, optional): The file path to the output GeoJSON. Defaults to None.
         bbox (tuple | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter features by given bounding box, GeoSeries, GeoDataFrame or a shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with mask. Defaults to None.
         mask (dict | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter for features that intersect with the given dict-like geojson geometry, GeoSeries, GeoDataFrame or shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with bbox. Defaults to None.
-        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object.. Defaults to None.
+        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object. Defaults to None.
         epsg (str, optional): The EPSG number to convert to. Defaults to "4326".
 
     Raises:
@@ -9120,7 +9120,7 @@ def vector_to_ee(
         filename (str): Either the absolute or relative path to the file or URL to be opened, or any object with a read() method (such as an open file or StringIO).
         bbox (tuple | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter features by given bounding box, GeoSeries, GeoDataFrame or a shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with mask. Defaults to None.
         mask (dict | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter for features that intersect with the given dict-like geojson geometry, GeoSeries, GeoDataFrame or shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with bbox. Defaults to None.
-        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object.. Defaults to None.
+        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object. Defaults to None.
         geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
 
     Returns:
@@ -9310,8 +9310,8 @@ def random_sampling(
     Args:
         image (ee.Image): The image to sample.
         region (ee.Geometry, optional): The region to sample from. If unspecified, uses the image's whole footprint. Defaults to None.
-        scale (float, optional): A nominal scale in meters of the projection to sample in.. Defaults to None.
-        projection (ee.Projection, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale.. Defaults to None.
+        scale (float, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
+        projection (ee.Projection, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         factor (float, optional): A subsampling factor, within (0, 1]. If specified, 'numPixels' must not be specified. Defaults to no subsampling. Defaults to None.
         numPixels (int, optional): The approximate number of pixels to sample. If specified, 'factor' must not be specified. Defaults to None.
         seed (int, optional): A randomization seed to use for subsampling. Defaults to True. Defaults to 0.
@@ -10470,7 +10470,7 @@ def get_local_tile_layer(
         vmin (float, optional): The minimum value to use when colormapping the colormap when plotting a single band. Defaults to None.
         vmax (float, optional): The maximum value to use when colormapping the colormap when plotting a single band. Defaults to None.
         nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
-        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
         tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
         layer_name (str, optional): The layer name to use. Defaults to None.
         return_client (bool, optional): If True, the tile client will be returned. Defaults to False.
@@ -11921,7 +11921,7 @@ def netcdf_tile_layer(
         nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
         debug (bool, optional): If True, the server will be started in debug mode. Defaults to False.
         projection (str, optional): The projection of the GeoTIFF. Defaults to "EPSG:3857".
-        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
         tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
         layer_name (str, optional): The layer name to use. Defaults to "NetCDF layer".
         return_client (bool, optional): If True, the tile client will be returned. Defaults to False.

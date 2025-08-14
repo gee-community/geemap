@@ -121,7 +121,7 @@ class Map(keplergl.KeplerGl):
 
         Args:
             in_geojson (str | dict): The file path or http URL to the input GeoJSON or a dictionary containing the geojson.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file. Defaults to None.
 
         Raises:
@@ -162,7 +162,7 @@ class Map(keplergl.KeplerGl):
 
         Args:
             in_shp (str): The input file path to the shapefile.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file. Defaults to None.
 
         Raises:
@@ -207,7 +207,7 @@ class Map(keplergl.KeplerGl):
 
         Args:
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file. Defaults to None.
 
         """
@@ -227,7 +227,7 @@ class Map(keplergl.KeplerGl):
 
         Args:
             df (DataFrame): A Pandas DataFrame.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file. Defaults to None.
 
         """
@@ -248,7 +248,7 @@ class Map(keplergl.KeplerGl):
 
         Args:
             in_csv (str): File path to the CSV.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file. Defaults to None.
 
         """
@@ -314,7 +314,7 @@ class Map(keplergl.KeplerGl):
 
         Args:
             in_kml (str): The input file path to the KML.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file. Defaults to None.
 
         Raises:
@@ -354,7 +354,7 @@ class Map(keplergl.KeplerGl):
         Args:
             sql (str): SQL query to execute in selecting entries from database, or name of the table to read from the database.
             con (sqlalchemy.engine.Engine): Active connection to the database to query.
-            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file. Defaults to None.
 
         """

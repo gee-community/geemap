@@ -1180,7 +1180,7 @@ class Map(MapWidget):
             nodata (float, optional): The value from the band to use to interpret
                 as not valid data. Defaults to None.
             attribution (str, optional): Attribution for the source raster. This
-                defaults to a message about it being a local file.. Defaults to None.
+                defaults to a message about it being a local file. Defaults to None.
             layer_name (str, optional): The layer name to use. Defaults to 'Raster'.
             layer_index (int, optional): The index of the layer. Defaults to None.
             zoom_to_layer (bool, optional): Whether to zoom to the extent of the
