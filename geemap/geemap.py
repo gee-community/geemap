@@ -3122,7 +3122,8 @@ class Map(core.Map):
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
             which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-            by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
+            by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
+            layer_name (str, optional): The layer name to be used.. Defaults to "Untitled".
             style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
             hover_style (dict, optional): Hover style dictionary. Defaults to {}.
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
