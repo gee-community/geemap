@@ -1031,7 +1031,7 @@ class Map(MapWidget):
                 Defaults to None.
             nodata (float, optional): The nodata value to use for the layer.
             titiler_endpoint (str, optional): The endpoint of the titiler service.
-                Defaults to "https://titiler.xyz".
+                Defaults to "https://giswqs-titiler-endpoint.hf.space".
             fit_bounds (bool, optional): Whether to adjust the viewport of
                 the map to fit the bounds of the layer. Defaults to True.
             **kwargs: Arbitrary keyword arguments, including bidx, expression,
@@ -1093,7 +1093,7 @@ class Map(MapWidget):
             bands (list, optional): A list of band names, e.g.,
                 ["SR_B7", "SR_B5", "SR_B4"]. Defaults to None.
             no_data (int | float, optional): The nodata value to use for the layer.
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz",
+            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space",
                 "https://planetarycomputer.microsoft.com/api/data/v1",
                 "planetary-computer", "pc". Defaults to None.
             name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.

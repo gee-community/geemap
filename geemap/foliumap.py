@@ -546,7 +546,7 @@ class Map(folium.Map):
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             bands (list, optional): A list of bands to use. Defaults to None.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         """
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
         bounds = cog_bounds(url, titiler_endpoint)
@@ -586,7 +586,7 @@ class Map(folium.Map):
             item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
             assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
             name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
