@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "geemap"
-version = "0.35.1"
+version = "0.36.4"
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -149,7 +149,7 @@ exclude = ["docs*"]
 universal = true
 
 [tool.bumpversion]
-current_version = "0.35.1"
+current_version = "0.36.4"
 commit = true
 tag = true
 
@@ -174,7 +174,10 @@ features = ["dev"]
 
 [tool.hatch.build]
 only-packages = true
-artifacts = ["geemap/static/*"]
+artifacts = [
+    "geemap/static/*",
+    "geemap/data/**/*",
+]
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
