@@ -14864,13 +14864,17 @@ def tms_to_geotiff(
         return img
 
     try:
-        draw_tile(source, south, west, north, east, zoom, output, quiet, **kwargs)
+        temp_tif = temp_file_path(extension=".tif")
+        draw_tile(source, south, west, north, east, zoom, temp_tif, quiet, **kwargs)
         if crs.upper() != "EPSG:3857":
-            reproject(output, output, crs, to_cog=to_cog)
+            reproject(temp_tif, output, crs, to_cog=to_cog)
         elif to_cog:
-            image_to_cog(output, output)
+            image_to_cog(temp_tif, output)
+        else:
+            shutil.move(temp_tif, output)
+        os.remove(temp_tif)
     except Exception as e:
-        raise Exception(e)
+        print(e)
 
 
 def tif_to_jp2(filename, output, creationOptions=None):
