@@ -5968,7 +5968,6 @@ def draw_circle_marker(draw, x, y, size, color):
     )
 
 
-
 def get_pixel_coordinates_from_geo(lon, lat, roi_bounds, gif_width, gif_height):
     """Convert geographic coordinates to pixel coordinates.
 
@@ -7379,8 +7378,6 @@ def create_s2_time_series_chart_frames(
         return []
 
     return chart_frames
-
-
 
 
 def draw_square_marker(draw, x, y, size, color):
