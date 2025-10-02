@@ -1463,14 +1463,14 @@ class TitilerEndpoint:
 
     def __init__(
         self,
-        endpoint="https://titiler.xyz",
+        endpoint="https://giswqs-titiler-endpoint.hf.space",
         name="stac",
         TileMatrixSetId="WebMercatorQuad",
     ):
         """Initialize the TitilerEndpoint object.
 
         Args:
-            endpoint (str, optional): The endpoint of the titiler server. Defaults to "https://titiler.xyz".
+            endpoint (str, optional): The endpoint of the titiler server. Defaults to "https://giswqs-titiler-endpoint.hf.space".
             name (str, optional): The name to be used in the file path. Defaults to "stac".
             TileMatrixSetId (str, optional): The TileMatrixSetId to be used in the file path. Defaults to "WebMercatorQuad".
         """
@@ -1573,7 +1573,7 @@ def check_titiler_endpoint(titiler_endpoint=None):
             if titiler_endpoint == "planetary-computer":
                 titiler_endpoint = PlanetaryComputerEndpoint()
         else:
-            titiler_endpoint = "https://titiler.xyz"
+            titiler_endpoint = "https://giswqs-titiler-endpoint.hf.space"
     elif titiler_endpoint in ["planetary-computer", "pc"]:
         titiler_endpoint = PlanetaryComputerEndpoint()
 
@@ -5288,7 +5288,7 @@ def cog_tile(
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         timeout (int, optional): Timeout in seconds. Defaults to 300.
         proxies (dict, optional): Proxies to use. Defaults to None.
 
@@ -5355,7 +5355,7 @@ def cog_mosaic(
 
     Args:
         links (list): A list containing COG HTTP URLs.
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         username (str, optional): User name for the titiler endpoint. Defaults to "anonymous".
         layername ([type], optional): Layer name to use. Defaults to None.
         overwrite (bool, optional): Whether to overwrite the layer name if existing. Defaults to False.
@@ -5424,7 +5424,7 @@ def cog_mosaic_from_file(
     Args:
         filepath (str): Local path or HTTP URL to the csv/txt file containing COG URLs.
         skip_rows (int, optional): The number of rows to skip in the file. Defaults to 0.
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         username (str, optional): User name for the titiler endpoint. Defaults to "anonymous".
         layername ([type], optional): Layer name to use. Defaults to None.
         overwrite (bool, optional): Whether to overwrite the layer name if existing. Defaults to False.
@@ -5459,7 +5459,7 @@ def cog_bounds(url, titiler_endpoint=None, timeout=300):
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5485,7 +5485,7 @@ def cog_center(url, titiler_endpoint=None):
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
 
     Returns:
         tuple: A tuple representing (longitude, latitude)
@@ -5503,7 +5503,7 @@ def cog_bands(url, titiler_endpoint=None, timeout=300):
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5529,7 +5529,7 @@ def cog_stats(url, titiler_endpoint=None, timeout=300):
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5554,7 +5554,7 @@ def cog_info(url, titiler_endpoint=None, return_geojson=False, timeout=300):
 
     Args:
         url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5594,7 +5594,7 @@ def cog_pixel_value(
         lat (float): Latitude of the pixel.
         url (str): HTTP URL to a COG, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
         bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5646,7 +5646,7 @@ def stac_tile(
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
         bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5789,7 +5789,7 @@ def stac_bounds(
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5831,7 +5831,7 @@ def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **k
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
 
     Returns:
         tuple: A tuple representing (longitude, latitude)
@@ -5856,7 +5856,7 @@ def stac_bands(
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5906,7 +5906,7 @@ def stac_stats(
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -5958,7 +5958,7 @@ def stac_info(
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -6010,7 +6010,7 @@ def stac_info_geojson(
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -6055,7 +6055,7 @@ def stac_assets(
         url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
     Returns:
@@ -6110,7 +6110,7 @@ def stac_pixel_value(
         collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
         item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
         assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         verbose (bool, optional): Print out the error message. Defaults to True.
         timeout (int, optional): Timeout in seconds. Defaults to 300.
 
@@ -6178,7 +6178,7 @@ def local_tile_pixel_value(
         lat (float): Latitude of the pixel.
         url (str): HTTP URL to a COG, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
         bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
         verbose (bool, optional): Print status messages. Defaults to True.
 
     Returns:
@@ -9069,7 +9069,7 @@ def vector_to_geojson(
         out_geojson (str, optional): The file path to the output GeoJSON. Defaults to None.
         bbox (tuple | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter features by given bounding box, GeoSeries, GeoDataFrame or a shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with mask. Defaults to None.
         mask (dict | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter for features that intersect with the given dict-like geojson geometry, GeoSeries, GeoDataFrame or shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with bbox. Defaults to None.
-        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object.. Defaults to None.
+        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object. Defaults to None.
         epsg (str, optional): The EPSG number to convert to. Defaults to "4326".
 
     Raises:
@@ -9120,7 +9120,7 @@ def vector_to_ee(
         filename (str): Either the absolute or relative path to the file or URL to be opened, or any object with a read() method (such as an open file or StringIO).
         bbox (tuple | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter features by given bounding box, GeoSeries, GeoDataFrame or a shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with mask. Defaults to None.
         mask (dict | GeoDataFrame or GeoSeries | shapely Geometry, optional): Filter for features that intersect with the given dict-like geojson geometry, GeoSeries, GeoDataFrame or shapely geometry. CRS mis-matches are resolved if given a GeoSeries or GeoDataFrame. Cannot be used with bbox. Defaults to None.
-        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object.. Defaults to None.
+        rows (int or slice, optional): Load in specific rows by passing an integer (first n rows) or a slice() object. Defaults to None.
         geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
 
     Returns:
@@ -9310,8 +9310,8 @@ def random_sampling(
     Args:
         image (ee.Image): The image to sample.
         region (ee.Geometry, optional): The region to sample from. If unspecified, uses the image's whole footprint. Defaults to None.
-        scale (float, optional): A nominal scale in meters of the projection to sample in.. Defaults to None.
-        projection (ee.Projection, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale.. Defaults to None.
+        scale (float, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
+        projection (ee.Projection, optional): The projection in which to sample. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         factor (float, optional): A subsampling factor, within (0, 1]. If specified, 'numPixels' must not be specified. Defaults to no subsampling. Defaults to None.
         numPixels (int, optional): The approximate number of pixels to sample. If specified, 'factor' must not be specified. Defaults to None.
         seed (int, optional): A randomization seed to use for subsampling. Defaults to True. Defaults to 0.
@@ -10470,7 +10470,7 @@ def get_local_tile_layer(
         vmin (float, optional): The minimum value to use when colormapping the colormap when plotting a single band. Defaults to None.
         vmax (float, optional): The maximum value to use when colormapping the colormap when plotting a single band. Defaults to None.
         nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
-        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
         tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
         layer_name (str, optional): The layer name to use. Defaults to None.
         return_client (bool, optional): If True, the tile client will be returned. Defaults to False.
@@ -11921,7 +11921,7 @@ def netcdf_tile_layer(
         nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
         debug (bool, optional): If True, the server will be started in debug mode. Defaults to False.
         projection (str, optional): The projection of the GeoTIFF. Defaults to "EPSG:3857".
-        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file.. Defaults to None.
+        attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
         tile_format (str, optional): The tile layer format. Can be either ipyleaflet or folium. Defaults to "ipyleaflet".
         layer_name (str, optional): The layer name to use. Defaults to "NetCDF layer".
         return_client (bool, optional): If True, the tile client will be returned. Defaults to False.
@@ -14864,13 +14864,17 @@ def tms_to_geotiff(
         return img
 
     try:
-        draw_tile(source, south, west, north, east, zoom, output, quiet, **kwargs)
+        temp_tif = temp_file_path(extension=".tif")
+        draw_tile(source, south, west, north, east, zoom, temp_tif, quiet, **kwargs)
         if crs.upper() != "EPSG:3857":
-            reproject(output, output, crs, to_cog=to_cog)
+            reproject(temp_tif, output, crs, to_cog=to_cog)
         elif to_cog:
-            image_to_cog(output, output)
+            image_to_cog(temp_tif, output)
+        else:
+            shutil.move(temp_tif, output)
+        os.remove(temp_tif)
     except Exception as e:
-        raise Exception(e)
+        print(e)
 
 
 def tif_to_jp2(filename, output, creationOptions=None):

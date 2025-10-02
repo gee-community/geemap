@@ -514,7 +514,7 @@ class Map(go.FigureWidget):
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
             bands (list, optional): The bands to use. Defaults to None.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://titiler.xyz".
+            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
             **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata, unscale, resampling, rescale, color_formula, colormap, colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain bands, use bidx=[1, 2, 3]
         """
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
@@ -543,7 +543,7 @@ class Map(go.FigureWidget):
             item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
             assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://titiler.xyz", "planetary-computer", "pc". Defaults to None.
+            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
             name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
             attribution (str, optional): The attribution to use. Defaults to ''.
             opacity (float, optional): The opacity of the layer. Defaults to 1.
@@ -617,9 +617,9 @@ class Map(go.FigureWidget):
         Args:
             file (str): A string representing a local file path or a writeable object (e.g. a pathlib.Path object or an open file descriptor)
             format (str, optional): The desired image format. One of png, jpg, jpeg, webp, svg, pdf, eps. Defaults to None.
-            width (int, optional): The width of the exported image in layout pixels. If the `scale` property is 1.0, this will also be the width of the exported image in physical pixels.. Defaults to None.
-            height (int, optional): The height of the exported image in layout pixels. If the `scale` property is 1.0, this will also be the height of the exported image in physical pixels.. Defaults to None.
-            scale (int, optional): The scale factor to use when exporting the figure. A scale factor larger than 1.0 will increase the image resolution with respect to the figure's layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution.. Defaults to None.
+            width (int, optional): The width of the exported image in layout pixels. If the `scale` property is 1.0, this will also be the width of the exported image in physical pixels. Defaults to None.
+            height (int, optional): The height of the exported image in layout pixels. If the `scale` property is 1.0, this will also be the height of the exported image in physical pixels. Defaults to None.
+            scale (int, optional): The scale factor to use when exporting the figure. A scale factor larger than 1.0 will increase the image resolution with respect to the figure's layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. Defaults to None.
         """
         self.write_image(
             file, format=format, width=width, height=height, scale=scale, **kwargs
