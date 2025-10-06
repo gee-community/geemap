@@ -3785,8 +3785,10 @@ def goes_timeseries(
         ee.ImageCollection: GOES timeseries.
     """
 
-    if data not in ["GOES-16", "GOES-17"]:
-        raise ValueError("The data must be either GOES-16 or GOES-17.")
+    if data not in ["GOES-16", "GOES-17", "GOES-18", "GEOS-19"]:
+        raise ValueError(
+            "The data must be either GOES-16, GOES-17, GOES-18, or GOES 19"
+        )
 
     if scan.lower() not in ["full_disk", "conus", "mesoscale"]:
         raise ValueError("The scan must be either full_disk, conus, or mesoscale.")
@@ -3932,8 +3934,10 @@ def goes_fire_timeseries(
         ee.ImageCollection: GOES fire timeseries.
     """
 
-    if data not in ["GOES-16", "GOES-17"]:
-        raise ValueError("The data must be either GOES-16 or GOES-17.")
+    if data not in ["GOES-16", "GOES-17", "GOES-18", "GEOS-19"]:
+        raise ValueError(
+            "The data must be either GOES-16, GOES-17, GOES-18, or GOES 19"
+        )
 
     if scan.lower() not in ["full_disk", "conus"]:
         raise ValueError("The scan must be either full_disk or conus.")
