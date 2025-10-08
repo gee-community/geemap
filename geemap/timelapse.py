@@ -3758,6 +3758,8 @@ def landsat_ts_norm_diff_gif(
         out_mp4 = out_gif.replace(".gif", ".mp4")
         gif_to_mp4(out_gif, out_mp4)
 
+_GOES_SATELLITES = [f'GOES-{sat}' for sat in range(16, 20)]
+
 
 def goes_timeseries(
     start_date="2021-10-24T14:00:00",
@@ -3785,9 +3787,9 @@ def goes_timeseries(
         ee.ImageCollection: GOES timeseries.
     """
 
-    if data not in ["GOES-16", "GOES-17", "GOES-18", "GEOS-19"]:
+    if data not in _GOES_SATELLITES:
         raise ValueError(
-            "The data must be either GOES-16, GOES-17, GOES-18, or GOES 19"
+            f"data must be one of {', '.join(_GOES_SATELLITES[:-1])}, or {_GOES_SATELLITES[-1]}"
         )
 
     if scan.lower() not in ["full_disk", "conus", "mesoscale"]:
@@ -3934,9 +3936,9 @@ def goes_fire_timeseries(
         ee.ImageCollection: GOES fire timeseries.
     """
 
-    if data not in ["GOES-16", "GOES-17", "GOES-18", "GEOS-19"]:
+    if data not in _GOES_SATELLITES:
         raise ValueError(
-            "The data must be either GOES-16, GOES-17, GOES-18, or GOES 19"
+            f"data must be one of {', '.join(_GOES_SATELLITES[:-1])}, or {_GOES_SATELLITES[-1]}"
         )
 
     if scan.lower() not in ["full_disk", "conus"]:
