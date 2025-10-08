@@ -3758,7 +3758,8 @@ def landsat_ts_norm_diff_gif(
         out_mp4 = out_gif.replace(".gif", ".mp4")
         gif_to_mp4(out_gif, out_mp4)
 
-_GOES_SATELLITES = [f'GOES-{sat}' for sat in range(16, 20)]
+
+_GOES_SATELLITES = [f"GOES-{sat}" for sat in range(16, 20)]
 
 
 def goes_timeseries(
