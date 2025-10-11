@@ -14,7 +14,7 @@ from tests import fake_ee, fake_map, utils
 from geemap.legends import builtin_legends
 
 
-def _get_colormaps() -> List[str]:
+def _get_colormaps() -> list[str]:
     """Gets the list of available colormaps."""
     from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
