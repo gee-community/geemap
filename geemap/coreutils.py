@@ -74,7 +74,7 @@ def ee_initialize(
 
     # pylint: disable-next=disable=protected-access
     if ee.data._get_state().credentials is not None:
-    # pylint: enable-next=disable=protected-access
+        # pylint: enable-next=disable=protected-access
         return
 
     ee_token = get_env_var(token_name)
@@ -104,7 +104,7 @@ def ee_initialize(
     if auth_mode is None:
         # pylint: disable-next=disable=protected-access
         if in_colab_shell() and (ee.data._get_state().credentials is None):
-        # pylint: enable-next=disable=protected-access
+            # pylint: enable-next=disable=protected-access
             ee.Authenticate()
             ee.Initialize(**kwargs)
             return
