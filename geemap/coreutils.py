@@ -72,7 +72,8 @@ def ee_initialize(
     user_agent = f"{user_agent_prefix}/{__version__}"
     ee.data.setUserAgent(user_agent)
 
-    if ee.data._credentials is not None:
+    # pylint: disable-next=protected-access
+    if ee.data._get_state().credentials is not None:
         return
 
     ee_token = get_env_var(token_name)
@@ -100,7 +101,8 @@ def ee_initialize(
         kwargs["project"] = project
 
     if auth_mode is None:
-        if in_colab_shell() and (ee.data._credentials is None):
+        # pylint: disable-next=protected-access
+        if in_colab_shell() and (ee.data._get_state().credentials is None):
             ee.Authenticate()
             ee.Initialize(**kwargs)
             return
