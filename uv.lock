@@ -1568,7 +1568,7 @@ requires-dist = [
     { name = "anywidget" },
     { name = "bqplot" },
     { name = "colour" },
-    { name = "earthengine-api", specifier = ">=1.0.0" },
+    { name = "earthengine-api", specifier = ">=1.6.12" },
     { name = "ee-extra", marker = "extra == 'extra'", specifier = ">=0.0.15" },
     { name = "eerepr", specifier = ">=0.0.5" },
     { name = "ffmpeg-python", marker = "extra == 'extra'" },
