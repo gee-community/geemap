@@ -128,7 +128,7 @@ class Toolbar(anywidget.AnyWidget):
             reset=True,
         )
         # Use hold_trait_notifications to avoid triggering widget serialization
-        # during initialization, which can cause issues in Solara and other environments
+        # during initialization, which can cause issues in Solara and other environments.
         with self.hold_trait_notifications():
             self.main_tools = main_tools + ([self.toggle_widget] if extra_tools else [])
             self.extra_tools = extra_tools
