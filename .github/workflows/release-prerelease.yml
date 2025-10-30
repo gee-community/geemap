@@ -58,11 +58,19 @@ jobs:
           echo "Full version: ${FULL_VERSION}"
           echo "Tag: ${TAG_NAME}"
 
-      - name: Create release branch from master
+      - name: Checkout or Create Release Branch
         run: |
-          git fetch origin master
-          git checkout -b ${{ steps.compute.outputs.branch_name }} origin/master
-          echo "Created branch ${{ steps.compute.outputs.branch_name }} from origin/master"
+          BRANCH_NAME="${{ steps.compute.outputs.branch_name }}"
+          if git fetch origin $BRANCH_NAME; then
+            echo "Checking out branch $BRANCH_NAME."
+            git checkout $BRANCH_NAME
+            # Ensure the local branch tracks the remote for safe pushing
+            git pull origin $BRANCH_NAME
+          else
+            echo "Creating branch $BRANCH_NAME from master."
+            git fetch origin master
+            git checkout -b $BRANCH_NAME origin/master
+          fi
 
       - name: Bump version to prerelease
         run: |
