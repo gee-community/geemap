@@ -18,11 +18,11 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.22">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.23">
     
     
       
-        <title>Releasing - geemap</title>
+        <title>🚀 Releasing geemap - geemap</title>
       
     
     
@@ -88,7 +88,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#releasing" class="md-skip">
+        <a href="#releasing-geemap" class="md-skip">
           Skip to content
         </a>
       
@@ -123,7 +123,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Releasing
+              🚀 Releasing geemap
             
           </span>
         </div>
@@ -5575,47 +5575,56 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#releaser-responsibilities" class="md-nav__link">
+  <a href="#weekly-release-day-responsibilities-target-thursday" class="md-nav__link">
     <span class="md-ellipsis">
-      Releaser Responsibilities
+      📅 Weekly Release Day Responsibilities (Target: Thursday)
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Releaser Responsibilities">
+    <nav class="md-nav" aria-label="📅 Weekly Release Day Responsibilities (Target: Thursday)">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#week-1" class="md-nav__link">
+  <a href="#1-finalize-and-publish-stable-release" class="md-nav__link">
     <span class="md-ellipsis">
-      Week 1
+      1. ✅ Finalize and Publish Stable Release
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Week 1">
+    <nav class="md-nav" aria-label="1. ✅ Finalize and Publish Stable Release">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#monday-create-and-deploy-a-new-release-candidate-to-staging" class="md-nav__link">
+  <a href="#a-publish-the-stable-release" class="md-nav__link">
     <span class="md-ellipsis">
-      Monday: Create and deploy a new release candidate to staging
+      A. Publish the Stable Release
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#monday-to-wednesday-test-the-release-candidate" class="md-nav__link">
+  <a href="#b-check-and-publish-the-final-draft-release" class="md-nav__link">
     <span class="md-ellipsis">
-      Monday to Wednesday: Test the release candidate
+      B. Check and Publish the Final Draft Release
     </span>
   </a>
   
 </li>
         
           <li class="md-nav__item">
-  <a href="#wednesday-to-friday-fix-launch-blockers-and-re-stage" class="md-nav__link">
+  <a href="#c-finalize-the-master-branch-sync" class="md-nav__link">
     <span class="md-ellipsis">
-      Wednesday to Friday: Fix launch-blockers and re-stage
+      C. Finalize the Master Branch Sync
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#d-synchronize-bug-fixes-to-master" class="md-nav__link">
+    <span class="md-ellipsis">
+      D. Synchronize Bug Fixes to Master
     </span>
   </a>
   
@@ -5627,19 +5636,37 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#week-2" class="md-nav__link">
+  <a href="#2-start-the-next-prerelease-cycle" class="md-nav__link">
     <span class="md-ellipsis">
-      Week 2
+      2. 🏁 Start the Next Prerelease Cycle
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Week 2">
+    <nav class="md-nav" aria-label="2. 🏁 Start the Next Prerelease Cycle">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#monday-to-wednesday-deploy-the-release-candidate-to-production" class="md-nav__link">
+  <a href="#a-initiate-the-prerelease-workflow" class="md-nav__link">
     <span class="md-ellipsis">
-      Monday to Wednesday: Deploy the release candidate to production
+      A. Initiate the Prerelease Workflow
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#b-check-and-publish-the-prerelease" class="md-nav__link">
+    <span class="md-ellipsis">
+      B. Check and Publish the Prerelease
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#c-testing-for-the-week" class="md-nav__link">
+    <span class="md-ellipsis">
+      C. Testing for the Week
     </span>
   </a>
   
@@ -5677,123 +5704,99 @@
   
 
 
-<h1 id="releasing">Releasing<a class="headerlink" href="#releasing" title="Permanent link">&para;</a></h1>
+<h1 id="releasing-geemap">🚀 Releasing geemap<a class="headerlink" href="#releasing-geemap" title="Permanent link">&para;</a></h1>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The geemap release rotation lasts 2 weeks.</p>
-<p>The first week consists of:</p>
-<ul>
-<li>creating a release candidate,</li>
-<li>deploying the release candidate to staging,</li>
-<li>testing the release candidate, and</li>
-<li>fixing any potential launch blockers.</li>
-</ul>
-<p>The second week consists of:</p>
-<ul>
-<li>pushing the release candidate to production, and</li>
-<li>landing the launch (e.g. cleaning up, monitoring, etc.).</li>
-</ul>
-<p>These responsibilities are handled by the "releaser". The releaser rotates every
-two weeks. If you'd like to become a member of the release rotation, please
-reach out!</p>
-<h2 id="releaser-responsibilities">Releaser Responsibilities<a class="headerlink" href="#releaser-responsibilities" title="Permanent link">&para;</a></h2>
-<h3 id="week-1">Week 1<a class="headerlink" href="#week-1" title="Permanent link">&para;</a></h3>
-<h4 id="monday-create-and-deploy-a-new-release-candidate-to-staging"><strong>Monday:</strong> Create and deploy a new release candidate to staging<a class="headerlink" href="#monday-create-and-deploy-a-new-release-candidate-to-staging" title="Permanent link">&para;</a></h4>
+<p>The <code>geemap</code> release cycle is aligned with the <strong>weekly Earth Engine client library release</strong>, with <strong>Thursday</strong> being the target stable release day.</p>
+<p>The process is automated using GitHub Actions for versioning, tagging, and branch synchronization. The Releaser's role is focused on initiating the workflows and validating the automated results.</p>
+<hr />
+<h2 id="weekly-release-day-responsibilities-target-thursday">📅 Weekly Release Day Responsibilities (Target: Thursday)<a class="headerlink" href="#weekly-release-day-responsibilities-target-thursday" title="Permanent link">&para;</a></h2>
+<p>The releaser performs these steps on the target release day, starting with the final stable release of the previous cycle's work before immediately spinning up the new cycle's testing phase.</p>
+<h3 id="1-finalize-and-publish-stable-release">1. ✅ Finalize and Publish Stable Release<a class="headerlink" href="#1-finalize-and-publish-stable-release" title="Permanent link">&para;</a></h3>
+<p>The goal here is to release the package that was tested during the previous week.</p>
+<h4 id="a-publish-the-stable-release"><strong>A. Publish the Stable Release</strong><a class="headerlink" href="#a-publish-the-stable-release" title="Permanent link">&para;</a></h4>
 <ol>
-<li>
-<p>Choose a version number. The version number follows
-   <a href="https://semver.org/spec/v2.0.0.html">Semantic Versioning 2.0.0</a>. In short,
-   version numbers follow <code>vMAJOR.MINOR.PATCH</code>, where <code>MAJOR</code> is for breaking
-   changes, <code>MINOR</code> is for new features, and <code>PATCH</code> is for bug fixes. You can
-   see previous version numbers chosen by visiting the
-   <a href="https://github.com/gee-community/geemap/releases">Releases</a> page.</p>
-</li>
-<li>
-<p>Checkout the appropriate release branch. The branch name should use the
-   following format: <code>vMAJOR.MINOR.PATCH-release</code>.</p>
-</li>
-<li>
-<p>If necessary, install <code>bump-my-version</code> with <code>pip install bump-my-version</code>.
-   Update the version number with
-   <code>bump-my-version replace &lt;major,minor,patch&gt;rc1</code>. Until we set up
-   <a href="https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions">support for prerelease versions</a>,
-   you'll have to manually enter the major, minor, and patch numbers. The
-   version commit will be made to the release candidate branch directly.
-   Verify the version number is as-expected to avoid problems further along.</p>
-</li>
-<li>
-<p>Push the tag created by <code>bump-my-version</code> to GitHub with
-   <code>git push origin &lt;tag-name&gt;</code>.</p>
-</li>
-</ol>
-<h4 id="monday-to-wednesday-test-the-release-candidate"><strong>Monday to Wednesday:</strong> Test the release candidate<a class="headerlink" href="#monday-to-wednesday-test-the-release-candidate" title="Permanent link">&para;</a></h4>
-<ol>
-<li>
-<p>Switch to your test environment. Consider using a
-   <a href="https://colab.google/">Colab</a> notebook.</p>
-</li>
-<li>
-<p>Install the release candidate by running the following command:
-   <code>pip install git+https://github.com/gee-community/geemap.git@branch-name#egg=geemap</code>
-   and replacing <code>branch-name</code> with the branch name. <code>pip</code> will install from the
-   most recent commit on the release candidate branch.</p>
-</li>
-<li>
-<p>Run through the example notebooks, testing both geemap and geemap core. If
-   there are any launch blockers, file a bug and raise them to the rest of the
-   team. The bugs must be fixed and tested before the build reaches production.</p>
-</li>
-</ol>
-<h4 id="wednesday-to-friday-fix-launch-blockers-and-re-stage"><strong>Wednesday to Friday:</strong> Fix launch-blockers and re-stage<a class="headerlink" href="#wednesday-to-friday-fix-launch-blockers-and-re-stage" title="Permanent link">&para;</a></h4>
-<p>Skip this section if there aren't any launch-blocking bugs.</p>
-<ol>
-<li>
-<p>Commit the fix. Make sure the commits are present on the necessary branches.</p>
-<ul>
-<li>If the fix is for something present on both the <code>master</code> and release
-  candidate branch, make the fix on the <code>master</code> branch and cherrypick it
-  over to the release candidate branch.</li>
-<li>Otherwise, make the fix on the release candidate branch.</li>
+<li><strong>Go to Workflow Dispatch:</strong> Navigate to the <strong>Actions</strong> tab on GitHub, select the <strong><code>Release-stable</code></strong> workflow.</li>
+<li><strong>Run Workflow:</strong> Click <strong>Run workflow</strong> and enter the required inputs:<ul>
+<li><strong>Version:</strong> Enter the final stable version number (e.g., <strong><code>0.37.0</code></strong>).</li>
+<li><strong>Publish immediately:</strong> Leave as <code>false</code> to review the draft release first.</li>
 </ul>
 </li>
-<li>
-<p>Switch to the release candidate branch. Run <code>bump-my-version</code> to update the
-   patch number.</p>
-</li>
-<li>
-<p>Create a tag for this release. Increment <code>RC_NUM</code> for each release candidate.
-   Push the tag to GitHub.</p>
-</li>
+<li><strong>Action:</strong> The workflow automatically creates the stable tag (<code>v0.37.0</code>) and creates a <strong>draft GitHub Release</strong>.</li>
 </ol>
-<h3 id="week-2">Week 2<a class="headerlink" href="#week-2" title="Permanent link">&para;</a></h3>
-<h4 id="monday-to-wednesday-deploy-the-release-candidate-to-production"><strong>Monday to Wednesday:</strong> Deploy the release candidate to production<a class="headerlink" href="#monday-to-wednesday-deploy-the-release-candidate-to-production" title="Permanent link">&para;</a></h4>
-<p>Before proceeding, make sure the launch blockers have been fixed.</p>
+<h4 id="b-check-and-publish-the-final-draft-release"><strong>B. Check and Publish the Final Draft Release</strong><a class="headerlink" href="#b-check-and-publish-the-final-draft-release" title="Permanent link">&para;</a></h4>
 <ol>
-<li>
-<p>Create a new
-   <a href="https://github.com/gee-community/geemap/releases">GitHub release</a> based on
-   the most recent release candidate tag. When generating the release notes,
-   compare against the most recent version that went to production (i.e. not a
-   version with the <code>-rc</code> suffix).</p>
-</li>
-<li>
-<p>Monitor the <a href="https://github.com/gee-community/geemap/actions">actions</a>
-   triggered by the release to make sure they pass. Verify the new version is
-   present on <a href="https://pypi.org/project/geemap/">PyPi</a>.</p>
-</li>
-<li>
-<p>Switch to the <code>master</code> branch to update the changelog. Replace
-   <code>markdown_text</code> in
-   <a href="https://github.com/gee-community/geemap/blob/master/docs/changelog_update.py"><code>changelog_update.py</code></a>
-   with the release notes. Run the script and copy the output into
-   <a href="https://github.com/gee-community/geemap/blob/master/docs/changelog.md">changelog.md</a>.</p>
-</li>
-<li>
-<p>Switch to the <code>master</code> branch to update the version number. Cherrypick the
-   version bump commit (e.g.
-   <a href="https://github.com/gee-community/geemap/pull/1924/commits/3c2f7548d12e3a7c5600b3cb72a0fa107cdbd983">0.31.0 → 0.32.0</a>)
-   into the <code>master</code> branch.</p>
+<li>Go to the <strong>Releases</strong> page and find the new <strong>Draft Release</strong> (<code>v0.37.0</code>).</li>
+<li><strong>Review the release notes.</strong> They should include the differences from the last stable release tag.</li>
+<li><strong>Publish the Release.</strong> This single action triggers:<ul>
+<li>Final PyPI/Conda-Forge deployment and Docker build.</li>
+<li>The Post-Release Development Sync workflow.</li>
+</ul>
 </li>
 </ol>
+<h4 id="c-finalize-the-master-branch-sync"><strong>C. Finalize the Master Branch Sync</strong><a class="headerlink" href="#c-finalize-the-master-branch-sync" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Go to the <strong>Pull Requests</strong> tab.</li>
+<li>Find the automated PR titled: <strong><code>chore: Sync master version to X.Y.Z.post0</code></strong>.</li>
+<li><strong>Verify:</strong> Check that the deployment steps triggered by the final stable release are complete and successful.</li>
+<li><strong>Merge the Pull Request.</strong> This updates the <code>master</code> branch, setting the development version.</li>
+</ol>
+<h4 id="d-synchronize-bug-fixes-to-master"><strong>D. Synchronize Bug Fixes to Master</strong><a class="headerlink" href="#d-synchronize-bug-fixes-to-master" title="Permanent link">&para;</a></h4>
+<p>After the post-release PR is merged, ensure any bug fixes made directly to the <strong>previous week's release branch</strong> (e.g., <code>v0.37.0-release</code>) are present on <code>master</code>.</p>
+<details>
+<summary><b>Advanced: Synchronize Fixes using a GitHub Codespace</b></summary>
+
+The most robust way to ensure fixes are moved to the `master` branch is by using a dedicated cloud workspace.
+
+1.  **Launch Codespace:** Open a new **GitHub Codespace** directly on the `master` branch.
+    * Navigate to the `master` branch, click the **Code** dropdown, and select **Codespaces** -> **New codespace**.
+
+2.  **Identify Fix Commits:** Determine which fix commits from the old release branch (e.g., `v0.37.0-release`) need to be applied to `master`. The log command below shows commits on the release branch that are NOT yet in `master`:
+    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># View commits on the release branch that are NOT in master</span>
+git<span class="w"> </span>log<span class="w"> </span>master..v0.37.0-release<span class="w"> </span>--oneline
+</code></pre></div></td></tr></table></div>
+
+3.  **Perform Cherry-Pick:** For each fix commit identified, execute the `git cherry-pick` command in the Codespace terminal.
+    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span>
+<span class="normal">3</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="c1"># Replace &lt;COMMIT_HASH&gt; with the specific hash of the fix commit</span>
+git<span class="w"> </span>cherry-pick<span class="w"> </span>&lt;COMMIT_HASH&gt;
+<span class="c1"># Repeat for all necessary fixes. Resolve any conflicts in the editor.</span>
+</code></pre></div></td></tr></table></div>
+
+4.  **Push the Fixes:** Once all necessary fixes have been applied and committed (or cherry-picked) onto your local `master` branch, push the final changes.
+    <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>master
+</code></pre></div></td></tr></table></div>
+5.  **Close Codespace:** The synchronization is complete. You can close the Codespace.
+
+</details>
+
+<hr />
+<h3 id="2-start-the-next-prerelease-cycle">2. 🏁 Start the Next Prerelease Cycle<a class="headerlink" href="#2-start-the-next-prerelease-cycle" title="Permanent link">&para;</a></h3>
+<p>Immediately after deploying the stable release, initiate the testing cycle for the next version.</p>
+<h4 id="a-initiate-the-prerelease-workflow"><strong>A. Initiate the Prerelease Workflow</strong><a class="headerlink" href="#a-initiate-the-prerelease-workflow" title="Permanent link">&para;</a></h4>
+<ol>
+<li><strong>Determine the Next Version:</strong> Choose the next version number (e.g., <strong><code>0.37.1</code></strong>).</li>
+<li><strong>Go to Workflow Dispatch:</strong> Navigate to the <strong>Actions</strong> tab on GitHub, select the <strong><code>Release-prerelease</code></strong> workflow.</li>
+<li><strong>Run Workflow:</strong> Click <strong>Run workflow</strong> and enter the required inputs:<ul>
+<li><strong>Version:</strong> Enter the base version (e.g., <code>0.37.1</code>).</li>
+<li><strong>RC Number:</strong> Use <code>1</code>.</li>
+<li><strong>Publish immediately:</strong> Leave as <code>false</code>.</li>
+</ul>
+</li>
+<li><strong>Action:</strong> The workflow creates the tag (<code>v0.37.1rc1</code>) and creates a <strong>draft GitHub Prerelease</strong>.</li>
+</ol>
+<h4 id="b-check-and-publish-the-prerelease"><strong>B. Check and Publish the Prerelease</strong><a class="headerlink" href="#b-check-and-publish-the-prerelease" title="Permanent link">&para;</a></h4>
+<ol>
+<li>Go to the <strong>Releases</strong> page and find the new <strong>Draft Prerelease</strong> (<code>v0.37.1rc1</code>).</li>
+<li><strong>Review the notes.</strong> They should include the differences from the last stable release tag.</li>
+<li><strong>Publish the Prerelease.</strong> This action triggers the downstream CI jobs to make the release candidate available for testing.</li>
+</ol>
+<h4 id="c-testing-for-the-week"><strong>C. Testing for the Week</strong><a class="headerlink" href="#c-testing-for-the-week" title="Permanent link">&para;</a></h4>
+<ul>
+<li>Throughout the following week, test the newly published candidate using <code>pip install geemap==0.37.1rc1</code>.</li>
+<li>If bugs are found, fix them on the <strong><code>v0.37.1-release</code> branch</strong>. Then, use the <code>Release-prerelease</code> workflow to increment the RC number and republish the prerelease following the steps above.</li>
+</ul>
 
 
 
@@ -5816,7 +5819,7 @@ reach out!</p>
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="May 16, 2025 16:15:43 UTC"><span class="timeago" datetime="2025-05-16T16:15:43+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="May 16, 2025 16:15:43 UTC">2025-05-16</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="November 3, 2025 21:26:05 UTC"><span class="timeago" datetime="2025-11-03T21:26:05+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="November 3, 2025 21:26:05 UTC">2025-11-03</span>
   </span>
 
     
