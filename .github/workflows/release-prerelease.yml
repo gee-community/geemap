@@ -1,0 +1,133 @@
+name: Release-prerelease
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Base version number (e.g., 0.36.7)'
+        required: true
+        type: string
+      rc_number:
+        description: 'Release candidate number (default: 1)'
+        required: false
+        type: string
+        default: '1'
+      publish_immediately:
+        description: 'Publish release immediately (otherwise created as draft)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  create-prerelease:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Compute branch and version names
+        id: compute
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          RC_NUM="${{ github.event.inputs.rc_number }}"
+          BRANCH_NAME="v${VERSION}-release"
+          FULL_VERSION="${VERSION}rc${RC_NUM}"
+          TAG_NAME="v${FULL_VERSION}"
+
+          echo "branch_name=${BRANCH_NAME}" >> $GITHUB_OUTPUT
+          echo "full_version=${FULL_VERSION}" >> $GITHUB_OUTPUT
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+
+          echo "Branch to create: ${BRANCH_NAME}"
+          echo "Full version: ${FULL_VERSION}"
+          echo "Tag: ${TAG_NAME}"
+
+      - name: Checkout or Create Release Branch
+        run: |
+          BRANCH_NAME="${{ steps.compute.outputs.branch_name }}"
+          if git fetch origin $BRANCH_NAME; then
+            echo "Using existing branch $BRANCH_NAME."
+            git checkout $BRANCH_NAME
+            # Ensure the local branch tracks the remote for safe pushing
+            git pull origin $BRANCH_NAME
+          else
+            echo "Creating branch $BRANCH_NAME from master."
+            git fetch origin master
+            git checkout -b $BRANCH_NAME origin/master
+          fi
+
+      - name: Bump version to prerelease
+        run: |
+          python scripts/bump_geemap_version.py ${{ steps.compute.outputs.full_version }}
+
+      - name: Show git diff
+        run: |
+          echo "Changes made by version bump:"
+          git --no-pager diff
+
+      - name: Commit and push changes
+        run: |
+          git add pyproject.toml geemap/__init__.py
+          git commit -m "Bump geemap to v${{ steps.compute.outputs.full_version }}"
+          git push origin ${{ steps.compute.outputs.branch_name }}
+
+      - name: Create and push tag
+        run: |
+          git tag -a "${{ steps.compute.outputs.tag_name }}" -m "Release ${{ steps.compute.outputs.full_version }}"
+          git push origin "${{ steps.compute.outputs.tag_name }}"
+
+      - name: Create GitHub Prerelease
+        env:
+          GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          # Find the last non-prerelease tag
+          LAST_RELEASE=$(gh release list --exclude-pre-releases --limit 1 --json tagName --jq '.[0].tagName')
+
+          # Determine if release should be draft or published immediately
+          if [ "${{ github.event.inputs.publish_immediately }}" == "true" ]; then
+            DRAFT_FLAG=""
+          else
+            DRAFT_FLAG="--draft"
+          fi
+
+          if [ -z "$LAST_RELEASE" ]; then
+            echo "No previous release found, generating notes from all commits"
+            gh release create "${{ steps.compute.outputs.tag_name }}" \
+              --title "${{ steps.compute.outputs.tag_name }}" \
+              --prerelease \
+              $DRAFT_FLAG \
+              --generate-notes
+          else
+            echo "Generating changelog from ${LAST_RELEASE} to ${{ steps.compute.outputs.tag_name }}"
+            gh release create "${{ steps.compute.outputs.tag_name }}" \
+              --title "${{ steps.compute.outputs.tag_name }}" \
+              --prerelease \
+              $DRAFT_FLAG \
+              --generate-notes \
+              --notes-start-tag "${LAST_RELEASE}"
+          fi
+
+      - name: Summary
+        run: |
+          echo "## Prerelease Created Successfully! 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch**: ${{ steps.compute.outputs.branch_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.compute.outputs.full_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: ${{ steps.compute.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.compute.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY

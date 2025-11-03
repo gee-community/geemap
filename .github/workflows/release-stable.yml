@@ -1,0 +1,125 @@
+name: Release-stable
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number (e.g., 0.36.6)'
+        required: true
+        type: string
+      publish_immediately:
+        description: 'Publish release immediately (otherwise created as draft)'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Compute version and branch names
+        id: compute
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          RELEASE_BRANCH="v${VERSION}-release"
+          TAG_NAME="v${VERSION}"
+
+          echo "version=${VERSION}" >> $GITHUB_OUTPUT
+          echo "release_branch=${RELEASE_BRANCH}" >> $GITHUB_OUTPUT
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+
+          echo "Version: ${VERSION}"
+          echo "Expected release branch: ${RELEASE_BRANCH}"
+          echo "Tag: ${TAG_NAME}"
+
+      - name: Checkout release branch
+        run: |
+          # Try to checkout the release branch
+          if git fetch origin ${{ steps.compute.outputs.release_branch }}; then
+            git checkout ${{ steps.compute.outputs.release_branch }}
+            echo "Checked out existing release branch: ${{ steps.compute.outputs.release_branch }}"
+          else
+            echo "ERROR: Release branch ${{ steps.compute.outputs.release_branch }} does not exist."
+            echo "Primary releases should be created from the prerelease branch."
+            echo "Please create a prerelease first using the prerelease workflow."
+            exit 1
+          fi
+
+      - name: Bump version to release
+        run: |
+          python scripts/bump_geemap_version.py ${{ steps.compute.outputs.version }}
+
+      - name: Show git diff
+        run: |
+          echo "Changes made by version bump:"
+          git --no-pager diff
+
+      - name: Commit changes
+        run: |
+          git add pyproject.toml geemap/__init__.py
+          git commit -m "Bump geemap to v${{ steps.compute.outputs.version }}"
+
+      - name: Create and push tag
+        run: |
+          git tag -a "${{ steps.compute.outputs.tag_name }}" -m "Release ${{ steps.compute.outputs.version }}"
+          git push origin "${{ steps.compute.outputs.tag_name }}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          # Find the last non-prerelease tag
+          LAST_RELEASE=$(gh release list --exclude-pre-releases --limit 1 --json tagName --jq '.[0].tagName')
+
+          # Determine if release should be draft or published immediately
+          if [ "${{ github.event.inputs.publish_immediately }}" == "true" ]; then
+            DRAFT_FLAG=""
+          else
+            DRAFT_FLAG="--draft"
+          fi
+
+          if [ -z "$LAST_RELEASE" ]; then
+            echo "No previous release found, generating notes from all commits"
+            gh release create "${{ steps.compute.outputs.tag_name }}" \
+              --title "${{ steps.compute.outputs.tag_name }}" \
+              --latest \
+              $DRAFT_FLAG \
+              --generate-notes
+          else
+            echo "Generating changelog from ${LAST_RELEASE} to ${{ steps.compute.outputs.tag_name }}"
+            gh release create "${{ steps.compute.outputs.tag_name }}" \
+              --title "${{ steps.compute.outputs.tag_name }}" \
+              --latest \
+              $DRAFT_FLAG \
+              --generate-notes \
+              --notes-start-tag "${LAST_RELEASE}"
+          fi
+
+      - name: Summary
+        run: |
+          echo "## Release Created Successfully! 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version**: ${{ steps.compute.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Tag**: ${{ steps.compute.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.compute.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "A Pull Request for the development version bump to master has been initiated." >> $GITHUB_STEP_SUMMARY
