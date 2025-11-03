@@ -2,7 +2,7 @@
 
 ## Overview
 
-The `geemap` release cycle is aligned with the **weekly Earth Engine client library release**, with **Thursday** being the target stable release day. 
+The `geemap` release cycle is aligned with the **weekly Earth Engine client library release**, with **Thursday** being the target stable release day.
 
 The process is automated using GitHub Actions for versioning, tagging, and branch synchronization. The Releaser's role is focused on initiating the workflows and validating the automated results.
 
@@ -48,7 +48,7 @@ After the post-release PR is merged, ensure any bug fixes made directly to the *
 
 The most robust way to ensure fixes are moved to the `master` branch is by using a dedicated cloud workspace.
 
-1.  **Launch Codespace:** Open a new **GitHub Codespace** directly on the `master` branch. 
+1.  **Launch Codespace:** Open a new **GitHub Codespace** directly on the `master` branch.
     * Navigate to the `master` branch, click the **Code** dropdown, and select **Codespaces** -> **New codespace**.
 
 2.  **Identify Fix Commits:** Determine which fix commits from the old release branch (e.g., `v0.37.0-release`) need to be applied to `master`. The log command below shows commits on the release branch that are NOT yet in `master`:
@@ -60,7 +60,7 @@ The most robust way to ensure fixes are moved to the `master` branch is by using
 3.  **Perform Cherry-Pick:** For each fix commit identified, execute the `git cherry-pick` command in the Codespace terminal.
     ```bash
     # Replace <COMMIT_HASH> with the specific hash of the fix commit
-    git cherry-pick <COMMIT_HASH> 
+    git cherry-pick <COMMIT_HASH>
     # Repeat for all necessary fixes. Resolve any conflicts in the editor.
     ```
 

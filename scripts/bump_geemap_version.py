@@ -76,24 +76,31 @@ def update_pyproject_toml(file_path: Path, new_version: str) -> bool:
         elif stripped_line == "[tool.bumpversion]":
             in_bumpversion = True
             in_project = False
-        elif stripped_line.startswith("["): # End of previous section
+        elif stripped_line.startswith("["):  # End of previous section
             in_project = False
             in_bumpversion = False
 
         # --- Replacement Logic ---
         # 1. Replace in [project] section
-        if in_project and not project_replaced and re.match(r'^version\s*=\s*"', stripped_line):
+        if (
+            in_project
+            and not project_replaced
+            and re.match(r'^version\s*=\s*"', stripped_line)
+        ):
             new_lines.append(f'version = "{new_version}"')
             project_replaced = True
 
         # 2. Replace in [tool.bumpversion] section
-        elif in_bumpversion and not bumpversion_replaced and re.match(r'^current_version\s*=\s*"', stripped_line):
+        elif (
+            in_bumpversion
+            and not bumpversion_replaced
+            and re.match(r'^current_version\s*=\s*"', stripped_line)
+        ):
             new_lines.append(f'current_version = "{new_version}"')
             bumpversion_replaced = True
 
         else:
             new_lines.append(line)
-
 
     if not project_replaced or not bumpversion_replaced:
         print("ERROR: Failed to replace version strings in pyproject.toml")
