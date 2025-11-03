@@ -114,12 +114,6 @@ jobs:
               --notes-start-tag "${LAST_RELEASE}"
           fi
 
-      - name: Sync changes to master
-        run: |
-          # Optionally push the version bump commit to master
-          # This keeps master in sync with the latest release
-          git push origin HEAD:master
-
       - name: Summary
         run: |
           echo "## Release Created Successfully! 🎉" >> $GITHUB_STEP_SUMMARY
@@ -128,4 +122,4 @@ jobs:
           echo "- **Tag**: ${{ steps.compute.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
           echo "- **Release URL**: https://github.com/${{ github.repository }}/releases/tag/${{ steps.compute.outputs.tag_name }}" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "The version bump has been synced to master." >> $GITHUB_STEP_SUMMARY
+          echo "A Pull Request for the development version bump to master has been initiated." >> $GITHUB_STEP_SUMMARY

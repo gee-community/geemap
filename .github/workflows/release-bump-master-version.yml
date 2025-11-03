@@ -1,0 +1,108 @@
+name: Release-bump-master-version
+
+on:
+  # Triggered only when a release is PUBLISHED
+  release:
+    types: [published]
+
+jobs:
+  bump-master-version:
+    # CRITICAL: Only run if the published release is NOT a prerelease
+    if: github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write # Necessary for creating the PR
+
+    steps:
+      - name: Checkout repository (Master Branch)
+        uses: actions/checkout@v4
+        with:
+          # Checkout the master branch (the base of the new development branch)
+          ref: master
+          token: ${{ secrets.REPO_WRITE_TOKEN }}
+          fetch-depth: 0
+
+      # FIX: Ensure the local master branch is updated to prevent non-fast-forward push errors.
+      - name: Ensure Master is Up-to-Date
+        run: |
+          git pull origin master
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Compute Next Development Version
+        id: compute
+        run: |
+          # 1. Get the stable version from the published release tag (e.g., v0.36.7)
+          STABLE_VERSION="${{ github.event.release.tag_name }}"
+
+          # 2. Strip the leading 'v' and append '.post0'
+          BASE_VERSION=${STABLE_VERSION/v/}
+          NEW_DEV_VERSION="${BASE_VERSION}.post0"
+
+          # Use a unique branch name tied to the new version
+          NEW_BRANCH_NAME="chore/bump-to-${NEW_DEV_VERSION}"
+
+          echo "Setting master to development version: ${NEW_DEV_VERSION}"
+          echo "new_dev_version=${NEW_DEV_VERSION}" >> $GITHUB_OUTPUT
+          echo "new_branch_name=${NEW_BRANCH_NAME}" >> $GITHUB_OUTPUT
+
+      - name: Create New Development Branch
+        run: |
+          git checkout -b ${{ steps.compute.outputs.new_branch_name }}
+
+      - name: Run Version Bump Script
+        run: |
+          python scripts/bump_geemap_version.py ${{ steps.compute.outputs.new_dev_version }}
+
+      - name: Commit changes
+        run: |
+          # Check if the version bump actually changed the files
+          if git diff --exit-code; then
+            echo "Version files already up-to-date. No commit needed."
+            # Set a flag to skip the PR step
+            echo "skip_pr=true" >> $GITHUB_OUTPUT
+          else
+            git add pyproject.toml geemap/__init__.py
+            # Use [skip ci] to prevent this commit from triggering other CI runs
+            git commit -m "chore: Set development version to ${{ steps.compute.outputs.new_dev_version }} [skip ci]"
+            echo "skip_pr=false" >> $GITHUB_OUTPUT
+          fi
+        id: commit_check
+
+      - name: Create Pull Request to Master (using gh CLI)
+        # Only run if the commit_check step confirms changes were made.
+        if: ${{ steps.commit_check.outputs.skip_pr == 'false' }}
+        env:
+          # Use the token for gh CLI authentication
+          GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN }}
+        run: |
+          BRANCH="${{ steps.compute.outputs.new_branch_name }}"
+          TITLE="chore: Sync master version to ${{ steps.compute.outputs.new_dev_version }}"
+
+          # 1. Push the local branch to the remote (Now guaranteed to work after the git pull)
+          git push origin $BRANCH
+
+          # 2. Define the multiline body content
+          PR_BODY="This is an **automated Pull Request** triggered by the publication of the stable release **${{ github.event.release.tag_name }}**.
+
+          This PR updates the version numbers in \`pyproject.toml\` and \`geemap/__init__.py\` from the stable version to **\`${{ steps.compute.outputs.new_dev_version }}\`**. This is done to indicate that the master branch is now tracking the next development cycle.
+
+          **Please review and merge only after all downstream release checks (PyPI, Conda, Docs, etc.) are confirmed successful.**"
+
+          # 3. Create the PR using the gh CLI
+          gh pr create \
+            --base master \
+            --head $BRANCH \
+            --title "$TITLE" \
+            --body "$PR_BODY" \
+            --label "automated" \
+            --label "maintenance"

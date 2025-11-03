@@ -1,106 +1,100 @@
-# Releasing
+# 🚀 Releasing geemap
 
 ## Overview
 
-The geemap release rotation lasts 2 weeks.
+The `geemap` release cycle is aligned with the **weekly Earth Engine client library release**, with **Thursday** being the target stable release day. 
 
-The first week consists of:
+The process is automated using GitHub Actions for versioning, tagging, and branch synchronization. The Releaser's role is focused on initiating the workflows and validating the automated results.
 
--   creating a release candidate,
--   deploying the release candidate to staging,
--   testing the release candidate, and
--   fixing any potential launch blockers.
+---
 
-The second week consists of:
+## 📅 Weekly Release Day Responsibilities (Target: Thursday)
 
--   pushing the release candidate to production, and
--   landing the launch (e.g. cleaning up, monitoring, etc.).
+The releaser performs these steps on the target release day, starting with the final stable release of the previous cycle's work before immediately spinning up the new cycle's testing phase.
 
-These responsibilities are handled by the "releaser". The releaser rotates every
-two weeks. If you'd like to become a member of the release rotation, please
-reach out!
+### 1. ✅ Finalize and Publish Stable Release
 
-## Releaser Responsibilities
+The goal here is to release the package that was tested during the previous week.
 
-### Week 1
+#### **A. Publish the Stable Release**
 
-#### **Monday:** Create and deploy a new release candidate to staging
+1.  **Go to Workflow Dispatch:** Navigate to the **Actions** tab on GitHub, select the **`Release-stable`** workflow.
+2.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
+    * **Version:** Enter the final stable version number (e.g., **`0.37.0`**).
+    * **Publish immediately:** Leave as `false` to review the draft release first.
+3.  **Action:** The workflow automatically creates the stable tag (`v0.37.0`) and creates a **draft GitHub Release**.
 
-1. Choose a version number. The version number follows
-   [Semantic Versioning 2.0.0](https://semver.org/spec/v2.0.0.html). In short,
-   version numbers follow `vMAJOR.MINOR.PATCH`, where `MAJOR` is for breaking
-   changes, `MINOR` is for new features, and `PATCH` is for bug fixes. You can
-   see previous version numbers chosen by visiting the
-   [Releases](https://github.com/gee-community/geemap/releases) page.
+#### **B. Check and Publish the Final Draft Release**
 
-2. Checkout the appropriate release branch. The branch name should use the
-   following format: `vMAJOR.MINOR.PATCH-release`.
+1.  Go to the **Releases** page and find the new **Draft Release** (`v0.37.0`).
+2.  **Review the release notes.** They should include the differences from the last stable release tag.
+3.  **Publish the Release.** This single action triggers:
+    * Final PyPI/Conda-Forge deployment and Docker build.
+    * The Post-Release Development Sync workflow.
 
-3. If necessary, install `bump-my-version` with `pip install bump-my-version`.
-   Update the version number with
-   `bump-my-version replace <major,minor,patch>rc1`. Until we set up
-   [support for prerelease versions](https://github.com/callowayproject/bump-my-version?tab=readme-ov-file#add-support-for-pre-release-versions),
-   you'll have to manually enter the major, minor, and patch numbers. The
-   version commit will be made to the release candidate branch directly.
-   Verify the version number is as-expected to avoid problems further along.
+#### **C. Finalize the Master Branch Sync**
 
-5. Push the tag created by `bump-my-version` to GitHub with
-   `git push origin <tag-name>`.
+1.  Go to the **Pull Requests** tab.
+2.  Find the automated PR titled: **`chore: Sync master version to X.Y.Z.post0`**.
+3.  **Verify:** Check that the deployment steps triggered by the final stable release are complete and successful.
+4.  **Merge the Pull Request.** This updates the `master` branch, setting the development version.
 
-#### **Monday to Wednesday:** Test the release candidate
+#### **D. Synchronize Bug Fixes to Master**
 
-1. Switch to your test environment. Consider using a
-   [Colab](https://colab.google/) notebook.
+After the post-release PR is merged, ensure any bug fixes made directly to the **previous week's release branch** (e.g., `v0.37.0-release`) are present on `master`.
 
-2. Install the release candidate by running the following command:
-   `pip install git+https://github.com/gee-community/geemap.git@branch-name#egg=geemap`
-   and replacing `branch-name` with the branch name. `pip` will install from the
-   most recent commit on the release candidate branch.
+<details>
+<summary><b>Advanced: Synchronize Fixes using a GitHub Codespace</b></summary>
 
-3. Run through the example notebooks, testing both geemap and geemap core. If
-   there are any launch blockers, file a bug and raise them to the rest of the
-   team. The bugs must be fixed and tested before the build reaches production.
+The most robust way to ensure fixes are moved to the `master` branch is by using a dedicated cloud workspace.
 
-#### **Wednesday to Friday:** Fix launch-blockers and re-stage
+1.  **Launch Codespace:** Open a new **GitHub Codespace** directly on the `master` branch. 
+    * Navigate to the `master` branch, click the **Code** dropdown, and select **Codespaces** -> **New codespace**.
 
-Skip this section if there aren't any launch-blocking bugs.
+2.  **Identify Fix Commits:** Determine which fix commits from the old release branch (e.g., `v0.37.0-release`) need to be applied to `master`. The log command below shows commits on the release branch that are NOT yet in `master`:
+    ```bash
+    # View commits on the release branch that are NOT in master
+    git log master..v0.37.0-release --oneline
+    ```
 
-1. Commit the fix. Make sure the commits are present on the necessary branches.
+3.  **Perform Cherry-Pick:** For each fix commit identified, execute the `git cherry-pick` command in the Codespace terminal.
+    ```bash
+    # Replace <COMMIT_HASH> with the specific hash of the fix commit
+    git cherry-pick <COMMIT_HASH> 
+    # Repeat for all necessary fixes. Resolve any conflicts in the editor.
+    ```
 
-    - If the fix is for something present on both the `master` and release
-      candidate branch, make the fix on the `master` branch and cherrypick it
-      over to the release candidate branch.
-    - Otherwise, make the fix on the release candidate branch.
+4.  **Push the Fixes:** Once all necessary fixes have been applied and committed (or cherry-picked) onto your local `master` branch, push the final changes.
+    ```bash
+    git push origin master
+    ```
+5.  **Close Codespace:** The synchronization is complete. You can close the Codespace.
 
-2. Switch to the release candidate branch. Run `bump-my-version` to update the
-   patch number.
+</details>
 
-3. Create a tag for this release. Increment `RC_NUM` for each release candidate.
-   Push the tag to GitHub.
+---
 
-### Week 2
+### 2. 🏁 Start the Next Prerelease Cycle
 
-#### **Monday to Wednesday:** Deploy the release candidate to production
+Immediately after deploying the stable release, initiate the testing cycle for the next version.
 
-Before proceeding, make sure the launch blockers have been fixed.
+#### **A. Initiate the Prerelease Workflow**
 
-1. Create a new
-   [GitHub release](https://github.com/gee-community/geemap/releases) based on
-   the most recent release candidate tag. When generating the release notes,
-   compare against the most recent version that went to production (i.e. not a
-   version with the `-rc` suffix).
+1.  **Determine the Next Version:** Choose the next version number (e.g., **`0.37.1`**).
+2.  **Go to Workflow Dispatch:** Navigate to the **Actions** tab on GitHub, select the **`Release-prerelease`** workflow.
+3.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
+    * **Version:** Enter the base version (e.g., `0.37.1`).
+    * **RC Number:** Use `1`.
+    * **Publish immediately:** Leave as `false`.
+4.  **Action:** The workflow creates the tag (`v0.37.1rc1`) and creates a **draft GitHub Prerelease**.
 
-2. Monitor the [actions](https://github.com/gee-community/geemap/actions)
-   triggered by the release to make sure they pass. Verify the new version is
-   present on [PyPi](https://pypi.org/project/geemap/).
+#### **B. Check and Publish the Prerelease**
 
-3. Switch to the `master` branch to update the changelog. Replace
-   `markdown_text` in
-   [`changelog_update.py`](https://github.com/gee-community/geemap/blob/master/docs/changelog_update.py)
-   with the release notes. Run the script and copy the output into
-   [changelog.md](https://github.com/gee-community/geemap/blob/master/docs/changelog.md).
+1.  Go to the **Releases** page and find the new **Draft Prerelease** (`v0.37.1rc1`).
+2.  **Review the notes.** They should include the differences from the last stable release tag.
+3.  **Publish the Prerelease.** This action triggers the downstream CI jobs to make the release candidate available for testing.
 
-4. Switch to the `master` branch to update the version number. Cherrypick the
-   version bump commit (e.g.
-   [0.31.0 → 0.32.0](https://github.com/gee-community/geemap/pull/1924/commits/3c2f7548d12e3a7c5600b3cb72a0fa107cdbd983))
-   into the `master` branch.
+#### **C. Testing for the Week**
+
+* Throughout the following week, test the newly published candidate using `pip install geemap==0.37.1rc1`.
+* If bugs are found, fix them on the **`v0.37.1-release` branch**. Then, use the `Release-prerelease` workflow to increment the RC number and republish the prerelease following the steps above.

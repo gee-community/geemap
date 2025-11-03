@@ -67,30 +67,33 @@ def update_pyproject_toml(file_path: Path, new_version: str) -> bool:
     bumpversion_replaced = False
 
     for line in lines:
-        if line.strip() == "[project]":
+        stripped_line = line.strip()
+
+        # State tracking for sections
+        if stripped_line == "[project]":
             in_project = True
             in_bumpversion = False
-        elif line.strip() == "[tool.bumpversion]":
+        elif stripped_line == "[tool.bumpversion]":
             in_bumpversion = True
             in_project = False
-        elif line.strip().startswith("["):
+        elif stripped_line.startswith("["): # End of previous section
             in_project = False
             in_bumpversion = False
 
-        # Replace in [project] section
-        if in_project and not project_replaced and re.match(r'^version\s*=\s*"', line):
+        # --- Replacement Logic ---
+        # 1. Replace in [project] section
+        if in_project and not project_replaced and re.match(r'^version\s*=\s*"', stripped_line):
             new_lines.append(f'version = "{new_version}"')
             project_replaced = True
-        # Replace in [tool.bumpversion] section
-        elif (
-            in_bumpversion
-            and not bumpversion_replaced
-            and re.match(r'^current_version\s*=\s*"', line)
-        ):
+
+        # 2. Replace in [tool.bumpversion] section
+        elif in_bumpversion and not bumpversion_replaced and re.match(r'^current_version\s*=\s*"', stripped_line):
             new_lines.append(f'current_version = "{new_version}"')
             bumpversion_replaced = True
+
         else:
             new_lines.append(line)
+
 
     if not project_replaced or not bumpversion_replaced:
         print("ERROR: Failed to replace version strings in pyproject.toml")
@@ -100,7 +103,7 @@ def update_pyproject_toml(file_path: Path, new_version: str) -> bool:
 
     if new_content != original_content:
         file_path.write_text(new_content)
-        print(f"✓ Updated pyproject.toml: {old_project_version} → {new_version}")
+        print(f"✓ Updated pyproject.toml to {new_version}")
         return True
     else:
         print("ERROR: No changes made to pyproject.toml")
@@ -115,14 +118,9 @@ def update_init_py(file_path: Path, new_version: str) -> bool:
     # Pattern: __version__ = "..."
     pattern = r'^__version__\s*=\s*"([^"]+)"'
 
-    match = re.search(pattern, content, re.MULTILINE)
-
-    if not match:
+    if not re.search(pattern, content, re.MULTILINE):
         print("ERROR: Could not find '__version__ = \"...\"' in geemap/__init__.py")
         return False
-
-    old_version = match.group(1)
-    print(f"Found __version__: {old_version}")
 
     # Replace the version
     new_content = re.sub(
@@ -131,7 +129,7 @@ def update_init_py(file_path: Path, new_version: str) -> bool:
 
     if new_content != original_content:
         file_path.write_text(new_content)
-        print(f"✓ Updated geemap/__init__.py: {old_version} → {new_version}")
+        print(f"✓ Updated geemap/__init__.py to {new_version}")
         return True
     else:
         print("ERROR: No changes made to geemap/__init__.py")
@@ -147,9 +145,9 @@ def main():
     new_version = sys.argv[1]
 
     # Validate version format (basic check)
-    if not re.match(r"^\d+\.\d+\.\d+", new_version):
+    if not re.match(r"^\d+\.\d+\.\d+(rc\d+|\.post\d+)*$", new_version):
         print(f"ERROR: Invalid version format: {new_version}")
-        print("Expected format: X.Y.Z or X.Y.Z-suffix (e.g., 0.36.5 or 0.36.5rc1)")
+        print("Expected format: X.Y.Z, X.Y.ZrcN, or X.Y.Z.postN (e.g., 0.36.5.post0)")
         sys.exit(1)
 
     print(f"\nBumping version to: {new_version}\n")
@@ -169,17 +167,19 @@ def main():
         print(f"ERROR: geemap/__init__.py not found at {init_path}")
         sys.exit(1)
 
-    # Update files
-    success = True
-    success = update_pyproject_toml(pyproject_path, new_version) and success
-    success = update_init_py(init_path, new_version) and success
-
-    if success:
-        print("\n✓ Version bump completed successfully!")
-        sys.exit(0)
-    else:
-        print("\n✗ Version bump failed!")
+    # --- FAIL FAST Implementation ---
+    # Update pyproject.toml and exit if failed
+    if not update_pyproject_toml(pyproject_path, new_version):
+        print("\n✗ Version bump failed in pyproject.toml! Halting.")
         sys.exit(1)
+
+    # Update geemap/__init__.py and exit if failed
+    if not update_init_py(init_path, new_version):
+        print("\n✗ Version bump failed in geemap/__init__.py! Halting.")
+        sys.exit(1)
+
+    print("\n✓ Version bump completed successfully!")
+    sys.exit(0)
 
 
 if __name__ == "__main__":
