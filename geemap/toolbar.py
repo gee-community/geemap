@@ -4101,93 +4101,106 @@ def _cog_stac_inspector_callback(map, selected, item):
     return map.tool_control
 
 
-main_tools = [
-    ToolbarItem(
-        icon="point_scan",
-        tooltip="Inspector",
-        callback=_inspector_tool_callback,
-    ),
-    ToolbarItem(
-        icon="bar_chart",
-        tooltip="Plotting",
-        callback=_plotting_tool_callback,
-    ),
-    ToolbarItem(
-        icon="history",
-        tooltip="Create timelapse",
-        callback=_timelapse_tool_callback,
-    ),
-    ToolbarItem(
-        icon="map",
-        tooltip="Change basemap",
-        callback=_basemap_tool_callback,
-    ),
-    ToolbarItem(
-        icon="code",
-        tooltip="Convert Earth Engine JavaScript to Python",
-        callback=_convert_js_tool_callback,
-    ),
-]
+_main_tools_cache: List[ToolbarItem] | None = None
+_extra_tools_cache: List[ToolbarItem] | None = None
 
-extra_tools = [
-    ToolbarItem(
-        icon="ink_eraser",
-        tooltip="Remove all drawn features",
-        callback=lambda m, selected, _: m.remove_drawn_features() if selected else None,
-        reset=True,
-    ),
-    ToolbarItem(
-        icon="upload",
-        tooltip="Open local vector/raster data",
-        callback=_open_data_tool_callback,
-    ),
-    ToolbarItem(
-        icon="manufacturing",
-        tooltip="WhiteboxTools for local geoprocessing",
-        callback=_whitebox_tool_callback,
-    ),
-    ToolbarItem(
-        icon="dns",
-        tooltip="GEE Toolbox for cloud computing",
-        callback=_gee_toolbox_tool_callback,
-    ),
-    ToolbarItem(
-        icon="fast_forward",
-        tooltip="Activate timeslider",
-        callback=_time_slider_tool_callback,
-    ),
-    ToolbarItem(
-        icon="pan_tool_alt",
-        tooltip="Collect training samples",
-        callback=_collect_samples_tool_callback,
-    ),
-    ToolbarItem(
-        icon="show_chart",
-        tooltip="Creating and plotting transects",
-        callback=_plot_transect_tool_callback,
-    ),
-    ToolbarItem(
-        icon="shuffle",
-        tooltip="Sankey plots",
-        callback=_sankee_tool_callback,
-    ),
-    ToolbarItem(
-        icon="image",
-        tooltip="Planet imagery",
-        callback=_split_basemaps_tool_callback,
-    ),
-    ToolbarItem(
-        icon="target",
-        tooltip="Get COG/STAC pixel value",
-        callback=_cog_stac_inspector_callback,
-    ),
-    ToolbarItem(
-        icon="question_mark",
-        tooltip="Get help",
-        callback=_open_help_page_callback,
-        reset=True,
-    ),
-]
+def get_main_tools() -> List[ToolbarItem]:
+    """Lazily create and return the main_tools list."""
+    global _main_tools_cache
+    if _main_tools_cache is None:
+        _main_tools_cache = [
+            ToolbarItem(
+                icon="point_scan",
+                tooltip="Inspector",
+                callback=_inspector_tool_callback,
+            ),
+            ToolbarItem(
+                icon="bar_chart",
+                tooltip="Plotting",
+                callback=_plotting_tool_callback,
+            ),
+            ToolbarItem(
+                icon="history",
+                tooltip="Create timelapse",
+                callback=_timelapse_tool_callback,
+            ),
+            ToolbarItem(
+                icon="map",
+                tooltip="Change basemap",
+                callback=_basemap_tool_callback,
+            ),
+            ToolbarItem(
+                icon="code",
+                tooltip="Convert Earth Engine JavaScript to Python",
+                callback=_convert_js_tool_callback,
+            ),
+        ]
+    return _main_tools_cache
+
+def get_extra_tools() -> List[ToolbarItem]:
+    """Lazily create and return the extra_tools list."""
+    global _extra_tools_cache
+    if _extra_tools_cache is None:
+        _extra_tools_cache = [
+            ToolbarItem(
+                icon="ink_eraser",
+                tooltip="Remove all drawn features",
+                callback=lambda m, selected, _: m.remove_drawn_features() if selected else None,
+                reset=True,
+            ),
+            ToolbarItem(
+                icon="upload",
+                tooltip="Open local vector/raster data",
+                callback=_open_data_tool_callback,
+            ),
+            ToolbarItem(
+                icon="manufacturing",
+                tooltip="WhiteboxTools for local geoprocessing",
+                callback=_whitebox_tool_callback,
+            ),
+            ToolbarItem(
+                icon="dns",
+                tooltip="GEE Toolbox for cloud computing",
+                callback=_gee_toolbox_tool_callback,
+            ),
+            ToolbarItem(
+                icon="fast_forward",
+                tooltip="Activate timeslider",
+                callback=_time_slider_tool_callback,
+            ),
+            ToolbarItem(
+                icon="pan_tool_alt",
+                tooltip="Collect training samples",
+                callback=_collect_samples_tool_callback,
+            ),
+            ToolbarItem(
+                icon="show_chart",
+                tooltip="Creating and plotting transects",
+                callback=_plot_transect_tool_callback,
+            ),
+            ToolbarItem(
+                icon="shuffle",
+                tooltip="Sankey plots",
+                callback=_sankee_tool_callback,
+            ),
+            ToolbarItem(
+                icon="image",
+                tooltip="Planet imagery",
+                callback=_split_basemaps_tool_callback,
+            ),
+            ToolbarItem(
+                icon="target",
+                tooltip="Get COG/STAC pixel value",
+                callback=_cog_stac_inspector_callback,
+            ),
+            ToolbarItem(
+                icon="question_mark",
+                tooltip="Get help",
+                callback=_open_help_page_callback,
+                reset=True,
+            ),
+        ]
+    return _extra_tools_cache
 
 
 def plotly_toolbar(
