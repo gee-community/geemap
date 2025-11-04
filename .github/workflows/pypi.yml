@@ -30,10 +30,6 @@ jobs:
             echo "tag=${{ github.event.release.tag_name }}" >> $GITHUB_OUTPUT
             echo "source=release_event" >> $GITHUB_OUTPUT
           else
-            if [ -z "${{ github.event.inputs.tag }}" ]; then
-              echo "ERROR: workflow_dispatch requires the 'tag' input to be set." >&2
-              exit 1
-            fi
             echo "tag=${{ github.event.inputs.tag }}" >> $GITHUB_OUTPUT
             echo "source=manual_dispatch" >> $GITHUB_OUTPUT
           fi
