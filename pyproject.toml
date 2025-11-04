@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "geemap"
-version = "0.36.4"
+version = "0.36.7rc1"
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
 requires-python = ">=3.9"
@@ -149,7 +149,7 @@ exclude = ["docs*"]
 universal = true
 
 [tool.bumpversion]
-current_version = "0.36.4"
+current_version = "0.36.7rc1"
 commit = true
 tag = true
 
