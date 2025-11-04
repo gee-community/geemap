@@ -4104,6 +4104,7 @@ def _cog_stac_inspector_callback(map, selected, item):
 _main_tools_cache: List[ToolbarItem] | None = None
 _extra_tools_cache: List[ToolbarItem] | None = None
 
+
 def get_main_tools() -> List[ToolbarItem]:
     """Lazily create and return the main_tools list."""
     global _main_tools_cache
@@ -4137,6 +4138,7 @@ def get_main_tools() -> List[ToolbarItem]:
         ]
     return _main_tools_cache
 
+
 def get_extra_tools() -> List[ToolbarItem]:
     """Lazily create and return the extra_tools list."""
     global _extra_tools_cache
@@ -4145,7 +4147,9 @@ def get_extra_tools() -> List[ToolbarItem]:
             ToolbarItem(
                 icon="ink_eraser",
                 tooltip="Remove all drawn features",
-                callback=lambda m, selected, _: m.remove_drawn_features() if selected else None,
+                callback=lambda m, selected, _: (
+                    m.remove_drawn_features() if selected else None
+                ),
                 reset=True,
             ),
             ToolbarItem(
