@@ -3171,6 +3171,8 @@ def ee_to_xarray(
     primary_dim_property=None,
     ee_mask_value=None,
     ee_initialize=True,
+    project=None,
+    opt_url=None,
     **kwargs,
 ):
     """Open an Earth Engine ImageCollection as an Xarray Dataset. This function is a wrapper for
@@ -3238,7 +3240,16 @@ def ee_to_xarray(
             this is 'np.iinfo(np.int32).max' i.e. 2147483647.
         request_byte_limit: the max allowed bytes to request at a time from Earth
             Engine. By default, it is 48MBs.
-        ee_initialize (optional): Whether to initialize ee with the high-volume endpoint. Defaults to True.
+        ee_initialize (optional): Whether to initialize Earth Engine if not already
+            initialized. Defaults to True. If False, assumes Earth Engine is already
+            initialized by the user.
+        project (optional): The Google Cloud Project ID to use for Earth Engine
+            initialization. Only used if ee_initialize is True and Earth Engine is
+            not already initialized.
+        opt_url (optional): The Earth Engine API URL to use. Defaults to the
+            high-volume endpoint 'https://earthengine-highvolume.googleapis.com'.
+            Only used if ee_initialize is True and Earth Engine is not already
+            initialized.
 
     Returns:
       An xarray.Dataset that streams in remote data from Earth Engine.
@@ -3269,9 +3280,15 @@ def ee_to_xarray(
     kwargs["ee_mask_value"] = ee_mask_value
     kwargs["engine"] = "ee"
 
-    if ee_initialize:
-        opt_url = "https://earthengine-highvolume.googleapis.com"
-        ee.Initialize(opt_url=opt_url)
+    if ee_initialize and not ee.data.is_initialized():
+        # Set default opt_url if not provided
+        if opt_url is None:
+            opt_url = "https://earthengine-highvolume.googleapis.com"
+        # Initialize with project if provided, otherwise let ee.Initialize use defaults
+        if project is not None:
+            ee.Initialize(opt_url=opt_url, project=project)
+        else:
+            ee.Initialize(opt_url=opt_url)
 
     if isinstance(dataset, str):
         if not dataset.startswith("ee://"):
