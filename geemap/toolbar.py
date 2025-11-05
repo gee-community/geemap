@@ -4101,8 +4101,8 @@ def _cog_stac_inspector_callback(map, selected, item):
     return map.tool_control
 
 
-_main_tools_cache: List[ToolbarItem] | None = None
-_extra_tools_cache: List[ToolbarItem] | None = None
+_main_tools_cache: Optional[List[ToolbarItem]] = None
+_extra_tools_cache: Optional[List[ToolbarItem]] = None
 
 
 def get_main_tools() -> List[ToolbarItem]:

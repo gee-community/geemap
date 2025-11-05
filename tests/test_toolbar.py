@@ -49,7 +49,7 @@ class TestToolbar(unittest.TestCase):
     def test_only_main_tools_exist_if_no_extra_tools(self):
         map = geemap.Map(ee_initialize=False)
         toolbar = Toolbar(map, [self.item], [])
-        self.assertNotIn(toolbar.toggle_widget, toolbar.get_main_tools())
+        self.assertNotIn(toolbar.toggle_widget, toolbar.main_tools)
 
     def test_all_tools_and_toggle_exist_if_extra_tools(self):
         map = geemap.Map(ee_initialize=False)
@@ -88,17 +88,17 @@ class TestToolbar(unittest.TestCase):
         self.assertIsNone(self.last_called_item)
 
         # Select first tool, which does not reset.
-        toolbar.get_main_tools()[0].active = True
+        toolbar.main_tools[0].active = True
         self.assertTrue(self.last_called_with_selected)
         self.assertEqual(self.callback_calls, 1)
-        self.assertTrue(toolbar.get_main_tools()[0].active)
+        self.assertTrue(toolbar.main_tools[0].active)
         self.assertEqual(self.item, self.last_called_item)
 
         # Select second tool, which resets.
-        toolbar.get_main_tools()[1].active = True
+        toolbar.main_tools[1].active = True
         self.assertFalse(self.last_called_with_selected)  # was reset by callback
         self.assertEqual(self.callback_calls, 3)
-        self.assertFalse(toolbar.get_main_tools()[1].active)
+        self.assertFalse(toolbar.main_tools[1].active)
         self.assertEqual(self.reset_item, self.last_called_item)
 
     @dataclass
@@ -122,19 +122,19 @@ class TestToolbar(unittest.TestCase):
         )
         map_fake = fake_map.FakeMap()
         toolbar = Toolbar(map_fake, [item], [])
-        toolbar.get_main_tools()[0].active = True
+        toolbar.main_tools[0].active = True
         self.assertEqual(1, widget.selected_count)
         self.assertEqual(0, widget.cleanup_count)
 
-        toolbar.get_main_tools()[0].active = False
+        toolbar.main_tools[0].active = False
         self.assertEqual(1, widget.selected_count)
         self.assertEqual(1, widget.cleanup_count)
 
-        toolbar.get_main_tools()[0].active = True
+        toolbar.main_tools[0].active = True
         self.assertEqual(2, widget.selected_count)
         self.assertEqual(1, widget.cleanup_count)
 
         widget.cleanup()
         self.assertEqual(2, widget.selected_count)
         self.assertEqual(3, widget.cleanup_count)
-        self.assertFalse(toolbar.get_main_tools()[0].active)
+        self.assertFalse(toolbar.main_tools[0].active)
