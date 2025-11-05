@@ -34,8 +34,8 @@ jobs:
             echo "source=manual_dispatch" >> $GITHUB_OUTPUT
           fi
 
-      - name: Guard: require explicit confirmation for manual runs
-        if: ${{ github.event_name == 'workflow_dispatch' }}
+      - name: Confirmation for manual runs
+        if: "${{ github.event_name == 'workflow_dispatch' }}"
         run: |
           if [ "${{ github.event.inputs.confirm }}" != "YES" ]; then
             echo "Manual publish requires confirm=YES. Aborting."
@@ -45,7 +45,7 @@ jobs:
       - name: Checkout the release tag
         uses: actions/checkout@v5
         with:
-          ref: ${{ steps.vars.outputs.tag }}
+          ref: "${{ steps.vars.outputs.tag }}"
           fetch-depth: 0
 
       - name: Set up Python
