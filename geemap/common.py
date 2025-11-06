@@ -3240,17 +3240,19 @@ def ee_to_xarray(
             this is 'np.iinfo(np.int32).max' i.e. 2147483647.
         request_byte_limit: the max allowed bytes to request at a time from Earth
             Engine. By default, it is 48MBs.
-        ee_initialize (optional): Whether to initialize Earth Engine if not already
-            initialized. Defaults to True. If False, assumes Earth Engine is already
-            initialized by the user. If True and Earth Engine is not already initialized,
-            a project parameter must be provided.
+        ee_initialize (optional): Whether to initialize (or reinitialize) Earth Engine.
+            Defaults to True. If True and Earth Engine is already initialized, it will
+            reinitialize with the current project to switch to the specified opt_url
+            (high-volume endpoint by default). If True and Earth Engine is not initialized,
+            a project parameter must be provided. If False, uses the current Earth Engine
+            initialization state.
         project (optional): The Google Cloud Project ID to use for Earth Engine
             initialization. Required if ee_initialize is True and Earth Engine is
-            not already initialized.
+            not already initialized. If Earth Engine is already initialized and
+            ee_initialize is True, the current project will be used automatically.
         opt_url (optional): The Earth Engine API URL to use. Defaults to the
             high-volume endpoint 'https://earthengine-highvolume.googleapis.com'.
-            Only used if ee_initialize is True and Earth Engine is not already
-            initialized.
+            Used when ee_initialize is True to initialize or reinitialize Earth Engine.
 
     Returns:
       An xarray.Dataset that streams in remote data from Earth Engine.
@@ -3281,22 +3283,29 @@ def ee_to_xarray(
     kwargs["ee_mask_value"] = ee_mask_value
     kwargs["engine"] = "ee"
 
-    if ee_initialize and not ee.data.is_initialized():
-        # Only initialize if a project is provided to avoid initialization errors
-        if project is None:
-            raise ValueError(
-                "Earth Engine is not initialized and no project was provided. "
-                "Please either:\n"
-                "  1. Initialize Earth Engine before calling this function:\n"
-                "     ee.Initialize(project='YOUR-PROJECT-ID')\n"
-                "  2. Provide a project parameter:\n"
-                "     geemap.ee_to_xarray(..., project='YOUR-PROJECT-ID')\n"
-                "  3. Set ee_initialize=False if already initialized elsewhere"
-            )
+    if ee_initialize:
         # Set default opt_url if not provided
         if opt_url is None:
             opt_url = "https://earthengine-highvolume.googleapis.com"
-        ee.Initialize(opt_url=opt_url, project=project)
+        
+        if ee.data.is_initialized():
+            # If already initialized, get the current project and reinitialize
+            # to switch to high-volume endpoint (or custom opt_url)
+            current_project = ee.data._cloud_api_user_project
+            ee.Initialize(project=current_project, opt_url=opt_url)
+        else:
+            # Not initialized - need a project to initialize
+            if project is None:
+                raise ValueError(
+                    "Earth Engine is not initialized and no project was provided. "
+                    "Please either:\n"
+                    "  1. Initialize Earth Engine before calling this function:\n"
+                    "     ee.Initialize(project='YOUR-PROJECT-ID')\n"
+                    "  2. Provide a project parameter:\n"
+                    "     geemap.ee_to_xarray(..., project='YOUR-PROJECT-ID')\n"
+                    "  3. Set ee_initialize=False if already initialized elsewhere"
+                )
+            ee.Initialize(opt_url=opt_url, project=project)
 
     if isinstance(dataset, str):
         if not dataset.startswith("ee://"):
