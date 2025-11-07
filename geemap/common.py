@@ -3291,8 +3291,26 @@ def ee_to_xarray(
         if ee.data.is_initialized():
             # If already initialized, get the current project and reinitialize
             # to switch to high-volume endpoint (or custom opt_url)
-            current_project = ee.data._get_state().cloud_api_user_project
-            ee.Initialize(project=current_project, opt_url=opt_url)
+            try:
+                state = ee.data._get_state()
+                current_project = getattr(state, "cloud_api_user_project", None)
+                if current_project is None:
+                    raise AttributeError("cloud_api_user_project is None or not set in Earth Engine state. Please provide the 'project' parameter explicitly.")
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to access Earth Engine internal state for current project: {e}\n"
+                    "Please provide the 'project' parameter explicitly or ensure Earth Engine is properly initialized."
+                )
+            if current_project is not None:
+                ee.Initialize(project=current_project, opt_url=opt_url)
+            elif project is not None:
+                ee.Initialize(project=project, opt_url=opt_url)
+            else:
+                raise ValueError(
+                    "Earth Engine is already initialized, but no project could be determined from the current authentication context. "
+                    "Please provide a project parameter or reinitialize Earth Engine with a project:\n"
+                    "  ee.Initialize(project='YOUR-PROJECT-ID')"
+                )
         else:
             # Not initialized - need a project to initialize
             if project is None:
