@@ -3171,6 +3171,8 @@ def ee_to_xarray(
     primary_dim_property=None,
     ee_mask_value=None,
     ee_initialize=True,
+    project=None,
+    opt_url=None,
     **kwargs,
 ):
     """Open an Earth Engine ImageCollection as an Xarray Dataset. This function is a wrapper for
@@ -3238,7 +3240,19 @@ def ee_to_xarray(
             this is 'np.iinfo(np.int32).max' i.e. 2147483647.
         request_byte_limit: the max allowed bytes to request at a time from Earth
             Engine. By default, it is 48MBs.
-        ee_initialize (optional): Whether to initialize ee with the high-volume endpoint. Defaults to True.
+        ee_initialize (optional): Whether to initialize (or reinitialize) Earth Engine.
+            Defaults to True. If True and Earth Engine is already initialized, it will
+            reinitialize with the current project to switch to the specified opt_url
+            (high-volume endpoint by default). If True and Earth Engine is not initialized,
+            a project parameter must be provided. If False, uses the current Earth Engine
+            initialization state.
+        project (optional): The Google Cloud Project ID to use for Earth Engine
+            initialization. Required if ee_initialize is True and Earth Engine is
+            not already initialized. If Earth Engine is already initialized and
+            ee_initialize is True, the current project will be used automatically.
+        opt_url (optional): The Earth Engine API URL to use. Defaults to the
+            high-volume endpoint 'https://earthengine-highvolume.googleapis.com'.
+            Used when ee_initialize is True to initialize or reinitialize Earth Engine.
 
     Returns:
       An xarray.Dataset that streams in remote data from Earth Engine.
@@ -3270,8 +3284,46 @@ def ee_to_xarray(
     kwargs["engine"] = "ee"
 
     if ee_initialize:
-        opt_url = "https://earthengine-highvolume.googleapis.com"
-        ee.Initialize(opt_url=opt_url)
+        # Set default opt_url if not provided
+        if opt_url is None:
+            opt_url = "https://earthengine-highvolume.googleapis.com"
+
+        if ee.data.is_initialized():
+            # If already initialized, get the current project and reinitialize
+            # to switch to high-volume endpoint (or custom opt_url)
+            try:
+                state = ee.data._get_state()
+                current_project = getattr(state, "cloud_api_user_project", None)
+            except Exception as e:
+                raise RuntimeError(
+                    f"Failed to access Earth Engine internal state for current project: {e}\n"
+                    "Please provide the 'project' parameter explicitly or ensure Earth Engine is properly initialized."
+                )
+            
+            # Use current_project if available, otherwise use provided project
+            if current_project is not None:
+                ee.Initialize(project=current_project, opt_url=opt_url)
+            elif project is not None:
+                ee.Initialize(project=project, opt_url=opt_url)
+            else:
+                raise ValueError(
+                    "Earth Engine is already initialized, but no project could be determined from the current authentication context. "
+                    "Please provide a project parameter or reinitialize Earth Engine with a project:\n"
+                    "  ee.Initialize(project='YOUR-PROJECT-ID')"
+                )
+        else:
+            # Not initialized - need a project to initialize
+            if project is None:
+                raise ValueError(
+                    "Earth Engine is not initialized and no project was provided. "
+                    "Please either:\n"
+                    "  1. Initialize Earth Engine before calling this function:\n"
+                    "     ee.Initialize(project='YOUR-PROJECT-ID')\n"
+                    "  2. Provide a project parameter:\n"
+                    "     geemap.ee_to_xarray(..., project='YOUR-PROJECT-ID')\n"
+                    "  3. Set ee_initialize=False if already initialized elsewhere"
+                )
+            ee.Initialize(opt_url=opt_url, project=project)
 
     if isinstance(dataset, str):
         if not dataset.startswith("ee://"):
