@@ -3294,15 +3294,13 @@ def ee_to_xarray(
             try:
                 state = ee.data._get_state()
                 current_project = getattr(state, "cloud_api_user_project", None)
-                if current_project is None:
-                    raise AttributeError(
-                        "cloud_api_user_project is None or not set in Earth Engine state. Please provide the 'project' parameter explicitly."
-                    )
             except Exception as e:
                 raise RuntimeError(
                     f"Failed to access Earth Engine internal state for current project: {e}\n"
                     "Please provide the 'project' parameter explicitly or ensure Earth Engine is properly initialized."
                 )
+            
+            # Use current_project if available, otherwise use provided project
             if current_project is not None:
                 ee.Initialize(project=current_project, opt_url=opt_url)
             elif project is not None:
