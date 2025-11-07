@@ -3291,7 +3291,7 @@ def ee_to_xarray(
         if ee.data.is_initialized():
             # If already initialized, get the current project and reinitialize
             # to switch to high-volume endpoint (or custom opt_url)
-            current_project = ee.data._cloud_api_user_project
+            current_project = ee.data._get_state().cloud_api_user_project
             ee.Initialize(project=current_project, opt_url=opt_url)
         else:
             # Not initialized - need a project to initialize
