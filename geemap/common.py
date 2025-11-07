@@ -3287,7 +3287,7 @@ def ee_to_xarray(
         # Set default opt_url if not provided
         if opt_url is None:
             opt_url = "https://earthengine-highvolume.googleapis.com"
-        
+
         if ee.data.is_initialized():
             # If already initialized, get the current project and reinitialize
             # to switch to high-volume endpoint (or custom opt_url)
