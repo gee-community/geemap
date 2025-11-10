@@ -76,6 +76,20 @@ def ee_initialize(
     if ee.data._get_state().credentials is not None:
         return
 
+    if get_env_var("EE_SERVICE_ACCOUNT") is not None:
+
+        key_data = get_env_var("EE_SERVICE_ACCOUNT")
+
+        try:
+            email = json.loads(key_data)["client_email"]
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Invalid JSON for key_data: {e}")
+        except KeyError:
+            raise ValueError("key_data JSON does not contain 'client_email'")
+        credentials = ee.ServiceAccountCredentials(email=email, key_data=key_data)
+        ee.Initialize(credentials)
+        return
+
     ee_token = get_env_var(token_name)
     if ee_token is not None:
 
