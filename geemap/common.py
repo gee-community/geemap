@@ -9,22 +9,21 @@
 
 import csv
 import datetime
+import importlib.resources
 import io
 import json
 import math
 import os
-import requests
 import shutil
 import tarfile
+from typing import Union, List, Dict, Optional, Any
 import urllib.request
 import warnings
 import zipfile
-import importlib.resources
 
 import ee
 import ipywidgets as widgets
-
-from typing import Union, List, Dict, Optional, Any
+import requests
 
 from .coreutils import *
 
@@ -3286,7 +3285,7 @@ def ee_to_xarray(
     if ee_initialize:
         # Set default opt_url if not provided
         if opt_url is None:
-            opt_url = "https://earthengine-highvolume.googleapis.com"
+            opt_url = ee.data.HIGH_VOLUME_API_BASE_URL
 
         if ee.data.is_initialized():
             # If already initialized, get the current project and reinitialize
@@ -12788,7 +12787,7 @@ def download_ee_image_tiles_parallel(
     def download_data(index):
         if ee_init:
             ee_initialize(
-                opt_url="https://earthengine-highvolume.googleapis.com",
+                opt_url=ee.data.HIGH_VOLUME_API_BASE_URL,
                 project=project_id,
             )
         region = ee.Feature(collection.get(index)).geometry()
