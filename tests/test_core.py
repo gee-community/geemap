@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """Tests for `map_widgets` module."""
 import unittest
 from unittest.mock import patch, Mock
@@ -420,3 +419,7 @@ class TestAbstractDrawControl(unittest.TestCase):
             geo_json = self.geo_jsons[i]
             del self.geo_jsons[i]
             self._on_draw("deleted", geo_json)
+
+
+if __name__ == "__main__":
+    unittest.main()

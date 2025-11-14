@@ -1,10 +1,9 @@
 #!/usr/bin/env python
-
 """Tests for `coreutils` module."""
 import json
 import os
 import sys
-from typing import Any, Dict
+from typing import Any
 import unittest
 from unittest import mock
 
@@ -87,3 +86,7 @@ class TestCoreUtils(unittest.TestCase):
         tree = coreutils.build_computed_object_tree(ee.ImageCollection([ee.Image(0)]))
         expected = _read_json_file("image_collection_tree.json")
         self.assertEqual(tree, expected)
+
+
+if __name__ == "__main__":
+    unittest.main()

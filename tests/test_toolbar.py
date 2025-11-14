@@ -1,10 +1,7 @@
 #!/usr/bin/env python
-
 """Tests for `map_widgets` module."""
-
-import unittest
-
 from dataclasses import dataclass
+import unittest
 from unittest.mock import patch, Mock
 
 import ipywidgets
@@ -138,3 +135,7 @@ class TestToolbar(unittest.TestCase):
         self.assertEqual(2, widget.selected_count)
         self.assertEqual(3, widget.cleanup_count)
         self.assertFalse(toolbar.main_tools[0].active)
+
+
+if __name__ == "__main__":
+    unittest.main()

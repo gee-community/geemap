@@ -101,3 +101,7 @@ class TestEETileLayers(unittest.TestCase):
         )
         # self.assertEqual(layer.vis_params, {"min": 42, "palette": "#012345"})
         self.assertEqual(layer.url_format, "url-format")
+
+
+if __name__ == "__main__":
+    unittest.main()

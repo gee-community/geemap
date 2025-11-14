@@ -120,3 +120,7 @@ class TestGetXyzDict(unittest.TestCase):
 
         self.assertNotIn("c_France", xyz_dict_no_france.keys())
         self.assertIn("c_France", xyz_dict_all.keys())
+
+
+if __name__ == "__main__":
+    unittest.main()
