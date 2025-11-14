@@ -17,7 +17,7 @@ conda install geemap -c conda-forge
 ### Create a new conda env
 
 ```console
-conda create -n gee python=3.9
+conda create -n gee python=3.13
 conda activate gee
 conda install geemap -c conda-forge
 ```
