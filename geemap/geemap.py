@@ -1109,7 +1109,7 @@ class Map(core.Map):
         Returns:
             Any: The main tools for the toolbar.
         """
-        return toolbar.main_tools
+        return toolbar.get_main_tools()
 
     def _toolbar_extra_tools(self) -> Any:
         """Gets the extra tools for the toolbar.
@@ -1117,7 +1117,7 @@ class Map(core.Map):
         Returns:
             Any: The extra tools for the toolbar.
         """
-        return toolbar.extra_tools
+        return toolbar.get_extra_tools()
 
     def add_plot_gui(self, position: str = "topright", **kwargs: Any) -> None:
         """Adds the plot widget to the map.
