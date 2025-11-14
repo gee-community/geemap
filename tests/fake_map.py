@@ -1,7 +1,7 @@
 """Fake map used for testing."""
 
 import unittest
-from typing import List, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 import ee
 import ipywidgets
@@ -185,7 +185,7 @@ class FakeEeTileLayer:
         self,
         *,
         bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
-        bands: Optional[List[str]] = None,
+        bands: Optional[list[str]] = None,
         percent: Optional[float] = None,
         sigma: Optional[float] = None,
     ) -> Tuple[float, float]:

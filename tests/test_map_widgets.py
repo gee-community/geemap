@@ -1,12 +1,10 @@
 #!/usr/bin/env python
-
 """Tests for `map_widgets` module."""
-from typing import List
 import unittest
 from unittest.mock import patch, MagicMock, Mock, ANY
 
-import ipywidgets
 import ee
+import ipywidgets
 from matplotlib import pyplot
 
 from geemap import coreutils, map_widgets
@@ -14,7 +12,7 @@ from tests import fake_ee, fake_map, utils
 from geemap.legends import builtin_legends
 
 
-def _get_colormaps() -> List[str]:
+def _get_colormaps() -> list[str]:
     """Gets the list of available colormaps."""
     from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
 
@@ -936,3 +934,7 @@ class TestLayerEditor(unittest.TestCase):
         widget._handle_message_event(None, event, None)
 
         on_close_mock.assert_called_once_with()
+
+
+if __name__ == "__main__":
+    unittest.main()
