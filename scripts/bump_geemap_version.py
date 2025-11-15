@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
-"""
-Bump version numbers in pyproject.toml and geemap/__init__.py
+"""Bump version numbers in pyproject.toml and geemap/__init__.py.
 
 This script updates the version in two places in pyproject.toml:
 1. [project] section: version = "..."
 2. [tool.bumpversion] section: current_version = "..."
 
 And updates __version__ in geemap/__init__.py:
-__version__ = "..."
+
+  __version__ = "..."
 
 Usage:
     python scripts/bump_geemap_version.py NEW_VERSION
@@ -16,12 +16,12 @@ Example:
     python scripts/bump_geemap_version.py 0.36.5
 """
 
-import sys
+import pathlib
 import re
-from pathlib import Path
+import sys
 
 
-def update_pyproject_toml(file_path: Path, new_version: str) -> bool:
+def update_pyproject_toml(file_path: pathlib.Path, new_version: str) -> bool:
     """Update version in pyproject.toml (two occurrences)."""
     content = file_path.read_text()
     original_content = content
@@ -41,13 +41,15 @@ def update_pyproject_toml(file_path: Path, new_version: str) -> bool:
 
     if not project_match:
         print(
-            "ERROR: Could not find 'version = \"...\"' in [project] section of pyproject.toml"
+            "ERROR: Could not find 'version = \"...\"' in [project] section of "
+            "pyproject.toml"
         )
         return False
 
     if not bumpversion_match:
         print(
-            "ERROR: Could not find 'current_version = \"...\"' in [tool.bumpversion] section of pyproject.toml"
+            "ERROR: Could not find 'current_version = \"...\"' in "
+            "[tool.bumpversion] section of pyproject.toml"
         )
         return False
 
@@ -117,7 +119,7 @@ def update_pyproject_toml(file_path: Path, new_version: str) -> bool:
         return False
 
 
-def update_init_py(file_path: Path, new_version: str) -> bool:
+def update_init_py(file_path: pathlib.Path, new_version: str) -> bool:
     """Update __version__ in geemap/__init__.py."""
     content = file_path.read_text()
     original_content = content
@@ -143,24 +145,25 @@ def update_init_py(file_path: Path, new_version: str) -> bool:
         return False
 
 
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: python scripts/bump_geemap_version.py NEW_VERSION")
-        print("Example: python scripts/bump_geemap_version.py 0.36.5")
-        sys.exit(1)
+def update_version(new_version: str) -> bool:
+    """Updates the version number in pyproject.toml and geemap/__init__.py.
 
-    new_version = sys.argv[1]
+    Args:
+      new_version: The new version string to set.
 
+    Returns:
+      True if the version was successfully updated in both files, False otherwise.
+    """
     # Validate version format (basic check)
     if not re.match(r"^\d+\.\d+\.\d+(rc\d+|\.post\d+)*$", new_version):
         print(f"ERROR: Invalid version format: {new_version}")
         print("Expected format: X.Y.Z, X.Y.ZrcN, or X.Y.Z.postN (e.g., 0.36.5.post0)")
-        sys.exit(1)
+        return False
 
     print(f"\nBumping version to: {new_version}\n")
 
     # Get repository root (assuming script is in scripts/ directory)
-    repo_root = Path(__file__).parent.parent
+    repo_root = pathlib.Path(__file__).parent.parent
 
     pyproject_path = repo_root / "pyproject.toml"
     init_path = repo_root / "geemap" / "__init__.py"
@@ -168,25 +171,37 @@ def main():
     # Check files exist
     if not pyproject_path.exists():
         print(f"ERROR: pyproject.toml not found at {pyproject_path}")
-        sys.exit(1)
+        return False
 
     if not init_path.exists():
         print(f"ERROR: geemap/__init__.py not found at {init_path}")
-        sys.exit(1)
+        return False
 
     # --- FAIL FAST Implementation ---
     # Update pyproject.toml and exit if failed
     if not update_pyproject_toml(pyproject_path, new_version):
         print("\n✗ Version bump failed in pyproject.toml! Halting.")
-        sys.exit(1)
+        return False
 
     # Update geemap/__init__.py and exit if failed
     if not update_init_py(init_path, new_version):
         print("\n✗ Version bump failed in geemap/__init__.py! Halting.")
-        sys.exit(1)
+        return False
 
     print("\n✓ Version bump completed successfully!")
-    sys.exit(0)
+    return True
+
+
+def main() -> None:
+    if len(sys.argv) != 2:
+        print("Usage: python scripts/bump_geemap_version.py NEW_VERSION")
+        print("Example: python scripts/bump_geemap_version.py 0.36.5")
+        sys.exit(1)
+
+    new_version = sys.argv[1]
+
+    if not update_version(new_version):
+        sys.exit(1)
 
 
 if __name__ == "__main__":
