@@ -66,7 +66,7 @@ class TestColorbar(unittest.TestCase):
         self.get_cmap_mock.return_value = self.cmap_mock
 
     def tearDown(self):
-        super().setUp()
+        super().tearDown()
         patch.stopall()
 
     def test_colorbar_no_args(self):
