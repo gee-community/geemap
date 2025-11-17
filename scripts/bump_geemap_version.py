@@ -6,7 +6,6 @@ This script updates the version in two places in pyproject.toml:
 2. [tool.bumpversion] section: current_version = "..."
 
 And updates __version__ in geemap/__init__.py:
-
     __version__ = "..."
 
 Usage:
