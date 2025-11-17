@@ -2,19 +2,18 @@
 """Tests for `map_widgets` module."""
 from dataclasses import dataclass
 import unittest
-from unittest.mock import patch, Mock
-
-import ipywidgets
+from unittest.mock import patch
 
 import geemap
 from geemap.toolbar import Toolbar, ToolbarItem, _cleanup_toolbar_item
-from tests import fake_map, utils
+from tests import fake_map
 
 
 class TestToolbar(unittest.TestCase):
     """Tests for the Toolbar class in the `toolbar` module."""
 
-    def setUp(self) -> None:
+    def setUp(self):
+        super().setUp()
         self.callback_calls = 0
         self.last_called_with_selected = None
         self.last_called_item = None
@@ -27,11 +26,10 @@ class TestToolbar(unittest.TestCase):
             callback=self.dummy_callback,
             reset=True,
         )
-        return super().setUp()
 
-    def tearDown(self) -> None:
+    def tearDown(self):
+        super().tearDown()
         patch.stopall()
-        return super().tearDown()
 
     def dummy_callback(self, m, selected, item):
         del m

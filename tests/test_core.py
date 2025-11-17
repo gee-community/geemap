@@ -7,7 +7,7 @@ import ee
 import ipyleaflet
 
 from geemap import core, map_widgets, toolbar
-from tests import fake_ee, fake_map, utils
+from tests import fake_ee, fake_map
 
 
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
@@ -31,6 +31,7 @@ class TestMap(unittest.TestCase):
             self.core_map.remove(widget)
 
     def setUp(self):
+        super().setUp()
         self.core_map = core.Map(ee_initialize=False, width="100%")
 
     def test_defaults(self):
