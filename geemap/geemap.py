@@ -4465,6 +4465,7 @@ class Map(core.Map):
         """
         try:
             import xarray as xr
+
             # Velocity depends on traittypes Dataset that needs xarray.
             from ipyleaflet.velocity import Velocity
         except ImportError:
