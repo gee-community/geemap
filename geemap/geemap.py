@@ -11,13 +11,21 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 # The core features include classes and functions below until the line # ******* #
 # *******************************************************************************#
 
+from base64 import b64encode
+import csv
+from io import BytesIO
+import json
 import os
+import random
+import time
 import warnings
+import threading
 from typing import List, Dict, Any, Optional, Union
 
 import ee
 import ipyleaflet
 import ipywidgets as widgets
+import requests
 
 from box import Box
 from bqplot import pyplot as plt
@@ -1464,7 +1472,6 @@ class Map(core.Map):
         """
 
         import numpy as np
-        import time
 
         if hasattr(self, "random_marker") and self.random_marker is not None:
             self.remove_layer(self.random_marker)
@@ -2137,9 +2144,6 @@ class Map(core.Map):
             bounds (tuple): bounding box of the image in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -100)).
             name (str): name of the layer to show on the layer control.
         """
-        from base64 import b64encode
-        from io import BytesIO
-
         from PIL import Image, ImageSequence
 
         try:
@@ -2616,8 +2620,6 @@ class Map(core.Map):
         Args:
             filename (str): The output file path to the csv file or shapefile.
         """
-        import csv
-
         filename = os.path.abspath(filename)
         allowed_formats = ["csv", "shp"]
         ext = filename[-3:]
@@ -2762,11 +2764,6 @@ class Map(core.Map):
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
-        import json
-        import random
-        import requests
-        import warnings
-
         warnings.filterwarnings("ignore")
 
         style_callback_only = False
@@ -3530,8 +3527,6 @@ class Map(core.Map):
         Raises:
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
         """
-        import threading
-
         if isinstance(ee_object, ee.Image):
             if region is not None:
                 if isinstance(region, ee.Geometry):
@@ -3623,7 +3618,6 @@ class Map(core.Map):
         slider_widget = widgets.HBox([slider, label, play_btn, pause_btn, close_btn])
 
         def play_click(b):
-            import time
 
             play_chk.value = True
 
@@ -4110,8 +4104,6 @@ class Map(core.Map):
             ValueError: If the specified column name does not exist.
             ValueError: If the specified column names do not exist.
         """
-        import warnings
-
         warnings.filterwarnings("ignore")
         check_package(name="geopandas", URL="https://geopandas.org")
         import geopandas as gpd
@@ -4323,7 +4315,6 @@ class Map(core.Map):
             layer_name (str, optional): Layer name to use. Defaults to "Labels".
 
         """
-        import warnings
         import pandas as pd
 
         warnings.filterwarnings("ignore")
@@ -4923,9 +4914,7 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
     """
 
     def __init__(self, **kwargs):
-        from base64 import b64encode
         from PIL import Image, ImageSequence
-        from io import BytesIO
 
         try:
             url = kwargs.get("url")

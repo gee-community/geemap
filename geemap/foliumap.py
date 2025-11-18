@@ -5,7 +5,14 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
+import base64
+from io import BytesIO
+import json
+import logging
 import os
+import random
+import re
+import warnings
 
 import ee
 import folium
@@ -41,8 +48,6 @@ class Map(folium.Map):
     """
 
     def __init__(self, **kwargs):
-        import logging
-
         logging.getLogger("googleapiclient.discovery_cache").setLevel(logging.ERROR)
 
         if "ee_initialize" not in kwargs.keys():
@@ -1031,9 +1036,6 @@ class Map(folium.Map):
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
-        import json
-        import random
-
         import requests
 
         try:
@@ -1884,7 +1886,6 @@ class Map(folium.Map):
             formatting (ReportFormatting, optional): Set the basic styling for your report.
             token (str, optional): The token to use to datapane to publish the map. See https://docs.datapane.com/tut-getting-started. Defaults to None.
         """
-        import warnings
         import webbrowser
 
         if os.environ.get("USE_MKDOCS") is not None:
@@ -2203,8 +2204,6 @@ class Map(folium.Map):
             layer_name (str, optional): The name of the layer. Defaults to "Labels".
 
         """
-        import warnings
-
         import pandas as pd
         from folium.features import DivIcon
 
@@ -2553,8 +2552,6 @@ class Map(folium.Map):
             encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
         """
 
-        import warnings
-
         gdf, legend_dict = classify(
             data=data,
             column=column,
@@ -2631,8 +2628,6 @@ class Map(folium.Map):
             position (tuple, optional): The position of the image in the format of (x, y),
                 the percentage ranging from 0 to 100, starting from the lower-left corner. Defaults to (0, 0).
         """
-        import base64
-
         if isinstance(image, str):
             if image.startswith("http"):
                 html = f'<img src="{image}">'
@@ -2670,10 +2665,6 @@ class Map(folium.Map):
             content (str): The widget to add.
             position (str, optional): The position of the widget. Defaults to "bottomright".
         """
-
-        import base64
-        from io import BytesIO
-
         from matplotlib import figure
 
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
@@ -2979,8 +2970,6 @@ class CustomControl(MacroElement):
     def __init__(self, html, position="bottomleft"):
         def escape_backticks(text):
             """Escape backticks so text can be used in a JS template."""
-            import re
-
             return re.sub(r"(?<!\\)`", r"\`", text)
 
         super().__init__()

@@ -5,11 +5,11 @@ __email__ = "giswqs@gmail.com"
 __version__ = "0.36.4"
 
 import os
+import sys
 
 
 def in_colab_shell():
     """Tests if the code is being executed within Google Colab."""
-    import sys
 
     if "google.colab" in sys.modules:
         return True

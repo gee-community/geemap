@@ -2,6 +2,7 @@
 
 import enum
 import functools
+import importlib.resources
 import json
 import os
 import pathlib
@@ -1436,8 +1437,6 @@ class SearchBar(anywidget.AnyWidget):
 
     def get_ee_example(self, asset_id):
         try:
-            import importlib.resources
-
             pkg_dir = str(
                 importlib.resources.files("geemap").joinpath("geemap.py").parent
             )

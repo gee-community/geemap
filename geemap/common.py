@@ -7,17 +7,32 @@
 # The core features include classes and functions below until the line # ******* #
 # *******************************************************************************#
 
+import base64
+import copy
 import csv
 import datetime
+from datetime import date
+import decimal
+from functools import reduce
+import glob
 import importlib.resources
 import io
+import itertools
 import json
 import math
 import os
+import re
 import shutil
+import subprocess
+import sys
 import tarfile
+import tempfile
+import time
 from typing import Union, List, Dict, Optional, Any
+import urllib
+from urllib.parse import urlparse
 import urllib.request
+from urllib.request import urlopen
 import warnings
 import zipfile
 
@@ -1680,8 +1695,6 @@ def check_install(package):
     Args:
         package (str): The name of the package to check.
     """
-    import subprocess
-
     try:
         __import__(package)
         # print('{} is already installed.'.format(package))
@@ -1742,8 +1755,6 @@ def install_package(package):
     Args:
         package (str | list): The package name or a GitHub URL or a list of package names or GitHub URLs.
     """
-    import subprocess
-
     if isinstance(package, str):
         packages = [package]
     elif isinstance(package, list):
@@ -1934,8 +1945,6 @@ def open_youtube():
 def is_tool(name):
     """Check whether `name` is on PATH and marked as executable."""
 
-    # from shutil import which
-
     return shutil.which(name) is not None
 
 
@@ -1951,9 +1960,6 @@ def open_image_from_url(url, timeout=300, proxies=None):
         object: Image object.
     """
     from PIL import Image
-
-    # from io import BytesIO
-    # from urllib.parse import urlparse
 
     try:
         url = get_direct_url(url)
@@ -2054,8 +2060,6 @@ def upload_to_imgur(in_gif):
     Args:
         in_gif (str): The file path to the image.
     """
-    import subprocess
-
     pkg_name = "imgur-uploader"
     if not is_tool(pkg_name):
         check_install(pkg_name)
@@ -2244,8 +2248,6 @@ def create_download_link(filename, title="Click here to download: "):
     Returns:
         str: HTML download URL.
     """
-    import base64
-
     from IPython.display import HTML
 
     data = open(filename, "rb").read()
@@ -2265,11 +2267,6 @@ def edit_download_html(htmlWidget, filename, title="Click here to download: "):
         filename (str): File path to download.
         title (str, optional): Download description. Defaults to "Click here to download: ".
     """
-
-    # from IPython.display import HTML
-    # import ipywidgets as widgets
-    import base64
-
     # Change widget html temporarily to a font-awesome spinner
     htmlWidget.value = '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Loading...</span>'
 
@@ -2612,8 +2609,6 @@ def shp_to_geojson(in_shp, filename=None, **kwargs):
     try:
         import shapefile
 
-        # from datetime import date
-
         in_shp = os.path.abspath(in_shp)
 
         if filename is not None:
@@ -2673,8 +2668,6 @@ def shp_to_geojson(in_shp, filename=None, **kwargs):
         # out_dict = {"type": "FeatureCollection", "features": buffer}
 
         if filename is not None:
-            # from json import dumps
-
             with open(filename, "w") as geojson:
                 geojson.write(json.dumps(out_dict, indent=2) + "\n")
         else:
@@ -3506,9 +3499,6 @@ def create_colorbar(
         str: File path of the output colorbar in png format.
 
     """
-    import decimal
-
-    # import io
     from matplotlib import colors
     from PIL import Image, ImageDraw, ImageFont
 
@@ -3986,9 +3976,6 @@ def search_ee_data(
     if isinstance(keywords, str):
         keywords = keywords.split(" ")
 
-    import re
-    from functools import reduce
-
     def search_collection(pattern, dict_):
         if regex:
             if any(re.match(pattern, dict_[key]) for key in keys):
@@ -4057,8 +4044,6 @@ def ee_data_thumbnail(asset_id, timeout=300, proxies=None):
     Returns:
         str: An http url of the thumbnail.
     """
-    import urllib
-
     from bs4 import BeautifulSoup
 
     asset_uid = asset_id.replace("/", "_")
@@ -4290,8 +4275,6 @@ def read_api_csv():
     Returns:
         dict: The dictionary containing information about each function, including name, description, function form, return type, arguments, html.
     """
-    import copy
-
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
@@ -5484,8 +5467,6 @@ def cog_mosaic_from_file(
     Returns:
         str: The tile URL for the COG mosaic.
     """
-    import urllib
-
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     links = []
     if filepath.startswith("http"):
@@ -8516,8 +8497,6 @@ def png_to_gif(in_dir, out_gif, fps=10, loop=0):
     Raises:
         FileNotFoundError: No png images could be found.
     """
-    import glob
-
     from PIL import Image
 
     if not out_gif.endswith(".gif"):
@@ -8564,8 +8543,6 @@ def jpg_to_gif(in_dir, out_gif, fps=10, loop=0):
     Raises:
         FileNotFoundError: No jpg images could be found.
     """
-    import glob
-
     from PIL import Image
 
     if not out_gif.endswith(".gif"):
@@ -9479,8 +9456,6 @@ def planet_monthly_tropical(api_key=None, token_name="PLANET_API_KEY"):
     Returns:
         list: A list of tile URLs.
     """
-    # from datetime import date
-
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
@@ -9697,8 +9672,6 @@ def planet_monthly(api_key=None, token_name="PLANET_API_KEY"):
     Returns:
         list: A list of tile URLs.
     """
-    # from datetime import date
-
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
@@ -9738,8 +9711,6 @@ def planet_quarterly(api_key=None, token_name="PLANET_API_KEY"):
     Returns:
         list: A list of tile URLs.
     """
-    # from datetime import date
-
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
@@ -9923,8 +9894,6 @@ def planet_by_quarter(
     Returns:
         str: A Planet global mosaic tile url.
     """
-    # from datetime import date
-
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
@@ -9975,8 +9944,6 @@ def planet_by_month(
     Returns:
         str: A Planet global mosaic tile url.
     """
-    # from datetime import date
-
     if api_key is None:
         api_key = os.environ.get(token_name)
         if api_key is None:
@@ -10286,8 +10253,6 @@ def read_file_from_url(url, return_type="list", encoding="utf-8"):
     Returns:
         str | list: The contents of the file.
     """
-    from urllib.request import urlopen
-
     if return_type == "list":
         return [line.decode(encoding).rstrip() for line in urlopen(url).readlines()]
     elif return_type == "string":
@@ -10421,9 +10386,6 @@ def get_temp_dir():
     Returns:
         str: The temporary directory.
     """
-
-    import tempfile
-
     return tempfile.gettempdir()
 
 
@@ -11209,9 +11171,7 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     Returns:
         pd.DataFrame: A pandas DataFrame containing the GeoJSON object.
     """
-
     import pandas as pd
-    from urllib.request import urlopen
 
     if isinstance(in_geojson, str):
         if in_geojson.startswith("http"):
@@ -12642,8 +12602,6 @@ def download_ee_image_tiles(
         column (str, optional): The column name to use for the filename. Defaults to None.
 
     """
-    import time
-
     start = time.time()
 
     if os.environ.get("USE_MKDOCS") is not None:
@@ -12758,7 +12716,6 @@ def download_ee_image_tiles_parallel(
 
     """
     import joblib
-    import time
 
     start = time.time()
 
@@ -13450,8 +13407,6 @@ def jrc_hist_monthly_history(
     Returns:
         pd.DataFrame: Pandas dataframe of the plot.
     """
-
-    from datetime import date
     import pandas as pd
     import plotly.express as px
 
@@ -14043,8 +13998,6 @@ def is_arcpy():
     Returns:
         book: True if arcpy is available, False otherwise.
     """
-    import sys
-
     if "arcpy" in sys.modules:
         return True
     else:
@@ -14438,8 +14391,6 @@ def zoom_level_resolution(zoom, latitude=0):
     Returns:
         float: Map resolution in meters.
     """
-    import math
-
     resolution = 156543.04 * math.cos(latitude) / math.pow(2, zoom)
     return abs(resolution)
 
@@ -14694,10 +14645,6 @@ def tms_to_geotiff(
         **kwargs: Additional arguments to pass to gdal.GetDriverByName("GTiff").Create().
 
     """
-
-    import io
-    import math
-    import itertools
     import concurrent.futures
 
     import numpy
@@ -15679,8 +15626,6 @@ def remove_port_from_string(data: str) -> str:
     Returns:
         str: The string with port numbers removed from all URLs.
     """
-    import re
-
     # Regular expression to match URLs with port numbers
     url_with_port_pattern = re.compile(r"(http://[\d\w.]+):\d+")
 
@@ -15721,10 +15666,7 @@ def pmtiles_metadata(input_file: str) -> Dict[str, Union[str, int, List[str]]]:
         If fetching a remote PMTiles file, this function may perform multiple requests to minimize
         the amount of data downloaded.
     """
-
-    import json
     import requests
-    from urllib.parse import urlparse
 
     try:
         from pmtiles.reader import Reader, MmapSource, MemorySource
@@ -15904,9 +15846,6 @@ def check_html_string(html_string):
     Returns:
         str: The HTML string with local images converted to base64.
     """
-    import re
-    import base64
-
     # Search for img tags with src attribute
     img_regex = r'<img[^>]+src\s*=\s*["\']([^"\':]+)["\'][^>]*>'
 

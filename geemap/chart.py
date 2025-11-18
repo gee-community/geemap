@@ -5,6 +5,9 @@
 # The Earth Engine team and the geemap community will maintain the core features.#
 # *******************************************************************************#
 
+import math
+from typing import List, Optional, Union, Dict, Any, Tuple
+
 import ee
 import pandas as pd
 import numpy as np
@@ -14,8 +17,6 @@ from bqplot import Tooltip
 from bqplot import pyplot as plt
 from IPython.display import display
 from .common import ee_to_df, zonal_stats, image_dates, hex_to_rgba
-
-from typing import List, Optional, Union, Dict, Any, Tuple
 
 
 class DataTable(pd.DataFrame):
@@ -1052,8 +1053,6 @@ def feature_histogram(
     Returns:
         Optional[Any]: The bqplot chart object if show is False, otherwise None.
     """
-    import math
-
     if not isinstance(features, ee.FeatureCollection):
         raise Exception("features must be an ee.FeatureCollection")
 

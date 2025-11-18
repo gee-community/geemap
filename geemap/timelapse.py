@@ -6,10 +6,17 @@
 # *******************************************************************************#
 
 import datetime
+from datetime import datetime
+from datetime import date
 import glob
+import importlib.resources
 import io
+import math
 import os
+import re
 import shutil
+import tempfile
+import warnings
 
 import ee
 
@@ -205,8 +212,6 @@ def merge_gifs(in_gifs, out_gif):
     Raises:
         Exception:  Raise exception when gifsicle is not installed.
     """
-    import glob
-
     try:
         if isinstance(in_gifs, str) and os.path.isdir(in_gifs):
             in_gifs = glob.glob(os.path.join(in_gifs, "*.gif"))
@@ -238,8 +243,6 @@ def gif_to_png(in_gif, out_dir=None, prefix="", verbose=True):
         FileNotFoundError: Raise exception when the input gif does not exist.
         Exception: Raise exception when ffmpeg is not installed.
     """
-    import tempfile
-
     in_gif = os.path.abspath(in_gif)
     if " " in in_gif:
         raise Exception("in_gif cannot contain spaces.")
@@ -277,9 +280,6 @@ def gif_fading(in_gif, out_gif, duration=1, verbose=True):
         FileNotFoundError: Raise exception when the input gif does not exist.
         Exception: Raise exception when ffmpeg is not installed.
     """
-    import glob
-    import tempfile
-
     current_dir = os.getcwd()
 
     if isinstance(in_gif, str) and in_gif.startswith("http"):
@@ -408,10 +408,6 @@ def add_text_to_gif(
         loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
 
     """
-    # import io
-    import warnings
-
-    import importlib.resources
     from PIL import Image, ImageDraw, ImageFont, ImageSequence
 
     warnings.simplefilter("ignore")
@@ -562,9 +558,6 @@ def add_image_to_gif(
         image_size (tuple, optional): Resize image. Defaults to (80, 80).
         circle_mask (bool, optional): Whether to apply a circle mask to the image. This only works with non-png images. Defaults to False.
     """
-    # import io
-    import warnings
-
     from PIL import Image, ImageDraw, ImageSequence
 
     warnings.simplefilter("ignore")
@@ -689,7 +682,6 @@ def reduce_gif_size(in_gif, out_gif=None):
         out_gif (str, optional): The output file path to the GIF image. Defaults to None.
     """
     import ffmpeg
-    import warnings
 
     warnings.filterwarnings("ignore")
 
@@ -1350,8 +1342,6 @@ def valid_roi(roi):
 
 
 def sentinel1_defaults():
-    from datetime import date
-
     year = date.today().year
     roi = ee.Geometry.Polygon(
         [
@@ -1653,10 +1643,6 @@ def sentinel2_timeseries_legacy(
 
     ################################################################################
     # Input and output parameters.
-
-    import re
-
-    # import datetime
 
     if end_year is None:
         end_year = datetime.date.today().year
@@ -1978,8 +1964,6 @@ def landsat_timeseries(
     """
 
     # Input and output parameters.
-    import re
-
     if roi is None:
         roi = ee.Geometry.Polygon(
             [
@@ -2277,9 +2261,6 @@ def landsat_timeseries_legacy(
 
     ################################################################################
     # Input and output parameters.
-    import re
-
-    # import datetime
 
     if roi is None:
         roi = ee.Geometry.Polygon(
@@ -5017,8 +4998,6 @@ def sentinel1_timelapse(
     Returns:
         str: File path to the timelapse gif.
     """
-    from datetime import date
-
     assert bands in (
         ["VV"],
         ["VH"],
@@ -5122,9 +5101,6 @@ def add_progress_bar_to_gif(
         loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
 
     """
-    import io
-    import warnings
-
     from PIL import Image, ImageDraw, ImageSequence
 
     warnings.simplefilter("ignore")
@@ -5482,9 +5458,6 @@ def sentinel1_timelapse_with_samples(
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
     import numpy as np
-    from datetime import datetime, date
-    import tempfile
-    import math
 
     # Validate sample points
     if sample_points is not None:
@@ -5851,10 +5824,7 @@ def add_sample_markers_to_gif(
         roi_bounds (list): [min_lon, min_lat, max_lon, max_lat] bounds of the ROI
         gif_dimensions (int): Dimensions of the GIF
     """
-    import io
-    import warnings
     from PIL import Image, ImageDraw, ImageSequence
-    import math
 
     warnings.simplefilter("ignore")
 
@@ -6014,8 +5984,6 @@ def create_time_series_chart_frames(
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
     import numpy as np
-    from datetime import datetime
-    import tempfile
 
     if not sample_data:
         return []
@@ -6175,7 +6143,6 @@ def combine_gif_with_chart(
 ):
     """Combine GIF with chart frames."""
     from PIL import Image, ImageDraw
-    import tempfile
 
     # Open the base gif
     base_image = Image.open(base_gif)
@@ -6412,9 +6379,6 @@ def sentinel2_timelapse_with_samples(
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
     import numpy as np
-    from datetime import datetime, date
-    import tempfile
-    import math
 
     # Handle indices parameter
     if indices is not None:
@@ -7126,8 +7090,6 @@ def create_sentinel2_index_timelapse(
     **kwargs,
 ):
     """Create a Sentinel-2 timelapse with indices."""
-    import datetime
-
     if end_year is None:
         end_year = datetime.datetime.now().year
 
@@ -7232,8 +7194,6 @@ def create_s2_time_series_chart_frames(
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
     import numpy as np
-    from datetime import datetime
-    import tempfile
 
     if not sample_data:
         return []
@@ -7546,9 +7506,6 @@ def landsat_timelapse_with_samples(
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
     import numpy as np
-    from datetime import datetime, date
-    import tempfile
-    import math
 
     # Handle indices parameter
     if indices is not None:
@@ -8476,8 +8433,6 @@ def create_landsat_time_series_chart_frames(
     import matplotlib.pyplot as plt
     import matplotlib.dates as mdates
     import numpy as np
-    from datetime import datetime
-    import tempfile
 
     if not sample_data:
         return []
