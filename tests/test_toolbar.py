@@ -28,8 +28,8 @@ class TestToolbar(unittest.TestCase):
         )
 
     def tearDown(self):
-        super().tearDown()
         patch.stopall()
+        super().tearDown()
 
     def dummy_callback(self, m, selected, item):
         del m
