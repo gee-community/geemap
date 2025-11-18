@@ -223,11 +223,9 @@ class TestAbstractDrawControl(unittest.TestCase):
     }
 
     def setUp(self):
+        super().setUp()
         self.map = fake_map.FakeMap()
         self._draw_control = TestAbstractDrawControl.TestDrawControl(self.map)
-
-    def tearDown(self):
-        pass
 
     def test_initialization(self):
         # Initialized is set by the `_bind_draw_controls` method.

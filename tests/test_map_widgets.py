@@ -66,8 +66,8 @@ class TestColorbar(unittest.TestCase):
         self.get_cmap_mock.return_value = self.cmap_mock
 
     def tearDown(self):
-        super().tearDown()
         patch.stopall()
+        super().tearDown()
 
     def test_colorbar_no_args(self):
         map_widgets.Colorbar()
@@ -365,14 +365,12 @@ class TestInspector(unittest.TestCase):
     """Tests for the Inspector class in the `map_widgets` module."""
 
     def setUp(self):
+        super().setUp()
         # ee.Reducer is dynamically initialized (can't use @patch.object).
         ee.Reducer = fake_ee.Reducer
 
         self.map_fake = fake_map.FakeMap()
         self.inspector = map_widgets.Inspector(self.map_fake)
-
-    def tearDown(self):
-        pass
 
     def test_inspector_no_map(self):
         """Tests that a valid map must be passed in."""
@@ -567,6 +565,7 @@ class TestLayerManagerRow(unittest.TestCase):
     """Tests for the LayerManagerRow class in the `layer_manager` module."""
 
     def setUp(self):
+        super().setUp()
         self.fake_map = _create_fake_map()
 
     def test_row_invalid_map_or_layer(self):
@@ -677,6 +676,7 @@ class TestLayerManager(unittest.TestCase):
     """Tests for the LayerManager class in the `layer_manager` module."""
 
     def setUp(self):
+        super().setUp()
         self.fake_map = _create_fake_map()
         self.layer_manager = map_widgets.LayerManager(self.fake_map)
 
@@ -723,6 +723,7 @@ class TestBasemapSelector(unittest.TestCase):
     """Tests for the BasemapSelector class in the `map_widgets` module."""
 
     def setUp(self):
+        super().setUp()
         self.basemap_list = [
             "DEFAULT",
             "provider.resource-1",
@@ -784,6 +785,7 @@ class TestLayerEditor(unittest.TestCase):
         }
 
     def setUp(self):
+        super().setUp()
         self._fake_map = fake_map.FakeMap()
         pyplot.show = Mock()  # Plotting isn't captured by output widgets.
 
