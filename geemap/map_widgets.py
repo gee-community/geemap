@@ -16,6 +16,9 @@ import anywidget
 import ee
 import ipyleaflet
 import ipywidgets
+import matplotlib
+from matplotlib import pyplot
+import numpy
 import traitlets
 
 from . import common
@@ -148,10 +151,6 @@ class Colorbar(ipywidgets.Output):
             ValueError: If the provided opacity value is not convertible to float.
             ValueError: If cmap or palette is not provided.
         """
-
-        import matplotlib  # pylint: disable=import-outside-toplevel
-        import numpy  # pylint: disable=import-outside-toplevel
-
         if max_width is None:
             if orientation == "horizontal":
                 max_width = "270px"
@@ -1024,10 +1023,6 @@ class LayerEditor(anywidget.AnyWidget):
             self.children = []
             return
 
-        import matplotlib  # pylint: disable=import-outside-toplevel
-        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
-        import numpy  # pylint: disable=import-outside-toplevel
-
         _, ax = pyplot.subplots(figsize=(5, 0.3))
         cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
             "custom", colors, N=256
@@ -1046,9 +1041,6 @@ class LayerEditor(anywidget.AnyWidget):
         self.children = [colorbar_output]
 
     def _calculate_palette(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
-        import matplotlib  # pylint: disable=import-outside-toplevel
-        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
-
         colormap = message.get("colormap", "")
         classes = message.get("classes", "")
         palette = message.get("palette", "")
@@ -1086,8 +1078,6 @@ class LayerEditor(anywidget.AnyWidget):
 
     def _get_colormaps(self) -> List[str]:
         """Gets the list of available colormaps."""
-        from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
-
         colormap_options = pyplot.colormaps()
         colormap_options.sort()
         return ["Custom"] + colormap_options

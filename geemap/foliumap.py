@@ -22,6 +22,9 @@ from folium import plugins
 from folium.elements import JSCSSMixin
 from folium.map import Layer
 from jinja2 import Template
+from matplotlib import figure
+import numpy as np
+import pandas as pd
 
 from . import examples
 from .basemaps import xyz_to_folium
@@ -643,7 +646,6 @@ class Map(folium.Map):
             array_args (dict, optional): Additional arguments to pass to `array_to_image`. Defaults to {}.
         """
 
-        import numpy as np
         import xarray as xr
 
         if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
@@ -738,8 +740,6 @@ class Map(folium.Map):
         Raises:
             ValueError: If data is not a list.
         """
-        import pandas as pd
-
         try:
             if isinstance(data, str):
                 df = pd.read_csv(data)
@@ -1180,8 +1180,6 @@ class Map(folium.Map):
         )
 
         if zoom_to_layer:
-            import numpy as np
-
             bounds = gdf.to_crs(epsg="4326").bounds
             west = np.min(bounds["minx"])
             south = np.min(bounds["miny"])
@@ -1209,8 +1207,6 @@ class Map(folium.Map):
         self.add_geojson(data, layer_name=layer_name, **kwargs)
 
         if zoom_to_layer:
-            import numpy as np
-
             bounds = gdf.to_crs(epsg="4326").bounds
             west = np.min(bounds["minx"])
             south = np.min(bounds["miny"])
@@ -1538,8 +1534,6 @@ class Map(folium.Map):
             **kwargs: Other keyword arguments to pass to folium.MarkerCluster(). For a list of available options,
                 see https://github.com/Leaflet/Leaflet.markercluster. For example, to change the cluster radius, use options={"maxClusterRadius": 50}.
         """
-        import pandas as pd
-
         if "maxClusterRadius" not in kwargs:
             kwargs["maxClusterRadius"] = max_cluster_radius
 
@@ -1678,8 +1672,6 @@ class Map(folium.Map):
             max_width (int, optional): The maximum width of the popup. Defaults to 200.
 
         """
-        import pandas as pd
-
         data = github_raw_url(data)
 
         if isinstance(data, pd.DataFrame):
@@ -1788,7 +1780,6 @@ class Map(folium.Map):
                 https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.
 
         """
-        import pandas as pd
         from folium.plugins import BeautifyIcon
 
         layer_group = folium.FeatureGroup(name=layer_name)
@@ -2204,7 +2195,6 @@ class Map(folium.Map):
             layer_name (str, optional): The name of the layer. Defaults to "Labels".
 
         """
-        import pandas as pd
         from folium.features import DivIcon
 
         warnings.filterwarnings("ignore")
@@ -2665,8 +2655,6 @@ class Map(folium.Map):
             content (str): The widget to add.
             position (str, optional): The position of the widget. Defaults to "bottomright".
         """
-        from matplotlib import figure
-
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
 
         if position not in allowed_positions:
