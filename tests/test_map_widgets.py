@@ -1,23 +1,19 @@
 #!/usr/bin/env python
-
 """Tests for `map_widgets` module."""
-from typing import List
 import unittest
 from unittest.mock import patch, MagicMock, Mock, ANY
 
-import ipywidgets
 import ee
+import ipywidgets
 from matplotlib import pyplot
 
 from geemap import coreutils, map_widgets
-from tests import fake_ee, fake_map, utils
+from tests import fake_ee, fake_map
 from geemap.legends import builtin_legends
 
 
-def _get_colormaps() -> List[str]:
+def _get_colormaps() -> list[str]:
     """Gets the list of available colormaps."""
-    from matplotlib import pyplot  # pylint: disable=import-outside-toplevel
-
     colormap_options = pyplot.colormaps()
     colormap_options.sort()
     return ["Custom"] + colormap_options
@@ -30,6 +26,7 @@ class TestColorbar(unittest.TestCase):
     TEST_COLORS_HEX = ["#0000ff", "#ff0000", "#008000"]
 
     def setUp(self):
+        super().setUp()
         self.fig_mock = MagicMock()
         self.ax_mock = MagicMock()
         self.subplots_mock = patch("matplotlib.pyplot.subplots").start()
@@ -69,6 +66,7 @@ class TestColorbar(unittest.TestCase):
         self.get_cmap_mock.return_value = self.cmap_mock
 
     def tearDown(self):
+        super().tearDown()
         patch.stopall()
 
     def test_colorbar_no_args(self):
@@ -936,3 +934,7 @@ class TestLayerEditor(unittest.TestCase):
         widget._handle_message_event(None, event, None)
 
         on_close_mock.assert_called_once_with()
+
+
+if __name__ == "__main__":
+    unittest.main()

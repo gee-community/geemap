@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 """Tests for `map_widgets` module."""
 import unittest
 from unittest.mock import patch, Mock
@@ -8,7 +7,7 @@ import ee
 import ipyleaflet
 
 from geemap import core, map_widgets, toolbar
-from tests import fake_ee, fake_map, utils
+from tests import fake_ee, fake_map
 
 
 @patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
@@ -32,6 +31,7 @@ class TestMap(unittest.TestCase):
             self.core_map.remove(widget)
 
     def setUp(self):
+        super().setUp()
         self.core_map = core.Map(ee_initialize=False, width="100%")
 
     def test_defaults(self):
@@ -420,3 +420,7 @@ class TestAbstractDrawControl(unittest.TestCase):
             geo_json = self.geo_jsons[i]
             del self.geo_jsons[i]
             self._on_draw("deleted", geo_json)
+
+
+if __name__ == "__main__":
+    unittest.main()
