@@ -25,7 +25,6 @@ from typing import List, Dict, Any, Optional, Union
 import ee
 import ipyleaflet
 from ipyleaflet import Heatmap
-from ipyleaflet.velocity import Velocity
 import ipywidgets as widgets
 import numpy as np
 import pandas as pd
@@ -4466,6 +4465,8 @@ class Map(core.Map):
         """
         try:
             import xarray as xr
+            # Velocity depends on traittypes Dataset that needs xarray.
+            from ipyleaflet.velocity import Velocity
         except ImportError:
             raise ImportError(
                 "The xarray package is required to add a velocity layer. "
