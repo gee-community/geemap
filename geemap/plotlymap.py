@@ -5,7 +5,10 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
+import json
 import os
+import shutil
+
 import numpy as np
 import pandas as pd
 import ipywidgets as widgets
@@ -637,7 +640,6 @@ class Map(go.FigureWidget):
             colorscale (str, optional): Color scale of the data. Defaults to "Viridis".
         """
         check_package("geopandas")
-        import json
         import geopandas as gpd
 
         gdf = gpd.read_file(data).to_crs(epsg=4326)
@@ -786,8 +788,6 @@ def fix_widget_error():
     Fix FigureWidget - 'mapbox._derived' Value Error.
     Adopted from: https://github.com/plotly/plotly.py/issues/2570#issuecomment-738735816
     """
-    import shutil
-
     basedatatypesPath = os.path.join(
         os.path.dirname(os.__file__), "site-packages", "plotly", "basedatatypes.py"
     )

@@ -5,14 +5,14 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
-
+from collections.abc import Iterable
+import importlib
+from io import BytesIO
 import logging
 import os
 import subprocess
 import sys
 import warnings
-from collections.abc import Iterable
-from io import BytesIO
 
 import ee
 import matplotlib as mpl
@@ -49,9 +49,6 @@ def check_dependencies():
         Exception: when conda is not found in path
         Exception: when auto install fails to install/import packages
     """
-
-    import importlib
-
     # check if conda in in path and available to use
     is_conda = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
 

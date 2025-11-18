@@ -6,6 +6,7 @@
 # *******************************************************************************#
 
 import json
+import glob
 import os
 import sys
 import requests
@@ -109,7 +110,6 @@ class Map(keplergl.KeplerGl):
     #         dict: A dictionary of MIME type keyed dict of MIME type data.
     #     """
     #     print("hello")
-    #     # import base64
 
     #     # bundle = super()._repr_mimebundle_(include=include, exclude=exclude)
     #     # if bundle["text/html"]:
@@ -168,9 +168,6 @@ class Map(keplergl.KeplerGl):
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
         """
-
-        import glob
-
         if in_shp.startswith("http") and in_shp.endswith(".zip"):
             out_dir = os.path.abspath("./cache/shp")
             if not os.path.exists(out_dir):

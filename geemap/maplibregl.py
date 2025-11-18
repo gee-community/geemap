@@ -1,6 +1,11 @@
 """The maplibregl module provides the Map class for creating interactive maps using the maplibre.ipywidget module."""
 
+import base64
+import glob
+import importlib.resources
 import os
+import re
+
 import requests
 import xyzservices
 import geopandas as gpd
@@ -600,9 +605,6 @@ class Map(MapWidget):
         Raises:
             ValueError: If the data is not a URL or a GeoJSON dictionary.
         """
-
-        import os
-
         bounds = None
         geom_type = None
 
@@ -1305,8 +1307,6 @@ class Map(MapWidget):
         if output:
 
             if not overwrite and os.path.exists(output):
-                import glob
-
                 num = len(glob.glob(output.replace(".html", "*.html")))
                 output = output.replace(".html", f"_{num}.html")
 
@@ -1562,8 +1562,6 @@ class Map(MapWidget):
         )
 
         def extract_rgb(rgba_string):
-            import re
-
             # Extracting the RGB values using regex
             rgb_tuple = tuple(map(int, re.findall(r"\d+", rgba_string)[:3]))
             return rgb_tuple
@@ -1883,8 +1881,6 @@ class Map(MapWidget):
             ValueError: If the image argument is not a string representing a URL
                 or a local file path.
         """
-
-        import os
         from PIL import Image
         import numpy as np
 
@@ -2064,7 +2060,6 @@ class Map(MapWidget):
         """
         try:
             import streamlit.components.v1 as components
-            import base64
 
             raw_html = self.to_html().encode("utf-8")
             raw_html = base64.b64encode(raw_html).decode()
@@ -2467,7 +2462,6 @@ class Map(MapWidget):
         Returns:
             None
         """
-        import importlib.resources
         from .legends import builtin_legends
 
         pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)

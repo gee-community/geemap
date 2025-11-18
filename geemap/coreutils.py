@@ -1,6 +1,11 @@
+import base64
 import json
 import os
+import random
+import string
 import sys
+import tempfile
+import uuid
 import zipfile
 from typing import Any, Dict, List, Optional, Tuple, Union
 
@@ -295,8 +300,6 @@ def create_code_cell(code: str = "", where: str = "below") -> None:
         where (str, optional): Where to add the new code cell. It can be one of
             the following: above, below, at_bottom. Defaults to 'below'.
     """
-
-    import base64
     import pyperclip
 
     try:
@@ -499,9 +502,6 @@ def random_string(string_length: int = 3) -> str:
     Returns:
         str: A random string.
     """
-    import random
-    import string
-
     # random.seed(1001)
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(string_length))
@@ -692,10 +692,6 @@ def temp_file_path(extension: str) -> str:
     Returns:
         str: The temporary file path.
     """
-
-    import tempfile
-    import uuid
-
     if not extension.startswith("."):
         extension = "." + extension
     file_id = str(uuid.uuid4())
