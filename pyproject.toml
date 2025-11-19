@@ -41,6 +41,7 @@ dependencies = [
     "pyperclip",
     "pyshp>=2.3.1",
     "python-box",
+    "requests",
     "scooby",
 ]
 
