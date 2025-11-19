@@ -24,7 +24,10 @@ from typing import List, Dict, Any, Optional, Union
 
 import ee
 import ipyleaflet
+from ipyleaflet import Heatmap
 import ipywidgets as widgets
+import numpy as np
+import pandas as pd
 import requests
 
 from box import Box
@@ -1470,9 +1473,6 @@ class Map(core.Map):
             min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
         """
-
-        import numpy as np
-
         if hasattr(self, "random_marker") and self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
@@ -2504,7 +2504,6 @@ class Map(core.Map):
             visible (bool, optional): Whether the layer is visible. Defaults to True.
             array_args (dict, optional): Additional arguments to pass to `array_to_memory_file` when reading the raster. Defaults to {}.
         """
-        import numpy as np
         import xarray as xr
 
         if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
@@ -3448,8 +3447,6 @@ class Map(core.Map):
         )
 
         if zoom_to_layer:
-            import numpy as np
-
             bounds = gdf.to_crs(epsg="4326").bounds
             west = np.min(bounds["minx"])
             south = np.min(bounds["miny"])
@@ -3691,8 +3688,6 @@ class Map(core.Map):
             ValueError: The specified y column does not exist.
             ValueError: The specified label column does not exist.
         """
-        import pandas as pd
-
         if not in_csv.startswith("http") and (not os.path.exists(in_csv)):
             raise FileNotFoundError("The specified input csv does not exist.")
 
@@ -3771,8 +3766,6 @@ class Map(core.Map):
             add_legend (bool, optional): If True, a legend will be added to the map. Defaults to True.
 
         """
-        import pandas as pd
-
         data = github_raw_url(data)
 
         color_options = [
@@ -3991,8 +3984,6 @@ class Map(core.Map):
             popup (list, optional): A list of column names to be used as the popup. Defaults to None.
 
         """
-        import pandas as pd
-
         data = github_raw_url(data)
 
         if isinstance(data, pd.DataFrame):
@@ -4266,9 +4257,6 @@ class Map(core.Map):
         Raises:
             ValueError: If data is not a list.
         """
-        import pandas as pd
-        from ipyleaflet import Heatmap
-
         try:
             if isinstance(data, str):
                 df = pd.read_csv(data)
@@ -4315,8 +4303,6 @@ class Map(core.Map):
             layer_name (str, optional): Layer name to use. Defaults to "Labels".
 
         """
-        import pandas as pd
-
         warnings.filterwarnings("ignore")
 
         if isinstance(data, ee.FeatureCollection):
@@ -4479,6 +4465,8 @@ class Map(core.Map):
         """
         try:
             import xarray as xr
+
+            # Velocity depends on traittypes Dataset that needs xarray.
             from ipyleaflet.velocity import Velocity
         except ImportError:
             raise ImportError(

@@ -16,12 +16,15 @@ import os
 import re
 import shutil
 import tempfile
+from typing import Union, List
 import warnings
 
 import ee
+import matplotlib.dates as mdates
+import matplotlib.pyplot as plt
+import numpy as np
 
 from .common import *
-from typing import Union, List
 
 try:
     from PIL import Image
@@ -5217,7 +5220,6 @@ def vector_to_gif(
 
     """
     import geopandas as gpd
-    import matplotlib.pyplot as plt
 
     out_dir = os.path.dirname(out_gif)
     tmp_dir = os.path.join(out_dir, "tmp_png")
@@ -5455,10 +5457,6 @@ def sentinel1_timelapse_with_samples(
     Returns:
         str: File path to the output GIF with optional chart.
     """
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    import numpy as np
-
     # Validate sample points
     if sample_points is not None:
         if not isinstance(sample_points, list):
@@ -5981,10 +5979,6 @@ def create_time_series_chart_frames(
     xlabel_interval="auto",
 ):
     """Create frames for the time series chart with current time indicator."""
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    import numpy as np
-
     if not sample_data:
         return []
 
@@ -6376,10 +6370,6 @@ def sentinel2_timelapse_with_samples(
     Returns:
         str: File path to the output GIF with optional chart.
     """
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    import numpy as np
-
     # Handle indices parameter
     if indices is not None:
         if not isinstance(indices, list):
@@ -7191,10 +7181,6 @@ def create_s2_time_series_chart_frames(
     Returns:
         list: List of paths to chart frame images
     """
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    import numpy as np
-
     if not sample_data:
         return []
 
@@ -7503,10 +7489,6 @@ def landsat_timelapse_with_samples(
     Returns:
         str: File path to the output GIF with optional chart.
     """
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    import numpy as np
-
     # Handle indices parameter
     if indices is not None:
         if not isinstance(indices, list):
@@ -8430,10 +8412,6 @@ def create_landsat_time_series_chart_frames(
     Returns:
         list: List of paths to chart frame images
     """
-    import matplotlib.pyplot as plt
-    import matplotlib.dates as mdates
-    import numpy as np
-
     if not sample_data:
         return []
 

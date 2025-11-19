@@ -10,7 +10,9 @@ import zipfile
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import ee
+import ipyleaflet
 import ipywidgets as widgets
+from matplotlib import colors
 
 try:
     from IPython.display import display, Javascript
@@ -382,8 +384,6 @@ def check_color(in_color: Union[str, Tuple, List]) -> str:
     Returns:
         str: A hex color code.
     """
-    from matplotlib import colors
-
     out_color = "#000000"  # default black color
     # Handle RGB tuple or list
     if isinstance(in_color, (tuple, list)) and len(in_color) == 3:
@@ -636,8 +636,6 @@ def widget_template(
 
     toolbar_button.value = opened
     if m is not None:
-        import ipyleaflet
-
         toolbar_control = ipyleaflet.WidgetControl(
             widget=toolbar_widget, position=position
         )

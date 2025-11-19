@@ -22,6 +22,7 @@ import numpy as np
 import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
+from matplotlib.lines import Line2D
 
 from .basemaps import custom_tiles
 
@@ -1093,8 +1094,6 @@ def add_legend(
     Raises:
         Exception: If the legend fails to add.
     """
-    from matplotlib.lines import Line2D
-
     if title_fontize is not None and (title_fontproperties is not None):
         raise ValueError("title_fontize and title_fontproperties cannot be both set.")
     elif title_fontize is not None:

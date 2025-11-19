@@ -8,10 +8,13 @@
 # *******************************************************************************#
 
 import base64
+import concurrent.futures
 import copy
 import csv
 import datetime
+from collections import Counter
 from datetime import date
+from datetime import datetime
 import decimal
 from functools import reduce
 import glob
@@ -37,7 +40,15 @@ import warnings
 import zipfile
 
 import ee
+import ipyleaflet
 import ipywidgets as widgets
+import matplotlib as mpl
+import matplotlib.font_manager
+import matplotlib.pyplot as plt
+from matplotlib import colors
+import numpy as np
+import pandas as pd
+import plotly.express as px
 import requests
 
 from .coreutils import *
@@ -2113,8 +2124,6 @@ def system_fonts(show_full_path=False):
         list: A list of system fonts.
     """
     try:
-        import matplotlib.font_manager
-
         font_list = matplotlib.font_manager.findSystemFonts(
             fontpaths=None, fontext="ttf"
         )
@@ -2399,9 +2408,6 @@ def csv_to_geojson(
         encoding (str, optional): The encoding of characters. Defaults to "utf-8".
 
     """
-
-    import pandas as pd
-
     in_csv = github_raw_url(in_csv)
 
     if out_geojson is not None:
@@ -2972,9 +2978,6 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat", deci
             "You need to install xarray first. See https://github.com/pydata/xarray"
         )
 
-    import numpy as np
-    from collections import Counter
-
     def most_common_value(lst):
         counter = Counter(lst)
         most_common = counter.most_common(1)
@@ -3064,8 +3067,6 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         image: An ee.Image
 
     """
-    import numpy as np
-
     if not isinstance(np_array, np.ndarray):
         print("The input must be a numpy.ndarray.")
         return
@@ -3126,8 +3127,6 @@ def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
     Returns:
         np.ndarray: A 3D numpy array in the format of [row, column, band].
     """
-    import numpy as np
-
     if (region is not None) or (scale is not None):
         ee_object = ee_object.clipToBoundsAndScale(geometry=region, scale=scale)
 
@@ -3499,7 +3498,6 @@ def create_colorbar(
         str: File path of the output colorbar in png format.
 
     """
-    from matplotlib import colors
     from PIL import Image, ImageDraw, ImageFont
 
     warnings.simplefilter("ignore")
@@ -3720,9 +3718,6 @@ def save_colorbar(
     Returns:
         str: Path to the output image.
     """
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-    import numpy as np
     from .colormaps import palettes, get_palette
 
     if out_fig is None:
@@ -7170,8 +7165,6 @@ def image_area_by_group(
     Returns:
         object: pandas.DataFrame
     """
-    import pandas as pd
-
     values = []
     if region is None:
         region = ee.Geometry.BBox(-179.9, -89.5, 179.9, 89.5)
@@ -7418,9 +7411,6 @@ def image_histogram(
     Returns:
         pandas DataFrame | plotly figure object: A dataframe or plotly figure object.
     """
-    import pandas as pd
-    import plotly.express as px
-
     hist = image_value_list(img, region, scale, return_hist=True, **kwargs).getInfo()
     keys = sorted(hist, key=int)
     values = [hist.get(key) for key in keys]
@@ -7483,8 +7473,6 @@ def image_stats_by_zone(
     Returns:
         str | pd.DataFrame: The path to the output CSV file or a pandas DataFrame.
     """
-    import pandas as pd
-
     if region is not None:
         if isinstance(region, ee.Geometry):
             pass
@@ -7832,9 +7820,6 @@ def extract_timeseries_to_point(
     Returns:
         pd.DataFrame or None: Time series data if not exporting to CSV.
     """
-    import pandas as pd
-    from datetime import datetime
-
     if not isinstance(image_collection, ee.ImageCollection):
         raise ValueError("image_collection must be an instance of ee.ImageCollection.")
 
@@ -8844,8 +8829,6 @@ def csv_to_df(in_csv, **kwargs):
     Returns:
         pd.DataFrame: pandas DataFrame
     """
-    import pandas as pd
-
     in_csv = github_raw_url(in_csv)
 
     try:
@@ -9026,8 +9009,6 @@ def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
     Returns:
         ee.FeatureCollection: The ee.FeatureCollection converted from the input pandas DataFrame.
     """
-    import pandas as pd
-
     if not isinstance(df, pd.DataFrame):
         raise TypeError("The input data type must be pandas.DataFrame.")
 
@@ -9559,7 +9540,6 @@ def planet_monthly_tiles_tropical(
         dict: A dictionary of TileLayer.
     """
     import folium
-    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -9604,7 +9584,6 @@ def planet_biannual_tiles_tropical(
     """
 
     import folium
-    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -9770,7 +9749,6 @@ def planet_monthly_tiles(
         dict: A dictionary of TileLayer.
     """
     import folium
-    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -9815,7 +9793,6 @@ def planet_quarterly_tiles(
         dict: A dictionary of TileLayer.
     """
     import folium
-    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -9997,7 +9974,6 @@ def planet_tile_by_quarter(
     """
 
     import folium
-    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -10046,7 +10022,6 @@ def planet_tile_by_month(
         dict: A dictionary of TileLayer.
     """
     import folium
-    import ipyleaflet
 
     if tile_format not in ["ipyleaflet", "folium"]:
         raise ValueError("The tile format must be either ipyleaflet or folium.")
@@ -10288,7 +10263,6 @@ def create_download_button(
     """
     try:
         import streamlit as st
-        import pandas as pd
 
         if isinstance(data, str):
             if file_name is None:
@@ -10928,7 +10902,6 @@ def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs
     """
     check_package(name="geopandas", URL="https://geopandas.org")
     import geopandas as gpd
-    import pandas as pd
 
     if crs is None:
         crs = "epsg:4326"
@@ -11147,8 +11120,6 @@ def gdf_to_df(gdf, drop_geom=True):
     Returns:
         pd.DataFrame: A pandas DataFrame containing the GeoDataFrame.
     """
-    import pandas as pd
-
     if drop_geom:
         df = pd.DataFrame(gdf.drop(columns=["geometry"]))
     else:
@@ -11171,8 +11142,6 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     Returns:
         pd.DataFrame: A pandas DataFrame containing the GeoJSON object.
     """
-    import pandas as pd
-
     if isinstance(in_geojson, str):
         if in_geojson.startswith("http"):
             in_geojson = github_raw_url(in_geojson)
@@ -11208,8 +11177,6 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
     Returns:
         ee.FeatureCollection: The joined ee.FeatureCollection.
     """
-    import pandas as pd
-
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("The input ee_object must be of type ee.FeatureCollection.")
 
@@ -11355,8 +11322,6 @@ def numpy_to_cog(
         crs (str, optional): The coordinate reference system of the output COG file. Defaults to "epsg:4326".
 
     """
-
-    import numpy as np
     import rasterio
     from rasterio.io import MemoryFile
     from rasterio.transform import from_bounds
@@ -11494,7 +11459,6 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
         try:
             import laspy
             import open3d as o3d
-            import numpy as np
         except ImportError:
             print(
                 "The laspy and open3d packages are required for this function. Use pip install laspy open3d to install them."
@@ -12053,11 +12017,7 @@ def classify(
         pd.DataFrame, dict: A pandas dataframe with the classification applied and a legend dictionary.
     """
 
-    import numpy as np
-    import pandas as pd
     import geopandas as gpd
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
 
     try:
         import mapclassify
@@ -12894,9 +12854,6 @@ def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
     Returns:
         list: A list of hex colors.
     """
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-
     try:
         cmap = plt.get_cmap(cmap_name, n_class)
     except:
@@ -13407,9 +13364,6 @@ def jrc_hist_monthly_history(
     Returns:
         pd.DataFrame: Pandas dataframe of the plot.
     """
-    import pandas as pd
-    import plotly.express as px
-
     if end_date is None:
         end_date = date.today().strftime("%Y-%m-%d")
 
@@ -14405,8 +14359,6 @@ def lnglat_to_meters(longitude, latitude):
     Returns:
         tuple: A tuple of (x, y) in meters.
     """
-    import numpy as np
-
     origin_shift = np.pi * 6378137
     easting = longitude * origin_shift / 180.0
     northing = np.log(np.tan((90 + latitude) * np.pi / 360.0)) * origin_shift / np.pi
@@ -14436,8 +14388,6 @@ def meters_to_lnglat(x, y):
     Returns:
         tuple: A tuple of (longitude, latitude) in decimal degrees.
     """
-    import numpy as np
-
     origin_shift = np.pi * 6378137
     longitude = (x / origin_shift) * 180.0
     latitude = (y / origin_shift) * 180.0
@@ -14645,9 +14595,6 @@ def tms_to_geotiff(
         **kwargs: Additional arguments to pass to gdal.GetDriverByName("GTiff").Create().
 
     """
-    import concurrent.futures
-
-    import numpy
     from PIL import Image
 
     from osgeo import gdal, osr
@@ -15160,8 +15107,6 @@ def xee_to_image(
         ValueError: If the number of filenames doesn't match the number of time steps in the Dataset.
 
     """
-    import numpy as np
-
     try:
         import rioxarray
     except ImportError:
@@ -15248,7 +15193,6 @@ def array_to_memory_file(
         rasterio.DatasetReader: The rasterio dataset reader object for the converted array.
     """
     import rasterio
-    import numpy as np
     import xarray as xr
 
     if isinstance(array, xr.DataArray):
@@ -15379,7 +15323,6 @@ def array_to_image(
         **kwargs: Additional keyword arguments to be passed to the rasterio.open() function.
     """
 
-    import numpy as np
     import rasterio
     import xarray as xr
 

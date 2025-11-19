@@ -7,22 +7,24 @@
 # The core features include classes and functions below until the line # ******* #
 # *******************************************************************************#
 
+from dataclasses import dataclass
 import importlib.resources
 import os
 import pathlib
+from typing import Any, Callable, Optional
 
-from dataclasses import dataclass
+from IPython.display import display
 
 import anywidget
 import ee
 import ipyevents
+from ipyfilechooser import FileChooser
 import ipyleaflet
 import ipywidgets as widgets
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import pandas as pd
 import traitlets
-
-from ipyfilechooser import FileChooser
-from IPython.display import display
-from typing import Any, Callable, Optional
 
 from .common import *
 from .conversion import js_snippet_to_py
@@ -163,8 +165,6 @@ def inspector_gui(m=None):
     Returns:
         ipywidgets: The tool GUI widget.
     """
-    import pandas as pd
-
     widget_width = "250px"
     padding = "0px 5px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}
@@ -1232,8 +1232,6 @@ def open_data_widget(m):
         filepath.value = file_chooser.selected
 
         if file_type.value == "CSV":
-            import pandas as pd
-
             df = pd.read_csv(filepath.value)
             col_names = df.columns.values.tolist()
             longitude.options = col_names
@@ -1572,8 +1570,6 @@ def collect_samples(m):
 
 
 def get_tools_dict():
-    import pandas as pd
-
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     toolbox_csv = os.path.join(pkg_dir, "data/template/toolbox.csv")
 
@@ -2276,9 +2272,6 @@ def time_slider(m=None):
     Returns:
         ipywidgets: The interactive GUI.
     """
-    import matplotlib as mpl
-    import matplotlib.pyplot as plt
-
     widget_width = "350px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}

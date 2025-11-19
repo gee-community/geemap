@@ -6,10 +6,13 @@ import importlib.resources
 import os
 import re
 
-import requests
-import xyzservices
 import geopandas as gpd
 import ipyvuetify as v
+import numpy as np
+import pandas as pd
+import requests
+import xyzservices
+
 from box import Box
 from maplibre.basemaps import background
 from maplibre.basemaps import construct_carto_basemap_url
@@ -948,8 +951,6 @@ class Map(MapWidget):
         Returns:
             None
         """
-        import pandas as pd
-
         if isinstance(asset_id, str):
             df = pd.read_csv(
                 "https://raw.githubusercontent.com/opengeos/ee-tile-layers/main/datasets.tsv",
@@ -1194,7 +1195,6 @@ class Map(MapWidget):
             client_args (dict, optional): Additional arguments to pass to
                 localtileserver.TileClient. Defaults to { "cors_all": False }.
         """
-        import numpy as np
         import xarray as xr
 
         if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
@@ -1882,7 +1882,6 @@ class Map(MapWidget):
                 or a local file path.
         """
         from PIL import Image
-        import numpy as np
 
         if isinstance(image, str):
             try:
@@ -1961,8 +1960,6 @@ class Map(MapWidget):
         Returns:
             None
         """
-        import numpy as np
-
         if id is None:
             id = "image"
 
