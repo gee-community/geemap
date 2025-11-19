@@ -112,6 +112,9 @@ sql = [
     "psycopg2",
     "sqlalchemy",
 ]
+tests = [
+    "psutil",
+]
 apps = [
     "gradio",
     "streamlit-folium",
