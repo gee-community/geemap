@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """Tests for `map_widgets` module."""
-from dataclasses import dataclass
+import dataclasses
 import unittest
-from unittest.mock import patch
+from unittest import mock
 
 import geemap
 from geemap.toolbar import Toolbar, ToolbarItem, _cleanup_toolbar_item
@@ -28,11 +28,12 @@ class TestToolbar(unittest.TestCase):
         )
 
     def tearDown(self):
-        patch.stopall()
+        # For fake_map.
+        mock.patch.stopall()
         super().tearDown()
 
     def dummy_callback(self, m, selected, item):
-        del m
+        del m  # Unused.
         self.last_called_with_selected = selected
         self.last_called_item = item
         self.callback_calls += 1
@@ -96,10 +97,10 @@ class TestToolbar(unittest.TestCase):
         self.assertFalse(toolbar.main_tools[1].active)
         self.assertEqual(self.reset_item, self.last_called_item)
 
-    @dataclass
+    @dataclasses.dataclass
     class TestWidget:
-        selected_count = 0
-        cleanup_count = 0
+        selected_count: int = 0
+        cleanup_count: int = 0
 
         def cleanup(self):
             self.cleanup_count += 1
