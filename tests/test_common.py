@@ -1,4 +1,5 @@
 """Tests for `common` module."""
+
 import base64
 import builtins
 import io
@@ -600,5 +601,5 @@ class CommonTest(unittest.TestCase):
             self.assertNotIn(str(temp_file), result_html)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
