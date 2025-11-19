@@ -511,7 +511,9 @@ class CommonTest(unittest.TestCase):
             "center": [0, 0, 0],
             "bounds": [0, 0, 0, 0],
         }
+        # pytype: disable=wrong-arg-types
         style = common.pmtiles_style("some_url", cmap=["#1a9850", "#91cf60"])
+        # pytype: enable=wrong-arg-types
         self.assertEqual(style["layers"][0]["paint"]["circle-color"], "#1a9850")
         self.assertEqual(style["layers"][1]["paint"]["line-color"], "#1a9850")
         self.assertEqual(style["layers"][2]["paint"]["fill-color"], "#1a9850")
