@@ -2,10 +2,13 @@
 """Tests for `coreutils` module."""
 import json
 import os
+import string
 import sys
+import tempfile
 from typing import Any
 import unittest
 from unittest import mock
+import uuid
 
 import ee
 
@@ -86,6 +89,59 @@ class TestCoreUtils(unittest.TestCase):
         tree = coreutils.build_computed_object_tree(ee.ImageCollection([ee.Image(0)]))
         expected = _read_json_file("image_collection_tree.json")
         self.assertEqual(tree, expected)
+
+
+class TestHelpers(unittest.TestCase):
+
+    def test_random_string(self):
+        """Tests random_string."""
+        s = coreutils.random_string()
+        self.assertEqual(len(s), 3)
+        self.assertTrue(all(c in string.ascii_lowercase for c in s))
+
+        s = coreutils.random_string(10)
+        self.assertEqual(len(s), 10)
+        self.assertTrue(all(c in string.ascii_lowercase for c in s))
+
+    def test_github_raw_url(self):
+        url = "https://github.com/opengeos/geemap/blob/master/geemap/geemap.py"
+        expected = (
+            "https://raw.githubusercontent.com/opengeos/geemap/master/geemap/geemap.py"
+        )
+        self.assertEqual(coreutils.github_raw_url(url), expected)
+
+        url = "https://example.com/file.txt"
+        self.assertEqual(coreutils.github_raw_url(url), url)
+
+        url = "https://github.com/opengeos/geemap"
+        self.assertEqual(coreutils.github_raw_url(url), url)
+
+        url = 123
+        self.assertEqual(
+            coreutils.github_raw_url(url), url
+        )  # pytype: disable=wrong-arg-types
+
+    def test_temp_file_path(self):
+        """Tests temp_file_path."""
+        path = coreutils.temp_file_path("txt")
+        self.assertIsInstance(path, str)
+        self.assertTrue(path.startswith(tempfile.gettempdir()))
+        self.assertTrue(path.endswith(".txt"))
+        filename = os.path.basename(path)
+        file_id, _ = os.path.splitext(filename)
+        try:
+            uuid.UUID(file_id, version=4)
+        except ValueError:
+            self.fail("file id is not a valid UUID4")
+
+        path2 = coreutils.temp_file_path(".geojson")
+        self.assertTrue(path2.endswith(".geojson"))
+        filename2 = os.path.basename(path2)
+        file_id2, _ = os.path.splitext(filename2)
+        try:
+            uuid.UUID(file_id2, version=4)
+        except ValueError:
+            self.fail("file id is not a valid UUID4")
 
 
 if __name__ == "__main__":
