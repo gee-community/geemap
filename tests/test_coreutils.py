@@ -128,8 +128,7 @@ class TestHelpers(unittest.TestCase):
         self.assertTrue(path.startswith(tempfile.gettempdir()))
         self.assertTrue(path.endswith(".txt"))
         filename = os.path.basename(path)
-        file_id, ext = os.path.splitext(filename)
-        self.assertEqual(ext, ".txt")
+        file_id, _ = os.path.splitext(filename)
         try:
             uuid.UUID(file_id, version=4)
         except ValueError:
@@ -138,8 +137,7 @@ class TestHelpers(unittest.TestCase):
         path2 = coreutils.temp_file_path(".geojson")
         self.assertTrue(path2.endswith(".geojson"))
         filename2 = os.path.basename(path2)
-        file_id2, ext2 = os.path.splitext(filename2)
-        self.assertEqual(ext2, ".geojson")
+        file_id2, _ = os.path.splitext(filename2)
         try:
             uuid.UUID(file_id2, version=4)
         except ValueError:
