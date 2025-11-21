@@ -9,6 +9,7 @@ import json
 import os
 import shutil
 
+import box
 import numpy as np
 import pandas as pd
 import ipywidgets as widgets
@@ -423,8 +424,6 @@ class Map(go.FigureWidget):
             shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
-        from box import Box
-
         image = None
 
         if vis_params is None:
@@ -477,7 +476,7 @@ class Map(go.FigureWidget):
         if "palette" in vis_params:
             if isinstance(vis_params["palette"], tuple):
                 vis_params["palette"] = list(vis_params["palette"])
-            if isinstance(vis_params["palette"], Box):
+            if isinstance(vis_params["palette"], box.Box):
                 try:
                     vis_params["palette"] = vis_params["palette"]["default"]
                 except Exception as e:

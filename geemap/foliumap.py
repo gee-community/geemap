@@ -16,7 +16,7 @@ import warnings
 
 import ee
 import folium
-from box import Box
+import box
 from branca.element import Figure, JavascriptLink, MacroElement
 from folium import plugins
 from folium.elements import JSCSSMixin
@@ -40,7 +40,7 @@ if not in_colab_shell():
     from .plot import *
 
 
-basemaps = Box(xyz_to_folium(), frozen_box=True)
+basemaps = box.Box(xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
@@ -846,7 +846,6 @@ class Map(folium.Map):
             categorical (bool, optional): Whether or not to create a categorical colormap. Defaults to False.
             step (int, optional): The step to split the LinearColormap into a StepColormap. Defaults to None.
         """
-        from box import Box
         from branca.colormap import LinearColormap
 
         if not isinstance(vis_params, dict):
@@ -864,7 +863,7 @@ class Map(folium.Map):
         vmin = vis_params["min"]
         vmax = vis_params["max"]
 
-        if isinstance(colors, Box):
+        if isinstance(colors, box.Box):
             try:
                 colors = list(colors["default"])
             except Exception as e:
@@ -3113,7 +3112,7 @@ def ee_tile_layer(
         image = ee_object.mosaic()
 
     if "palette" in vis_params:
-        if isinstance(vis_params["palette"], Box):
+        if isinstance(vis_params["palette"], box.Box):
             try:
                 vis_params["palette"] = vis_params["palette"]["default"]
             except Exception as e:

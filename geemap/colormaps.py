@@ -9,7 +9,7 @@
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-from box import Box
+import box
 
 
 _palette_dict = {
@@ -239,4 +239,4 @@ for index, cmap_name in enumerate(list_colormaps()):
         _palette_dict[cmap_name] = color_dict
 
 
-palettes = Box(_palette_dict, frozen_box=True)
+palettes = box.Box(_palette_dict, frozen_box=True)
