@@ -7545,7 +7545,7 @@ Credits to Tyler Erickson.</p>
                 <code>cmap</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="str">str</span>, <span title="typing.List">List</span>[<span title="str">str</span>], <span title="geemap.geemap.Box">Box</span>]</code>
+                  <code><span title="typing.Union">Union</span>[<span title="str">str</span>, <span title="typing.List">List</span>[<span title="str">str</span>], <span title="Box">Box</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7624,7 +7624,7 @@ Credits to Tyler Erickson.</p>
 <span class="sd">        List[str]: A list of colors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="kn">from</span><span class="w"> </span><span class="nn">box</span><span class="w"> </span><span class="kn">import</span> <span class="n">Box</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">box</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.colormaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_palette</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -7638,7 +7638,7 @@ Credits to Tyler Erickson.</p>
                 <span class="k">return</span> <span class="n">check_color</span><span class="p">(</span><span class="n">cmap</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">cmap</span><span class="si">}</span><span class="s2"> is not a valid colormap.&quot;</span><span class="p">)</span>
-    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">Box</span><span class="p">):</span>
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span><span class="p">):</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">cmap</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">])</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">cmap</span>
