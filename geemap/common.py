@@ -8595,7 +8595,7 @@ def vector_styling(
     Returns:
         object: An ee.FeatureCollection containing the styling attribute.
     """
-    from box import Box
+    import box
 
     if isinstance(ee_object, ee.FeatureCollection):
         prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
@@ -8604,7 +8604,7 @@ def vector_styling(
         if column not in prop_names:
             raise ValueError(f"The column name must of one of {', '.join(prop_names)}")
 
-        if isinstance(palette, Box):
+        if isinstance(palette, box.Box):
             try:
                 palette = list(palette["default"])
             except Exception as e:
@@ -11628,7 +11628,7 @@ def blend(
     Returns:
         ee.Image: The blended image.
     """
-    from box import Box
+    import box
 
     if not isinstance(top_layer, ee.Image):
         raise ValueError("top_layer must be an ee.Image.")
@@ -11642,7 +11642,7 @@ def blend(
     if top_vis is not None:
         if not isinstance(top_vis, dict):
             raise ValueError("top_vis must be a dictionary.")
-        elif "palette" in top_vis and isinstance(top_vis["palette"], Box):
+        elif "palette" in top_vis and isinstance(top_vis["palette"], box.Box):
             try:
                 top_vis["palette"] = top_vis["palette"]["default"]
             except Exception as e:
@@ -11652,7 +11652,7 @@ def blend(
     if bottom_vis is not None:
         if not isinstance(bottom_vis, dict):
             raise ValueError("top_vis must be a dictionary.")
-        elif "palette" in bottom_vis and isinstance(bottom_vis["palette"], Box):
+        elif "palette" in bottom_vis and isinstance(bottom_vis["palette"], box.Box):
             try:
                 bottom_vis["palette"] = bottom_vis["palette"]["default"]
             except Exception as e:
@@ -14878,7 +14878,7 @@ def ee_to_geotiff(
 
     """
 
-    from box import Box
+    import box
 
     image = None
 
@@ -14923,7 +14923,7 @@ def ee_to_geotiff(
         image = ee_object.mosaic()
 
     if "palette" in vis_params:
-        if isinstance(vis_params["palette"], Box):
+        if isinstance(vis_params["palette"], box.Box):
             try:
                 vis_params["palette"] = vis_params["palette"]["default"]
             except Exception as e:

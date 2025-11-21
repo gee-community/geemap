@@ -6,6 +6,7 @@ import importlib.resources
 import os
 import re
 
+import box
 import geopandas as gpd
 import ipyvuetify as v
 import numpy as np
@@ -13,7 +14,6 @@ import pandas as pd
 import requests
 import xyzservices
 
-from box import Box
 from maplibre.basemaps import background
 from maplibre.basemaps import construct_carto_basemap_url
 from maplibre.ipywidget import MapWidget
@@ -38,7 +38,7 @@ from .basemaps import (
 from .common import *
 from typing import Tuple, Dict, Any, Optional
 
-basemaps = Box(xyz_to_leaflet(), frozen_box=True)
+basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(MapWidget):

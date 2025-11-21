@@ -430,7 +430,7 @@ def check_cmap(cmap: Union[str, List[str]]) -> List[str]:
         List[str]: A list of colors.
     """
 
-    from box import Box
+    import box
     from .colormaps import get_palette
 
     if isinstance(cmap, str):
@@ -444,7 +444,7 @@ def check_cmap(cmap: Union[str, List[str]]) -> List[str]:
                 return check_color(cmap)
             except Exception as e:
                 raise Exception(f"{cmap} is not a valid colormap.")
-    elif isinstance(cmap, Box):
+    elif isinstance(cmap, box.Box):
         return list(cmap["default"])
     elif isinstance(cmap, list) or isinstance(cmap, tuple):
         return cmap

@@ -30,7 +30,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from box import Box
+import box
 from bqplot import pyplot as plt
 
 from IPython.display import display
@@ -47,7 +47,7 @@ from .legends import builtin_legends
 from . import examples
 
 
-basemaps = Box(xyz_to_leaflet(), frozen_box=True)
+basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(core.Map):
@@ -2093,7 +2093,7 @@ class Map(core.Map):
         if "width" in kwargs:
             output.layout.width = kwargs["width"]
 
-        if isinstance(colors, Box):
+        if isinstance(colors, box.Box):
             try:
                 colors = list(colors["default"])
             except Exception as e:

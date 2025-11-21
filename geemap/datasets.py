@@ -13,7 +13,7 @@ from pathlib import Path
 
 import ipywidgets as widgets
 import importlib.resources
-from box import Box
+import box
 from IPython.display import display
 
 from .common import download_from_url, ee_data_html, search_ee_data
@@ -194,4 +194,4 @@ def get_metadata(asset_id: str, source: str = "ee") -> dict:
         raise Exception(e)
 
 
-DATA = Box(get_data_dict(), frozen_box=True)
+DATA = box.Box(get_data_dict(), frozen_box=True)

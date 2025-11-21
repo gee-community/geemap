@@ -112,7 +112,7 @@ class Map(pdk.Deck):
             **kwargs (Any): Additional keyword arguments for the pydeck Layer object.
         """
         import ee
-        from box import Box
+        import box
 
         image = None
 
@@ -166,7 +166,7 @@ class Map(pdk.Deck):
         if "palette" in vis_params:
             if isinstance(vis_params["palette"], tuple):
                 vis_params["palette"] = list(vis_params["palette"])
-            if isinstance(vis_params["palette"], Box):
+            if isinstance(vis_params["palette"], box.Box):
                 try:
                     vis_params["palette"] = vis_params["palette"]["default"]
                 except Exception as e:
