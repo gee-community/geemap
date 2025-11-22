@@ -7,7 +7,7 @@ import sys
 import tempfile
 import uuid
 import zipfile
-from typing import Any, Dict, List, Optional, Tuple, Union
+from typing import Any, Dict, List, Optional, Union
 
 import ee
 import ipyleaflet
@@ -375,7 +375,7 @@ def in_colab_shell() -> bool:
     return "google.colab" in sys.modules
 
 
-def check_color(in_color: Union[str, Tuple, List]) -> str:
+def check_color(in_color: Union[str, tuple, List]) -> str:
     """Checks the input color and returns the corresponding hex color code.
 
     Args:
@@ -452,11 +452,11 @@ def check_cmap(cmap: Union[str, List[str]]) -> List[str]:
         raise Exception(f"{cmap} is not a valid colormap.")
 
 
-def to_hex_colors(colors: List[Union[str, Tuple[int, int, int]]]) -> List[str]:
+def to_hex_colors(colors: List[Union[str, tuple[int, int, int]]]) -> List[str]:
     """Convert a GEE color palette into hexadecimal color codes. Can handle mixed formats.
 
     Args:
-        colors (List[Union[str, Tuple[int, int, int]]]): A list of colors in hex or RGB format.
+        colors (List[Union[str, tuple[int, int, int]]]): A list of colors in hex or RGB format.
 
     Returns:
         List[str]: A list of hex color codes prefixed with #.
@@ -465,12 +465,12 @@ def to_hex_colors(colors: List[Union[str, Tuple[int, int, int]]]) -> List[str]:
     return [check_color(c) for c in colors]
 
 
-def rgb_to_hex(rgb: Tuple[int, int, int] = (255, 255, 255)) -> str:
+def rgb_to_hex(rgb: tuple[int, int, int] = (255, 255, 255)) -> str:
     """Converts RGB to hex color. In RGB color, R stands for Red, G stands for
         Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.
 
     Args:
-        rgb (Tuple[int, int, int], optional): RGB color code as a tuple of
+        rgb (tuple[int, int, int], optional): RGB color code as a tuple of
             (red, green, blue). Defaults to (255, 255, 255).
 
     Returns:
@@ -479,14 +479,14 @@ def rgb_to_hex(rgb: Tuple[int, int, int] = (255, 255, 255)) -> str:
     return "%02x%02x%02x" % rgb
 
 
-def hex_to_rgb(value: str = "FFFFFF") -> Tuple[int, int, int]:
+def hex_to_rgb(value: str = "FFFFFF") -> tuple[int, int, int]:
     """Converts hex color to RGB color.
 
     Args:
         value (str, optional): Hex color code as a string. Defaults to 'FFFFFF'.
 
     Returns:
-        Tuple[int, int, int]: RGB color as a tuple.
+        tuple[int, int, int]: RGB color as a tuple.
     """
     value = value.lstrip("#")
     lv = len(value)

@@ -5,7 +5,7 @@
 # The Earth Engine team and the geemap community will maintain the core features.#
 # *******************************************************************************#
 
-from typing import Optional, Dict, Any, Tuple, List, Union
+from typing import Optional, Dict, Any, List, Union
 
 import box
 import ee
@@ -101,12 +101,12 @@ def _ee_object_to_image(
 
 
 def _validate_palette(
-    palette: Union[str, List[str], Tuple[str, ...], box.Box],
+    palette: Union[str, List[str], tuple[str, ...], box.Box],
 ) -> List[str]:
     """Validates and returns the palette.
 
     Args:
-        palette (Union[str, List[str], Tuple[str, ...], box.Box]): The palette.
+        palette (Union[str, List[str], tuple[str, ...], box.Box]): The palette.
 
     Returns:
         List[str]: The validated palette.
@@ -221,8 +221,8 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         self,
         *,
         bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
-        bands: Tuple[str, ...],
-    ) -> Tuple[float, float, float, float]:
+        bands: tuple[str, ...],
+    ) -> tuple[float, float, float, float]:
         """Calculate stats used for visualization parameters.
 
         Stats are calculated consistently with the Code Editor visualization parameters,
@@ -231,10 +231,10 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         Args:
             bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The
                 bounds to sample.
-            bands (Tuple[str, ...]): The bands to sample.
+            bands (tuple[str, ...]): The bands to sample.
 
         Returns:
-            Tuple[float, float, float, float]: The minimum, maximum, standard
+            tuple[float, float, float, float]: The minimum, maximum, standard
                 deviation, and mean values across the specified bands.
         """
         stat_reducer = (
@@ -277,7 +277,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         bands: Optional[List[str]] = None,
         percent: Optional[float] = None,
         sigma: Optional[float] = None,
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Calculate the min and max clip values for visualization.
 
         Args:
@@ -287,7 +287,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             sigma (Optional[float]): The number of standard deviations to use when stretching.
 
         Returns:
-            Tuple[float, float]: The minimum and maximum values to clip to.
+            tuple[float, float]: The minimum and maximum values to clip to.
         """
         bands = self._ee_object.bandNames() if bands is None else tuple(bands)
         try:

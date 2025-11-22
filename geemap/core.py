@@ -3,7 +3,7 @@
 import enum
 import logging
 import math
-from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, TypedDict, Type
+from typing import Any, Callable, Dict, List, Optional, Sequence, TypedDict, Type
 
 import ee
 import ipyleaflet
@@ -479,11 +479,11 @@ class MapInterface:
         """
         raise NotImplementedError()
 
-    def get_bounds(self) -> Tuple[float, float, float, float]:
+    def get_bounds(self) -> tuple[float, float, float, float]:
         """Returns the bounds of the current map view.
 
         Returns:
-            Tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.
+            tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.
         """
         raise NotImplementedError()
 
@@ -921,7 +921,7 @@ class Map(ipyleaflet.Map, MapInterface):
         #   - can only be added to the map once,
         #   - have a constructor that takes a position arg, and
         #   - don't need to be stored as instance vars.
-        basic_controls: Dict[str, Tuple[ipyleaflet.Control, Dict[str, Any]]] = {
+        basic_controls: Dict[str, tuple[ipyleaflet.Control, Dict[str, Any]]] = {
             "zoom_control": (ipyleaflet.ZoomControl, {}),
             "fullscreen_control": (ipyleaflet.FullScreenControl, {}),
             "scale_control": (ipyleaflet.ScaleControl, {"metric": True}),
