@@ -1,7 +1,6 @@
 """Fake map used for testing."""
 
 import unittest
-from typing import Optional, Tuple, Union
 
 import ee
 import ipywidgets
@@ -29,7 +28,7 @@ class FakeMap:
     def __setattr__(self, k, v):
         if hasattr(self, "_recognized_attrs") and k not in self._recognized_attrs:
             raise AttributeError(f"{k} is not a recognized attr")
-        super(FakeMap, self).__setattr__(k, v)
+        super().__setattr__(k, v)
 
     def on_interaction(self, func, remove=False):
         if remove:
@@ -184,11 +183,11 @@ class FakeEeTileLayer:
     def calculate_vis_minmax(
         self,
         *,
-        bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
-        bands: Optional[list[str]] = None,
-        percent: Optional[float] = None,
-        sigma: Optional[float] = None,
-    ) -> Tuple[float, float]:
+        bounds: ee.Geometry | ee.Feature | ee.FeatureCollection,
+        bands: list[str] | None = None,
+        percent: float | None = None,
+        sigma: float | None = None,
+    ) -> tuple[float, float]:
         return (21, 42)
 
 
