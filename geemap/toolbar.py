@@ -11,7 +11,8 @@ from dataclasses import dataclass
 import importlib.resources
 import os
 import pathlib
-from typing import Any, Callable, Optional
+from typing import Any
+from collections.abc import Callable
 
 from IPython.display import display
 
@@ -49,7 +50,7 @@ class ToolbarItem(anywidget.AnyWidget):
         icon: str,
         tooltip: str,
         callback: Callable[[Any, bool, Any], None],
-        control: Optional[widgets.Widget] = None,
+        control: widgets.Widget | None = None,
         reset=False,
         active=False,
     ):
@@ -4094,8 +4095,8 @@ def _cog_stac_inspector_callback(map, selected, item):
     return map.tool_control
 
 
-_main_tools_cache: Optional[List[ToolbarItem]] = None
-_extra_tools_cache: Optional[List[ToolbarItem]] = None
+_main_tools_cache: List[ToolbarItem] | None = None
+_extra_tools_cache: List[ToolbarItem] | None = None
 
 
 def get_main_tools() -> List[ToolbarItem]:
