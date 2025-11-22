@@ -4546,9 +4546,7 @@ def modis_ocean_color_timeseries(
 
     allowed_frequency = ["year", "quarter", "month", "week", "day"]
     if frequency not in allowed_frequency:
-        raise Exception(
-            f"Frequency must be one of the following: {allowed_frequency}"
-        )
+        raise Exception(f"Frequency must be one of the following: {allowed_frequency}")
 
     if region is not None:
         if isinstance(region, ee.Geometry) or isinstance(region, ee.FeatureCollection):
