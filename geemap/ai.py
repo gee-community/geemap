@@ -18,7 +18,7 @@ import datetime
 import logging
 import re
 import sys
-from typing import Any, Dict, Iterable, List, Optional, Sequence, Tuple
+from typing import Any, Dict, Iterable, List, Optional, Sequence
 import uuid
 
 import numpy as np
@@ -772,15 +772,15 @@ class Genie(widgets.VBox):
 
 
 def matches_interval(
-    collection_interval: Tuple[datetime.datetime, datetime.datetime],
-    query_interval: Tuple[datetime.datetime, datetime.datetime],
+    collection_interval: tuple[datetime.datetime, datetime.datetime],
+    query_interval: tuple[datetime.datetime, datetime.datetime],
 ) -> bool:
     """Checks if the collection's datetime interval matches the query datetime interval.
 
     Args:
-        collection_interval (Tuple[datetime.datetime, datetime.datetime]):
+        collection_interval (tuple[datetime.datetime, datetime.datetime]):
             Temporal interval of the collection.
-        query_interval (Tuple[datetime.datetime, datetime.datetime]): A tuple
+        query_interval (tuple[datetime.datetime, datetime.datetime]): A tuple
             with the query interval start and end.
 
     Returns:
@@ -795,13 +795,13 @@ def matches_interval(
 
 
 def matches_datetime(
-    collection_interval: Tuple[datetime.datetime, Optional[datetime.datetime]],
+    collection_interval: tuple[datetime.datetime, Optional[datetime.datetime]],
     query_datetime: datetime.datetime,
 ) -> bool:
     """Checks if the collection's datetime interval matches the query datetime.
 
     Args:
-        collection_interval (Tuple[datetime.datetime, Optional[datetime.datetime]]):
+        collection_interval (tuple[datetime.datetime, Optional[datetime.datetime]]):
             Temporal interval of the collection.
         query_datetime (datetime.datetime): A datetime coming from a query.
 
@@ -994,11 +994,11 @@ class Collection:
 
     def datetime_interval(
         self,
-    ) -> Iterable[Tuple[datetime.datetime, Optional[datetime.datetime]]]:
+    ) -> Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:
         """Returns datetime objects representing temporal extents.
 
         Returns:
-            Iterable[Tuple[datetime.datetime, Optional[datetime.datetime]]]:
+            Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:
                 An iterable of tuples representing temporal extents.
 
         Raises:
@@ -1583,7 +1583,7 @@ class EarthEngineDatasetIndex:
         results: int = 10,
         threshold: float = 0.7,
         bounding_box: Optional[List[float]] = None,
-        temporal_interval: Optional[Tuple[datetime.datetime, datetime.datetime]] = None,
+        temporal_interval: Optional[tuple[datetime.datetime, datetime.datetime]] = None,
     ) -> CollectionList:
         """Retrieve relevant datasets from the Earth Engine data catalog.
 
@@ -1594,7 +1594,7 @@ class EarthEngineDatasetIndex:
                 Defaults to 0.7.
             bounding_box (Optional[List[float]]): The spatial bounding box for the query,
                 in the format [lon1, lat1, lon2, lon2]. Defaults to None.
-            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):
+            temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):
             Temporal constraints as a tuple of datetime objects. Defaults to None.
 
         Returns:
@@ -1620,7 +1620,7 @@ class EarthEngineDatasetIndex:
         results: int = 20,
         threshold: float = 0.7,
         bounding_box: Optional[List[float]] = None,
-        temporal_interval: Optional[Tuple[datetime.datetime, datetime.datetime]] = None,
+        temporal_interval: Optional[tuple[datetime.datetime, datetime.datetime]] = None,
     ) -> pd.DataFrame:
         """Retrieve relevant datasets and their match scores as a DataFrame.
 
@@ -1631,7 +1631,7 @@ class EarthEngineDatasetIndex:
                 Defaults to 0.7.
             bounding_box (Optional[List[float]]): The spatial bounding box for the query,
                 in the format [lon1, lat1, lon2, lon2]. Defaults to None.
-            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):
+            temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):
                 Temporal constraints as a tuple of datetime objects. Defaults to None.
 
         Returns:
@@ -1651,7 +1651,7 @@ class EarthEngineDatasetIndex:
         query: str,
         results: int,
         bounding_box: Optional[List[float]] = None,
-        temporal_interval: Optional[Tuple[datetime.datetime, datetime.datetime]] = None,
+        temporal_interval: Optional[tuple[datetime.datetime, datetime.datetime]] = None,
     ) -> pd.DataFrame:
         """Convert dataset IDs and match scores to a DataFrame.
 
@@ -1660,7 +1660,7 @@ class EarthEngineDatasetIndex:
             results (int): The number of datasets to return.
             bounding_box (Optional[List[float]]): The spatial bounding box for the query,
                 in the format [lon1, lat1, lon2, lon2]. Defaults to None.
-            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):
+            temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):
                 Temporal constraints as a tuple of datetime objects. Defaults to None.
 
         Returns:

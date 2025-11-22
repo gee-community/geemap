@@ -6,7 +6,7 @@
 # *******************************************************************************#
 
 import math
-from typing import List, Optional, Union, Dict, Any, Tuple
+from typing import List, Optional, Union, Dict, Any
 
 import ee
 import pandas as pd
@@ -621,12 +621,12 @@ class BarChart(BaseChartClass):
         else:
             self.bar_chart.tooltip = Tooltip(fields=["x", "y"])
 
-    def get_ylim(self) -> Tuple[float, float]:
+    def get_ylim(self) -> tuple[float, float]:
         """
         Gets the y-axis limits for the bar chart.
 
         Returns:
-            Tuple[float, float]: The minimum and maximum y-axis limits.
+            tuple[float, float]: The minimum and maximum y-axis limits.
         """
         if self.ylim:
             ylim_min, ylim_max = self.ylim[0], self.ylim[1]
@@ -756,7 +756,7 @@ class Feature_ByFeature(BarChart):
 
     def get_data(
         self, x_property: str, y_properties: List[str]
-    ) -> Tuple[List[Any], List[Any]]:
+    ) -> tuple[List[Any], List[Any]]:
         """
         Gets the data for the chart.
 
@@ -765,7 +765,7 @@ class Feature_ByFeature(BarChart):
             y_properties (List[str]): The properties to use for the y-axis.
 
         Returns:
-            Tuple[List[Any], List[Any]]: The x and y data for the chart.
+            tuple[List[Any], List[Any]]: The x and y data for the chart.
         """
         x_data = list(self.df[x_property])
         y_data = list(self.df[y_properties].values.T)
@@ -809,7 +809,7 @@ class Feature_ByProperty(BarChart):
 
     def get_data(
         self, x_properties: Union[List[str], Dict[str, str]]
-    ) -> Tuple[List[Any], List[Any]]:
+    ) -> tuple[List[Any], List[Any]]:
         """
         Gets the data for the chart.
 
@@ -818,7 +818,7 @@ class Feature_ByProperty(BarChart):
                 the x-axis.
 
         Returns:
-            Tuple[List[Any], List[Any]]: The x and y data for the chart.
+            tuple[List[Any], List[Any]]: The x and y data for the chart.
 
         Raises:
             Exception: If x_properties is not a list or dictionary.
@@ -894,7 +894,7 @@ class Feature_Groups(BarChart):
 
     def get_data(
         self, x_property: str, new_column_names: List[str]
-    ) -> Tuple[List[Any], List[Any]]:
+    ) -> tuple[List[Any], List[Any]]:
         """
         Gets the data for the chart.
 
@@ -903,7 +903,7 @@ class Feature_Groups(BarChart):
             new_column_names (List[str]): The new column names for the y-axis.
 
         Returns:
-            Tuple[List[Any], List[Any]]: The x and y data for the chart.
+            tuple[List[Any], List[Any]]: The x and y data for the chart.
         """
         x_data = list(self.df[x_property])
         y_data = [self.df[x] for x in new_column_names]

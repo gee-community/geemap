@@ -304,22 +304,22 @@ class Map(core.Map):
         """
         return dict(filter(self._vector_filter, self.ee_layers.items()))
 
-    def _raster_filter(self, pair: Tuple[str, Dict[str, Any]]) -> bool:
+    def _raster_filter(self, pair: tuple[str, Dict[str, Any]]) -> bool:
         """Filters the raster layers.
 
         Args:
-            pair (Tuple[str, Dict[str, Any]]): The layer pair to filter.
+            pair (tuple[str, Dict[str, Any]]): The layer pair to filter.
 
         Returns:
             bool: True if the layer is a raster layer, False otherwise.
         """
         return isinstance(pair[1]["ee_object"], (ee.Image, ee.ImageCollection))
 
-    def _vector_filter(self, pair: Tuple[str, Dict[str, Any]]) -> bool:
+    def _vector_filter(self, pair: tuple[str, Dict[str, Any]]) -> bool:
         """Filters the vector layers.
 
         Args:
-            pair (Tuple[str, Dict[str, Any]]): The layer pair to filter.
+            pair (tuple[str, Dict[str, Any]]): The layer pair to filter.
 
         Returns:
             bool: True if the layer is a vector layer, False otherwise.
@@ -505,12 +505,12 @@ class Map(core.Map):
     centerObject = center_object
 
     def zoom_to_bounds(
-        self, bounds: Union[List[float], Tuple[float, float, float, float]]
+        self, bounds: Union[List[float], tuple[float, float, float, float]]
     ) -> None:
         """Zooms to a bounding box in the form of [minx, miny, maxx, maxy].
 
         Args:
-            bounds (Union[List[float], Tuple[float, float, float, float]]): A
+            bounds (Union[List[float], tuple[float, float, float, float]]): A
                 list/tuple containing minx, miny, maxx, maxy values for the bounds.
         """
         #  The ipyleaflet fit_bounds method takes lat/lon bounds in the form [[south, west], [north, east]].

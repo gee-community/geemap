@@ -7,7 +7,7 @@ import json
 import os
 import pathlib
 import re
-from typing import Any, Callable, Dict, List, Optional, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Union
 
 import IPython
 from IPython.display import HTML, display
@@ -238,7 +238,7 @@ class Colorbar(ipywidgets.Output):
 
     def _get_dimensions(
         self, orientation: str, kwargs: Dict[str, Any]
-    ) -> Tuple[float, float]:
+    ) -> tuple[float, float]:
         """Get the dimensions of the colorbar based on orientation.
 
         Args:
@@ -246,7 +246,7 @@ class Colorbar(ipywidgets.Output):
             kwargs (Dict[str, Any]): Additional keyword arguments.
 
         Returns:
-            Tuple[float, float]: Width and height of the colorbar.
+            tuple[float, float]: Width and height of the colorbar.
 
         Raises:
             ValueError: If the orientation is not either horizontal or vertical.
@@ -850,7 +850,7 @@ class BasemapSelector(anywidget.AnyWidget):
         self.resource = resource
         self._setup_event_listeners()
 
-    def _parse_basemap_name(self, name: str) -> Tuple[str, str]:
+    def _parse_basemap_name(self, name: str) -> tuple[str, str]:
         components = name.split(".")
         resource = ".".join(components[1:]) if len(components) > 1 else ""
         return components[0], resource
