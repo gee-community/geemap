@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 """Tests for `map_widgets` module."""
 import unittest
-from unittest.mock import patch, Mock
+from unittest import mock
 
 import ee
 import ipyleaflet
@@ -10,8 +10,8 @@ from geemap import core, map_widgets, toolbar
 from tests import fake_ee, fake_map
 
 
-@patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
-@patch.object(ee, "Geometry", fake_ee.Geometry)
+@mock.patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
+@mock.patch.object(ee, "Geometry", fake_ee.Geometry)
 class TestMap(unittest.TestCase):
     """Tests for Map."""
 
@@ -71,17 +71,17 @@ class TestMap(unittest.TestCase):
 
     def test_center_object(self):
         """Tests that `center_object` fits the object to the bounds."""
-        fit_bounds_mock = Mock()
+        fit_bounds_mock = mock.Mock()
         self.core_map.fit_bounds = fit_bounds_mock
         self.core_map.center_object(ee.Geometry.Point())
         fit_bounds_mock.assert_called_with([[-76, -178], [80, 179]])
 
-        fit_bounds_mock = Mock()
+        fit_bounds_mock = mock.Mock()
         self.core_map.fit_bounds = fit_bounds_mock
         self.core_map.center_object(ee.FeatureCollection([]))
         fit_bounds_mock.assert_called_with([[-76, -178], [80, 179]])
 
-        set_center_mock = Mock()
+        set_center_mock = mock.Mock()
         self.core_map.set_center = set_center_mock
         self.core_map.center_object(ee.Geometry.Point(), 2)
         set_center_mock.assert_called_with(120, -70, 2)
@@ -92,10 +92,10 @@ class TestMap(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "Zoom must be an integer"):
             self.core_map.center_object(ee.Geometry.Point(), "2")
 
-    @unittest.mock.patch.object(core.Map, "bounds")
+    @mock.patch.object(core.Map, "bounds")
     def test_get_bounds(self, mock_bounds):
         """Tests that `get_bounds` returns the bounds of the map."""
-        mock_bounds.__get__ = Mock(return_value=[[1, 2], [3, 4]])
+        mock_bounds.__get__ = mock.Mock(return_value=[[1, 2], [3, 4]])
         self.assertEqual(self.core_map.get_bounds(), [2, 1, 4, 3])
         self.assertEqual(self.core_map.getBounds(), [2, 1, 4, 3])
         expected_geo_json = {
@@ -105,7 +105,7 @@ class TestMap(unittest.TestCase):
         }
         self.assertEqual(self.core_map.get_bounds(as_geojson=True), expected_geo_json)
 
-        mock_bounds.__get__ = Mock(return_value=())
+        mock_bounds.__get__ = mock.Mock(return_value=())
         with self.assertRaisesRegex(RuntimeError, "Map bounds are undefined"):
             self.core_map.get_bounds(as_geojson=True)
 
@@ -182,10 +182,10 @@ class TestMap(unittest.TestCase):
         self.assertEqual(len(self.core_map.controls), 2)
 
 
-@patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
-@patch.object(ee, "Feature", fake_ee.Feature)
-@patch.object(ee, "Geometry", fake_ee.Geometry)
-@patch.object(ee, "Image", fake_ee.Image)
+@mock.patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
+@mock.patch.object(ee, "Feature", fake_ee.Feature)
+@mock.patch.object(ee, "Geometry", fake_ee.Geometry)
+@mock.patch.object(ee, "Image", fake_ee.Image)
 class TestAbstractDrawControl(unittest.TestCase):
     """Tests for the draw control interface in the `draw_control` module."""
 
@@ -377,9 +377,7 @@ class TestAbstractDrawControl(unittest.TestCase):
             Args:
                 host_map (geemap.Map): The geemap.Map object
             """
-            super(TestAbstractDrawControl.TestDrawControl, self).__init__(
-                host_map=host_map, **kwargs
-            )
+            super().__init__(host_map=host_map, **kwargs)
             self.geo_jsons = []
 
         def _get_synced_geojson_from_draw_control(self):
