@@ -27,7 +27,7 @@ class FakeNotebookAccessError(Exception):
 def _read_json_file(path: str) -> dict[str, Any]:
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, f"data/{path}")
-    with open(file_path, "r", encoding="utf-8") as f:
+    with open(file_path, encoding="utf-8") as f:
         return json.load(f)
 
 
