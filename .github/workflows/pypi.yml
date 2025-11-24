@@ -43,7 +43,7 @@ jobs:
           fi
 
       - name: Checkout the release tag
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           ref: "${{ steps.vars.outputs.tag }}"
           fetch-depth: 0

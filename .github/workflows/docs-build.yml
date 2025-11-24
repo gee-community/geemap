@@ -16,7 +16,7 @@ jobs:
             USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
 
         steps:
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v6
               with:
                   fetch-depth: 0
 
