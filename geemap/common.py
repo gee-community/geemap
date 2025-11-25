@@ -4991,9 +4991,7 @@ def file_browser(
                         path_widget.disabled = True
                         save_widget.disabled = True
                         text_widget.disabled = True
-                        text_widget.value = (
-                            f"Failed to open {cur_node.name}.\n\n{e}"
-                        )
+                        text_widget.value = f"Failed to open {cur_node.name}.\n\n{e}"
                         full_widget.children = [left_widget, right_widget]
                         return
                     break
