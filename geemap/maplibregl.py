@@ -36,7 +36,7 @@ from .basemaps import (
     get_google_map_tile_providers,
 )
 from .common import *
-from typing import Tuple, Dict, Any, Optional
+from typing import Dict, Any, Optional
 
 basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 
@@ -54,7 +54,7 @@ class Map(MapWidget):
 
     def __init__(
         self,
-        center: Tuple[float, float] = (0, 20),
+        center: tuple[float, float] = (0, 20),
         zoom: float = 1,
         pitch: float = 0,
         bearing: float = 0,
@@ -438,7 +438,7 @@ class Map(MapWidget):
         """
         self.add_call("setZoom", zoom)
 
-    def fit_bounds(self, bounds: List[Tuple[float, float]]) -> None:
+    def fit_bounds(self, bounds: List[tuple[float, float]]) -> None:
         """
         Adjusts the viewport of the map to fit the specified geographical bounds
             in the format of [[lon_min, lat_min], [lon_max, lat_max]] or

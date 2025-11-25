@@ -16,7 +16,7 @@ jobs:
 
     steps:
       - name: Checkout repository (Master Branch)
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           # Checkout the master branch (the base of the new development branch)
           ref: master

@@ -19,7 +19,7 @@ More WMS basemaps can be found at the following websites:
 
 import collections
 import os
-from typing import Any, Optional
+from typing import Any
 
 import folium
 import ipyleaflet
@@ -265,7 +265,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
         map_type: str = "roadmap",
         language: str = "en-Us",
         region: str = "US",
-        api_key: Optional[str] = None,
+        api_key: str | None = None,
         **kwargs: Any,
     ):
         """
@@ -353,7 +353,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
 def get_google_map_tile_providers(
     language: str = "en-Us",
     region: str = "US",
-    api_key: Optional[str] = None,
+    api_key: str | None = None,
     **kwargs: Any,
 ):
     """

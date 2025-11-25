@@ -31,7 +31,7 @@ import sys
 import tarfile
 import tempfile
 import time
-from typing import Union, List, Dict, Optional, Any
+from typing import Any
 import urllib
 from urllib.parse import urlparse
 import urllib.request
@@ -1616,7 +1616,7 @@ def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
     try:
         if not ip.startswith("http"):
             ip = "http://" + ip
-        proxy = "{}:{}".format(ip, port)
+        proxy = f"{ip}:{port}"
 
         os.environ["HTTP_PROXY"] = proxy
         os.environ["HTTPS_PROXY"] = proxy
@@ -2029,7 +2029,7 @@ def show_html(html):
         ipywidgets.HTML: HTML widget.
     """
     if os.path.exists(html):
-        with open(html, "r") as f:
+        with open(html) as f:
             content = f.read()
 
         widget = widgets.HTML(value=content)
@@ -3137,7 +3137,7 @@ def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
 
     try:
         struct_array = ee.data.computePixels(kwargs)
-        array = np.dstack(([struct_array[band] for band in struct_array.dtype.names]))
+        array = np.dstack([struct_array[band] for band in struct_array.dtype.names])
         return array
     except Exception as e:
         raise Exception(e)
@@ -3564,7 +3564,7 @@ def create_colorbar(
 
     for x in range(im.size[0]):
         r, g, b = pixel(x, width=width, map=heatmap)
-        r, g, b = [int(256 * v) for v in (r, g, b)]
+        r, g, b = (int(256 * v) for v in (r, g, b))
         for y in range(im.size[1]):
             ld[x, y] = r, g, b
 
@@ -4086,11 +4086,11 @@ def ee_data_html(asset):
         asset_type = asset.get("type", "Unknown")
 
         if asset_type == "image":
-            ee_id_snippet = "ee.Image('{}')".format(ee_id_snippet)
+            ee_id_snippet = f"ee.Image('{ee_id_snippet}')"
         elif asset_type == "image_collection":
-            ee_id_snippet = "ee.ImageCollection('{}')".format(ee_id_snippet)
+            ee_id_snippet = f"ee.ImageCollection('{ee_id_snippet}')"
         elif asset_type == "table":
-            ee_id_snippet = "ee.FeatureCollection('{}')".format(ee_id_snippet)
+            ee_id_snippet = f"ee.FeatureCollection('{ee_id_snippet}')"
 
         if not code_url and asset_uid:
             coder_url = f"""https://code.earthengine.google.com/?scriptPath=Examples%3ADatasets%2F{asset_uid}"""
@@ -4281,7 +4281,7 @@ def read_api_csv():
 
     api_dict = {}
 
-    with open(csv_file, "r", encoding="utf-8") as f:
+    with open(csv_file, encoding="utf-8") as f:
         csv_reader = csv.DictReader(f, delimiter="\t")
 
         for line in csv_reader:
@@ -4680,7 +4680,7 @@ def build_asset_tree(limit=100):
         if path_widget.value != "":
             dataset_uid = "dataset_" + random_string(string_length=3)
             layer_name = path_widget.value.split("/")[-1][:-2:]
-            line1 = "{} = {}\n".format(dataset_uid, path_widget.value)
+            line1 = f"{dataset_uid} = {path_widget.value}\n"
             line2 = "Map.addLayer(" + dataset_uid + ', {}, "' + layer_name + '")'
             contents = "".join([line1, line2])
             create_code_cell(contents)
@@ -4693,11 +4693,11 @@ def build_asset_tree(limit=100):
             for key in tree_dict.keys():
                 if cur_node is tree_dict[key]:
                     if asset_types[key] == "IMAGE":
-                        path_widget.value = "ee.Image('{}')".format(key)
+                        path_widget.value = f"ee.Image('{key}')"
                     elif asset_types[key] == "IMAGE_COLLECTION":
-                        path_widget.value = "ee.ImageCollection('{}')".format(key)
+                        path_widget.value = f"ee.ImageCollection('{key}')"
                     elif asset_types[key] == "TABLE":
-                        path_widget.value = "ee.FeatureCollection('{}')".format(key)
+                        path_widget.value = f"ee.FeatureCollection('{key}')"
                     if import_btn.disabled:
                         import_btn.disabled = False
                     break
@@ -4822,7 +4822,7 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
                     clone_github_repo(url, out_dir=clone_dir)
                 elif url.find("googlesource") != -1:
                     clone_google_repo(url, out_dir=clone_dir)
-                path_widget.value = "Cloned to {}".format(clone_dir)
+                path_widget.value = f"Cloned to {clone_dir}"
                 clone_widget.disabled = True
             except Exception as e:
                 path_widget.value = (
@@ -4991,9 +4991,7 @@ def file_browser(
                         path_widget.disabled = True
                         save_widget.disabled = True
                         text_widget.disabled = True
-                        text_widget.value = (
-                            "Failed to open {}.".format(cur_node.name) + "\n\n" + str(e)
-                        )
+                        text_widget.value = f"Failed to open {cur_node.name}.\n\n{e}"
                         full_widget.children = [left_widget, right_widget]
                         return
                     break
@@ -6341,8 +6339,7 @@ def explode(coords):
             yield coords
             break
         else:
-            for f in explode(e):
-                yield f
+            yield from explode(e)
 
 
 def get_bounds(geometry, north_up=True, transform=None):
@@ -6929,7 +6926,7 @@ def zonal_stats_by_group(
             )
 
         def get_values(input_list):
-            decimal_format = "%.{}f".format(decimal_places)
+            decimal_format = f"%.{decimal_places}f"
             return input_list.map(
                 lambda x: ee.Number.parse(
                     ee.Number(ee.Dictionary(x).get("sum")).format(decimal_format)
@@ -8453,7 +8450,7 @@ def ee_num_round(num, decimal=2):
     Returns:
         ee.Number: The number with the specified decimal places rounded.
     """
-    format_str = "%.{}f".format(decimal)
+    format_str = f"%.{decimal}f"
     return ee.Number.parse(ee.Number(num).format(format_str))
 
 
@@ -10126,7 +10123,7 @@ def get_census_dict(reset=False):
             json.dump(census_dict, f, indent=4)
 
     else:
-        with open(census_data, "r") as f:
+        with open(census_data) as f:
             census_dict = json.load(f)
 
     return census_dict
@@ -13131,7 +13128,7 @@ def change_require(lib_path):
         raise ValueError(f"{lib_path} does not exist.")
 
     output = []
-    with open(lib_path, "r") as f:
+    with open(lib_path) as f:
         lines = f.readlines()
 
     for line in lines:
@@ -13457,7 +13454,7 @@ def html_to_streamlit(
     if not os.path.exists(filename):
         raise ValueError("filename must exist.")
 
-    f = open(filename, "r")
+    f = open(filename)
 
     html = f.read()
 
@@ -13541,7 +13538,7 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
         raise ValueError(
             "region must be a filepath or a list of bounds in the form of [minx, miny, maxx, maxy]."
         )
-    minx, miny, maxx, maxy = [float(x) for x in bounds]
+    minx, miny, maxx, maxy = (float(x) for x in bounds)
     tiles = []
     left = abs(math.floor(minx))
     right = abs(math.floor(maxx)) - 1
@@ -13550,7 +13547,7 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
 
     for y in range(upper, bottom, -1):
         for x in range(left, right, -1):
-            tile_id = "n{}w{}".format(str(y).zfill(2), str(x).zfill(3))
+            tile_id = f"n{str(y).zfill(2)}w{str(x).zfill(3)}"
             tiles.append(tile_id)
 
     links = []
@@ -14070,7 +14067,7 @@ def html_to_gradio(html, width="100%", height="500px", **kwargs):
         height = f"{height}px"
 
     if isinstance(html, str):
-        with open(html, "r") as f:
+        with open(html) as f:
             lines = f.readlines()
     elif isinstance(html, list):
         lines = html
@@ -15027,7 +15024,7 @@ def get_ee_token():
     credential_file_path = os.path.expanduser("~/.config/earthengine/credentials")
 
     if os.path.exists(credential_file_path):
-        with open(credential_file_path, "r") as f:
+        with open(credential_file_path) as f:
             credentials = json.load(f)
             return credentials
     else:
@@ -15074,10 +15071,10 @@ def geotiff_to_image(image: str, output: str) -> None:
 
 def xee_to_image(
     xds,
-    filenames: Optional[Union[str, List[str]]] = None,
-    out_dir: Optional[str] = None,
-    crs: Optional[str] = None,
-    nodata: Optional[float] = None,
+    filenames: str | list[str] | None = None,
+    out_dir: str | None = None,
+    crs: str | None = None,
+    nodata: float | None = None,
     driver: str = "COG",
     time_unit: str = "D",
     quiet: bool = False,
@@ -15088,7 +15085,7 @@ def xee_to_image(
 
     Args:
         xds (xr.Dataset): The xarray Dataset to convert to images.
-        filenames (Union[str, List[str]], optional): Output filenames for the images.
+        filenames (str | list[str]] | None): Output filenames for the images.
             If a single string is provided, it will be used as the filename for all images.
             If a list of strings is provided, the filenames will be used in order. Defaults to None.
         out_dir (str, optional): Output directory for the images. Defaults to current working directory.
@@ -15465,13 +15462,13 @@ def is_on_aws():
     return on_aws
 
 
-def xarray_to_raster(dataset, filename: str, **kwargs: Dict[str, Any]) -> None:
+def xarray_to_raster(dataset, filename: str, **kwargs: dict[str, Any]) -> None:
     """Convert an xarray Dataset to a raster file.
 
     Args:
         dataset (xr.Dataset): The input xarray Dataset to be converted.
         filename (str): The output filename for the raster file.
-        **kwargs (Dict[str, Any]): Additional keyword arguments passed to the `rio.to_raster()` method.
+        **kwargs (dict[str, Any]): Additional keyword arguments passed to the `rio.to_raster()` method.
             See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.
 
     Returns:
@@ -15524,15 +15521,15 @@ def hex_to_rgba(hex_color: str, opacity: float) -> str:
     return f"rgba({r},{g},{b},{opacity})"
 
 
-def replace_top_level_hyphens(d: Union[Dict, Any]) -> Union[Dict, Any]:
+def replace_top_level_hyphens(d: dict | Any) -> dict | Any:
     """
     Replaces hyphens with underscores in top-level dictionary keys.
 
     Args:
-        d (Union[Dict, Any]): The input dictionary or any other data type.
+        d (dict | Any): The input dictionary or any other data type.
 
     Returns:
-        Union[Dict, Any]: The modified dictionary with top-level keys having hyphens replaced with underscores,
+        The modified dictionary with top-level keys having hyphens replaced with underscores,
         or the original input if it's not a dictionary.
     """
     if isinstance(d, dict):
@@ -15540,15 +15537,15 @@ def replace_top_level_hyphens(d: Union[Dict, Any]) -> Union[Dict, Any]:
     return d
 
 
-def replace_hyphens_in_keys(d: Union[Dict, List, Any]) -> Union[Dict, List, Any]:
+def replace_hyphens_in_keys(d: dict | list | Any) -> dict | list | Any:
     """
     Recursively replaces hyphens with underscores in dictionary keys.
 
     Args:
-        d (Union[Dict, List, Any]): The input dictionary, list or any other data type.
+        d (dict | list | Any): The input dictionary, list or any other data type.
 
     Returns:
-        Union[Dict, List, Any]: The modified dictionary or list with keys having hyphens replaced with underscores,
+        The modified dictionary or list with keys having hyphens replaced with underscores,
         or the original input if it's not a dictionary or list.
     """
     if isinstance(d, dict):
@@ -15582,7 +15579,7 @@ def remove_port_from_string(data: str) -> str:
     return result
 
 
-def pmtiles_metadata(input_file: str) -> Dict[str, Union[str, int, List[str]]]:
+def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
     """
     Fetch the metadata from a local or remote .pmtiles file.
 
@@ -15656,9 +15653,9 @@ def pmtiles_metadata(input_file: str) -> Dict[str, Union[str, int, List[str]]]:
 
 def pmtiles_style(
     url: str,
-    layers: Optional[Union[str, List[str]]] = None,
+    layers: str | list[str] | None = None,
     cmap: str = "Set3",
-    n_class: Optional[int] = None,
+    n_class: int | None = None,
     opacity: float = 0.5,
     circle_radius: int = 5,
     line_width: int = 1,
@@ -15797,7 +15794,7 @@ def check_html_string(html_string):
             img_data = img_file.read()
             base64_data = base64.b64encode(img_data).decode("utf-8")
             html_string = html_string.replace(
-                'src="{}"'.format(match),
+                f'src="{match}"',
                 'src="data:image/png;base64,' + base64_data + '"',
             )
 

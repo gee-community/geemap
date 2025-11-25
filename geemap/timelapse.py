@@ -16,7 +16,6 @@ import os
 import re
 import shutil
 import tempfile
-from typing import Union, List
 import warnings
 
 import ee
@@ -34,11 +33,11 @@ except:
 
 def add_overlay(
     collection: ee.ImageCollection,
-    overlay_data: Union[str, ee.Geometry, ee.FeatureCollection],
+    overlay_data: str | ee.Geometry | ee.FeatureCollection,
     color: str = "black",
     width: int = 1,
     opacity: float = 1.0,
-    region: Union[ee.Geometry, ee.FeatureCollection] = None,
+    region: ee.Geometry | ee.FeatureCollection = None,
 ) -> ee.ImageCollection:
     """Adds an overlay to an image collection.
 
@@ -112,7 +111,7 @@ def add_overlay(
 
 
 def make_gif(
-    images: Union[List[str], str],
+    images: list[str] | str,
     out_gif: str,
     ext: str = "jpg",
     fps: int = 10,
@@ -579,7 +578,7 @@ def add_image_to_gif(
         print("The provided logo file does not exist.")
         return
 
-    out_dir = check_dir((os.path.dirname(out_gif)))
+    out_dir = check_dir(os.path.dirname(out_gif))
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
@@ -4547,9 +4546,7 @@ def modis_ocean_color_timeseries(
 
     allowed_frequency = ["year", "quarter", "month", "week", "day"]
     if frequency not in allowed_frequency:
-        raise Exception(
-            "Frequency must be one of the following: {}".format(allowed_frequency)
-        )
+        raise Exception(f"Frequency must be one of the following: {allowed_frequency}")
 
     if region is not None:
         if isinstance(region, ee.Geometry) or isinstance(region, ee.FeatureCollection):
