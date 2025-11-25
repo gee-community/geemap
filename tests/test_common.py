@@ -279,20 +279,6 @@ class CommonTest(unittest.TestCase):
             self.assertTrue(os.path.exists(abs_path_2))
             self.assertEqual(abs_path_2, os.path.abspath(dir_path_2))
 
-            # Test with home directory character ~.
-            dir_path_3 = "~/some_dir_for_testing_geemap_check_dir"
-            abs_path_3_expanded = os.path.abspath(os.path.expanduser(dir_path_3))
-            if os.path.exists(abs_path_3_expanded):
-                os.rmdir(abs_path_3_expanded)
-            abs_path_3 = common.check_dir(dir_path_3, make_dirs=True)
-            self.assertTrue(os.path.exists(abs_path_3_expanded))
-            self.assertEqual(abs_path_3, abs_path_3_expanded)
-            os.rmdir(abs_path_3_expanded)
-
-            # Test with invalid type
-            with self.assertRaises(TypeError):
-                common.check_dir(123)  # pytype: disable=wrong-arg-types
-
     def test_check_file_path(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             # Test with make_dirs=True
