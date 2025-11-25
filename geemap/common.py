@@ -4992,7 +4992,7 @@ def file_browser(
                         save_widget.disabled = True
                         text_widget.disabled = True
                         text_widget.value = (
-                            f"Failed to open {cur_node.name}." + "\n\n" + str(e)
+                            f"Failed to open {cur_node.name}.\n\n{e}"
                         )
                         full_widget.children = [left_widget, right_widget]
                         return
