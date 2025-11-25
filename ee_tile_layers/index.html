@@ -7512,8 +7512,8 @@ number between 0 and 1. Defaults to 1.</p>
         <span class="bp">self</span><span class="p">,</span>
         <span class="o">*</span><span class="p">,</span>
         <span class="n">bounds</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">],</span>
-        <span class="n">bands</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+        <span class="n">bands</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate stats used for visualization parameters.</span>
 
 <span class="sd">        Stats are calculated consistently with the Code Editor visualization parameters,</span>
@@ -7522,10 +7522,10 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="sd">        Args:</span>
 <span class="sd">            bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The</span>
 <span class="sd">                bounds to sample.</span>
-<span class="sd">            bands (Tuple[str, ...]): The bands to sample.</span>
+<span class="sd">            bands (tuple[str, ...]): The bands to sample.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[float, float, float, float]: The minimum, maximum, standard</span>
+<span class="sd">            tuple[float, float, float, float]: The minimum, maximum, standard</span>
 <span class="sd">                deviation, and mean values across the specified bands.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stat_reducer</span> <span class="o">=</span> <span class="p">(</span>
@@ -7568,7 +7568,7 @@ number between 0 and 1. Defaults to 1.</p>
         <span class="n">bands</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">percent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
         <span class="n">sigma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
 
 <span class="sd">        Args:</span>
@@ -7578,7 +7578,7 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="sd">            sigma (Optional[float]): The number of standard deviations to use when stretching.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[float, float]: The minimum and maximum values to clip to.</span>
+<span class="sd">            tuple[float, float]: The minimum and maximum values to clip to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -7897,11 +7897,11 @@ number between 0 and 1. Defaults to 1.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
+                  <code><span title="tuple">tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Tuple[float, float]: The minimum and maximum values to clip to.</p>
+                <p>tuple[float, float]: The minimum and maximum values to clip to.</p>
               </div>
             </td>
           </tr>
@@ -7956,7 +7956,7 @@ number between 0 and 1. Defaults to 1.</p>
     <span class="n">bands</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">percent</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">sigma</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
 
 <span class="sd">    Args:</span>
@@ -7966,7 +7966,7 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="sd">        sigma (Optional[float]): The number of standard deviations to use when stretching.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[float, float]: The minimum and maximum values to clip to.</span>
+<span class="sd">        tuple[float, float]: The minimum and maximum values to clip to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>

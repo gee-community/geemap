@@ -8213,12 +8213,12 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bar_chart</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">Tooltip</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">])</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the y-axis limits for the bar chart.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[float, float]: The minimum and maximum y-axis limits.</span>
+<span class="sd">            tuple[float, float]: The minimum and maximum y-axis limits.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">:</span>
             <span class="n">ylim_min</span><span class="p">,</span> <span class="n">ylim_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -8507,11 +8507,11 @@ Defaults to 'grouped'.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
+                  <code><span title="tuple">tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Tuple[float, float]: The minimum and maximum y-axis limits.</p>
+                <p>tuple[float, float]: The minimum and maximum y-axis limits.</p>
               </div>
             </td>
           </tr>
@@ -8540,12 +8540,12 @@ Defaults to 'grouped'.</p>
 <span class="normal">640</span>
 <span class="normal">641</span>
 <span class="normal">642</span>
-<span class="normal">643</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="normal">643</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the y-axis limits for the bar chart.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[float, float]: The minimum and maximum y-axis limits.</span>
+<span class="sd">        tuple[float, float]: The minimum and maximum y-axis limits.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">:</span>
         <span class="n">ylim_min</span><span class="p">,</span> <span class="n">ylim_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -11482,7 +11482,7 @@ constructor.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_properties</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the data for the chart.</span>
 
@@ -11491,7 +11491,7 @@ constructor.</p>
 <span class="sd">            y_properties (List[str]): The properties to use for the y-axis.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
+<span class="sd">            tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">x_property</span><span class="p">])</span>
         <span class="n">y_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">y_properties</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -11748,11 +11748,11 @@ y_properties, and name.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="typing.List">List</span>[<span title="typing.Any">Any</span>], <span title="typing.List">List</span>[<span title="typing.Any">Any</span>]]</code>
+                  <code><span title="tuple">tuple</span>[<span title="typing.List">List</span>[<span title="typing.Any">Any</span>], <span title="typing.List">List</span>[<span title="typing.Any">Any</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Tuple[List[Any], List[Any]]: The x and y data for the chart.</p>
+                <p>tuple[List[Any], List[Any]]: The x and y data for the chart.</p>
               </div>
             </td>
           </tr>
@@ -11779,7 +11779,7 @@ y_properties, and name.</p>
 <span class="normal">771</span>
 <span class="normal">772</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_properties</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the data for the chart.</span>
 
@@ -11788,7 +11788,7 @@ y_properties, and name.</p>
 <span class="sd">        y_properties (List[str]): The properties to use for the y-axis.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
+<span class="sd">        tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">x_property</span><span class="p">])</span>
     <span class="n">y_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">y_properties</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
@@ -11932,7 +11932,7 @@ y_properties, and name.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x_properties</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the data for the chart.</span>
 
@@ -11941,7 +11941,7 @@ y_properties, and name.</p>
 <span class="sd">                the x-axis.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
+<span class="sd">            tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            Exception: If x_properties is not a list or dictionary.</span>
@@ -12233,11 +12233,11 @@ the x-axis.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="typing.List">List</span>[<span title="typing.Any">Any</span>], <span title="typing.List">List</span>[<span title="typing.Any">Any</span>]]</code>
+                  <code><span title="tuple">tuple</span>[<span title="typing.List">List</span>[<span title="typing.Any">Any</span>], <span title="typing.List">List</span>[<span title="typing.Any">Any</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Tuple[List[Any], List[Any]]: The x and y data for the chart.</p>
+                <p>tuple[List[Any], List[Any]]: The x and y data for the chart.</p>
               </div>
             </td>
           </tr>
@@ -12297,7 +12297,7 @@ the x-axis.</p>
 <span class="normal">834</span>
 <span class="normal">835</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_properties</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the data for the chart.</span>
 
@@ -12306,7 +12306,7 @@ the x-axis.</p>
 <span class="sd">            the x-axis.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
+<span class="sd">        tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        Exception: If x_properties is not a list or dictionary.</span>
@@ -12495,7 +12495,7 @@ the x-axis.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_column_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Gets the data for the chart.</span>
 
@@ -12504,7 +12504,7 @@ the x-axis.</p>
 <span class="sd">            new_column_names (List[str]): The new column names for the y-axis.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
+<span class="sd">            tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">x_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">x_property</span><span class="p">])</span>
         <span class="n">y_data</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">new_column_names</span><span class="p">]</span>
@@ -12943,11 +12943,11 @@ Defaults to 'stacked'.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="typing.List">List</span>[<span title="typing.Any">Any</span>], <span title="typing.List">List</span>[<span title="typing.Any">Any</span>]]</code>
+                  <code><span title="tuple">tuple</span>[<span title="typing.List">List</span>[<span title="typing.Any">Any</span>], <span title="typing.List">List</span>[<span title="typing.Any">Any</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Tuple[List[Any], List[Any]]: The x and y data for the chart.</p>
+                <p>tuple[List[Any], List[Any]]: The x and y data for the chart.</p>
               </div>
             </td>
           </tr>
@@ -12975,7 +12975,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">910</span>
 <span class="normal">911</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_column_names</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Gets the data for the chart.</span>
 
@@ -12984,7 +12984,7 @@ Defaults to 'stacked'.</p>
 <span class="sd">        new_column_names (List[str]): The new column names for the y-axis.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
+<span class="sd">        tuple[List[Any], List[Any]]: The x and y data for the chart.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">x_data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">x_property</span><span class="p">])</span>
     <span class="n">y_data</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">new_column_names</span><span class="p">]</span>

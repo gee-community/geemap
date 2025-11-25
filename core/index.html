@@ -10971,7 +10971,7 @@ the draw control.</p>
         <span class="c1">#   - can only be added to the map once,</span>
         <span class="c1">#   - have a constructor that takes a position arg, and</span>
         <span class="c1">#   - don&#39;t need to be stored as instance vars.</span>
-        <span class="n">basic_controls</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">basic_controls</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;zoom_control&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ZoomControl</span><span class="p">,</span> <span class="p">{}),</span>
             <span class="s2">&quot;fullscreen_control&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">FullScreenControl</span><span class="p">,</span> <span class="p">{}),</span>
             <span class="s2">&quot;scale_control&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ScaleControl</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
@@ -11964,7 +11964,7 @@ the draw control.</p>
     <span class="c1">#   - can only be added to the map once,</span>
     <span class="c1">#   - have a constructor that takes a position arg, and</span>
     <span class="c1">#   - don&#39;t need to be stored as instance vars.</span>
-    <span class="n">basic_controls</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">basic_controls</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Control</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;zoom_control&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ZoomControl</span><span class="p">,</span> <span class="p">{}),</span>
         <span class="s2">&quot;fullscreen_control&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">FullScreenControl</span><span class="p">,</span> <span class="p">{}),</span>
         <span class="s2">&quot;scale_control&quot;</span><span class="p">:</span> <span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">ScaleControl</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;metric&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">}),</span>
@@ -13597,11 +13597,11 @@ degrees or a GeoJSON dictionary.</p>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.</span>
+<span class="sd">            tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 
@@ -14258,11 +14258,11 @@ degrees or a GeoJSON dictionary.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="float">float</span>, <span title="float">float</span>, <span title="float">float</span>, <span title="float">float</span>]</code>
+                  <code><span title="tuple">tuple</span>[<span title="float">float</span>, <span title="float">float</span>, <span title="float">float</span>, <span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.</p>
+                <p>tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.</p>
               </div>
             </td>
           </tr>
@@ -14278,11 +14278,11 @@ degrees or a GeoJSON dictionary.</p>
 <span class="normal">485</span>
 <span class="normal">486</span>
 <span class="normal">487</span>
-<span class="normal">488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="normal">488</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.</span>
+<span class="sd">        tuple[float, float, float, float]: A tuple in the format (west, south, east, north) in degrees.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>

@@ -9910,11 +9910,11 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
     <span class="k">def</span><span class="w"> </span><span class="nf">datetime_interval</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns datetime objects representing temporal extents.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Iterable[Tuple[datetime.datetime, Optional[datetime.datetime]]]:</span>
+<span class="sd">            Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:</span>
 <span class="sd">                An iterable of tuples representing temporal extents.</span>
 
 <span class="sd">        Raises:</span>
@@ -10519,11 +10519,11 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="typing.Iterable">Iterable</span>[<span title="typing.Tuple">Tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="typing.Optional">Optional</span>[<span title="datetime.datetime">datetime</span>]]]</code>
+                  <code><span title="typing.Iterable">Iterable</span>[<span title="tuple">tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="typing.Optional">Optional</span>[<span title="datetime.datetime">datetime</span>]]]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Iterable[Tuple[datetime.datetime, Optional[datetime.datetime]]]:
+                <p>Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:
 An iterable of tuples representing temporal extents.</p>
               </div>
             </td>
@@ -10582,11 +10582,11 @@ An iterable of tuples representing temporal extents.</p>
 <span class="normal">1017</span>
 <span class="normal">1018</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">datetime_interval</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns datetime objects representing temporal extents.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Iterable[Tuple[datetime.datetime, Optional[datetime.datetime]]]:</span>
+<span class="sd">        Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:</span>
 <span class="sd">            An iterable of tuples representing temporal extents.</span>
 
 <span class="sd">    Raises:</span>
@@ -14706,7 +14706,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
         <span class="n">results</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
         <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
         <span class="n">bounding_box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollectionList</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve relevant datasets from the Earth Engine data catalog.</span>
 
@@ -14717,7 +14717,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="sd">                Defaults to 0.7.</span>
 <span class="sd">            bounding_box (Optional[List[float]]): The spatial bounding box for the query,</span>
 <span class="sd">                in the format [lon1, lat1, lon2, lon2]. Defaults to None.</span>
-<span class="sd">            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):</span>
+<span class="sd">            temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):</span>
 <span class="sd">            Temporal constraints as a tuple of datetime objects. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
@@ -14743,7 +14743,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
         <span class="n">results</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
         <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
         <span class="n">bounding_box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve relevant datasets and their match scores as a DataFrame.</span>
 
@@ -14754,7 +14754,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="sd">                Defaults to 0.7.</span>
 <span class="sd">            bounding_box (Optional[List[float]]): The spatial bounding box for the query,</span>
 <span class="sd">                in the format [lon1, lat1, lon2, lon2]. Defaults to None.</span>
-<span class="sd">            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):</span>
+<span class="sd">            temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):</span>
 <span class="sd">                Temporal constraints as a tuple of datetime objects. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
@@ -14774,7 +14774,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
         <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
         <span class="n">results</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
         <span class="n">bounding_box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert dataset IDs and match scores to a DataFrame.</span>
 
@@ -14783,7 +14783,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="sd">            results (int): The number of datasets to return.</span>
 <span class="sd">            bounding_box (Optional[List[float]]): The spatial bounding box for the query,</span>
 <span class="sd">                in the format [lon1, lat1, lon2, lon2]. Defaults to None.</span>
-<span class="sd">            temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):</span>
+<span class="sd">            temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):</span>
 <span class="sd">                Temporal constraints as a tuple of datetime objects. Defaults to None.</span>
 
 <span class="sd">        Returns:</span>
@@ -15017,7 +15017,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
                 <code>temporal_interval</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="typing.Tuple">Tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]]</code>
+                  <code><span title="typing.Optional">Optional</span>[<span title="tuple">tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -15105,7 +15105,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
     <span class="n">results</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
     <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
     <span class="n">bounding_box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CollectionList</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve relevant datasets from the Earth Engine data catalog.</span>
 
@@ -15116,7 +15116,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 <span class="sd">            Defaults to 0.7.</span>
 <span class="sd">        bounding_box (Optional[List[float]]): The spatial bounding box for the query,</span>
 <span class="sd">            in the format [lon1, lat1, lon2, lon2]. Defaults to None.</span>
-<span class="sd">        temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):</span>
+<span class="sd">        temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):</span>
 <span class="sd">        Temporal constraints as a tuple of datetime objects. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
@@ -15230,7 +15230,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
                 <code>temporal_interval</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="typing.Tuple">Tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]]</code>
+                  <code><span title="typing.Optional">Optional</span>[<span title="tuple">tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -15320,7 +15320,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
     <span class="n">results</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
     <span class="n">threshold</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.7</span><span class="p">,</span>
     <span class="n">bounding_box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieve relevant datasets and their match scores as a DataFrame.</span>
 
@@ -15331,7 +15331,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 <span class="sd">            Defaults to 0.7.</span>
 <span class="sd">        bounding_box (Optional[List[float]]): The spatial bounding box for the query,</span>
 <span class="sd">            in the format [lon1, lat1, lon2, lon2]. Defaults to None.</span>
-<span class="sd">        temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):</span>
+<span class="sd">        temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):</span>
 <span class="sd">            Temporal constraints as a tuple of datetime objects. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
@@ -15430,7 +15430,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
                 <code>temporal_interval</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="typing.Tuple">Tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]]</code>
+                  <code><span title="typing.Optional">Optional</span>[<span title="tuple">tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -15502,7 +15502,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
     <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">results</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">bounding_box</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">temporal_interval</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert dataset IDs and match scores to a DataFrame.</span>
 
@@ -15511,7 +15511,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 <span class="sd">        results (int): The number of datasets to return.</span>
 <span class="sd">        bounding_box (Optional[List[float]]): The spatial bounding box for the query,</span>
 <span class="sd">            in the format [lon1, lat1, lon2, lon2]. Defaults to None.</span>
-<span class="sd">        temporal_interval (Optional[Tuple[datetime.datetime, datetime.datetime]]):</span>
+<span class="sd">        temporal_interval (Optional[tuple[datetime.datetime, datetime.datetime]]):</span>
 <span class="sd">            Temporal constraints as a tuple of datetime objects. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
@@ -19887,7 +19887,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
                 <code>collection_interval</code>
             </td>
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="typing.Optional">Optional</span>[<span title="datetime.datetime">datetime</span>]]</code>
+                  <code><span title="tuple">tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="typing.Optional">Optional</span>[<span title="datetime.datetime">datetime</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -19963,13 +19963,13 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">814</span>
 <span class="normal">815</span>
 <span class="normal">816</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matches_datetime</span><span class="p">(</span>
-    <span class="n">collection_interval</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]],</span>
+    <span class="n">collection_interval</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">]],</span>
     <span class="n">query_datetime</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the collection&#39;s datetime interval matches the query datetime.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        collection_interval (Tuple[datetime.datetime, Optional[datetime.datetime]]):</span>
+<span class="sd">        collection_interval (tuple[datetime.datetime, Optional[datetime.datetime]]):</span>
 <span class="sd">            Temporal interval of the collection.</span>
 <span class="sd">        query_datetime (datetime.datetime): A datetime coming from a query.</span>
 
@@ -20018,7 +20018,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
                 <code>collection_interval</code>
             </td>
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]</code>
+                  <code><span title="tuple">tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -20034,7 +20034,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
                 <code>query_interval</code>
             </td>
             <td>
-                  <code><span title="typing.Tuple">Tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]</code>
+                  <code><span title="tuple">tuple</span>[<span title="datetime.datetime">datetime</span>, <span title="datetime.datetime">datetime</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -20096,15 +20096,15 @@ with the query interval start and end.</p>
 <span class="normal">792</span>
 <span class="normal">793</span>
 <span class="normal">794</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matches_interval</span><span class="p">(</span>
-    <span class="n">collection_interval</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
-    <span class="n">query_interval</span><span class="p">:</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
+    <span class="n">collection_interval</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
+    <span class="n">query_interval</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the collection&#39;s datetime interval matches the query datetime interval.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        collection_interval (Tuple[datetime.datetime, datetime.datetime]):</span>
+<span class="sd">        collection_interval (tuple[datetime.datetime, datetime.datetime]):</span>
 <span class="sd">            Temporal interval of the collection.</span>
-<span class="sd">        query_interval (Tuple[datetime.datetime, datetime.datetime]): A tuple</span>
+<span class="sd">        query_interval (tuple[datetime.datetime, datetime.datetime]): A tuple</span>
 <span class="sd">            with the query interval start and end.</span>
 
 <span class="sd">    Returns:</span>
