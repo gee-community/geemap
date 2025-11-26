@@ -18,7 +18,8 @@ import datetime
 import logging
 import re
 import sys
-from typing import Any, Dict, Iterable, List, Optional, Sequence
+from typing import Any, Dict, List, Optional
+from collections.abc import Iterable, Sequence
 import uuid
 
 import numpy as np
@@ -92,8 +93,8 @@ class Genie(widgets.VBox):
 
     def __init__(
         self,
-        project: Optional[str] = None,
-        google_api_key: Optional[str] = None,
+        project: str | None = None,
+        google_api_key: str | None = None,
         gemini_model: str = "gemini-1.5-flash",
         target_score: float = 0.8,
         widget_height: str = "600px",
@@ -259,7 +260,7 @@ class Genie(widgets.VBox):
                     pass
                 with debug_output:
                     print(error_message)
-                raise ValueError("URL %s causes %s" % (image_url, error_message))
+                raise ValueError("URL {} causes {}".format(image_url, error_message))
 
         def show_layer(python_code: str) -> str:
             """Execute the given Earth Engine Python client code and add the result to
@@ -795,7 +796,7 @@ def matches_interval(
 
 
 def matches_datetime(
-    collection_interval: tuple[datetime.datetime, Optional[datetime.datetime]],
+    collection_interval: tuple[datetime.datetime, datetime.datetime | None],
     query_datetime: datetime.datetime,
 ) -> bool:
     """Checks if the collection's datetime interval matches the query datetime.
@@ -868,7 +869,7 @@ class BBox:
         )
 
     @classmethod
-    def from_list(cls, bbox_list: List[float]) -> "BBox":
+    def from_list(cls, bbox_list: list[float]) -> "BBox":
         """Constructs a BBox from a list of four numbers [west, south, east, north].
 
         Args:
@@ -892,7 +893,7 @@ class BBox:
             )
         return cls(bbox_list[0], bbox_list[1], bbox_list[2], bbox_list[3])
 
-    def to_list(self) -> List[float]:
+    def to_list(self) -> list[float]:
         """Converts the BBox to a list of four numbers [west, south, east, north].
 
         Returns:
@@ -924,7 +925,7 @@ class Collection:
 
     stac_json: dict[str, Any]
 
-    def __init__(self, stac_json: Dict[str, Any]) -> None:
+    def __init__(self, stac_json: dict[str, Any]) -> None:
         """Initializes the Collection.
 
         Args:
@@ -946,7 +947,7 @@ class Collection:
         """
         return self.stac_json[item]
 
-    def get(self, item: str, default: Optional[Any] = None) -> Optional[Any]:
+    def get(self, item: str, default: Any | None = None) -> Any | None:
         """Matches dict's get by returning None if there is no item.
 
         Args:
@@ -994,7 +995,7 @@ class Collection:
 
     def datetime_interval(
         self,
-    ) -> Iterable[tuple[datetime.datetime, Optional[datetime.datetime]]]:
+    ) -> Iterable[tuple[datetime.datetime, datetime.datetime | None]]:
         """Returns datetime objects representing temporal extents.
 
         Returns:
@@ -1035,7 +1036,7 @@ class Collection:
             return ""
         return self.start().strftime("%Y-%m-%d")
 
-    def end(self) -> Optional[datetime.datetime]:
+    def end(self) -> datetime.datetime | None:
         """Gets the end datetime of the collection.
 
         Returns:
@@ -1066,7 +1067,7 @@ class Collection:
             [BBox.from_list(x) for x in self.stac_json["extent"]["spatial"]["bbox"]]
         )
 
-    def bands(self) -> List[Dict[str, Any]]:
+    def bands(self) -> list[dict[str, Any]]:
         """Gets the bands of the collection.
 
         Returns:
@@ -1372,7 +1373,7 @@ class Catalog:
         file_contents = file_blob.download_as_string().decode()
         return Collection(json.loads(file_contents))
 
-    def _read_files(self, file_blobs: List[storage.Blob]) -> List[Collection]:
+    def _read_files(self, file_blobs: list[storage.Blob]) -> list[Collection]:
         """Processes files in parallel.
 
         Args:
@@ -1424,7 +1425,7 @@ class Catalog:
 
     def _load_all_code_samples(
         self, storage_client: storage.Client
-    ) -> Dict[str, Dict[str, str]]:
+    ) -> dict[str, dict[str, str]]:
         """Loads js + py example scripts from GCS into dict keyed by dataset ID.
 
         Args:
@@ -1486,7 +1487,7 @@ class Catalog:
 class PrecomputedEmbeddings(Embeddings):
     """Class for handling precomputed embeddings."""
 
-    def __init__(self, embeddings_dict: Dict[str, List[float]]) -> None:
+    def __init__(self, embeddings_dict: dict[str, list[float]]) -> None:
         """Initializes the PrecomputedEmbeddings.
 
         Args:
@@ -1495,7 +1496,7 @@ class PrecomputedEmbeddings(Embeddings):
         self.embeddings_dict = embeddings_dict
         self.model = TextEmbeddingModel.from_pretrained("google/text-embedding-004")
 
-    def embed_documents(self, texts: List[str]) -> List[List[float]]:
+    def embed_documents(self, texts: list[str]) -> list[list[float]]:
         """Embeds a list of documents.
 
         Args:
@@ -1506,7 +1507,7 @@ class PrecomputedEmbeddings(Embeddings):
         """
         return [self.embeddings_dict[text] for text in texts]
 
-    def embed_query(self, text: str) -> List[float]:
+    def embed_query(self, text: str) -> list[float]:
         """Embeds a query text.
 
         Args:
@@ -1582,8 +1583,8 @@ class EarthEngineDatasetIndex:
         query: str,
         results: int = 10,
         threshold: float = 0.7,
-        bounding_box: Optional[List[float]] = None,
-        temporal_interval: Optional[tuple[datetime.datetime, datetime.datetime]] = None,
+        bounding_box: list[float] | None = None,
+        temporal_interval: tuple[datetime.datetime, datetime.datetime] | None = None,
     ) -> CollectionList:
         """Retrieve relevant datasets from the Earth Engine data catalog.
 
@@ -1619,8 +1620,8 @@ class EarthEngineDatasetIndex:
         query: str,
         results: int = 20,
         threshold: float = 0.7,
-        bounding_box: Optional[List[float]] = None,
-        temporal_interval: Optional[tuple[datetime.datetime, datetime.datetime]] = None,
+        bounding_box: list[float] | None = None,
+        temporal_interval: tuple[datetime.datetime, datetime.datetime] | None = None,
     ) -> pd.DataFrame:
         """Retrieve relevant datasets and their match scores as a DataFrame.
 
@@ -1650,8 +1651,8 @@ class EarthEngineDatasetIndex:
         self,
         query: str,
         results: int,
-        bounding_box: Optional[List[float]] = None,
-        temporal_interval: Optional[tuple[datetime.datetime, datetime.datetime]] = None,
+        bounding_box: list[float] | None = None,
+        temporal_interval: tuple[datetime.datetime, datetime.datetime] | None = None,
     ) -> pd.DataFrame:
         """Convert dataset IDs and match scores to a DataFrame.
 
@@ -1709,7 +1710,7 @@ def explain_relevance(
 )
 def explain_relevance_from_stac_json(
     query: str,
-    stac_json: Dict[str, Any],
+    stac_json: dict[str, Any],
     model_name: str = "gemini-1.5-pro-latest",
     stream: bool = False,
 ) -> str:
@@ -2275,7 +2276,7 @@ class DatasetExplorer:
 
         self.ee_index = EarthEngineDatasetIndex(catalog, langchain_index, llm)
 
-    def show(self, query: Optional[str] = None, **kwargs: Any) -> widgets.VBox:
+    def show(self, query: str | None = None, **kwargs: Any) -> widgets.VBox:
         """Displays a query interface for searching datasets.
 
         Args:
