@@ -227,8 +227,8 @@ class Map(pdk.Deck):
     def add_gdf(
         self,
         gdf,
-        layer_name: Optional[str] = None,
-        random_color_column: Optional[str] = None,
+        layer_name: str | None = None,
+        random_color_column: str | None = None,
         **kwargs,
     ) -> None:
         """Adds a GeoPandas GeoDataFrame to the map.
@@ -297,8 +297,8 @@ class Map(pdk.Deck):
     def add_vector(
         self,
         filename: str,
-        layer_name: Optional[str] = None,
-        random_color_column: Optional[str] = None,
+        layer_name: str | None = None,
+        random_color_column: str | None = None,
         **kwargs,
     ) -> None:
         """Adds a vector file to the map.
@@ -330,8 +330,8 @@ class Map(pdk.Deck):
     def add_geojson(
         self,
         filename: str,
-        layer_name: Optional[str] = None,
-        random_color_column: Optional[str] = None,
+        layer_name: str | None = None,
+        random_color_column: str | None = None,
         **kwargs,
     ) -> None:
         """Adds a GeoJSON file to the map.
@@ -349,8 +349,8 @@ class Map(pdk.Deck):
     def add_shp(
         self,
         filename: str,
-        layer_name: Optional[str] = None,
-        random_color_column: Optional[str] = None,
+        layer_name: str | None = None,
+        random_color_column: str | None = None,
         **kwargs,
     ) -> None:
         """Adds a shapefile to the map.
@@ -368,8 +368,8 @@ class Map(pdk.Deck):
     def add_kml(
         self,
         filename: str,
-        layer_name: Optional[str] = None,
-        random_color_column: Optional[str] = None,
+        layer_name: str | None = None,
+        random_color_column: str | None = None,
         **kwargs,
     ) -> None:
         """Adds a KML file to the map.
