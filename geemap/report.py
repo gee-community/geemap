@@ -12,7 +12,7 @@ from typing import Optional
 class Report(scooby.Report):
     def __init__(
         self,
-        additional: Optional[dict] = None,
+        additional: dict | None = None,
         ncol: int = 3,
         text_width: int = 80,
         sort: bool = False,
