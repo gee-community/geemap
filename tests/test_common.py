@@ -3,6 +3,7 @@
 import base64
 import builtins
 import io
+import math
 import os
 import pathlib
 import sys
@@ -258,8 +259,51 @@ class CommonTest(unittest.TestCase):
     # TODO: test_points_from_xy
     # TODO: test_vector_centroids
     # TODO: test_bbox_to_gdf
-    # TODO: test_check_dir
-    # TODO: test_check_file_path
+
+    def test_check_dir(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Test with make_dirs=True
+            dir_path_1 = os.path.join(tmpdir, "subdir1")
+            abs_path_1 = common.check_dir(dir_path_1, make_dirs=True)
+            self.assertTrue(os.path.exists(abs_path_1))
+            self.assertEqual(abs_path_1, os.path.abspath(dir_path_1))
+
+            # Test with make_dirs=False and dir does not exist
+            dir_path_2 = os.path.join(tmpdir, "subdir2")
+            with self.assertRaises(FileNotFoundError):
+                common.check_dir(dir_path_2, make_dirs=False)
+
+            # Test with make_dirs=False and dir exists
+            os.makedirs(dir_path_2)
+            abs_path_2 = common.check_dir(dir_path_2, make_dirs=False)
+            self.assertTrue(os.path.exists(abs_path_2))
+            self.assertEqual(abs_path_2, os.path.abspath(dir_path_2))
+
+    def test_check_file_path(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # Test with make_dirs=True
+            file_path_1 = os.path.join(tmpdir, "subdir1", "file1.txt")
+            abs_path_1 = common.check_file_path(file_path_1, make_dirs=True)
+            self.assertTrue(os.path.exists(os.path.dirname(abs_path_1)))
+            self.assertEqual(abs_path_1, os.path.abspath(file_path_1))
+
+            # Test with make_dirs=False
+            file_path_2 = os.path.join(tmpdir, "subdir2", "file2.txt")
+            abs_path_2 = common.check_file_path(file_path_2, make_dirs=False)
+            self.assertFalse(os.path.exists(os.path.dirname(abs_path_2)))
+            self.assertEqual(abs_path_2, os.path.abspath(file_path_2))
+
+            # Test with home directory character ~.
+            file_path_3 = "~/some_dir/file3.txt"
+            abs_path_3 = common.check_file_path(file_path_3, make_dirs=False)
+            self.assertEqual(
+                abs_path_3, os.path.abspath(os.path.expanduser(file_path_3))
+            )
+
+            # Test with invalid type
+            with self.assertRaises(TypeError):
+                common.check_file_path(123)  # pytype: disable=wrong-arg-types
+
     # TODO: test_image_to_cog
     # TODO: test_cog_validate
     # TODO: test_gdf_to_df
@@ -288,7 +332,30 @@ class CommonTest(unittest.TestCase):
     # TODO: test_download_ee_image_tiles
     # TODO: test_download_ee_image_tiles_parallel
     # TODO: test_download_ee_image_collection
-    # TODO: test_get_palette_colors
+
+    def test_get_palette_colors(self):
+        # Test with n_class
+        colors = common.get_palette_colors("viridis", n_class=5)
+        self.assertEqual(len(colors), 5)
+        self.assertTrue(all(isinstance(c, str) and len(c) == 6 for c in colors))
+        self.assertEqual(colors, ["440154", "3b528b", "21918c", "5ec962", "fde725"])
+
+        # Test with hashtag=True
+        colors_hashtag = common.get_palette_colors("viridis", 5, hashtag=True)
+        self.assertTrue(all(c.startswith("#") for c in colors_hashtag))
+        self.assertEqual(
+            colors_hashtag, ["#440154", "#3b528b", "#21918c", "#5ec962", "#fde725"]
+        )
+
+        # Test with no n_class (should default to a reasonable number, e.g., 256 for continuous)
+        colors_default = common.get_palette_colors("viridis")
+        self.assertGreater(len(colors_default), 1)
+        self.assertTrue(all(isinstance(c, str) and len(c) == 6 for c in colors_default))
+
+        # Test invalid cmap name
+        with self.assertRaises(ValueError):
+            common.get_palette_colors("invalid_cmap_name")
+
     # TODO: test_plot_raster
     # TODO: test_plot_raster_3d
     # TODO: test_display_html
@@ -306,7 +373,15 @@ class CommonTest(unittest.TestCase):
     # TODO: test_mosaic
     # TODO: test_reproject
     # TODO: test_download_3dep_lidar
-    # TODO: test_use_mkdocs
+
+    @mock.patch.dict(os.environ, {"USE_MKDOCS": "true"})
+    def test_use_mkdocs_true(self):
+        self.assertTrue(common.use_mkdocs())
+
+    @mock.patch.dict(os.environ, {}, clear=True)
+    def test_use_mkdocs_false(self):
+        self.assertFalse(common.use_mkdocs())
+
     # TODO: test_create_legend
     # TODO: test_is_arcpy
     # TODO: test_arc_active_map
@@ -326,12 +401,117 @@ class CommonTest(unittest.TestCase):
     # TODO: test_image_set_crs
     # TODO: test_image_geotransform
     # TODO: test_image_resolution
-    # TODO: test_find_files
-    # TODO: test_zoom_level_resolution
-    # TODO: test_lnglat_to_meters
-    # TODO: test_meters_to_lnglat
+
+    def test_find_files(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            dir_path = pathlib.Path(tmpdir)
+            f1 = dir_path / "file1.txt"
+            f2 = dir_path / "file2.csv"
+            f1.touch()
+            f2.touch()
+            subdir = dir_path / "subdir"
+            subdir.mkdir()
+            f3 = subdir / "file3.txt"
+            f4 = subdir / "file4.py"
+            f3.touch()
+            f4.touch()
+
+            # Test recursive search, full path, no extension
+            result = common.find_files(tmpdir, fullpath=True, recursive=True)
+            expected = [str(f1), str(f2), str(f3), str(f4)]
+            self.assertCountEqual(result, expected)
+
+            # Test recursive search, full path, with extension "txt"
+            result = common.find_files(
+                tmpdir, ext=".txt", fullpath=True, recursive=True
+            )
+            expected = [str(f1), str(f3)]
+            self.assertCountEqual(result, expected)
+
+            result = common.find_files(tmpdir, ext="txt", fullpath=True, recursive=True)
+            expected = [str(f1), str(f3)]
+            self.assertCountEqual(result, expected)
+
+            # Test non-recursive search, full path, with extension "txt"
+            result = common.find_files(
+                tmpdir, ext="txt", fullpath=True, recursive=False
+            )
+            expected = [str(f1)]
+            self.assertCountEqual(result, expected)
+
+            # Test recursive search, no full path, with extension "txt"
+            result = common.find_files(
+                tmpdir, ext="txt", fullpath=False, recursive=True
+            )
+            expected = ["file1.txt", "file3.txt"]
+            self.assertCountEqual(result, expected)
+
+            # Test non-recursive search, no full path, no extension
+            result = common.find_files(tmpdir, fullpath=False, recursive=False)
+            expected = ["file1.txt", "file2.csv"]
+            self.assertCountEqual(result, expected)
+
+    def test_zoom_level_resolution(self):
+        self.assertAlmostEqual(
+            common.zoom_level_resolution(zoom=0, latitude=0), 156543.04, places=4
+        )
+        self.assertAlmostEqual(
+            common.zoom_level_resolution(zoom=10, latitude=0), 152.8740625, places=4
+        )
+        self.assertAlmostEqual(
+            common.zoom_level_resolution(zoom=10, latitude=math.pi / 3),
+            76.43703125,
+            places=4,
+        )
+        self.assertAlmostEqual(
+            common.zoom_level_resolution(zoom=10, latitude=-math.pi / 3),
+            76.43703125,
+            places=4,
+        )
+
+    def test_lnglat_to_meters(self):
+        x, y = common.lnglat_to_meters(longitude=0, latitude=0)
+        self.assertAlmostEqual(x, 0)
+        self.assertAlmostEqual(y, 0)
+
+        x, y = common.lnglat_to_meters(longitude=1, latitude=2)
+        self.assertAlmostEqual(x, 111319.4908, places=4)
+        self.assertAlmostEqual(y, 222684.2085, places=4)
+
+        x, y = common.lnglat_to_meters(10, 20)
+        lng, lat = common.meters_to_lnglat(x, y)
+        self.assertAlmostEqual(lng, 10, places=4)
+        self.assertAlmostEqual(lat, 20, places=4)
+
+    def test_meters_to_lnglat(self):
+        lng, lat = common.meters_to_lnglat(x=0, y=0)
+        self.assertAlmostEqual(lng, 0)
+        self.assertAlmostEqual(lat, 0)
+
+        lng, lat = common.meters_to_lnglat(x=111319.4908, y=222684.2085)
+        self.assertAlmostEqual(lng, 1.0, places=4)
+        self.assertAlmostEqual(lat, 2.0, places=4)
+
+        x, y = common.lnglat_to_meters(10, 20)
+        lng, lat = common.meters_to_lnglat(x, y)
+        self.assertAlmostEqual(lng, 10, places=4)
+        self.assertAlmostEqual(lat, 20, places=4)
+
     # TODO: test_bounds_to_xy_range
-    # TODO: test_center_zoom_to_xy_range
+
+    def test_center_zoom_to_xy_range(self):
+        x_range, y_range = common.center_zoom_to_xy_range(center=(0, 0), zoom=2)
+        self.assertAlmostEqual(x_range[0], -19926188.8520, places=4)
+        self.assertAlmostEqual(x_range[1], 19926188.8520, places=4)
+        self.assertAlmostEqual(y_range[0], -11068715.6594, places=4)
+        self.assertAlmostEqual(y_range[1], 11068715.6594, places=4)
+
+        x_range, y_range = common.center_zoom_to_xy_range(center=(0, 0), zoom=3)
+        self.assertAlmostEqual(x_range[0], -9963094.4260, places=4)
+        self.assertAlmostEqual(x_range[1], 9963094.4260, places=4)
+        self.assertAlmostEqual(y_range[0], -4163881.1441, places=4)
+        self.assertAlmostEqual(y_range[1], 4163881.1441, places=4)
+
     # TODO: test_get_geometry_coords
     # TODO: test_landsat_scaling
     # TODO: test_tms_to_geotiff
