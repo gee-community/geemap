@@ -6,7 +6,6 @@
 # *******************************************************************************#
 
 import scooby
-from typing import Optional
 
 
 class Report(scooby.Report):
