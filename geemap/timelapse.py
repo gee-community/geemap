@@ -6,8 +6,6 @@
 # *******************************************************************************#
 
 import datetime
-from datetime import datetime
-from datetime import date
 import glob
 import importlib.resources
 import io
@@ -21,9 +19,9 @@ import warnings
 import ee
 import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
-import numpy as np
 
 from .common import *
+from . import coreutils
 
 try:
     from PIL import Image
@@ -69,7 +67,7 @@ def add_overlay(
                 elif overlay_data.startswith("http") and overlay_data.endswith(
                     ".geojson"
                 ):
-                    overlay_data = geojson_to_ee(overlay_data)
+                    overlay_data = coreutils.geojson_to_ee(overlay_data)
                 else:
                     overlay_data = ee.FeatureCollection(overlay_data)
 
@@ -98,7 +96,7 @@ def add_overlay(
                 "color": 1,
                 "width": width,
             }
-        ).visualize(**{"palette": check_color(color), "opacity": opacity})
+        ).visualize(**{"palette": coreutils.check_color(color), "opacity": opacity})
         blend_col = collection.map(
             lambda img: img.blend(image).set(
                 "system:time_start", img.get("system:time_start")
@@ -286,7 +284,7 @@ def gif_fading(in_gif, out_gif, duration=1, verbose=True):
 
     if isinstance(in_gif, str) and in_gif.startswith("http"):
         ext = os.path.splitext(in_gif)[1]
-        file_path = temp_file_path(ext)
+        file_path = coreutils.temp_file_path(ext)
         download_from_url(in_gif, file_path, verbose=verbose)
         in_gif = file_path
 
@@ -447,8 +445,8 @@ def add_text_to_gif(
             print(e)
             font = ImageFont.truetype(default_font, font_size)
 
-    color = check_color(font_color)
-    progress_bar_color = check_color(progress_bar_color)
+    color = coreutils.check_color(font_color)
+    progress_bar_color = coreutils.check_color(progress_bar_color)
 
     try:
         image = Image.open(in_gif)
@@ -952,7 +950,7 @@ def create_timelapse(
     )
 
     if out_gif is None:
-        out_gif = temp_file_path(".gif")
+        out_gif = coreutils.temp_file_path(".gif")
     else:
         out_gif = check_file_path(out_gif)
 
@@ -1344,7 +1342,7 @@ def valid_roi(roi):
 
 
 def sentinel1_defaults():
-    year = date.today().year
+    year = datetime.date.today().year
     roi = ee.Geometry.Polygon(
         [
             [
@@ -2729,7 +2727,7 @@ def landsat_timelapse(
         raise ValueError("The provided roi is invalid. It must be an ee.Geometry")
 
     if out_gif is None:
-        out_gif = temp_file_path(".gif")
+        out_gif = coreutils.temp_file_path(".gif")
     elif not out_gif.endswith(".gif"):
         raise ValueError("The output file must end with .gif")
     else:
@@ -3012,7 +3010,7 @@ def landsat_timelapse_legacy(
         raise ValueError("The provided roi is invalid. It must be an ee.Geometry")
 
     if out_gif is None:
-        out_gif = temp_file_path(".gif")
+        out_gif = coreutils.temp_file_path(".gif")
     elif not out_gif.endswith(".gif"):
         raise ValueError("The output file must end with .gif")
     else:
@@ -3275,7 +3273,7 @@ def sentinel1_timelapse_legacy(
 
     if out_gif is None:
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        filename = "s1_ts_" + random_string() + ".gif"
+        filename = "s1_ts_" + coreutils.random_string() + ".gif"
         out_gif = os.path.join(out_dir, filename)
     elif not out_gif.endswith(".gif"):
         print("The output file must end with .gif")
@@ -3485,7 +3483,7 @@ def sentinel2_timelapse(
 
     if out_gif is None:
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        filename = "s2_ts_" + random_string() + ".gif"
+        filename = "s2_ts_" + coreutils.random_string() + ".gif"
         out_gif = os.path.join(out_dir, filename)
     elif not out_gif.endswith(".gif"):
         print("The output file must end with .gif")
@@ -3712,7 +3710,7 @@ def landsat_ts_norm_diff_gif(
 
     if out_gif is None:
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        filename = "landsat_ts_nd_" + random_string() + ".gif"
+        filename = "landsat_ts_nd_" + coreutils.random_string() + ".gif"
         out_gif = os.path.join(out_dir, filename)
     elif not out_gif.endswith(".gif"):
         raise Exception("The output file must end with .gif")
@@ -4049,7 +4047,7 @@ def goes_timelapse(
             roi = kwargs["region"]
 
         if out_gif is None:
-            out_gif = os.path.abspath(f"goes_{random_string(3)}.gif")
+            out_gif = os.path.abspath(f"goes_{coreutils.random_string(3)}.gif")
 
         visParams = {
             "bands": bands,
@@ -4205,7 +4203,7 @@ def goes_fire_timelapse(
             roi = kwargs["region"]
 
         if out_gif is None:
-            out_gif = os.path.abspath(f"goes_fire_{random_string(3)}.gif")
+            out_gif = os.path.abspath(f"goes_fire_{coreutils.random_string(3)}.gif")
 
         if roi is None:
             roi = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
@@ -4418,7 +4416,7 @@ def modis_ndvi_timelapse(
         )
 
     if out_gif is None:
-        out_gif = os.path.abspath(f"modis_ndvi_{random_string(3)}.gif")
+        out_gif = os.path.abspath(f"modis_ndvi_{coreutils.random_string(3)}.gif")
 
     try:
         col = modis_ndvi_doy_ts(data, band, start_date, end_date, roi)
@@ -5013,7 +5011,7 @@ def sentinel1_timelapse(
     band = bands[0]
 
     if end_year is None:
-        end_year = date.today().year
+        end_year = datetime.date.today().year
 
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
@@ -5115,7 +5113,7 @@ def add_progress_bar_to_gif(
     if not os.path.exists(os.path.dirname(out_gif)):
         os.makedirs(os.path.dirname(out_gif))
 
-    progress_bar_color = check_color(progress_bar_color)
+    progress_bar_color = coreutils.check_color(progress_bar_color)
 
     try:
         image = Image.open(in_gif)
@@ -5588,7 +5586,7 @@ def sentinel1_timelapse_with_samples(
 
     # Get the Sentinel-1 time series for sampling
     if end_year is None:
-        end_year = date.today().year
+        end_year = datetime.date.today().year
 
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
@@ -5697,7 +5695,8 @@ def sentinel1_timelapse_with_samples(
 
                         # Convert timestamps to datetime objects
                         datetimes = [
-                            datetime.fromtimestamp(ts / 1000) for ts in time_series
+                            datetime.datetime.fromtimestamp(ts / 1000)
+                            for ts in time_series
                         ]
 
                         sample_data[f"Point_{i+1}"] = {
@@ -6605,7 +6604,7 @@ def sentinel2_timelapse_with_samples(
 
     # Get the Sentinel-2 time series for sampling
     if end_year is None:
-        end_year = date.today().year
+        end_year = datetime.date.today().year
 
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
@@ -6757,7 +6756,8 @@ def sentinel2_timelapse_with_samples(
 
                             # Convert timestamps to datetime objects
                             datetimes = [
-                                datetime.fromtimestamp(ts / 1000) for ts in time_series
+                                datetime.datetime.fromtimestamp(ts / 1000)
+                                for ts in time_series
                             ]
 
                             # Create unique key for point and band combination
@@ -7874,7 +7874,8 @@ def landsat_timelapse_with_samples(
 
                             # Convert timestamps to datetime objects
                             datetimes = [
-                                datetime.fromtimestamp(ts / 1000) for ts in time_series
+                                datetime.datetime.fromtimestamp(ts / 1000)
+                                for ts in time_series
                             ]
 
                             # Create unique key for point and band combination
