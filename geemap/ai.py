@@ -5,26 +5,24 @@ The DataExplorer class source code is adapted from <https://bit.ly/48cE24D>.
 Credit to the original author Renee Johnston (<https://github.com/raj02006>)
 """
 
-# Standard library imports
+from collections.abc import Iterable, Sequence
+from concurrent import futures
+from contextlib import redirect_stdout
 import io
 import json
 import math
 import os
 import time
-from concurrent import futures
-from contextlib import redirect_stdout
 import dataclasses
 import datetime
 import logging
 import re
 import sys
-from typing import Any, Dict, List, Optional
-from collections.abc import Iterable, Sequence
+from typing import Any
 import uuid
 
 import numpy as np
 import pandas as pd
-
 import PIL
 import requests
 
@@ -36,7 +34,6 @@ from jinja2 import Template
 from IPython.display import HTML, Javascript, display
 
 try:
-
     import vertexai
     import google.generativeai as genai
     import google.ai.generativelanguage as glm
@@ -55,7 +52,6 @@ except ImportError:
     print("Please install the required packages.")
     print("pip install 'geemap[ai]'")
 
-# Third-party imports
 import iso8601
 import tenacity
 from tenacity import (
@@ -260,7 +256,7 @@ class Genie(widgets.VBox):
                     pass
                 with debug_output:
                     print(error_message)
-                raise ValueError("URL {} causes {}".format(image_url, error_message))
+                raise ValueError(f"URL {image_url} causes {error_message}")
 
         def show_layer(python_code: str) -> str:
             """Execute the given Earth Engine Python client code and add the result to
