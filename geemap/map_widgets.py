@@ -1,5 +1,6 @@
 """Various ipywidgets that can be added to a map."""
 
+from collections.abc import Callable
 import enum
 import functools
 import importlib.resources
@@ -7,7 +8,7 @@ import json
 import os
 import pathlib
 import re
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any
 
 import IPython
 from IPython.display import HTML, display
@@ -97,7 +98,7 @@ class Theme:
         @functools.wraps(cls.__init__)
         def wrapper(self, *args, **kwargs):
             original_init(self, *args, **kwargs)
-            self.add_class("geemap-{}".format(Theme.current_theme))
+            self.add_class(f"geemap-{Theme.current_theme}")
 
         cls.__init__ = wrapper
         return cls
@@ -109,15 +110,15 @@ class Colorbar(ipywidgets.Output):
 
     def __init__(
         self,
-        vis_params: Optional[Union[Dict[str, Any], list, tuple]] = None,
+        vis_params: dict[str, Any] | list | tuple | None = None,
         cmap: str = "gray",
         discrete: bool = False,
-        label: Optional[str] = None,
+        label: str | None = None,
         orientation: str = "horizontal",
         transparent_bg: bool = False,
         font_size: int = 9,
         axis_off: bool = False,
-        max_width: Optional[str] = None,
+        max_width: str | None = None,
         **kwargs: Any,
     ):
         """Add a matplotlib colorbar to the map.
@@ -237,7 +238,7 @@ class Colorbar(ipywidgets.Output):
             matplotlib.pyplot.show()
 
     def _get_dimensions(
-        self, orientation: str, kwargs: Dict[str, Any]
+        self, orientation: str, kwargs: dict[str, Any]
     ) -> tuple[float, float]:
         """Get the dimensions of the colorbar based on orientation.
 
@@ -285,13 +286,13 @@ class Legend(anywidget.AnyWidget):
     def __init__(
         self,
         title: str = "Legend",
-        legend_dict: Optional[Dict[str, str]] = None,
-        keys: Optional[List[str]] = None,
-        colors: Optional[List[Union[str, tuple]]] = None,
+        legend_dict: dict[str, str] | None = None,
+        keys: list[str] | None = None,
+        colors: list[str | tuple] | None = None,
         position: str = "bottomright",
-        builtin_legend: Optional[str] = None,
+        builtin_legend: str | None = None,
         add_header: bool = True,
-        widget_args: Optional[Dict[str, Any]] = None,
+        widget_args: dict[str, Any] | None = None,
         **kwargs: Any,
     ):
         """Adds a customized legend to the map.
@@ -382,7 +383,7 @@ class Legend(anywidget.AnyWidget):
         self.on_msg(self._handle_message_event)
 
     def _handle_message_event(
-        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+        self, widget: ipywidgets.Widget, content: dict[str, Any], buffers: list[Any]
     ) -> None:
         del widget, buffers  # Unused
         if content.get("type") == "click":
@@ -395,7 +396,7 @@ class Legend(anywidget.AnyWidget):
             self.host_map.remove(self)
 
     def _check_if_allowed(
-        self, value: str, value_name: str, allowed_list: List[str]
+        self, value: str, value_name: str, allowed_list: list[str]
     ) -> bool:
         """Checks if a value is allowed.
 
@@ -418,7 +419,7 @@ class Legend(anywidget.AnyWidget):
             )
         return True
 
-    def _normalize_color_to_hex(self, color: Union[str, tuple]) -> str:
+    def _normalize_color_to_hex(self, color: str | tuple) -> str:
         """Converts a list of RGB colors to hex."""
         if isinstance(color, tuple):
             try:
@@ -451,7 +452,7 @@ class Inspector(anywidget.AnyWidget):
     def __init__(
         self,
         host_map: "geemap.Map",
-        names: Optional[Union[str, List[str]]] = None,
+        names: str | list[str] | None = None,
         visible: bool = True,
         decimals: int = 2,
         opened: bool = True,
@@ -499,7 +500,7 @@ class Inspector(anywidget.AnyWidget):
             self.on_close()
 
     def _handle_message_event(
-        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+        self, widget: ipywidgets.Widget, content: dict[str, Any], buffers: list[Any]
     ) -> None:
         del widget, buffers  # Unused
         if content.get("type") == "click" and content.get("id") == "close":
@@ -515,7 +516,7 @@ class Inspector(anywidget.AnyWidget):
         if kwargs.get("type") == "click":
             self._on_map_click(latlon)
 
-    def _on_map_click(self, latlon: List[float]) -> None:
+    def _on_map_click(self, latlon: list[float]) -> None:
         """Handles map click events.
 
         Args:
@@ -543,7 +544,7 @@ class Inspector(anywidget.AnyWidget):
         """Handles close button click events."""
         self.cleanup()
 
-    def _get_visible_map_layers(self) -> Dict[str, Any]:
+    def _get_visible_map_layers(self) -> dict[str, Any]:
         """Gets the visible map layers.
 
         Returns:
@@ -559,7 +560,7 @@ class Inspector(anywidget.AnyWidget):
             layers = self._host_map.ee_layers
         return {k: v for k, v in layers.items() if v["ee_layer"].visible}
 
-    def _point_info(self, latlon: List[float]) -> Dict[str, Any]:
+    def _point_info(self, latlon: list[float]) -> dict[str, Any]:
         """Gets information about a point.
 
         Args:
@@ -586,8 +587,8 @@ class Inspector(anywidget.AnyWidget):
         )
 
     def _query_point(
-        self, latlon: List[float], ee_object: ee.ComputedObject
-    ) -> Optional[Dict[str, Any]]:
+        self, latlon: list[float], ee_object: ee.ComputedObject
+    ) -> dict[str, Any] | None:
         """Queries a point on the map.
 
         Args:
@@ -605,7 +606,7 @@ class Inspector(anywidget.AnyWidget):
             return ee_object.reduceRegion(ee.Reducer.first(), point, scale).getInfo()
         return None
 
-    def _pixel_info(self, latlon: List[float]) -> Dict[str, Any]:
+    def _pixel_info(self, latlon: list[float]) -> dict[str, Any]:
         """Gets information about pixels at a point.
 
         Args:
@@ -641,7 +642,7 @@ class Inspector(anywidget.AnyWidget):
 
         return root
 
-    def _get_bbox(self, latlon: List[float]) -> ee.Geometry.BBox:
+    def _get_bbox(self, latlon: list[float]) -> ee.Geometry.BBox:
         """Gets a bounding box around a point.
 
         Args:
@@ -654,7 +655,7 @@ class Inspector(anywidget.AnyWidget):
         delta = 0.005
         return ee.Geometry.BBox(lon - delta, lat - delta, lon + delta, lat + delta)
 
-    def _object_info(self, latlon: List[float]) -> Dict[str, Any]:
+    def _object_info(self, latlon: list[float]) -> dict[str, Any]:
         """Gets information about objects at a point.
 
         Args:
@@ -710,8 +711,8 @@ class LayerManagerRow(anywidget.AnyWidget):
         self.visible = self._get_layer_visibility()
         self.opacity = self._get_layer_opacity()
 
-        self.opacity_link: Optional[ipywidgets.widget_link.Link] = None
-        self.visibility_link: Optional[ipywidgets.widget_link.Link] = None
+        self.opacity_link: ipywidgets.widget_link.Link | None = None
+        self.visibility_link: ipywidgets.widget_link.Link | None = None
         self._setup_event_listeners()
 
     def _can_set_up_jslink(self, obj: Any, trait: str) -> bool:
@@ -734,18 +735,18 @@ class LayerManagerRow(anywidget.AnyWidget):
         if self._can_set_up_jslink(self.layer, "visible"):
             self.visibility_link = link_func((self.layer, "visible"), (self, "visible"))
 
-    def _on_layer_loading_changed(self, change: Dict[str, Any]) -> None:
+    def _on_layer_loading_changed(self, change: dict[str, Any]) -> None:
         self.is_loading = change.get("new", False)
 
     def _handle_message_event(
-        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+        self, widget: ipywidgets.Widget, content: dict[str, Any], buffers: list[Any]
     ) -> None:
         del widget, buffers  # Unused
         if content.get("type") == "click":
             self._handle_button_click(content.get("id", ""))
 
     @traitlets.observe("opacity")
-    def _on_opacity_change(self, change: Dict[str, Any]) -> None:
+    def _on_opacity_change(self, change: dict[str, Any]) -> None:
         if self._can_set_up_jslink(self.layer, "opacity"):
             return  # Return if the opacity is handled by a jslink.
         if opacity := change.get("new"):
@@ -814,7 +815,7 @@ class LayerManager(anywidget.AnyWidget):
         return LayerManagerRow(self.host_map, layer)
 
     @traitlets.observe("visible")
-    def _observe_visible(self, change: Dict[str, Any]) -> None:
+    def _observe_visible(self, change: dict[str, Any]) -> None:
         # When the `visible` property changes, propagate that change to all children.
         if (visible := change.get("new")) is not None:
             for child in self.children:
@@ -834,7 +835,7 @@ class BasemapSelector(anywidget.AnyWidget):
     provider = traitlets.Unicode("").tag(sync=True)
     resource = traitlets.Unicode("").tag(sync=True)
 
-    def __init__(self, basemaps: List[str], value: str):
+    def __init__(self, basemaps: list[str], value: str):
         """Creates a widget for selecting a basemap.
 
         Args:
@@ -855,8 +856,8 @@ class BasemapSelector(anywidget.AnyWidget):
         resource = ".".join(components[1:]) if len(components) > 1 else ""
         return components[0], resource
 
-    def _get_basemap_dictionary(self, basemaps: List[str]) -> Dict[str, List[str]]:
-        basemaps_dict: Dict[str, List[str]] = {}
+    def _get_basemap_dictionary(self, basemaps: list[str]) -> dict[str, list[str]]:
+        basemaps_dict: dict[str, list[str]] = {}
         for basemap in basemaps:
             provider, resource = self._parse_basemap_name(basemap)
             provider_map = basemaps_dict.setdefault(provider, [])
@@ -868,7 +869,7 @@ class BasemapSelector(anywidget.AnyWidget):
         self.on_msg(self._handle_message_event)
 
     def _handle_message_event(
-        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+        self, widget: ipywidgets.Widget, content: dict[str, Any], buffers: list[Any]
     ) -> None:
         del widget, buffers  # Unused
         if content.get("type") == "click":
@@ -919,7 +920,7 @@ class LayerEditor(anywidget.AnyWidget):
         help="List of widget children",
     ).tag(sync=True, **ipywidgets.widget_serialization)
 
-    def __init__(self, host_map: "geemap.Map", layer_dict: Optional[Dict[str, Any]]):
+    def __init__(self, host_map: "geemap.Map", layer_dict: dict[str, Any] | None):
         """Initializes a layer editor widget.
 
         Args:
@@ -959,7 +960,7 @@ class LayerEditor(anywidget.AnyWidget):
             self.on_close()
 
     def _handle_message_event(
-        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+        self, widget: ipywidgets.Widget, content: dict[str, Any], buffers: list[Any]
     ) -> None:
         del widget, buffers  # Unused
 
@@ -992,9 +993,7 @@ class LayerEditor(anywidget.AnyWidget):
             if response:
                 self.send({"type": msg_type, "id": msg_id, "response": response})
 
-    def _calculate_band_stats(
-        self, message: Dict[str, Any]
-    ) -> Optional[Dict[str, Any]]:
+    def _calculate_band_stats(self, message: dict[str, Any]) -> dict[str, Any] | None:
         (s, w), (n, e) = self._host_map.bounds
         map_bbox = ee.Geometry.BBox(west=w, south=s, east=e, north=n)
 
@@ -1017,7 +1016,7 @@ class LayerEditor(anywidget.AnyWidget):
         return {"stretch": stretch, "min": min_val, "max": max_val}
 
     def _render_colorbar(
-        self, colors: List[str], band_min: float, band_max: float
+        self, colors: list[str], band_min: float, band_max: float
     ) -> None:
         if len(colors) < 2:
             self.children = []
@@ -1040,7 +1039,7 @@ class LayerEditor(anywidget.AnyWidget):
             pyplot.show()
         self.children = [colorbar_output]
 
-    def _calculate_palette(self, message: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def _calculate_palette(self, message: dict[str, Any]) -> dict[str, Any] | None:
         colormap = message.get("colormap", "")
         classes = message.get("classes", "")
         palette = message.get("palette", "")
@@ -1060,7 +1059,7 @@ class LayerEditor(anywidget.AnyWidget):
         self._render_colorbar(colors, band_min, band_max)
         return {"palette": ", ".join(colors)}
 
-    def _calculate_fields(self) -> Dict[str, Any]:
+    def _calculate_fields(self) -> dict[str, Any]:
         available_fields = ee.Feature(self._ee_object.first()).propertyNames().getInfo()
         if available_fields:
             field = available_fields[0]
@@ -1068,7 +1067,7 @@ class LayerEditor(anywidget.AnyWidget):
             return {"fields": available_fields, "field-values": values}
         return {"fields": [], "field-values": []}
 
-    def _calculate_field_values(self, message: Dict[str, Any]) -> Dict[str, Any]:
+    def _calculate_field_values(self, message: dict[str, Any]) -> dict[str, Any]:
         field = message.get("field")
         options = self._ee_object.aggregate_array(field).getInfo()
         if options:
@@ -1076,7 +1075,7 @@ class LayerEditor(anywidget.AnyWidget):
             options.sort()
         return {"field-values": options or []}
 
-    def _get_colormaps(self) -> List[str]:
+    def _get_colormaps(self) -> list[str]:
         """Gets the list of available colormaps."""
         colormap_options = pyplot.colormaps()
         colormap_options.sort()
@@ -1086,13 +1085,13 @@ class LayerEditor(anywidget.AnyWidget):
         """Adds opacity to a hex string (e.g. #000000 to #000000FF)."""
         return base_color[1:] + str(hex(int(opacity * 255)))[2:].zfill(2)
 
-    def _on_import_click_vector(self, state: Dict[str, Any]) -> None:
+    def _on_import_click_vector(self, state: dict[str, Any]) -> None:
         """Handles the import button click event for vector layers."""
         vis_options = self._get_vis_params(state)
         coreutils.create_code_cell(f"style = {str(vis_options)}")
         print(f"style = {str(vis_options)}")
 
-    def _get_vis_params(self, state: Dict[str, Any]) -> Dict[str, Any]:
+    def _get_vis_params(self, state: dict[str, Any]) -> dict[str, Any]:
         color = self._hex_with_opacity(
             state.get("color", ""), state.get("opacity", 1.0)
         )
@@ -1113,7 +1112,7 @@ class LayerEditor(anywidget.AnyWidget):
             vis_options["pointShape"] = point_shape
         return vis_options
 
-    def _on_apply_click_vector(self, state: Dict[str, Any]) -> None:
+    def _on_apply_click_vector(self, state: dict[str, Any]) -> None:
         """Handles the apply button click event from a vector layer."""
         if self.layer_name in self._host_map.ee_layers:
             self._host_map.remove(self._ee_layer)
@@ -1156,13 +1155,13 @@ class LayerEditor(anywidget.AnyWidget):
         if legend := state.get("legend"):
             self._apply_legend(legend, state.get("palette"), 0.0, 1.0)
 
-    def _on_import_click_raster(self, vis_params: Dict[str, Any]) -> None:
+    def _on_import_click_raster(self, vis_params: dict[str, Any]) -> None:
         """Handles the import button click event for raster layers."""
         vis_params.pop("opacity", None)
         coreutils.create_code_cell(f"vis_params = {str(vis_params)}")
         print(f"vis_params = {str(vis_params)}")
 
-    def _on_apply_click_raster(self, vis_params: Dict[str, Any]) -> None:
+    def _on_apply_click_raster(self, vis_params: dict[str, Any]) -> None:
         """Handles the apply button click event from a raster layer."""
         opacity = vis_params.pop("opacity", 1.0)
         legend = vis_params.pop("legend", {})
@@ -1180,10 +1179,10 @@ class LayerEditor(anywidget.AnyWidget):
 
     def _apply_legend(
         self,
-        legend: Dict[str, Any],
-        palette: Optional[str],
-        min_value: Optional[float],
-        max_value: Optional[float],
+        legend: dict[str, Any],
+        palette: str | None,
+        min_value: float | None,
+        max_value: float | None,
     ) -> None:
         if legend.get("type") == "linear":
             if hasattr(self._host_map, "_add_colorbar"):
@@ -1253,7 +1252,7 @@ class SearchBar(anywidget.AnyWidget):
         self.on_msg(self.handle_message_event)
 
     def handle_message_event(
-        self, widget: ipywidgets.Widget, content: Dict[str, Any], buffers: List[Any]
+        self, widget: ipywidgets.Widget, content: dict[str, Any], buffers: list[Any]
     ) -> None:
         del widget, buffers  # Unused
         if content.get("type") == "click":
@@ -1269,7 +1268,7 @@ class SearchBar(anywidget.AnyWidget):
             self.on_close()
 
     @traitlets.observe("location_model")
-    def _observe_location_model(self, change: Dict[str, Any]) -> None:
+    def _observe_location_model(self, change: dict[str, Any]) -> None:
         old = json.loads(change.get("old"))
         new = json.loads(change.get("new"))
         if new["search"] != old["search"]:
@@ -1295,7 +1294,7 @@ class SearchBar(anywidget.AnyWidget):
             self._set_selected_location(new["selected"])
 
     @traitlets.observe("dataset_model")
-    def _observe_dataset_model(self, change: Dict[str, Any]) -> None:
+    def _observe_dataset_model(self, change: dict[str, Any]) -> None:
         old = json.loads(change.get("old"))
         new = json.loads(change.get("new"))
         if new["search"] != old["search"]:
@@ -1477,7 +1476,7 @@ class SearchBar(anywidget.AnyWidget):
                 }
                 datatype = translate[dataset["type"]]
                 id_ = dataset["id"]
-                line1 = "{} = ee.{}('{}')".format(dataset_uid, datatype, id_)
+                line1 = f"{dataset_uid} = ee.{datatype}('{id_}')"
                 action = {
                     "image_collection": f"\n{self.host_map._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",
                     "image": f"\n{self.host_map._var_name}.addLayer({dataset_uid}, {{}}, '{id_}')",

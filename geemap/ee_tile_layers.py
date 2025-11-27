@@ -5,22 +5,22 @@
 # The Earth Engine team and the geemap community will maintain the core features.#
 # *******************************************************************************#
 
-from typing import Optional, Dict, Any, List, Union
+from functools import lru_cache
+from typing import Any
 
 import box
 import ee
 import folium
 import ipyleaflet
-from functools import lru_cache
 
 from . import coreutils
 
 
 def _get_tile_url_format(
-    ee_object: Union[
-        ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
-    ],
-    vis_params: Optional[Dict[str, Any]],
+    ee_object: (
+        ee.Geometry | ee.Feature | ee.FeatureCollection | ee.Image | ee.ImageCollection
+    ),
+    vis_params: dict[str, Any] | None,
 ) -> str:
     """Gets the tile URL format for an EE object.
 
@@ -37,7 +37,7 @@ def _get_tile_url_format(
     return map_id_dict["tile_fetcher"].url_format
 
 
-def _validate_vis_params(vis_params: Optional[Dict[str, Any]]) -> Dict[str, Any]:
+def _validate_vis_params(vis_params: dict[str, Any] | None) -> dict[str, Any]:
     """Validates and returns the visualization parameters.
 
     Args:
@@ -61,10 +61,10 @@ def _validate_vis_params(vis_params: Optional[Dict[str, Any]]) -> Dict[str, Any]
 
 
 def _ee_object_to_image(
-    ee_object: Union[
-        ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
-    ],
-    vis_params: Dict[str, Any],
+    ee_object: (
+        ee.Geometry | ee.Feature | ee.FeatureCollection | ee.Image | ee.ImageCollection
+    ),
+    vis_params: dict[str, Any],
 ) -> ee.Image:
     """Converts an EE object to an EE image.
 
@@ -101,8 +101,8 @@ def _ee_object_to_image(
 
 
 def _validate_palette(
-    palette: Union[str, List[str], tuple[str, ...], box.Box],
-) -> List[str]:
+    palette: str | list[str] | tuple[str, ...] | box.Box,
+) -> list[str]:
     """Validates and returns the palette.
 
     Args:
@@ -129,10 +129,14 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
 
     def __init__(
         self,
-        ee_object: Union[
-            ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
-        ],
-        vis_params: Optional[Dict[str, Any]] = None,
+        ee_object: (
+            ee.Geometry
+            | ee.Feature
+            | ee.FeatureCollection
+            | ee.Image
+            | ee.ImageCollection
+        ),
+        vis_params: dict[str, Any] | None = None,
         name: str = "Layer untitled",
         shown: bool = True,
         opacity: float = 1.0,
@@ -180,10 +184,14 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
 
     def __init__(
         self,
-        ee_object: Union[
-            ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, ee.ImageCollection
-        ],
-        vis_params: Optional[Dict[str, Any]] = None,
+        ee_object: (
+            ee.Geometry
+            | ee.Feature
+            | ee.FeatureCollection
+            | ee.Image
+            | ee.ImageCollection
+        ),
+        vis_params: dict[str, Any] | None = None,
         name: str = "Layer untitled",
         shown: bool = True,
         opacity: float = 1.0,
@@ -216,11 +224,11 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             **kwargs,
         )
 
-    @lru_cache()
+    @lru_cache
     def _calculate_vis_stats(
         self,
         *,
-        bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
+        bounds: ee.Geometry | ee.Feature | ee.FeatureCollection,
         bands: tuple[str, ...],
     ) -> tuple[float, float, float, float]:
         """Calculate stats used for visualization parameters.
@@ -256,10 +264,10 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             .getInfo()
         )
 
-        mins, maxs, stds, means = [
+        mins, maxs, stds, means = (
             {v for k, v in stats.items() if k.endswith(stat) and v is not None}
             for stat in ("_min", "_max", "_stdDev", "_mean")
-        ]
+        )
         if any(len(vals) == 0 for vals in (mins, maxs, stds, means)):
             raise ValueError("No unmasked pixels were sampled.")
 
@@ -273,10 +281,10 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
     def calculate_vis_minmax(
         self,
         *,
-        bounds: Union[ee.Geometry, ee.Feature, ee.FeatureCollection],
-        bands: Optional[List[str]] = None,
-        percent: Optional[float] = None,
-        sigma: Optional[float] = None,
+        bounds: ee.Geometry | ee.Feature | ee.FeatureCollection,
+        bands: list[str] | None = None,
+        percent: float | None = None,
+        sigma: float | None = None,
     ) -> tuple[float, float]:
         """Calculate the min and max clip values for visualization.
 
