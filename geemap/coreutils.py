@@ -5,9 +5,9 @@ import random
 import string
 import sys
 import tempfile
+from typing import Any, Dict, List, Optional, Union
 import uuid
 import zipfile
-from typing import Any, Dict, List, Optional, Union
 
 import ee
 import ipyleaflet
@@ -20,7 +20,7 @@ except ImportError:
     pass
 
 
-def get_env_var(key: str) -> Optional[str]:
+def get_env_var(key: str) -> str | None:
     """Retrieves an environment variable or Colab secret for the given key.
 
     Colab secrets have precedence over environment variables.
@@ -47,10 +47,10 @@ def get_env_var(key: str) -> Optional[str]:
 
 def ee_initialize(
     token_name: str = "EARTHENGINE_TOKEN",
-    auth_mode: Optional[str] = None,
-    auth_args: Optional[Dict[str, Any]] = None,
+    auth_mode: str | None = None,
+    auth_args: dict[str, Any] | None = None,
     user_agent_prefix: str = "geemap",
-    project: Optional[str] = None,
+    project: str | None = None,
     **kwargs: Any,
 ) -> None:
     """Authenticates Earth Engine and initialize an Earth Engine session
@@ -124,10 +124,10 @@ def ee_initialize(
 
 def new_tree_node(
     label: str,
-    children: Optional[list[dict[str, Any]]] = None,
+    children: list[dict[str, Any]] | None = None,
     expanded: bool = False,
     top_level: bool = False,
-) -> Dict[str, Any]:
+) -> dict[str, Any]:
     """Returns node JSON for an interactive representation of an EE ComputedObject."""
     return {
         "label": label,
@@ -147,10 +147,10 @@ def _order_items(item_dict: dict[str, Any], ordering_list: list[str]) -> dict[st
     # - keys not in ordering_list, sorted.
     ordered_pairs = [x for x in ordering_list if x in item_dict.keys()]
     remaining = sorted([x for x in item_dict if x not in ordering_list])
-    return dict([(key, item_dict[key]) for key in ordered_pairs + remaining])
+    return {key: item_dict[key] for key in ordered_pairs + remaining}
 
 
-def _format_dictionary_node_name(index: int, item: Dict[str, Any]) -> str:
+def _format_dictionary_node_name(index: int, item: dict[str, Any]) -> str:
     node_name = f"{index}: "
     extensions = []
     if "id" in item:
@@ -167,7 +167,7 @@ def _format_dictionary_node_name(index: int, item: Dict[str, Any]) -> str:
 
 
 def _generate_tree(
-    info: Union[list[Any], dict[str, Any]], opened: bool
+    info: list[Any] | dict[str, Any], opened: bool
 ) -> list[dict[str, Any]]:
     node_list = []
     if isinstance(info, list):
@@ -196,7 +196,7 @@ def _generate_tree(
 
 
 def build_computed_object_tree(
-    ee_object: Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature],
+    ee_object: ee.FeatureCollection | ee.Image | ee.Geometry | ee.Feature,
     layer_name: str = "",
     opened: bool = False,
 ) -> dict[str, Any]:
@@ -249,7 +249,7 @@ def build_computed_object_tree(
 
 
 def get_info(
-    ee_object: Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature],
+    ee_object: ee.FeatureCollection | ee.Image | ee.Geometry | ee.Feature,
     layer_name: str = "",
     opened: bool = False,
     return_node: bool = False,
@@ -313,8 +313,8 @@ def create_code_cell(code: str = "", where: str = "below") -> None:
     display(
         Javascript(
             """
-        var code = IPython.notebook.insert_cell_{0}('code');
-        code.set_text(atob("{1}"));
+        var code = IPython.notebook.insert_cell_{}('code');
+        code.set_text(atob("{}"));
     """.format(
                 where, encoded_code
             )
@@ -348,7 +348,7 @@ def geometry_type(ee_object: Any) -> str:
         )
 
 
-def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> Optional[str]:
+def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> str | None:
     """
     Retrieves the Google Maps API key from the environment or Colab user data.
 
@@ -375,7 +375,7 @@ def in_colab_shell() -> bool:
     return "google.colab" in sys.modules
 
 
-def check_color(in_color: Union[str, tuple, List]) -> str:
+def check_color(in_color: str | tuple | list) -> str:
     """Checks the input color and returns the corresponding hex color code.
 
     Args:
@@ -420,7 +420,7 @@ def check_color(in_color: Union[str, tuple, List]) -> str:
         return out_color
 
 
-def check_cmap(cmap: Union[str, List[str]]) -> List[str]:
+def check_cmap(cmap: str | list[str]) -> list[str]:
     """Check the colormap and return a list of colors.
 
     Args:
@@ -452,7 +452,7 @@ def check_cmap(cmap: Union[str, List[str]]) -> List[str]:
         raise Exception(f"{cmap} is not a valid colormap.")
 
 
-def to_hex_colors(colors: List[Union[str, tuple[int, int, int]]]) -> List[str]:
+def to_hex_colors(colors: list[str | tuple[int, int, int]]) -> list[str]:
     """Convert a GEE color palette into hexadecimal color codes. Can handle mixed formats.
 
     Args:
@@ -508,17 +508,17 @@ def random_string(string_length: int = 3) -> str:
 
 
 def widget_template(
-    widget: Optional[widgets.Widget] = None,
+    widget: widgets.Widget | None = None,
     opened: bool = True,
     show_close_button: bool = True,
     widget_icon: str = "gear",
     close_button_icon: str = "times",
-    widget_args: Optional[Dict[str, Any]] = None,
-    close_button_args: Optional[Dict[str, Any]] = None,
-    display_widget: Optional[widgets.Widget] = None,
+    widget_args: dict[str, Any] | None = None,
+    close_button_args: dict[str, Any] | None = None,
+    display_widget: widgets.Widget | None = None,
     m: Optional["ipyleaflet.Map"] = None,
     position: str = "topright",
-) -> Optional[widgets.Widget]:
+) -> widgets.Widget | None:
     """Create a widget template.
 
     Args:
@@ -656,9 +656,7 @@ def open_url(url: str) -> None:
         url (str): The URL to open.
     """
     if in_colab_shell():
-        display(
-            Javascript('window.open("{url}", "_blank", "noopener")'.format(url=url))
-        )
+        display(Javascript(f'window.open("{url}", "_blank", "noopener")'))
     else:
         import webbrowser
 
@@ -699,14 +697,14 @@ def temp_file_path(extension: str) -> str:
 
 
 def download_file(
-    url: Optional[str] = None,
-    output: Optional[str] = None,
+    url: str | None = None,
+    output: str | None = None,
     quiet: bool = False,
-    proxy: Optional[str] = None,
-    speed: Optional[float] = None,
+    proxy: str | None = None,
+    speed: float | None = None,
     use_cookies: bool = True,
-    verify: Union[bool, str] = True,
-    id: Optional[str] = None,
+    verify: bool | str = True,
+    id: str | None = None,
     fuzzy: bool = False,
     resume: bool = False,
     unzip: bool = True,
@@ -772,10 +770,10 @@ def download_file(
 
 
 def geojson_to_ee(
-    geo_json: Union[Dict[str, Any], str],
+    geo_json: dict[str, Any] | str,
     geodesic: bool = False,
     encoding: str = "utf-8",
-) -> Union[ee.Geometry, ee.FeatureCollection]:
+) -> ee.Geometry | ee.FeatureCollection:
     """Converts a GeoJSON to an Earth Engine Geometry or FeatureCollection.
 
     Args:
@@ -801,7 +799,7 @@ def geojson_to_ee(
                 geo_json = github_raw_url(geo_json)
                 out_geojson = temp_file_path(extension=".geojson")
                 download_file(geo_json, out_geojson)
-                with open(out_geojson, "r", encoding=encoding) as f:
+                with open(out_geojson, encoding=encoding) as f:
                     geo_json = json.loads(f.read())
                 os.remove(out_geojson)
 
