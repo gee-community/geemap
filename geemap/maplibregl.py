@@ -38,6 +38,8 @@ from .basemaps import (
 from .common import *
 from typing import Dict, Any, Optional
 
+from . import coreutils
+
 basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 
 
@@ -1049,7 +1051,7 @@ class Map(MapWidget):
         """
 
         if name is None:
-            name = "COG_" + random_string()
+            name = "COG_" + coreutils.random_string()
 
         tile_url = cog_tile(url, bands, titiler_endpoint, nodata=nodata, **kwargs)
         bounds = cog_bounds(url, titiler_endpoint)

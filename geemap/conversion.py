@@ -21,6 +21,7 @@ from collections import deque
 from pathlib import Path
 
 from .common import *
+from . import coreutils
 
 
 def find_matching_bracket(lines, start_line_index, start_char_index, matching_char="{"):
@@ -267,7 +268,7 @@ def check_map_functions(input_lines):
                 )
 
                 func_start_index = line.index("function")
-                func_name = "func_" + random_string()
+                func_name = "func_" + coreutils.random_string()
                 func_header = line[func_start_index:].replace(
                     "function", "function " + func_name
                 )

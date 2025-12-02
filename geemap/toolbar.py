@@ -31,6 +31,7 @@ from .common import *
 from .conversion import js_snippet_to_py
 from .timelapse import *
 
+from . import coreutils
 from . import map_widgets
 
 
@@ -2120,7 +2121,9 @@ def timelapse_gui(m=None, basemap="HYBRID"):
         if m is not None:
             m.default_style = {"cursor": "wait"}
             out_dir = get_temp_dir()
-            out_gif = os.path.join(out_dir, "timelapse_" + random_string(3) + ".gif")
+            out_gif = os.path.join(
+                out_dir, f"timelapse_{coreutils.random_string(3)}.gif"
+            )
 
             with temp_output:
                 temp_output.outputs = ()

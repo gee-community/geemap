@@ -44,6 +44,7 @@ from . import toolbar
 from .plot import *
 from .timelapse import *
 from .legends import builtin_legends
+from . import coreutils
 from . import examples
 
 
@@ -2392,7 +2393,7 @@ class Map(core.Map):
                 if not os.path.exists(out_dir):
                     os.makedirs(out_dir)
             else:
-                filename = os.path.abspath(random_string() + ".html")
+                filename = os.path.abspath(coreutils.random_string() + ".html")
                 save = False
 
             if add_layer_control and self.layer_control is None:
