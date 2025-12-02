@@ -16,6 +16,8 @@ import pandas as pd
 from IPython.display import display, HTML
 from .common import *
 from .osm import *
+
+from . import coreutils
 from . import examples
 
 try:
@@ -378,9 +380,13 @@ class Map(keplergl.KeplerGl):
         if isinstance(self, keplergl.KeplerGl):
             if out_file is None:
                 if os.environ.get("USE_MKDOCS") is not None:
-                    out_file = "../maps/" + "kepler_" + random_string(3) + ".html"
+                    out_file = (
+                        "../maps/" + "kepler_" + coreutils.random_string(3) + ".html"
+                    )
                 else:
-                    out_file = "./cache/" + "kepler_" + random_string(3) + ".html"
+                    out_file = (
+                        "./cache/" + "kepler_" + coreutils.random_string(3) + ".html"
+                    )
             out_dir = os.path.abspath(os.path.dirname(out_file))
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir)
@@ -415,7 +421,7 @@ class Map(keplergl.KeplerGl):
                 if not os.path.exists(out_dir):
                     os.makedirs(out_dir)
             else:
-                filename = os.path.abspath(random_string() + ".html")
+                filename = os.path.abspath(coreutils.random_string() + ".html")
                 save = False
 
             output = widgets.Output()

@@ -13,6 +13,8 @@ from .geemap import basemaps
 from . import examples
 from typing import Optional
 
+from . import coreutils
+
 try:
     import pydeck as pdk
 
@@ -249,7 +251,7 @@ class Map(pdk.Deck):
                 raise TypeError("gdf must be a GeoPandas GeoDataFrame.")
 
             if layer_name is None:
-                layer_name = "layer_" + random_string(3)
+                layer_name = "layer_" + coreutils.random_string(3)
 
             if "pickable" not in kwargs:
                 kwargs["pickable"] = True

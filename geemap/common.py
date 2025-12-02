@@ -52,6 +52,7 @@ import plotly.express as px
 import requests
 
 from .coreutils import *
+from . import coreutils
 
 try:
     from IPython.display import display, IFrame, Javascript
@@ -851,7 +852,7 @@ def ee_export_geojson(
 
     if filename is None:
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        filename = os.path.join(out_dir, random_string(6) + ".geojson")
+        filename = os.path.join(out_dir, coreutils.random_string(6) + ".geojson")
 
     allowed_formats = ["geojson"]
     filename = os.path.abspath(filename)
@@ -2509,7 +2510,7 @@ def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf
 
     out_dir = os.getcwd()
 
-    out_geojson = os.path.join(out_dir, random_string() + ".geojson")
+    out_geojson = os.path.join(out_dir, coreutils.random_string() + ".geojson")
     csv_to_geojson(in_csv, out_geojson, latitude, longitude, encoding)
 
     gdf = gpd.read_file(out_geojson)
@@ -3504,7 +3505,7 @@ def create_colorbar(
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
 
     if out_file is None:
-        filename = "colorbar_" + random_string() + ".png"
+        filename = f"colorbar_{coreutils.random_string()}.png"
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
         out_file = os.path.join(out_dir, filename)
     elif not out_file.endswith(".png"):
@@ -4678,7 +4679,7 @@ def build_asset_tree(limit=100):
 
     def import_btn_clicked(b):
         if path_widget.value != "":
-            dataset_uid = "dataset_" + random_string(string_length=3)
+            dataset_uid = "dataset_" + coreutils.random_string(string_length=3)
             layer_name = path_widget.value.split("/")[-1][:-2:]
             line1 = f"{dataset_uid} = {path_widget.value}\n"
             line2 = "Map.addLayer(" + dataset_uid + ', {}, "' + layer_name + '")'
@@ -5398,7 +5399,7 @@ def cog_mosaic(
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if layername is None:
-        layername = "layer_" + random_string(5)
+        layername = "layer_" + coreutils.random_string(5)
 
     try:
         if verbose:
@@ -9040,7 +9041,7 @@ def gdf_to_ee(gdf, geodesic=True, date=None, date_format="YYYY-MM-dd"):
     if not isinstance(gdf, gpd.GeoDataFrame):
         raise TypeError("The input data type must be geopandas.GeoDataFrame.")
 
-    out_json = os.path.join(os.getcwd(), random_string(6) + ".geojson")
+    out_json = os.path.join(os.getcwd(), coreutils.random_string(6) + ".geojson")
     gdf = gdf.to_crs(4326)
     gdf.to_file(out_json, driver="GeoJSON")
 
@@ -10552,9 +10553,9 @@ def get_local_tile_layer(
 
     if layer_name is None:
         if source.startswith("http"):
-            layer_name = "RemoteTile_" + random_string(3)
+            layer_name = "RemoteTile_" + coreutils.random_string(3)
         else:
-            layer_name = "LocalTile_" + random_string(3)
+            layer_name = "LocalTile_" + coreutils.random_string(3)
 
     if isinstance(source, str) or isinstance(source, rasterio.io.DatasetReader):
         tile_client = TileClient(source, port=port, debug=debug)
