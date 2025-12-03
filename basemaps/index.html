@@ -7072,7 +7072,7 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -7110,8 +7110,7 @@
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/basemaps.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">247</span>
-<span class="normal">248</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
 <span class="normal">249</span>
 <span class="normal">250</span>
 <span class="normal">251</span>
@@ -7213,7 +7212,8 @@
 <span class="normal">347</span>
 <span class="normal">348</span>
 <span class="normal">349</span>
-<span class="normal">350</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">GoogleMapsTileProvider</span><span class="p">(</span><span class="n">xyzservices</span><span class="o">.</span><span class="n">TileProvider</span><span class="p">):</span>
+<span class="normal">350</span>
+<span class="normal">351</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">GoogleMapsTileProvider</span><span class="p">(</span><span class="n">xyzservices</span><span class="o">.</span><span class="n">TileProvider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Google Maps TileProvider.&quot;&quot;&quot;</span>
 
     <span class="n">MAP_TYPE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
@@ -7276,7 +7276,7 @@
 <span class="sd">            TileProvider object: A TileProvider object with the Google Maps tile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
-        <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">get_google_maps_api_key</span><span class="p">()</span>
+        <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;API key is required to access Google Maps API. To get an API &quot;</span>
@@ -7322,7 +7322,7 @@
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -7528,8 +7528,7 @@ m.add_basemap(basemap)</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">263</span>
-<span class="normal">264</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">264</span>
 <span class="normal">265</span>
 <span class="normal">266</span>
 <span class="normal">267</span>
@@ -7615,7 +7614,8 @@ m.add_basemap(basemap)</p>
 <span class="normal">347</span>
 <span class="normal">348</span>
 <span class="normal">349</span>
-<span class="normal">350</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">350</span>
+<span class="normal">351</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">map_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;roadmap&quot;</span><span class="p">,</span>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
@@ -7662,7 +7662,7 @@ m.add_basemap(basemap)</p>
 <span class="sd">        TileProvider object: A TileProvider object with the Google Maps tile.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">get_google_maps_api_key</span><span class="p">()</span>
+    <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;API key is required to access Google Maps API. To get an API &quot;</span>
@@ -7860,8 +7860,7 @@ info, visit https://bit.ly/3UhbZKU</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">353</span>
-<span class="normal">354</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
 <span class="normal">357</span>
@@ -7894,7 +7893,8 @@ info, visit https://bit.ly/3UhbZKU</p>
 <span class="normal">384</span>
 <span class="normal">385</span>
 <span class="normal">386</span>
-<span class="normal">387</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_google_map_tile_providers</span><span class="p">(</span>
+<span class="normal">387</span>
+<span class="normal">388</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_google_map_tile_providers</span><span class="p">(</span>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
     <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -8022,8 +8022,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">390</span>
-<span class="normal">391</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">391</span>
 <span class="normal">392</span>
 <span class="normal">393</span>
 <span class="normal">394</span>
@@ -8052,7 +8051,8 @@ Defaults to False.</p>
 <span class="normal">417</span>
 <span class="normal">418</span>
 <span class="normal">419</span>
-<span class="normal">420</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">france</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="normal">420</span>
+<span class="normal">421</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">france</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of xyz services.</span>
 
 <span class="sd">    Args:</span>
@@ -8158,8 +8158,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">616</span>
-<span class="normal">617</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">617</span>
 <span class="normal">618</span>
 <span class="normal">619</span>
 <span class="normal">620</span>
@@ -8173,7 +8172,8 @@ Defaults to False.</p>
 <span class="normal">628</span>
 <span class="normal">629</span>
 <span class="normal">630</span>
-<span class="normal">631</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">):</span>
+<span class="normal">631</span>
+<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a qms service to an ipyleaflet tile layer.</span>
 
 <span class="sd">    Args:</span>
@@ -8258,8 +8258,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">589</span>
-<span class="normal">590</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">590</span>
 <span class="normal">591</span>
 <span class="normal">592</span>
 <span class="normal">593</span>
@@ -8276,7 +8275,8 @@ Defaults to False.</p>
 <span class="normal">604</span>
 <span class="normal">605</span>
 <span class="normal">606</span>
-<span class="normal">607</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">search_qms</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="normal">607</span>
+<span class="normal">608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">search_qms</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Search qms files for keywords. Reference: https://github.com/geopandas/xyzservices/issues/65</span>
 
 <span class="sd">    Args:</span>
@@ -8339,8 +8339,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">451</span>
-<span class="normal">452</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">452</span>
 <span class="normal">453</span>
 <span class="normal">454</span>
 <span class="normal">455</span>
@@ -8388,7 +8387,8 @@ Defaults to False.</p>
 <span class="normal">497</span>
 <span class="normal">498</span>
 <span class="normal">499</span>
-<span class="normal">500</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_folium</span><span class="p">():</span>
+<span class="normal">500</span>
+<span class="normal">501</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_folium</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to folium tile layers.</span>
 
 <span class="sd">    Returns:</span>
@@ -8482,8 +8482,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">423</span>
-<span class="normal">424</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">424</span>
 <span class="normal">425</span>
 <span class="normal">426</span>
 <span class="normal">427</span>
@@ -8507,7 +8506,8 @@ Defaults to False.</p>
 <span class="normal">445</span>
 <span class="normal">446</span>
 <span class="normal">447</span>
-<span class="normal">448</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_leaflet</span><span class="p">():</span>
+<span class="normal">448</span>
+<span class="normal">449</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_leaflet</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to ipyleaflet tile layers.</span>
 
 <span class="sd">    Returns:</span>
@@ -8577,8 +8577,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">556</span>
-<span class="normal">557</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">557</span>
 <span class="normal">558</span>
 <span class="normal">559</span>
 <span class="normal">560</span>
@@ -8607,7 +8606,8 @@ Defaults to False.</p>
 <span class="normal">583</span>
 <span class="normal">584</span>
 <span class="normal">585</span>
-<span class="normal">586</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_plotly</span><span class="p">():</span>
+<span class="normal">586</span>
+<span class="normal">587</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_plotly</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to plotly tile layers.</span>
 
 <span class="sd">    Returns:</span>
@@ -8682,8 +8682,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">514</span>
-<span class="normal">515</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">515</span>
 <span class="normal">516</span>
 <span class="normal">517</span>
 <span class="normal">518</span>
@@ -8721,7 +8720,8 @@ Defaults to False.</p>
 <span class="normal">550</span>
 <span class="normal">551</span>
 <span class="normal">552</span>
-<span class="normal">553</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_pydeck</span><span class="p">():</span>
+<span class="normal">553</span>
+<span class="normal">554</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_pydeck</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to pydeck custom tile layers.</span>
 
 <span class="sd">    Returns:</span>

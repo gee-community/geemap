@@ -8375,7 +8375,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -8415,10 +8415,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">845</span>
-<span class="normal">846</span>
-<span class="normal">847</span>
-<span class="normal">848</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">848</span>
 <span class="normal">849</span>
 <span class="normal">850</span>
 <span class="normal">851</span>
@@ -8486,7 +8483,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">913</span>
 <span class="normal">914</span>
 <span class="normal">915</span>
-<span class="normal">916</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
+<span class="normal">916</span>
+<span class="normal">917</span>
+<span class="normal">918</span>
+<span class="normal">919</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@dataclasses</span><span class="o">.</span><span class="n">dataclass</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">BBox</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class representing a lat/lon bounding box.&quot;&quot;&quot;</span>
 
@@ -8563,7 +8563,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -8676,10 +8676,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">867</span>
-<span class="normal">868</span>
-<span class="normal">869</span>
-<span class="normal">870</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">870</span>
 <span class="normal">871</span>
 <span class="normal">872</span>
 <span class="normal">873</span>
@@ -8699,7 +8696,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">887</span>
 <span class="normal">888</span>
 <span class="normal">889</span>
-<span class="normal">890</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+<span class="normal">890</span>
+<span class="normal">891</span>
+<span class="normal">892</span>
+<span class="normal">893</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">from_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">bbox_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BBox&quot;</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Constructs a BBox from a list of four numbers [west, south, east, north].</span>
 
@@ -8805,10 +8805,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">900</span>
-<span class="normal">901</span>
-<span class="normal">902</span>
-<span class="normal">903</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">903</span>
 <span class="normal">904</span>
 <span class="normal">905</span>
 <span class="normal">906</span>
@@ -8821,7 +8818,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">913</span>
 <span class="normal">914</span>
 <span class="normal">915</span>
-<span class="normal">916</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">intersects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_bbox</span><span class="p">:</span> <span class="s2">&quot;BBox&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">916</span>
+<span class="normal">917</span>
+<span class="normal">918</span>
+<span class="normal">919</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">intersects</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_bbox</span><span class="p">:</span> <span class="s2">&quot;BBox&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if this bbox intersects with the query bbox.</span>
 
 <span class="sd">    Doesn&#39;t handle bboxes extending past the antimeridian.</span>
@@ -8883,10 +8883,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">854</span>
-<span class="normal">855</span>
-<span class="normal">856</span>
-<span class="normal">857</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">857</span>
 <span class="normal">858</span>
 <span class="normal">859</span>
 <span class="normal">860</span>
@@ -8894,7 +8891,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">862</span>
 <span class="normal">863</span>
 <span class="normal">864</span>
-<span class="normal">865</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_global</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">865</span>
+<span class="normal">866</span>
+<span class="normal">867</span>
+<span class="normal">868</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_global</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the bounding box is global.</span>
 
 <span class="sd">    Returns:</span>
@@ -8951,13 +8951,13 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">892</span>
-<span class="normal">893</span>
-<span class="normal">894</span>
-<span class="normal">895</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">895</span>
 <span class="normal">896</span>
 <span class="normal">897</span>
-<span class="normal">898</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">898</span>
+<span class="normal">899</span>
+<span class="normal">900</span>
+<span class="normal">901</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts the BBox to a list of four numbers [west, south, east, north].</span>
 
 <span class="sd">    Returns:</span>
@@ -9004,10 +9004,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1314</span>
-<span class="normal">1315</span>
-<span class="normal">1316</span>
-<span class="normal">1317</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1317</span>
 <span class="normal">1318</span>
 <span class="normal">1319</span>
 <span class="normal">1320</span>
@@ -9167,7 +9164,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">1474</span>
 <span class="normal">1475</span>
 <span class="normal">1476</span>
-<span class="normal">1477</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Catalog</span><span class="p">:</span>
+<span class="normal">1477</span>
+<span class="normal">1478</span>
+<span class="normal">1479</span>
+<span class="normal">1480</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Catalog</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class containing all collections in the EE STAC catalog.&quot;&quot;&quot;</span>
 
     <span class="n">collections</span><span class="p">:</span> <span class="n">CollectionList</span>
@@ -9336,7 +9336,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -9394,13 +9394,13 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1319</span>
-<span class="normal">1320</span>
-<span class="normal">1321</span>
-<span class="normal">1322</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1322</span>
 <span class="normal">1323</span>
 <span class="normal">1324</span>
-<span class="normal">1325</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage_client</span><span class="p">:</span> <span class="n">storage</span><span class="o">.</span><span class="n">Client</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1325</span>
+<span class="normal">1326</span>
+<span class="normal">1327</span>
+<span class="normal">1328</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">storage_client</span><span class="p">:</span> <span class="n">storage</span><span class="o">.</span><span class="n">Client</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the Catalog with collections loaded from Google Cloud Storage.</span>
 
 <span class="sd">    Args:</span>
@@ -9506,10 +9506,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1327</span>
-<span class="normal">1328</span>
-<span class="normal">1329</span>
-<span class="normal">1330</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1330</span>
 <span class="normal">1331</span>
 <span class="normal">1332</span>
 <span class="normal">1333</span>
@@ -9521,7 +9518,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">1339</span>
 <span class="normal">1340</span>
 <span class="normal">1341</span>
-<span class="normal">1342</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
+<span class="normal">1342</span>
+<span class="normal">1343</span>
+<span class="normal">1344</span>
+<span class="normal">1345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_collection</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Collection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the collection with the given id.</span>
 
 <span class="sd">    Args:</span>
@@ -9577,10 +9577,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 919</span>
-<span class="normal"> 920</span>
-<span class="normal"> 921</span>
-<span class="normal"> 922</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 922</span>
 <span class="normal"> 923</span>
 <span class="normal"> 924</span>
 <span class="normal"> 925</span>
@@ -9835,7 +9832,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
-<span class="normal">1177</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Collection</span><span class="p">:</span>
+<span class="normal">1177</span>
+<span class="normal">1178</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Collection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A simple wrapper for a STAC Collection..&quot;&quot;&quot;</span>
 
     <span class="n">stac_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
@@ -10099,7 +10099,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -10180,16 +10180,16 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">935</span>
-<span class="normal">936</span>
-<span class="normal">937</span>
-<span class="normal">938</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">938</span>
 <span class="normal">939</span>
 <span class="normal">940</span>
 <span class="normal">941</span>
 <span class="normal">942</span>
 <span class="normal">943</span>
-<span class="normal">944</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+<span class="normal">944</span>
+<span class="normal">945</span>
+<span class="normal">946</span>
+<span class="normal">947</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets an item from the STAC JSON.</span>
 
 <span class="sd">    Args:</span>
@@ -10252,16 +10252,16 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">924</span>
-<span class="normal">925</span>
-<span class="normal">926</span>
-<span class="normal">927</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">927</span>
 <span class="normal">928</span>
 <span class="normal">929</span>
 <span class="normal">930</span>
 <span class="normal">931</span>
 <span class="normal">932</span>
-<span class="normal">933</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stac_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">933</span>
+<span class="normal">934</span>
+<span class="normal">935</span>
+<span class="normal">936</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">stac_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the Collection.</span>
 
 <span class="sd">    Args:</span>
@@ -10316,16 +10316,16 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1066</span>
-<span class="normal">1067</span>
-<span class="normal">1068</span>
-<span class="normal">1069</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1069</span>
 <span class="normal">1070</span>
 <span class="normal">1071</span>
 <span class="normal">1072</span>
 <span class="normal">1073</span>
 <span class="normal">1074</span>
-<span class="normal">1075</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="normal">1075</span>
+<span class="normal">1076</span>
+<span class="normal">1077</span>
+<span class="normal">1078</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bands</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the bands of the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -10385,10 +10385,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1053</span>
-<span class="normal">1054</span>
-<span class="normal">1055</span>
-<span class="normal">1056</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1056</span>
 <span class="normal">1057</span>
 <span class="normal">1058</span>
 <span class="normal">1059</span>
@@ -10396,7 +10393,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">1061</span>
 <span class="normal">1062</span>
 <span class="normal">1063</span>
-<span class="normal">1064</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bbox_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BBox</span><span class="p">]:</span>
+<span class="normal">1064</span>
+<span class="normal">1065</span>
+<span class="normal">1066</span>
+<span class="normal">1067</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bbox_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BBox</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the bounding boxes of the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -10453,10 +10453,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1160</span>
-<span class="normal">1161</span>
-<span class="normal">1162</span>
-<span class="normal">1163</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1163</span>
 <span class="normal">1164</span>
 <span class="normal">1165</span>
 <span class="normal">1166</span>
@@ -10470,7 +10467,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
-<span class="normal">1177</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">catalog_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1177</span>
+<span class="normal">1178</span>
+<span class="normal">1179</span>
+<span class="normal">1180</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">catalog_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the URL of the catalog for the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -10557,10 +10557,7 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 992</span>
-<span class="normal"> 993</span>
-<span class="normal"> 994</span>
-<span class="normal"> 995</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 995</span>
 <span class="normal"> 996</span>
 <span class="normal"> 997</span>
 <span class="normal"> 998</span>
@@ -10580,7 +10577,10 @@ An iterable of tuples representing temporal extents.</p>
 <span class="normal">1012</span>
 <span class="normal">1013</span>
 <span class="normal">1014</span>
-<span class="normal">1015</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">datetime_interval</span><span class="p">(</span>
+<span class="normal">1015</span>
+<span class="normal">1016</span>
+<span class="normal">1017</span>
+<span class="normal">1018</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">datetime_interval</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns datetime objects representing temporal extents.</span>
@@ -10649,13 +10649,13 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1035</span>
-<span class="normal">1036</span>
-<span class="normal">1037</span>
-<span class="normal">1038</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1038</span>
 <span class="normal">1039</span>
 <span class="normal">1040</span>
-<span class="normal">1041</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1041</span>
+<span class="normal">1042</span>
+<span class="normal">1043</span>
+<span class="normal">1044</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">end</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the end datetime of the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -10707,15 +10707,15 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1043</span>
-<span class="normal">1044</span>
-<span class="normal">1045</span>
-<span class="normal">1046</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1046</span>
 <span class="normal">1047</span>
 <span class="normal">1048</span>
 <span class="normal">1049</span>
 <span class="normal">1050</span>
-<span class="normal">1051</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">end_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1051</span>
+<span class="normal">1052</span>
+<span class="normal">1053</span>
+<span class="normal">1054</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">end_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the end datetime of the collection as a string.</span>
 
 <span class="sd">    Returns:</span>
@@ -10816,17 +10816,17 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">946</span>
-<span class="normal">947</span>
-<span class="normal">948</span>
-<span class="normal">949</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">949</span>
 <span class="normal">950</span>
 <span class="normal">951</span>
 <span class="normal">952</span>
 <span class="normal">953</span>
 <span class="normal">954</span>
 <span class="normal">955</span>
-<span class="normal">956</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">item</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Matches dict&#39;s get by returning None if there is no item.</span>
 
 <span class="sd">    Args:</span>
@@ -10882,13 +10882,13 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">974</span>
-<span class="normal">975</span>
-<span class="normal">976</span>
-<span class="normal">977</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">977</span>
 <span class="normal">978</span>
 <span class="normal">979</span>
-<span class="normal">980</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">980</span>
+<span class="normal">981</span>
+<span class="normal">982</span>
+<span class="normal">983</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_dataset_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the dataset type of the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -10940,13 +10940,13 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">966</span>
-<span class="normal">967</span>
-<span class="normal">968</span>
-<span class="normal">969</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">969</span>
 <span class="normal">970</span>
 <span class="normal">971</span>
-<span class="normal">972</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hyphen_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">972</span>
+<span class="normal">973</span>
+<span class="normal">974</span>
+<span class="normal">975</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hyphen_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the hyphenated ID of the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -11021,10 +11021,7 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1142</span>
-<span class="normal">1143</span>
-<span class="normal">1144</span>
-<span class="normal">1145</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1145</span>
 <span class="normal">1146</span>
 <span class="normal">1147</span>
 <span class="normal">1148</span>
@@ -11037,7 +11034,10 @@ An iterable of tuples representing temporal extents.</p>
 <span class="normal">1155</span>
 <span class="normal">1156</span>
 <span class="normal">1157</span>
-<span class="normal">1158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_preview_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1158</span>
+<span class="normal">1159</span>
+<span class="normal">1160</span>
+<span class="normal">1161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_preview_url</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the URL of the preview image for the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -11099,15 +11099,15 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">982</span>
-<span class="normal">983</span>
-<span class="normal">984</span>
-<span class="normal">985</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">985</span>
 <span class="normal">986</span>
 <span class="normal">987</span>
 <span class="normal">988</span>
 <span class="normal">989</span>
-<span class="normal">990</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_deprecated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">990</span>
+<span class="normal">991</span>
+<span class="normal">992</span>
+<span class="normal">993</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_deprecated</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the collection is deprecated or has a successor.</span>
 
 <span class="sd">    Returns:</span>
@@ -11161,13 +11161,13 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">958</span>
-<span class="normal">959</span>
-<span class="normal">960</span>
-<span class="normal">961</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">961</span>
 <span class="normal">962</span>
 <span class="normal">963</span>
-<span class="normal">964</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">public_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">964</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">public_id</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the public ID of the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -11219,17 +11219,17 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1108</span>
-<span class="normal">1109</span>
-<span class="normal">1110</span>
-<span class="normal">1111</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1111</span>
 <span class="normal">1112</span>
 <span class="normal">1113</span>
 <span class="normal">1114</span>
 <span class="normal">1115</span>
 <span class="normal">1116</span>
 <span class="normal">1117</span>
-<span class="normal">1118</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">python_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1118</span>
+<span class="normal">1119</span>
+<span class="normal">1120</span>
+<span class="normal">1121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">python_code</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the Python code sample for the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -11293,16 +11293,16 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1131</span>
-<span class="normal">1132</span>
-<span class="normal">1133</span>
-<span class="normal">1134</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1134</span>
 <span class="normal">1135</span>
 <span class="normal">1136</span>
 <span class="normal">1137</span>
 <span class="normal">1138</span>
 <span class="normal">1139</span>
-<span class="normal">1140</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_js_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1140</span>
+<span class="normal">1141</span>
+<span class="normal">1142</span>
+<span class="normal">1143</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_js_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the JavaScript code sample for the collection.</span>
 
 <span class="sd">    Args:</span>
@@ -11365,16 +11365,16 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1120</span>
-<span class="normal">1121</span>
-<span class="normal">1122</span>
-<span class="normal">1123</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1123</span>
 <span class="normal">1124</span>
 <span class="normal">1125</span>
 <span class="normal">1126</span>
 <span class="normal">1127</span>
 <span class="normal">1128</span>
-<span class="normal">1129</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_python_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1129</span>
+<span class="normal">1130</span>
+<span class="normal">1131</span>
+<span class="normal">1132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_python_code</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">code</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Sets the Python code sample for the collection.</span>
 
 <span class="sd">    Args:</span>
@@ -11429,10 +11429,7 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1077</span>
-<span class="normal">1078</span>
-<span class="normal">1079</span>
-<span class="normal">1080</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1080</span>
 <span class="normal">1081</span>
 <span class="normal">1082</span>
 <span class="normal">1083</span>
@@ -11447,7 +11444,10 @@ An iterable of tuples representing temporal extents.</p>
 <span class="normal">1092</span>
 <span class="normal">1093</span>
 <span class="normal">1094</span>
-<span class="normal">1095</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">spatial_resolution_m</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">1095</span>
+<span class="normal">1096</span>
+<span class="normal">1097</span>
+<span class="normal">1098</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">spatial_resolution_m</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the spatial resolution of the collection in meters.</span>
 
 <span class="sd">    Returns:</span>
@@ -11511,13 +11511,13 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1017</span>
-<span class="normal">1018</span>
-<span class="normal">1019</span>
-<span class="normal">1020</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1020</span>
 <span class="normal">1021</span>
 <span class="normal">1022</span>
-<span class="normal">1023</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
+<span class="normal">1023</span>
+<span class="normal">1024</span>
+<span class="normal">1025</span>
+<span class="normal">1026</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the start datetime of the collection.</span>
 
 <span class="sd">    Returns:</span>
@@ -11569,15 +11569,15 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1025</span>
-<span class="normal">1026</span>
-<span class="normal">1027</span>
-<span class="normal">1028</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1028</span>
 <span class="normal">1029</span>
 <span class="normal">1030</span>
 <span class="normal">1031</span>
 <span class="normal">1032</span>
-<span class="normal">1033</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1033</span>
+<span class="normal">1034</span>
+<span class="normal">1035</span>
+<span class="normal">1036</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">start_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the start datetime of the collection as a string.</span>
 
 <span class="sd">    Returns:</span>
@@ -11631,16 +11631,16 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1097</span>
-<span class="normal">1098</span>
-<span class="normal">1099</span>
-<span class="normal">1100</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1100</span>
 <span class="normal">1101</span>
 <span class="normal">1102</span>
 <span class="normal">1103</span>
 <span class="normal">1104</span>
 <span class="normal">1105</span>
-<span class="normal">1106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">temporal_resolution_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">1106</span>
+<span class="normal">1107</span>
+<span class="normal">1108</span>
+<span class="normal">1109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">temporal_resolution_str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the temporal resolution of the collection as a string.</span>
 
 <span class="sd">    Returns:</span>
@@ -11692,10 +11692,7 @@ An iterable of tuples representing temporal extents.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1181</span>
-<span class="normal">1182</span>
-<span class="normal">1183</span>
-<span class="normal">1184</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1184</span>
 <span class="normal">1185</span>
 <span class="normal">1186</span>
 <span class="normal">1187</span>
@@ -11822,7 +11819,10 @@ An iterable of tuples representing temporal extents.</p>
 <span class="normal">1308</span>
 <span class="normal">1309</span>
 <span class="normal">1310</span>
-<span class="normal">1311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CollectionList</span><span class="p">(</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Collection</span><span class="p">]):</span>
+<span class="normal">1311</span>
+<span class="normal">1312</span>
+<span class="normal">1313</span>
+<span class="normal">1314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">CollectionList</span><span class="p">(</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Collection</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;List of stac.Collections; can be filtered to return a smaller sublist.&quot;&quot;&quot;</span>
 
     <span class="n">_collections</span> <span class="o">=</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Collection</span><span class="p">]</span>
@@ -11958,7 +11958,7 @@ An iterable of tuples representing temporal extents.</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -11985,15 +11985,15 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1246</span>
-<span class="normal">1247</span>
-<span class="normal">1248</span>
-<span class="normal">1249</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1249</span>
 <span class="normal">1250</span>
 <span class="normal">1251</span>
 <span class="normal">1252</span>
 <span class="normal">1253</span>
-<span class="normal">1254</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_bbox</span><span class="p">:</span> <span class="n">BBox</span><span class="p">):</span>
+<span class="normal">1254</span>
+<span class="normal">1255</span>
+<span class="normal">1256</span>
+<span class="normal">1257</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_bounding_box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_bbox</span><span class="p">:</span> <span class="n">BBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a sublist with the bbox matching the given bbox.&quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collections</span><span class="p">:</span>
@@ -12024,15 +12024,15 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1236</span>
-<span class="normal">1237</span>
-<span class="normal">1238</span>
-<span class="normal">1239</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1239</span>
 <span class="normal">1240</span>
 <span class="normal">1241</span>
 <span class="normal">1242</span>
 <span class="normal">1243</span>
-<span class="normal">1244</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_bounding_box_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_bbox</span><span class="p">:</span> <span class="n">BBox</span><span class="p">):</span>
+<span class="normal">1244</span>
+<span class="normal">1245</span>
+<span class="normal">1246</span>
+<span class="normal">1247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_bounding_box_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query_bbox</span><span class="p">:</span> <span class="n">BBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a sublist with the bbox matching the given bbox.&quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collections</span><span class="p">:</span>
@@ -12063,10 +12063,7 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1210</span>
-<span class="normal">1211</span>
-<span class="normal">1212</span>
-<span class="normal">1213</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1213</span>
 <span class="normal">1214</span>
 <span class="normal">1215</span>
 <span class="normal">1216</span>
@@ -12074,7 +12071,10 @@ An iterable of tuples representing temporal extents.</p>
 <span class="normal">1218</span>
 <span class="normal">1219</span>
 <span class="normal">1220</span>
-<span class="normal">1221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_datetime</span><span class="p">(</span>
+<span class="normal">1221</span>
+<span class="normal">1222</span>
+<span class="normal">1223</span>
+<span class="normal">1224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_datetime</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">query_datetime</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
 <span class="p">):</span>
@@ -12108,9 +12108,9 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1206</span>
-<span class="normal">1207</span>
-<span class="normal">1208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1209</span>
+<span class="normal">1210</span>
+<span class="normal">1211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_ids</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ids</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="nb">str</span><span class="p">]):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a sublist with only the collections matching the given ids.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">([</span><span class="n">c</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_collections</span> <span class="k">if</span> <span class="n">c</span><span class="o">.</span><span class="n">public_id</span><span class="p">()</span> <span class="ow">in</span> <span class="n">ids</span><span class="p">])</span>
 </code></pre></div></td></tr></table></div>
@@ -12135,10 +12135,7 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1223</span>
-<span class="normal">1224</span>
-<span class="normal">1225</span>
-<span class="normal">1226</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1226</span>
 <span class="normal">1227</span>
 <span class="normal">1228</span>
 <span class="normal">1229</span>
@@ -12146,7 +12143,10 @@ An iterable of tuples representing temporal extents.</p>
 <span class="normal">1231</span>
 <span class="normal">1232</span>
 <span class="normal">1233</span>
-<span class="normal">1234</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_interval</span><span class="p">(</span>
+<span class="normal">1234</span>
+<span class="normal">1235</span>
+<span class="normal">1236</span>
+<span class="normal">1237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">filter_by_interval</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">query_interval</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
 <span class="p">):</span>
@@ -12233,17 +12233,17 @@ An iterable of tuples representing temporal extents.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1281</span>
-<span class="normal">1282</span>
-<span class="normal">1283</span>
-<span class="normal">1284</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1284</span>
 <span class="normal">1285</span>
 <span class="normal">1286</span>
 <span class="normal">1287</span>
 <span class="normal">1288</span>
 <span class="normal">1289</span>
 <span class="normal">1290</span>
-<span class="normal">1291</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+<span class="normal">1291</span>
+<span class="normal">1292</span>
+<span class="normal">1293</span>
+<span class="normal">1294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">limit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Returns a new CollectionList containing the first n entries.</span>
 
@@ -12331,10 +12331,7 @@ Collections with spatial_resolution_m() == -1 are pushed to the end.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1259</span>
-<span class="normal">1260</span>
-<span class="normal">1261</span>
-<span class="normal">1262</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1262</span>
 <span class="normal">1263</span>
 <span class="normal">1264</span>
 <span class="normal">1265</span>
@@ -12351,7 +12348,10 @@ Collections with spatial_resolution_m() == -1 are pushed to the end.</p>
 <span class="normal">1276</span>
 <span class="normal">1277</span>
 <span class="normal">1278</span>
-<span class="normal">1279</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sort_by_spatial_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="normal">1279</span>
+<span class="normal">1280</span>
+<span class="normal">1281</span>
+<span class="normal">1282</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sort_by_spatial_resolution</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Sorts the collections based on their spatial resolution.</span>
 <span class="sd">    Collections with spatial_resolution_m() == -1 are pushed to the end.</span>
@@ -12394,10 +12394,7 @@ Collections with spatial_resolution_m() == -1 are pushed to the end.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1293</span>
-<span class="normal">1294</span>
-<span class="normal">1295</span>
-<span class="normal">1296</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1296</span>
 <span class="normal">1297</span>
 <span class="normal">1298</span>
 <span class="normal">1299</span>
@@ -12412,7 +12409,10 @@ Collections with spatial_resolution_m() == -1 are pushed to the end.</p>
 <span class="normal">1308</span>
 <span class="normal">1309</span>
 <span class="normal">1310</span>
-<span class="normal">1311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1311</span>
+<span class="normal">1312</span>
+<span class="normal">1313</span>
+<span class="normal">1314</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_df</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a collection list to a dataframe with a select set of fields.&quot;&quot;&quot;</span>
 
     <span class="n">rows</span> <span class="o">=</span> <span class="p">[]</span>
@@ -12473,10 +12473,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2198</span>
-<span class="normal">2199</span>
-<span class="normal">2200</span>
-<span class="normal">2201</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2201</span>
 <span class="normal">2202</span>
 <span class="normal">2203</span>
 <span class="normal">2204</span>
@@ -12613,7 +12610,10 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">2335</span>
 <span class="normal">2336</span>
 <span class="normal">2337</span>
-<span class="normal">2338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetExplorer</span><span class="p">:</span>
+<span class="normal">2338</span>
+<span class="normal">2339</span>
+<span class="normal">2340</span>
+<span class="normal">2341</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetExplorer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A widget for exploring Earth Engine datasets.</span>
 <span class="sd">    The DataExplorer class source code is adapted from &lt;https://bit.ly/48cE24D&gt;.</span>
 <span class="sd">    Credit to the original author Renee Johnston (&lt;https://github.com/raj02006&gt;)</span>
@@ -12639,13 +12639,13 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="c1"># @title Setup</span>
-        <span class="n">project_name</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">project_id</span><span class="p">)</span>
+        <span class="n">project_name</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">project_id</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">project_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">project_name</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
+            <span class="n">project_name</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">project_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide a Google Cloud project ID.&quot;</span><span class="p">)</span>
 
-        <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">))</span>
+        <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">))</span>
 
         <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
         <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
@@ -12653,7 +12653,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
         <span class="n">vertexai</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">vertex_ai_zone</span><span class="p">)</span>
 
         <span class="c1"># Make sure geemap initialized correctly.</span>
-        <span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
+        <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">draw_ctrl</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
 
@@ -12681,7 +12681,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
         <span class="n">embeddings_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="n">llm</span> <span class="o">=</span> <span class="n">ChatGoogleGenerativeAI</span><span class="p">(</span>
-            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">google_api_key</span><span class="o">=</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">)</span>
+            <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">google_api_key</span><span class="o">=</span><span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">)</span>
         <span class="p">)</span>
 
         <span class="n">local_path</span> <span class="o">=</span> <span class="n">load_embeddings</span><span class="p">(</span><span class="n">EMBEDDINGS_CLOUD_PATH</span><span class="p">,</span> <span class="n">EMBEDDINGS_LOCAL_PATH</span><span class="p">)</span>
@@ -12759,7 +12759,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -12882,10 +12882,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2204</span>
-<span class="normal">2205</span>
-<span class="normal">2206</span>
-<span class="normal">2207</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2207</span>
 <span class="normal">2208</span>
 <span class="normal">2209</span>
 <span class="normal">2210</span>
@@ -12951,7 +12948,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2270</span>
 <span class="normal">2271</span>
 <span class="normal">2272</span>
-<span class="normal">2273</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">2273</span>
+<span class="normal">2274</span>
+<span class="normal">2275</span>
+<span class="normal">2276</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span><span class="p">,</span>
     <span class="n">google_api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">,</span>
@@ -12971,13 +12971,13 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="c1"># @title Setup</span>
-    <span class="n">project_name</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">project_id</span><span class="p">)</span>
+    <span class="n">project_name</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">project_id</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">project_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">project_name</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
+        <span class="n">project_name</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">project_name</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Please provide a Google Cloud project ID.&quot;</span><span class="p">)</span>
 
-    <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">))</span>
+    <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">))</span>
 
     <span class="n">ee</span><span class="o">.</span><span class="n">Authenticate</span><span class="p">()</span>
     <span class="n">ee</span><span class="o">.</span><span class="n">Initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
@@ -12985,7 +12985,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
     <span class="n">vertexai</span><span class="o">.</span><span class="n">init</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">,</span> <span class="n">location</span><span class="o">=</span><span class="n">vertex_ai_zone</span><span class="p">)</span>
 
     <span class="c1"># Make sure geemap initialized correctly.</span>
-    <span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
+    <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
     <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">draw_ctrl</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
 
@@ -13013,7 +13013,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
     <span class="n">embeddings_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_json</span><span class="p">(</span><span class="n">local_path</span><span class="p">,</span> <span class="n">lines</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="n">llm</span> <span class="o">=</span> <span class="n">ChatGoogleGenerativeAI</span><span class="p">(</span>
-        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">google_api_key</span><span class="o">=</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">)</span>
+        <span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">google_api_key</span><span class="o">=</span><span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="n">google_api_key</span><span class="p">)</span>
     <span class="p">)</span>
 
     <span class="n">local_path</span> <span class="o">=</span> <span class="n">load_embeddings</span><span class="p">(</span><span class="n">EMBEDDINGS_CLOUD_PATH</span><span class="p">,</span> <span class="n">EMBEDDINGS_LOCAL_PATH</span><span class="p">)</span>
@@ -13113,10 +13113,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2275</span>
-<span class="normal">2276</span>
-<span class="normal">2277</span>
-<span class="normal">2278</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2278</span>
 <span class="normal">2279</span>
 <span class="normal">2280</span>
 <span class="normal">2281</span>
@@ -13176,7 +13173,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2335</span>
 <span class="normal">2336</span>
 <span class="normal">2337</span>
-<span class="normal">2338</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">:</span>
+<span class="normal">2338</span>
+<span class="normal">2339</span>
+<span class="normal">2340</span>
+<span class="normal">2341</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Displays a query interface for searching datasets.</span>
 
 <span class="sd">    Args:</span>
@@ -13280,10 +13280,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1875</span>
-<span class="normal">1876</span>
-<span class="normal">1877</span>
-<span class="normal">1878</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1878</span>
 <span class="normal">1879</span>
 <span class="normal">1880</span>
 <span class="normal">1881</span>
@@ -13600,7 +13597,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2192</span>
 <span class="normal">2193</span>
 <span class="normal">2194</span>
-<span class="normal">2195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetSearchInterface</span><span class="p">:</span>
+<span class="normal">2195</span>
+<span class="normal">2196</span>
+<span class="normal">2197</span>
+<span class="normal">2198</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetSearchInterface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface for searching and displaying Earth Engine datasets.&quot;&quot;&quot;</span>
 
     <span class="n">collections</span><span class="p">:</span> <span class="n">CollectionList</span>
@@ -13926,7 +13926,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -14000,10 +14000,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1890</span>
-<span class="normal">1891</span>
-<span class="normal">1892</span>
-<span class="normal">1893</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1893</span>
 <span class="normal">1894</span>
 <span class="normal">1895</span>
 <span class="normal">1896</span>
@@ -14028,7 +14025,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">1915</span>
 <span class="normal">1916</span>
 <span class="normal">1917</span>
-<span class="normal">1918</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">collections</span><span class="p">:</span> <span class="n">CollectionList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1918</span>
+<span class="normal">1919</span>
+<span class="normal">1920</span>
+<span class="normal">1921</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">collections</span><span class="p">:</span> <span class="n">CollectionList</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the DatasetSearchInterface.</span>
 
 <span class="sd">    Args:</span>
@@ -14079,10 +14079,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1920</span>
-<span class="normal">1921</span>
-<span class="normal">1922</span>
-<span class="normal">1923</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1923</span>
 <span class="normal">1924</span>
 <span class="normal">1925</span>
 <span class="normal">1926</span>
@@ -14219,7 +14216,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2057</span>
 <span class="normal">2058</span>
 <span class="normal">2059</span>
-<span class="normal">2060</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">2060</span>
+<span class="normal">2061</span>
+<span class="normal">2062</span>
+<span class="normal">2063</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display the UI in the cell.&quot;&quot;&quot;</span>
     <span class="c1"># Create title and description with Material Design styling</span>
     <span class="c1"># title = widgets.HTML(value=&#39;&lt;h2 class=&quot;main-title&quot;&gt;Earth Engine Dataset Explorer&lt;/h2&gt;&#39;)</span>
@@ -14413,10 +14413,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2097</span>
-<span class="normal">2098</span>
-<span class="normal">2099</span>
-<span class="normal">2100</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2100</span>
 <span class="normal">2101</span>
 <span class="normal">2102</span>
 <span class="normal">2103</span>
@@ -14460,7 +14457,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2141</span>
 <span class="normal">2142</span>
 <span class="normal">2143</span>
-<span class="normal">2144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">2144</span>
+<span class="normal">2145</span>
+<span class="normal">2146</span>
+<span class="normal">2147</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates the output widgets based on the selected dataset.</span>
 
 <span class="sd">    Args:</span>
@@ -14548,10 +14548,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1549</span>
-<span class="normal">1550</span>
-<span class="normal">1551</span>
-<span class="normal">1552</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1552</span>
 <span class="normal">1553</span>
 <span class="normal">1554</span>
 <span class="normal">1555</span>
@@ -14672,7 +14669,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">1670</span>
 <span class="normal">1671</span>
 <span class="normal">1672</span>
-<span class="normal">1673</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EarthEngineDatasetIndex</span><span class="p">:</span>
+<span class="normal">1673</span>
+<span class="normal">1674</span>
+<span class="normal">1675</span>
+<span class="normal">1676</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EarthEngineDatasetIndex</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for indexing and searching Earth Engine datasets.&quot;&quot;&quot;</span>
 
     <span class="n">index</span><span class="p">:</span> <span class="n">VectorStoreIndexWrapper</span>
@@ -14802,7 +14802,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -14892,10 +14892,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1557</span>
-<span class="normal">1558</span>
-<span class="normal">1559</span>
-<span class="normal">1560</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1560</span>
 <span class="normal">1561</span>
 <span class="normal">1562</span>
 <span class="normal">1563</span>
@@ -14903,7 +14900,10 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">1565</span>
 <span class="normal">1566</span>
 <span class="normal">1567</span>
-<span class="normal">1568</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_catalog</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">llm</span><span class="p">):</span>
+<span class="normal">1568</span>
+<span class="normal">1569</span>
+<span class="normal">1570</span>
+<span class="normal">1571</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data_catalog</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">llm</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the EarthEngineDatasetIndex.</span>
 
 <span class="sd">    Args:</span>
@@ -15057,10 +15057,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1570</span>
-<span class="normal">1571</span>
-<span class="normal">1572</span>
-<span class="normal">1573</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1573</span>
 <span class="normal">1574</span>
 <span class="normal">1575</span>
 <span class="normal">1576</span>
@@ -15092,7 +15089,10 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 <span class="normal">1602</span>
 <span class="normal">1603</span>
 <span class="normal">1604</span>
-<span class="normal">1605</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
+<span class="normal">1605</span>
+<span class="normal">1606</span>
+<span class="normal">1607</span>
+<span class="normal">1608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
     <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">wait</span><span class="o">=</span><span class="n">wait_exponential</span><span class="p">(</span><span class="n">multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
     <span class="n">retry</span><span class="o">=</span><span class="n">retry_if_exception_type</span><span class="p">(</span>
@@ -15270,10 +15270,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1607</span>
-<span class="normal">1608</span>
-<span class="normal">1609</span>
-<span class="normal">1610</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1610</span>
 <span class="normal">1611</span>
 <span class="normal">1612</span>
 <span class="normal">1613</span>
@@ -15307,7 +15304,10 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 <span class="normal">1641</span>
 <span class="normal">1642</span>
 <span class="normal">1643</span>
-<span class="normal">1644</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
+<span class="normal">1644</span>
+<span class="normal">1645</span>
+<span class="normal">1646</span>
+<span class="normal">1647</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
     <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">wait</span><span class="o">=</span><span class="n">wait_exponential</span><span class="p">(</span><span class="n">multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
     <span class="n">retry</span><span class="o">=</span><span class="n">retry_if_exception_type</span><span class="p">(</span>
@@ -15470,10 +15470,7 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1646</span>
-<span class="normal">1647</span>
-<span class="normal">1648</span>
-<span class="normal">1649</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1649</span>
 <span class="normal">1650</span>
 <span class="normal">1651</span>
 <span class="normal">1652</span>
@@ -15497,7 +15494,10 @@ in the format [lon1, lat1, lon2, lon2]. Defaults to None.</p>
 <span class="normal">1670</span>
 <span class="normal">1671</span>
 <span class="normal">1672</span>
-<span class="normal">1673</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ids_to_match_scores_df</span><span class="p">(</span>
+<span class="normal">1673</span>
+<span class="normal">1674</span>
+<span class="normal">1675</span>
+<span class="normal">1676</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ids_to_match_scores_df</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">results</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -15704,8 +15704,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 71</span>
-<span class="normal"> 72</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 72</span>
 <span class="normal"> 73</span>
 <span class="normal"> 74</span>
 <span class="normal"> 75</span>
@@ -16401,7 +16400,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">765</span>
 <span class="normal">766</span>
 <span class="normal">767</span>
-<span class="normal">768</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Genie</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
+<span class="normal">768</span>
+<span class="normal">769</span>
+<span class="normal">770</span>
+<span class="normal">771</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Genie</span><span class="p">(</span><span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A widget for interacting with the Genie AI model.</span>
 
 <span class="sd">    The source code is adapted from the ee_genie.ipynb at &lt;https://bit.ly/3YEm7B6&gt;.</span>
@@ -16432,21 +16434,23 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
         <span class="c1"># Initialization</span>
 
         <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">project</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span><span class="p">)</span>
+            <span class="n">project</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span>
+                <span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span>
+            <span class="p">)</span>
         <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Please provide a valid project ID via the &#39;project&#39; parameter.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">google_api_key</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">)</span>
+            <span class="n">google_api_key</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
                 <span class="s2">&quot;Please provide a valid Google API key via the &#39;google_api_key&#39; parameter.&quot;</span>
             <span class="p">)</span>
 
         <span class="k">if</span> <span class="n">initialize_ee</span><span class="p">:</span>
-            <span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
+            <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
 
         <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">google_api_key</span><span class="p">)</span>
         <span class="n">storage_client</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
@@ -16709,7 +16713,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
             <span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">layers</span><span class="p">:</span>
                 <span class="k">return</span> <span class="s2">&quot;No data layers loaded&quot;</span>
-            <span class="n">image_temp_file</span> <span class="o">=</span> <span class="n">temp_file_path</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="s2">&quot;jpg&quot;</span><span class="p">)</span>
+            <span class="n">image_temp_file</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">temp_file_path</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="s2">&quot;jpg&quot;</span><span class="p">)</span>
             <span class="n">layer_name</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
             <span class="n">m</span><span class="o">.</span><span class="n">layer_to_image</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">image_temp_file</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get_scale</span><span class="p">())</span>
             <span class="n">image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_temp_file</span><span class="p">)</span>
@@ -17104,7 +17108,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -17129,8 +17133,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 90</span>
-<span class="normal"> 91</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
 <span class="normal"> 92</span>
 <span class="normal"> 93</span>
 <span class="normal"> 94</span>
@@ -17807,7 +17810,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">765</span>
 <span class="normal">766</span>
 <span class="normal">767</span>
-<span class="normal">768</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">768</span>
+<span class="normal">769</span>
+<span class="normal">770</span>
+<span class="normal">771</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">google_api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -17819,21 +17825,23 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
     <span class="c1"># Initialization</span>
 
     <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">project</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span><span class="p">)</span>
+        <span class="n">project</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;EE_PROJECT_ID&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span>
+            <span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span>
+        <span class="p">)</span>
     <span class="k">if</span> <span class="n">project</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Please provide a valid project ID via the &#39;project&#39; parameter.&quot;</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">google_api_key</span> <span class="o">=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">)</span>
+        <span class="n">google_api_key</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_env_var</span><span class="p">(</span><span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">google_api_key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
             <span class="s2">&quot;Please provide a valid Google API key via the &#39;google_api_key&#39; parameter.&quot;</span>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">initialize_ee</span><span class="p">:</span>
-        <span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
+        <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
 
     <span class="n">genai</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">api_key</span><span class="o">=</span><span class="n">google_api_key</span><span class="p">)</span>
     <span class="n">storage_client</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">Client</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span>
@@ -18096,7 +18104,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
         <span class="n">layers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_layer_dict</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">layers</span><span class="p">:</span>
             <span class="k">return</span> <span class="s2">&quot;No data layers loaded&quot;</span>
-        <span class="n">image_temp_file</span> <span class="o">=</span> <span class="n">temp_file_path</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="s2">&quot;jpg&quot;</span><span class="p">)</span>
+        <span class="n">image_temp_file</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">temp_file_path</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="s2">&quot;jpg&quot;</span><span class="p">)</span>
         <span class="n">layer_name</span> <span class="o">=</span> <span class="n">layers</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="s2">&quot;ee_layer&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">name</span>
         <span class="n">m</span><span class="o">.</span><span class="n">layer_to_image</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="n">output</span><span class="o">=</span><span class="n">image_temp_file</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">get_scale</span><span class="p">())</span>
         <span class="n">image</span> <span class="o">=</span> <span class="n">PIL</span><span class="o">.</span><span class="n">Image</span><span class="o">.</span><span class="n">open</span><span class="p">(</span><span class="n">image_temp_file</span><span class="p">)</span>
@@ -18528,10 +18536,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1483</span>
-<span class="normal">1484</span>
-<span class="normal">1485</span>
-<span class="normal">1486</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1486</span>
 <span class="normal">1487</span>
 <span class="normal">1488</span>
 <span class="normal">1489</span>
@@ -18561,7 +18566,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">1513</span>
 <span class="normal">1514</span>
 <span class="normal">1515</span>
-<span class="normal">1516</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PrecomputedEmbeddings</span><span class="p">(</span><span class="n">Embeddings</span><span class="p">):</span>
+<span class="normal">1516</span>
+<span class="normal">1517</span>
+<span class="normal">1518</span>
+<span class="normal">1519</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">PrecomputedEmbeddings</span><span class="p">(</span><span class="n">Embeddings</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Class for handling precomputed embeddings.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -18600,7 +18608,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
 
 
-  <div class="doc doc-children">
+<div class="doc doc-children">
 
 
 
@@ -18658,14 +18666,14 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1486</span>
-<span class="normal">1487</span>
-<span class="normal">1488</span>
-<span class="normal">1489</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1489</span>
 <span class="normal">1490</span>
 <span class="normal">1491</span>
 <span class="normal">1492</span>
-<span class="normal">1493</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1493</span>
+<span class="normal">1494</span>
+<span class="normal">1495</span>
+<span class="normal">1496</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">embeddings_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes the PrecomputedEmbeddings.</span>
 
 <span class="sd">    Args:</span>
@@ -18749,16 +18757,16 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1495</span>
-<span class="normal">1496</span>
-<span class="normal">1497</span>
-<span class="normal">1498</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1498</span>
 <span class="normal">1499</span>
 <span class="normal">1500</span>
 <span class="normal">1501</span>
 <span class="normal">1502</span>
 <span class="normal">1503</span>
-<span class="normal">1504</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">embed_documents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
+<span class="normal">1504</span>
+<span class="normal">1505</span>
+<span class="normal">1506</span>
+<span class="normal">1507</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">embed_documents</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">texts</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Embeds a list of documents.</span>
 
 <span class="sd">    Args:</span>
@@ -18844,17 +18852,17 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1506</span>
-<span class="normal">1507</span>
-<span class="normal">1508</span>
-<span class="normal">1509</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1509</span>
 <span class="normal">1510</span>
 <span class="normal">1511</span>
 <span class="normal">1512</span>
 <span class="normal">1513</span>
 <span class="normal">1514</span>
 <span class="normal">1515</span>
-<span class="normal">1516</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">embed_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
+<span class="normal">1516</span>
+<span class="normal">1517</span>
+<span class="normal">1518</span>
+<span class="normal">1519</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">embed_query</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Embeds a query text.</span>
 
 <span class="sd">    Args:</span>
@@ -19014,10 +19022,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1676</span>
-<span class="normal">1677</span>
-<span class="normal">1678</span>
-<span class="normal">1679</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1679</span>
 <span class="normal">1680</span>
 <span class="normal">1681</span>
 <span class="normal">1682</span>
@@ -19035,7 +19040,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">1694</span>
 <span class="normal">1695</span>
 <span class="normal">1696</span>
-<span class="normal">1697</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">explain_relevance</span><span class="p">(</span>
+<span class="normal">1697</span>
+<span class="normal">1698</span>
+<span class="normal">1699</span>
+<span class="normal">1700</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">explain_relevance</span><span class="p">(</span>
     <span class="n">query</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">dataset_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">catalog</span><span class="p">:</span> <span class="n">Catalog</span><span class="p">,</span>
@@ -19181,10 +19189,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1700</span>
-<span class="normal">1701</span>
-<span class="normal">1702</span>
-<span class="normal">1703</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1703</span>
 <span class="normal">1704</span>
 <span class="normal">1705</span>
 <span class="normal">1706</span>
@@ -19229,7 +19234,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">1745</span>
 <span class="normal">1746</span>
 <span class="normal">1747</span>
-<span class="normal">1748</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@retry</span><span class="p">(</span>
+<span class="normal">1748</span>
+<span class="normal">1749</span>
+<span class="normal">1750</span>
+<span class="normal">1751</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@retry</span><span class="p">(</span>
     <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">wait</span><span class="o">=</span><span class="n">wait_exponential</span><span class="p">(</span><span class="n">multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
     <span class="n">retry</span><span class="o">=</span><span class="n">retry_if_exception_type</span><span class="p">(</span>
@@ -19402,10 +19410,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1793</span>
-<span class="normal">1794</span>
-<span class="normal">1795</span>
-<span class="normal">1796</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1796</span>
 <span class="normal">1797</span>
 <span class="normal">1798</span>
 <span class="normal">1799</span>
@@ -19481,7 +19486,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">1869</span>
 <span class="normal">1870</span>
 <span class="normal">1871</span>
-<span class="normal">1872</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@retry</span><span class="p">(</span>
+<span class="normal">1872</span>
+<span class="normal">1873</span>
+<span class="normal">1874</span>
+<span class="normal">1875</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@retry</span><span class="p">(</span>
     <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">wait</span><span class="o">=</span><span class="n">wait_exponential</span><span class="p">(</span><span class="n">multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
     <span class="n">retry</span><span class="o">=</span><span class="n">retry_if_exception_type</span><span class="p">(</span>
@@ -19653,10 +19661,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1751</span>
-<span class="normal">1752</span>
-<span class="normal">1753</span>
-<span class="normal">1754</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1754</span>
 <span class="normal">1755</span>
 <span class="normal">1756</span>
 <span class="normal">1757</span>
@@ -19687,7 +19692,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">1782</span>
 <span class="normal">1783</span>
 <span class="normal">1784</span>
-<span class="normal">1785</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@retry</span><span class="p">(</span>
+<span class="normal">1785</span>
+<span class="normal">1786</span>
+<span class="normal">1787</span>
+<span class="normal">1788</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@retry</span><span class="p">(</span>
     <span class="n">stop</span><span class="o">=</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">wait</span><span class="o">=</span><span class="n">wait_exponential</span><span class="p">(</span><span class="n">multiplier</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="nb">min</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="mi">10</span><span class="p">),</span>
     <span class="n">retry</span><span class="o">=</span><span class="n">retry_if_exception_type</span><span class="p">(</span>
@@ -19798,10 +19806,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1519</span>
-<span class="normal">1520</span>
-<span class="normal">1521</span>
-<span class="normal">1522</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1522</span>
 <span class="normal">1523</span>
 <span class="normal">1524</span>
 <span class="normal">1525</span>
@@ -19824,7 +19829,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">1542</span>
 <span class="normal">1543</span>
 <span class="normal">1544</span>
-<span class="normal">1545</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_langchain_index</span><span class="p">(</span><span class="n">embeddings_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorStoreIndexWrapper</span><span class="p">:</span>
+<span class="normal">1545</span>
+<span class="normal">1546</span>
+<span class="normal">1547</span>
+<span class="normal">1548</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">make_langchain_index</span><span class="p">(</span><span class="n">embeddings_df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">VectorStoreIndexWrapper</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an index from a dataframe of precomputed embeddings.</span>
 
 <span class="sd">    Args:</span>
@@ -19943,10 +19951,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">794</span>
-<span class="normal">795</span>
-<span class="normal">796</span>
-<span class="normal">797</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">797</span>
 <span class="normal">798</span>
 <span class="normal">799</span>
 <span class="normal">800</span>
@@ -19962,7 +19967,10 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
 <span class="normal">810</span>
 <span class="normal">811</span>
 <span class="normal">812</span>
-<span class="normal">813</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matches_datetime</span><span class="p">(</span>
+<span class="normal">813</span>
+<span class="normal">814</span>
+<span class="normal">815</span>
+<span class="normal">816</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matches_datetime</span><span class="p">(</span>
     <span class="n">collection_interval</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span> <span class="o">|</span> <span class="kc">None</span><span class="p">],</span>
     <span class="n">query_datetime</span><span class="p">:</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -20075,10 +20083,7 @@ with the query interval start and end.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">771</span>
-<span class="normal">772</span>
-<span class="normal">773</span>
-<span class="normal">774</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">774</span>
 <span class="normal">775</span>
 <span class="normal">776</span>
 <span class="normal">777</span>
@@ -20095,7 +20100,10 @@ with the query interval start and end.</p>
 <span class="normal">788</span>
 <span class="normal">789</span>
 <span class="normal">790</span>
-<span class="normal">791</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matches_interval</span><span class="p">(</span>
+<span class="normal">791</span>
+<span class="normal">792</span>
+<span class="normal">793</span>
+<span class="normal">794</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">matches_interval</span><span class="p">(</span>
     <span class="n">collection_interval</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
     <span class="n">query_interval</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">,</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
@@ -20224,10 +20232,7 @@ with the query interval start and end.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">816</span>
-<span class="normal">817</span>
-<span class="normal">818</span>
-<span class="normal">819</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">819</span>
 <span class="normal">820</span>
 <span class="normal">821</span>
 <span class="normal">822</span>
@@ -20250,7 +20255,10 @@ with the query interval start and end.</p>
 <span class="normal">839</span>
 <span class="normal">840</span>
 <span class="normal">841</span>
-<span class="normal">842</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
+<span class="normal">842</span>
+<span class="normal">843</span>
+<span class="normal">844</span>
+<span class="normal">845</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@tenacity</span><span class="o">.</span><span class="n">retry</span><span class="p">(</span>
     <span class="n">stop</span><span class="o">=</span><span class="n">tenacity</span><span class="o">.</span><span class="n">stop_after_attempt</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span>
     <span class="n">wait</span><span class="o">=</span><span class="n">tenacity</span><span class="o">.</span><span class="n">wait_fixed</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
     <span class="n">retry</span><span class="o">=</span><span class="n">tenacity</span><span class="o">.</span><span class="n">retry_if_exception_type</span><span class="p">(</span><span class="n">LayerException</span><span class="p">),</span>
