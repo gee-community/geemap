@@ -13,14 +13,13 @@
 # *******************************************************************************#
 
 
+import collections
 import os
+import pathlib
 import re
 import shutil
 import urllib.request
-from collections import deque
-from pathlib import Path
 
-from .common import *
 from . import coreutils
 
 
@@ -50,7 +49,7 @@ def find_matching_bracket(lines, start_line_index, start_char_index, matching_ch
         return matching_line_index, matching_char_index
 
     # Create a deque to use it as a stack.
-    d = deque()
+    d = collections.deque()
 
     for line_index in range(start_line_index, len(lines)):
         line = lines[line_index]
@@ -841,7 +840,7 @@ def js_to_python_dir(
     else:
         out_dir = os.path.abspath(out_dir)
 
-    files = list(Path(in_dir).rglob("*.js"))
+    files = list(pathlib.Path(in_dir).rglob("*.js"))
 
     for index, in_file in enumerate(files):
         print(f"Processing {index + 1}/{len(files)}: {in_file}")
@@ -912,7 +911,7 @@ def get_js_examples(out_dir=None):
     Returns:
         str: The folder containing the JavaScript examples.
     """
-    pkg_dir = Path(__file__).parent
+    pkg_dir = pathlib.Path(__file__).parent
     example_dir = pkg_dir / "data"
     js_dir = example_dir / "javascripts"
 
@@ -939,7 +938,7 @@ def get_nb_template(download_latest=False, out_file=None):
     Returns:
         str: The file path of the template.
     """
-    pkg_dir = Path(__file__).parent
+    pkg_dir = pathlib.Path(__file__).parent
     example_dir = pkg_dir / "data"
     template_dir = example_dir / "template"
     template_file = template_dir / "template.py"
@@ -1117,8 +1116,8 @@ def py_to_ipynb_dir(
 
     in_dir = os.path.abspath(in_dir)
     files = []
-    qgis_files = list(Path(in_dir).rglob("*_geemap.py"))
-    py_files = list(Path(in_dir).rglob("*.py"))
+    qgis_files = list(pathlib.Path(in_dir).rglob("*_geemap.py"))
+    py_files = list(pathlib.Path(in_dir).rglob("*.py"))
 
     files = qgis_files
 
@@ -1167,7 +1166,7 @@ def execute_notebook_dir(in_dir):
     print("Executing Earth Engine Jupyter notebooks ...\n")
 
     in_dir = os.path.abspath(in_dir)
-    files = list(Path(in_dir).rglob("*.ipynb"))
+    files = list(pathlib.Path(in_dir).rglob("*.ipynb"))
     count = len(files)
     if files is not None:
         for index, file in enumerate(files):
@@ -1238,7 +1237,7 @@ def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
         github_username (str, optional): GitHub username. Defaults to None.
         github_repo (str, optional): GitHub repo name. Defaults to None.
     """
-    files = list(Path(in_dir).rglob("*.ipynb"))
+    files = list(pathlib.Path(in_dir).rglob("*.ipynb"))
     for index, file in enumerate(files):
         file = str(file)
         if ".ipynb_checkpoints" in file:
