@@ -358,7 +358,7 @@ def inspector_gui(m=None):
                 else:
                     print("Downloading pixel values...")
                     df = pd.DataFrame(m.pixel_values)
-                    temp_csv = temp_file_path("csv")
+                    temp_csv = coreutils.temp_file_path("csv")
                     df.to_csv(temp_csv, index=False)
                     link = create_download_link(temp_csv)
                     with output:
@@ -1322,7 +1322,7 @@ def open_data_widget(m):
                             )
                     elif ext.lower() == ".geojson":
                         if convert_bool.value:
-                            ee_object = geojson_to_ee(file_path)
+                            ee_object = coreutils.geojson_to_ee(file_path)
                             m.addLayer(ee_object, {}, layer_name.value)
                         else:
                             m.add_geojson(
@@ -1440,7 +1440,7 @@ def convert_js2py(m):
 
                 prefix = "# The code has been copied to the clipboard. \n# Press Ctrl+V to in a code cell to paste it.\n"
                 text_widget.value = "".join([prefix] + out_lines)
-                create_code_cell("".join(out_lines))
+                coreutils.create_code_cell("".join(out_lines))
 
         elif change["new"] == "Clear":
             text_widget.value = ""
@@ -1700,7 +1700,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
 
         content = []
 
-        create_code_cell("\n".join(content))
+        coreutils.create_code_cell("\n".join(content))
 
     import_btn.on_click(import_button_clicked)
     run_btn.on_click(run_button_clicked)

@@ -26,7 +26,8 @@ import ipyleaflet
 import requests
 import xyzservices
 
-from .common import check_package, get_google_maps_api_key, planet_tiles
+from .common import check_package, planet_tiles
+from . import coreutils
 
 XYZ_TILES = {
     "OpenStreetMap": {
@@ -307,7 +308,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
             TileProvider object: A TileProvider object with the Google Maps tile.
         """
 
-        key = api_key or get_google_maps_api_key()
+        key = api_key or coreutils.get_google_maps_api_key()
         if key is None:
             raise ValueError(
                 "API key is required to access Google Maps API. To get an API "

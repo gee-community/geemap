@@ -9,6 +9,7 @@ import pandas as pd
 import plotly.express as px
 
 from .common import *
+from . import coreutils
 
 
 def bar_chart(
@@ -238,7 +239,7 @@ def bar_chart(
 
     if isinstance(data, str):
         if data.startswith("http"):
-            data = github_raw_url(data)
+            data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
         try:
@@ -529,7 +530,7 @@ def line_chart(
 
     if isinstance(data, str):
         if data.startswith("http"):
-            data = github_raw_url(data)
+            data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
         try:
@@ -808,7 +809,7 @@ def histogram(
 
     if isinstance(data, str):
         if data.startswith("http"):
-            data = github_raw_url(data)
+            data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
         try:
@@ -963,7 +964,7 @@ def pie_chart(
     """
     if isinstance(data, str):
         if data.startswith("http"):
-            data = github_raw_url(data)
+            data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
         try:
