@@ -62,7 +62,6 @@ from tenacity import (
 )
 
 from .geemap import Map, js_snippet_to_py
-
 from . import coreutils
 
 # Google Colab-specific imports (only if you're working in Google Colab)
