@@ -61,7 +61,8 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from .geemap import Map, get_env_var, js_snippet_to_py, ee_initialize, temp_file_path
+from .geemap import Map, js_snippet_to_py
+from . import coreutils
 
 # Google Colab-specific imports (only if you're working in Google Colab)
 if "google.colab" in sys.modules:
@@ -99,21 +100,23 @@ class Genie(widgets.VBox):
         # Initialization
 
         if project is None:
-            project = get_env_var("EE_PROJECT_ID") or get_env_var("GOOGLE_PROJECT_ID")
+            project = coreutils.get_env_var("EE_PROJECT_ID") or coreutils.get_env_var(
+                "GOOGLE_PROJECT_ID"
+            )
         if project is None:
             raise ValueError(
                 "Please provide a valid project ID via the 'project' parameter."
             )
 
         if google_api_key is None:
-            google_api_key = get_env_var("GOOGLE_API_KEY")
+            google_api_key = coreutils.get_env_var("GOOGLE_API_KEY")
         if google_api_key is None:
             raise ValueError(
                 "Please provide a valid Google API key via the 'google_api_key' parameter."
             )
 
         if initialize_ee:
-            ee_initialize(project=project)
+            coreutils.ee_initialize(project=project)
 
         genai.configure(api_key=google_api_key)
         storage_client = storage.Client(project=project)
@@ -376,7 +379,7 @@ class Genie(widgets.VBox):
             layers = list(m.ee_layer_dict.values())
             if not layers:
                 return "No data layers loaded"
-            image_temp_file = temp_file_path(extension="jpg")
+            image_temp_file = coreutils.temp_file_path(extension="jpg")
             layer_name = layers[-1]["ee_layer"].name
             m.layer_to_image(layer_name, output=image_temp_file, scale=m.get_scale())
             image = PIL.Image.open(image_temp_file)
@@ -2221,13 +2224,13 @@ class DatasetExplorer:
         """
 
         # @title Setup
-        project_name = get_env_var(project_id)
+        project_name = coreutils.get_env_var(project_id)
         if project_name is None:
-            project_name = get_env_var("EE_PROJECT_ID")
+            project_name = coreutils.get_env_var("EE_PROJECT_ID")
         if project_name is None:
             raise ValueError("Please provide a Google Cloud project ID.")
 
-        genai.configure(api_key=get_env_var(google_api_key))
+        genai.configure(api_key=coreutils.get_env_var(google_api_key))
 
         ee.Authenticate()
         ee.Initialize(project=project_name)
@@ -2235,7 +2238,7 @@ class DatasetExplorer:
         vertexai.init(project=project_name, location=vertex_ai_zone)
 
         # Make sure geemap initialized correctly.
-        ee_initialize(project=project_name)
+        coreutils.ee_initialize(project=project_name)
         m = Map(draw_ctrl=False)
         m.add("layer_manager")
 
@@ -2263,7 +2266,7 @@ class DatasetExplorer:
         embeddings_df = pd.read_json(local_path, lines=True)
 
         llm = ChatGoogleGenerativeAI(
-            model=model, google_api_key=get_env_var(google_api_key)
+            model=model, google_api_key=coreutils.get_env_var(google_api_key)
         )
 
         local_path = load_embeddings(EMBEDDINGS_CLOUD_PATH, EMBEDDINGS_LOCAL_PATH)

@@ -32,7 +32,6 @@ from maplibre.controls import (
 from .basemaps import (
     xyz_to_leaflet,
     get_xyz_dict,
-    get_google_maps_api_key,
     get_google_map_tile_providers,
 )
 from .common import *
@@ -169,7 +168,7 @@ class Map(MapWidget):
     def _get_available_basemaps(self) -> Dict[str, Any]:
         """Convert xyz tile services to a dictionary of basemaps."""
         tile_providers = list(get_xyz_dict().values())
-        if get_google_maps_api_key():
+        if coreutils.get_google_maps_api_key():
             tile_providers = tile_providers + list(
                 get_google_map_tile_providers().values()
             )
@@ -250,7 +249,7 @@ class Map(MapWidget):
             and f"{layer.type}-color" in layer.paint
             and isinstance(layer.paint[f"{layer.type}-color"], str)
         ):
-            color = check_color(layer.paint[f"{layer.type}-color"])
+            color = coreutils.check_color(layer.paint[f"{layer.type}-color"])
         else:
             color = None
 
@@ -982,7 +981,7 @@ class Map(MapWidget):
                 from geemap.ee_tile_layers import _get_tile_url_format
 
                 if ee_initialize:
-                    geemap.ee_initialize()
+                    coreutils.ee_initialize()
                 url = _get_tile_url_format(ee_object, vis_params)
                 if name is None:
                     name = "EE Layer"
@@ -1295,8 +1294,8 @@ class Map(MapWidget):
             html = html.replace(div_before, div_after)
 
         if replace_key or (os.getenv("MAPTILER_REPLACE_KEY") is not None):
-            key_before = get_env_var("MAPTILER_KEY")
-            key_after = get_env_var("MAPTILER_KEY_PUBLIC")
+            key_before = coreutils.get_env_var("MAPTILER_KEY")
+            key_after = coreutils.get_env_var("MAPTILER_KEY_PUBLIC")
             if key_after is not None:
                 html = html.replace(key_before, key_after)
 
@@ -1377,7 +1376,7 @@ class Map(MapWidget):
         Returns:
             None
         """
-        color = check_color(color)
+        color = coreutils.check_color(color)
         super().set_paint_property(
             name, f"{self.layer_dict[name]['layer'].type}-color", color
         )
@@ -1571,7 +1570,7 @@ class Map(MapWidget):
         color = layer.get("paint", {}).get(f"{layer_type}-color", "white")
         if color.startswith("rgba"):
             color = extract_rgb(color)
-        color = check_color(color)
+        color = coreutils.check_color(color)
         color_picker = widgets.ColorPicker(
             concise=True,
             value=color,
@@ -1606,7 +1605,7 @@ class Map(MapWidget):
             color = layer.get("paint", {}).get(f"{layer_type}-color", "white")
             if color.startswith("rgba"):
                 color = extract_rgb(color)
-            color = check_color(color)
+            color = coreutils.check_color(color)
 
             if color:
                 color_picker.value = color
@@ -1888,8 +1887,10 @@ class Map(MapWidget):
         if isinstance(image, str):
             try:
                 if image.startswith("http"):
-                    image = download_file(
-                        image, temp_file_path(image.split(".")[-1]), quiet=True
+                    image = coreutils.download_file(
+                        image,
+                        coreutils.temp_file_path(image.split(".")[-1]),
+                        quiet=True,
                     )
                 if os.path.exists(image):
                     img = Image.open(image)
@@ -2116,7 +2117,7 @@ class Map(MapWidget):
 
         def on_upload(change):
             content = uploader.value[0]["content"]
-            temp_file = temp_file_path(extension=".geojson")
+            temp_file = coreutils.temp_file_path(extension=".geojson")
             with open(temp_file, "wb") as f:
                 f.write(content)
             self.add_geojson(temp_file, **kwargs)
@@ -2210,7 +2211,7 @@ class Map(MapWidget):
         """
 
         if api_key is None:
-            api_key = get_env_var(token)
+            api_key = coreutils.get_env_var(token)
 
         if api_key is None:
             print("An API key is required to use the 3D terrain feature.")
@@ -2483,7 +2484,7 @@ class Map(MapWidget):
                 return
             elif all(isinstance(item, tuple) for item in colors):
                 try:
-                    colors = [rgb_to_hex(x) for x in colors]
+                    colors = [coreutils.rgb_to_hex(x) for x in colors]
                 except Exception as e:
                     print(e)
             elif all((item.startswith("#") and len(item) == 7) for item in colors):
@@ -2529,7 +2530,7 @@ class Map(MapWidget):
                 colors = list(legend_dict.values())
                 if all(isinstance(item, tuple) for item in colors):
                     try:
-                        colors = [rgb_to_hex(x) for x in colors]
+                        colors = [coreutils.rgb_to_hex(x) for x in colors]
                     except Exception as e:
                         print(e)
 
@@ -2738,7 +2739,7 @@ class Map(MapWidget):
             None
         """
 
-        MAPTILER_KEY = get_env_var("MAPTILER_KEY")
+        MAPTILER_KEY = coreutils.get_env_var("MAPTILER_KEY")
         source = {
             "url": f"https://api.maptiler.com/tiles/v3/tiles.json?key={MAPTILER_KEY}",
             "type": "vector",
@@ -2903,7 +2904,7 @@ def construct_maptiler_style(style: str, api_key: Optional[str] = None) -> str:
     """
 
     if api_key is None:
-        api_key = get_env_var("MAPTILER_KEY")
+        api_key = coreutils.get_env_var("MAPTILER_KEY")
 
     url = f"https://api.maptiler.com/maps/{style}/style.json?key={api_key}"
 
@@ -2955,7 +2956,7 @@ def maptiler_3d_style(
     """
 
     if api_key is None:
-        api_key = get_env_var(token)
+        api_key = coreutils.get_env_var(token)
 
     if api_key is None:
         print("An API key is required to use the 3D terrain feature.")

@@ -753,8 +753,8 @@ def js_snippet_to_py(
         list: A list of Python script.
     """
 
-    in_js = temp_file_path(".js")
-    out_py = temp_file_path(".py")
+    in_js = coreutils.temp_file_path(".js")
+    out_py = coreutils.temp_file_path(".py")
 
     in_js_snippet = re.sub(
         r"([a-zA-Z0-9_]+)\s*:", r'"\1":', in_js_snippet

@@ -16,8 +16,9 @@ import ipywidgets as widgets
 
 from .basemaps import xyz_to_plotly
 from .common import *
-from .osm import *
+from . import coreutils
 from . import examples
+from .osm import *
 
 
 try:
@@ -99,7 +100,7 @@ class Map(go.FigureWidget):
             kwargs["ee_initialize"] = True
 
         if kwargs["ee_initialize"]:
-            ee_initialize()
+            coreutils.ee_initialize()
 
         kwargs.pop("ee_initialize")
 
@@ -483,7 +484,7 @@ class Map(go.FigureWidget):
                     print("The provided palette is invalid.")
                     raise Exception(e)
             elif isinstance(vis_params["palette"], str):
-                vis_params["palette"] = check_cmap(vis_params["palette"])
+                vis_params["palette"] = coreutils.check_cmap(vis_params["palette"])
             elif not isinstance(vis_params["palette"], list):
                 raise ValueError(
                     "The palette must be a list of colors or a string or a Box object."

@@ -39,13 +39,13 @@ from .common import *
 from .conversion import *
 from .ee_tile_layers import *
 from . import core
+from . import coreutils
+from . import examples
 from . import map_widgets
 from . import toolbar
 from .plot import *
 from .timelapse import *
 from .legends import builtin_legends
-from . import coreutils
-from . import examples
 
 
 basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
@@ -2774,7 +2774,7 @@ class Map(core.Map):
         try:
             if isinstance(in_geojson, str):
                 if in_geojson.startswith("http"):
-                    in_geojson = github_raw_url(in_geojson)
+                    in_geojson = coreutils.github_raw_url(in_geojson)
                     data = requests.get(in_geojson).json()
                 else:
                     in_geojson = os.path.abspath(in_geojson)
@@ -2943,8 +2943,8 @@ class Map(core.Map):
         """
 
         if isinstance(in_kml, str) and in_kml.startswith("http"):
-            in_kml = github_raw_url(in_kml)
-            in_kml = download_file(in_kml)
+            in_kml = coreutils.github_raw_url(in_kml)
+            in_kml = coreutils.download_file(in_kml)
 
         in_kml = os.path.abspath(in_kml)
         if not os.path.exists(in_kml):
@@ -2995,7 +2995,7 @@ class Map(core.Map):
         if not filename.startswith("http"):
             filename = os.path.abspath(filename)
         else:
-            filename = github_raw_url(filename)
+            filename = coreutils.github_raw_url(filename)
         if to_ee:
             fc = vector_to_ee(
                 filename,
@@ -3086,7 +3086,7 @@ class Map(core.Map):
         geojson = gdf.__geo_interface__
 
         if to_ee:
-            fc = geojson_to_ee(geojson, geodesic=geodesic)
+            fc = coreutils.geojson_to_ee(geojson, geodesic=geodesic)
             self.addLayer(fc, {}, layer_name)
             self.centerObject(fc)
         else:
@@ -3767,7 +3767,7 @@ class Map(core.Map):
             add_legend (bool, optional): If True, a legend will be added to the map. Defaults to True.
 
         """
-        data = github_raw_url(data)
+        data = coreutils.github_raw_url(data)
 
         color_options = [
             "red",
@@ -3959,7 +3959,7 @@ class Map(core.Map):
         self.add(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [check_color(c) for c in marker_colors]
+            marker_colors = [coreutils.check_color(c) for c in marker_colors]
             self.add_legend(
                 title=color_column.title(), colors=marker_colors, keys=items
             )
@@ -3985,7 +3985,7 @@ class Map(core.Map):
             popup (list, optional): A list of column names to be used as the popup. Defaults to None.
 
         """
-        data = github_raw_url(data)
+        data = coreutils.github_raw_url(data)
 
         if isinstance(data, pd.DataFrame):
             df = data
@@ -4477,7 +4477,7 @@ class Map(core.Map):
 
         if isinstance(data, str):
             if data.startswith("http"):
-                data = download_file(data)
+                data = coreutils.download_file(data)
             ds = xr.open_dataset(data)
 
         elif isinstance(data, xr.Dataset):
@@ -4686,7 +4686,7 @@ class Map(core.Map):
                 else:
                     widget = content
 
-                widget_template(
+                coreutils.widget_template(
                     widget,
                     opened,
                     show_close_button,

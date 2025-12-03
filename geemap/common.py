@@ -2001,7 +2001,7 @@ def show_image(img_path, width=None, height=None):
         display(out)
         with out:
             if isinstance(img_path, str) and img_path.startswith("http"):
-                file_path = download_file(img_path)
+                file_path = coreutils.download_file(img_path)
             else:
                 file_path = img_path
             file = open(file_path, "rb")
@@ -2243,7 +2243,7 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
         print(f"Google Drive file id: {file_id}")
 
     dest_path = os.path.join(out_dir, file_name)
-    gdd.download_file_from_google_drive(file_id, dest_path, True, unzip)
+    gdd.coreutils.download_file_from_google_drive(file_id, dest_path, True, unzip)
 
     return
 
@@ -2315,7 +2315,7 @@ def xy_to_points(in_csv, latitude="latitude", longitude="longitude", encoding="u
     """
 
     geojson = csv_to_geojson(in_csv, None, latitude, longitude, encoding)
-    fc = geojson_to_ee(geojson)
+    fc = coreutils.geojson_to_ee(geojson)
     return fc
 
 
@@ -2370,8 +2370,8 @@ def csv_to_shp(
     import shapefile as shp
 
     if in_csv.startswith("http") and in_csv.endswith(".csv"):
-        in_csv = github_raw_url(in_csv)
-        in_csv = download_file(in_csv, quiet=True, overwrite=True)
+        in_csv = coreutils.github_raw_url(in_csv)
+        in_csv = coreutils.download_file(in_csv, quiet=True, overwrite=True)
 
     try:
         points = shp.Writer(out_shp, shapeType=shp.POINT)
@@ -2409,7 +2409,7 @@ def csv_to_geojson(
         encoding (str, optional): The encoding of characters. Defaults to "utf-8".
 
     """
-    in_csv = github_raw_url(in_csv)
+    in_csv = coreutils.github_raw_url(in_csv)
 
     if out_geojson is not None:
         out_geojson = check_file_path(out_geojson)
@@ -2487,7 +2487,7 @@ def csv_to_ee(
     geojson = csv_to_geojson(
         in_csv, latitude=latitude, longitude=longitude, encoding=encoding
     )
-    fc = geojson_to_ee(geojson, geodesic=geodesic)
+    fc = coreutils.geojson_to_ee(geojson, geodesic=geodesic)
     return fc
 
 
@@ -2693,13 +2693,13 @@ def shp_to_ee(in_shp, **kwargs):
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
-    # ee_initialize()
+    # coreutils.ee_initialize()
     try:
         if "encoding" in kwargs:
             json_data = shp_to_geojson(in_shp, encoding=kwargs.pop("encoding"))
         else:
             json_data = shp_to_geojson(in_shp)
-        ee_object = geojson_to_ee(json_data)
+        ee_object = coreutils.geojson_to_ee(json_data)
         return ee_object
     except Exception as e:
         print(e)
@@ -2719,7 +2719,7 @@ def filter_polygons(ftr):
     Returns:
         object: ee.Feature
     """
-    # ee_initialize()
+    # coreutils.ee_initialize()
     geometries = ftr.geometry().geometries()
     geometries = geometries.map(
         lambda geo: ee.Feature(ee.Geometry(geo)).set("geoType", ee.Geometry(geo).type())
@@ -3572,7 +3572,8 @@ def create_colorbar(
     if add_outline:
         draw = ImageDraw.Draw(im)
         draw.rectangle(
-            [(0, 0), (width - 1, height - 1)], outline=check_color(outline_color)
+            [(0, 0), (width - 1, height - 1)],
+            outline=coreutils.check_color(outline_color),
         )
         del draw
 
@@ -3629,7 +3630,7 @@ def create_colorbar(
                 print(e)
                 font = ImageFont.truetype(default_font, font_size)
 
-        font_color = check_color(font_color)
+        font_color = coreutils.check_color(font_color)
 
         draw = ImageDraw.Draw(im)
         w, h = draw.textsize(labels[0], font=font)
@@ -3722,7 +3723,7 @@ def save_colorbar(
     from .colormaps import palettes, get_palette
 
     if out_fig is None:
-        out_fig = temp_file_path("png")
+        out_fig = coreutils.temp_file_path("png")
     else:
         out_fig = check_file_path(out_fig)
 
@@ -4599,7 +4600,7 @@ def ee_user_id():
     Returns:
         str: A string containing the user id.
     """
-    # ee_initialize()
+    # coreutils.ee_initialize()
     roots = ee.data.getAssetRoots()
     if len(roots) == 0:
         return None
@@ -4616,7 +4617,7 @@ def build_asset_tree(limit=100):
 
     warnings.filterwarnings("ignore")
 
-    # ee_initialize()
+    # coreutils.ee_initialize()
 
     tree = Tree(multiple_selection=False)
     tree_dict = {}
@@ -4684,7 +4685,7 @@ def build_asset_tree(limit=100):
             line1 = f"{dataset_uid} = {path_widget.value}\n"
             line2 = "Map.addLayer(" + dataset_uid + ', {}, "' + layer_name + '")'
             contents = "".join([line1, line2])
-            create_code_cell(contents)
+            coreutils.create_code_cell(contents)
 
     import_btn.on_click(import_btn_clicked)
 
@@ -4950,7 +4951,7 @@ def file_browser(
 
     def import_btn_clicked(b):
         if (text_widget.value != "") and (path_widget.value.endswith(".py")):
-            create_code_cell(text_widget.value)
+            coreutils.create_code_cell(text_widget.value)
 
     import_btn.on_click(import_btn_clicked)
 
@@ -8787,7 +8788,7 @@ def kml_to_ee(in_kml, **kwargs):
     check_package(name="geopandas", URL="https://geopandas.org")
 
     kml_to_geojson(in_kml, out_json, **kwargs)
-    ee_object = geojson_to_ee(out_json)
+    ee_object = coreutils.geojson_to_ee(out_json)
     os.remove(out_json)
     return ee_object
 
@@ -8827,7 +8828,7 @@ def csv_to_df(in_csv, **kwargs):
     Returns:
         pd.DataFrame: pandas DataFrame
     """
-    in_csv = github_raw_url(in_csv)
+    in_csv = coreutils.github_raw_url(in_csv)
 
     try:
         return pd.read_csv(in_csv, **kwargs)
@@ -9011,7 +9012,7 @@ def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
         raise TypeError("The input data type must be pandas.DataFrame.")
 
     geojson = df_to_geojson(df, latitude=latitude, longitude=longitude)
-    fc = geojson_to_ee(geojson)
+    fc = coreutils.geojson_to_ee(geojson)
 
     return fc
 
@@ -9045,7 +9046,7 @@ def gdf_to_ee(gdf, geodesic=True, date=None, date_format="YYYY-MM-dd"):
     gdf = gdf.to_crs(4326)
     gdf.to_file(out_json, driver="GeoJSON")
 
-    fc = geojson_to_ee(out_json, geodesic=geodesic)
+    fc = coreutils.geojson_to_ee(out_json, geodesic=geodesic)
 
     if date is not None:
         try:
@@ -9093,7 +9094,7 @@ def vector_to_geojson(
     if not filename.startswith("http"):
         filename = os.path.abspath(filename)
     else:
-        filename = download_file(github_raw_url(filename))
+        filename = coreutils.download_file(coreutils.github_raw_url(filename))
 
     df = gpd.read_file(filename, bbox=bbox, mask=mask, rows=rows, **kwargs)
     gdf = df.to_crs(epsg=epsg)
@@ -9137,7 +9138,7 @@ def vector_to_ee(
         filename, bbox=bbox, mask=mask, rows=rows, epsg="4326", **kwargs
     )
 
-    return geojson_to_ee(geojson, geodesic=geodesic)
+    return coreutils.geojson_to_ee(geojson, geodesic=geodesic)
 
 
 def extract_pixel_values(
@@ -10539,7 +10540,7 @@ def get_local_tile_layer(
             # if not os.path.exists(source):
             #     raise ValueError("The source path does not exist.")
         else:
-            source = github_raw_url(source)
+            source = coreutils.github_raw_url(source)
     elif isinstance(source, TileClient) or isinstance(
         source, rasterio.io.DatasetReader
     ):
@@ -10904,7 +10905,7 @@ def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs
     if crs is None:
         crs = "epsg:4326"
 
-    data = github_raw_url(data)
+    data = coreutils.github_raw_url(data)
 
     if isinstance(data, pd.DataFrame):
         df = data
@@ -11067,7 +11068,7 @@ def image_to_cog(source, dst_path=None, profile="deflate", **kwargs):
         if not source.startswith("http"):
             dst_path = os.path.splitext(source)[0] + "_cog.tif"
         else:
-            dst_path = temp_file_path(extension=".tif")
+            dst_path = coreutils.temp_file_path(extension=".tif")
 
     dst_path = check_file_path(dst_path)
 
@@ -11142,7 +11143,7 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     """
     if isinstance(in_geojson, str):
         if in_geojson.startswith("http"):
-            in_geojson = github_raw_url(in_geojson)
+            in_geojson = coreutils.github_raw_url(in_geojson)
             with urlopen(in_geojson) as f:
                 data = json.load(f)
         else:
@@ -11185,7 +11186,7 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
         dst_key = src_key
 
     if isinstance(data, str):
-        data = github_raw_url(data)
+        data = coreutils.github_raw_url(data)
         if data.endswith(".csv"):
             df = pd.read_csv(data)
         elif data.endswith(".geojson"):
@@ -11413,7 +11414,7 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
         ValueError: If the backend is not supported.
     """
 
-    if in_colab_shell():
+    if coreutils.in_colab_shell():
         print("The view_lidar() function is not supported in Colab.")
         return
 
@@ -11502,8 +11503,8 @@ def read_lidar(filename, **kwargs):
         and filename.startswith("http")
         and (filename.endswith(".las") or filename.endswith(".laz"))
     ):
-        filename = github_raw_url(filename)
-        filename = download_file(filename)
+        filename = coreutils.github_raw_url(filename)
+        filename = coreutils.download_file(filename)
 
     return laspy.read(filename, **kwargs)
 
@@ -11719,7 +11720,7 @@ def clip_image(image, mask, output):
 
     if isinstance(mask, str):
         if mask.startswith("http"):
-            mask = download_file(mask, output)
+            mask = coreutils.download_file(mask, output)
         if not os.path.exists(mask):
             raise FileNotFoundError(f"{mask} does not exist.")
     elif isinstance(mask, list) or isinstance(mask, dict):
@@ -11739,7 +11740,7 @@ def clip_image(image, mask, output):
                 "type": "FeatureCollection",
                 "features": [mask],
             }
-        mask = temp_file_path(".geojson")
+        mask = coreutils.temp_file_path(".geojson")
         with open(mask, "w") as f:
             json.dump(geojson, f)
 
@@ -11795,7 +11796,7 @@ def netcdf_to_tif(
         raise ImportError(e)
 
     if filename.startswith("http"):
-        filename = download_file(filename)
+        filename = coreutils.download_file(filename)
 
     if not os.path.exists(filename):
         raise FileNotFoundError(f"{filename} does not exist.")
@@ -11850,7 +11851,7 @@ def read_netcdf(filename, **kwargs):
         raise ImportError(e)
 
     if filename.startswith("http"):
-        filename = download_file(filename)
+        filename = coreutils.download_file(filename)
 
     if not os.path.exists(filename):
         raise FileNotFoundError(f"{filename} does not exist.")
@@ -11916,7 +11917,7 @@ def netcdf_tile_layer(
         raise ImportError(e)
 
     if filename.startswith("http"):
-        filename = download_file(filename)
+        filename = coreutils.download_file(filename)
 
     if not os.path.exists(filename):
         raise FileNotFoundError(f"{filename} does not exist.")
@@ -12090,9 +12091,9 @@ def classify(
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
         colors = ["#" + i for i in colors]
     elif isinstance(colors, list):
-        colors = [check_color(i) for i in colors]
+        colors = [coreutils.check_color(i) for i in colors]
     elif isinstance(colors, str):
-        colors = [check_color(colors)] * k
+        colors = [coreutils.check_color(colors)] * k
 
     allowed_schemes = [
         "BoxPlot",
@@ -12701,7 +12702,7 @@ def download_ee_image_tiles_parallel(
 
     def download_data(index):
         if ee_init:
-            ee_initialize(
+            coreutils.ee_initialize(
                 opt_url=ee.data.HIGH_VOLUME_API_BASE_URL,
                 project=project_id,
             )
@@ -12886,7 +12887,7 @@ def plot_raster(
     if os.environ.get("USE_MKDOCS") is not None:
         return
 
-    if in_colab_shell():
+    if coreutils.in_colab_shell():
         print("The plot_raster() function is not supported in Colab.")
         return
 
@@ -12953,7 +12954,7 @@ def plot_raster_3d(
     if os.environ.get("USE_MKDOCS") is not None:
         return
 
-    if in_colab_shell():
+    if coreutils.in_colab_shell():
         print("The plot_raster_3d() function is not supported in Colab.")
         return
 
@@ -13071,7 +13072,7 @@ def requireJS(lib_path=None, Map=None):
             "oeel is required for requireJS. Please install it using 'pip install oeel'."
         )
 
-    ee_initialize()
+    coreutils.ee_initialize()
 
     if lib_path is None:
         if Map is not None:
@@ -13523,8 +13524,8 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
 
     if isinstance(region, str):
         if region.startswith("http"):
-            region = github_raw_url(region)
-            region = download_file(region)
+            region = coreutils.github_raw_url(region)
+            region = coreutils.download_file(region)
         elif not os.path.exists(region):
             raise ValueError("region must be a path or a URL to a vector dataset.")
 
@@ -13570,7 +13571,7 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
     else:
         for index, link in enumerate(links):
             print(f"Downloading {index + 1} of {len(links)}: {os.path.basename(link)}")
-            download_file(link, filepaths[index], **download_args)
+            coreutils.download_file(link, filepaths[index], **download_args)
 
 
 def mosaic(images, output, merge_args={}, verbose=True, **kwargs):
@@ -13769,7 +13770,7 @@ def create_legend(
             return
         elif all(isinstance(item, tuple) for item in colors):
             try:
-                colors = [rgb_to_hex(x) for x in colors]
+                colors = [coreutils.rgb_to_hex(x) for x in colors]
             except Exception as e:
                 print(e)
         elif all((item.startswith("#") and len(item) == 7) for item in colors):
@@ -13815,7 +13816,7 @@ def create_legend(
             colors = list(legend_dict.values())
             if all(isinstance(item, tuple) for item in colors):
                 try:
-                    colors = [rgb_to_hex(x) for x in colors]
+                    colors = [coreutils.rgb_to_hex(x) for x in colors]
                 except Exception as e:
                     print(e)
 
@@ -13898,7 +13899,7 @@ def create_legend(
                 content.append(line)
             elif index == 39:
                 for i, color in enumerate(colors):
-                    item = f"    <li><span style='background:{check_color(color)};opacity:{opacity};'></span>{labels[i]}</li>\n"
+                    item = f"    <li><span style='background:{coreutils.check_color(color)};opacity:{opacity};'></span>{labels[i]}</li>\n"
                     content.append(item)
             elif index > 41:
                 content.append(line)
@@ -14807,7 +14808,7 @@ def tms_to_geotiff(
         return img
 
     try:
-        temp_tif = temp_file_path(extension=".tif")
+        temp_tif = coreutils.temp_file_path(extension=".tif")
         draw_tile(source, south, west, north, east, zoom, temp_tif, quiet, **kwargs)
         if crs.upper() != "EPSG:3857":
             reproject(temp_tif, output, crs, to_cog=to_cog)
@@ -14928,7 +14929,7 @@ def ee_to_geotiff(
                 print("The provided palette is invalid.")
                 raise Exception(e)
         elif isinstance(vis_params["palette"], str):
-            vis_params["palette"] = check_cmap(vis_params["palette"])
+            vis_params["palette"] = coreutils.check_cmap(vis_params["palette"])
         elif not isinstance(vis_params["palette"], list):
             raise ValueError(
                 "The palette must be a list of colors or a string or a Box object."

@@ -1487,7 +1487,7 @@ class SearchBar(anywidget.AnyWidget):
                 code = [line1, line2]
 
             contents = "".join(code).strip()
-            # create_code_cell(contents)
+            # coreutils.create_code_cell(contents)
             copy_success = False
             try:
                 import pyperclip

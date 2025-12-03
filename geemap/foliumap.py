@@ -26,6 +26,7 @@ from matplotlib import figure
 import numpy as np
 import pandas as pd
 
+from . import coreutils
 from . import examples
 from .basemaps import xyz_to_folium
 from .common import *
@@ -36,7 +37,7 @@ from .osm import *
 from .plot import *
 from .timelapse import *
 
-if not in_colab_shell():
+if not coreutils.in_colab_shell():
     from .plot import *
 
 
@@ -57,7 +58,7 @@ class Map(folium.Map):
             kwargs["ee_initialize"] = True
 
         if kwargs["ee_initialize"]:
-            ee_initialize()
+            coreutils.ee_initialize()
 
         # Default map center location and zoom level
         latlon = [20, 0]
@@ -859,7 +860,7 @@ class Map(folium.Map):
         if "max" not in vis_params:
             vis_params["max"] = 1
 
-        colors = to_hex_colors(check_cmap(vis_params["palette"]))
+        colors = to_hex_colors(coreutils.check_cmap(vis_params["palette"]))
         vmin = vis_params["min"]
         vmax = vis_params["max"]
 
@@ -1040,7 +1041,7 @@ class Map(folium.Map):
         try:
             if isinstance(in_geojson, str):
                 if in_geojson.startswith("http"):
-                    in_geojson = github_raw_url(in_geojson)
+                    in_geojson = coreutils.github_raw_url(in_geojson)
                     data = requests.get(in_geojson).json()
                 else:
                     in_geojson = os.path.abspath(in_geojson)
@@ -1240,7 +1241,7 @@ class Map(folium.Map):
         geojson = gdf.__geo_interface__
 
         if to_ee:
-            fc = geojson_to_ee(geojson, geodesic=geodesic)
+            fc = coreutils.geojson_to_ee(geojson, geodesic=geodesic)
             self.addLayer(fc, {}, layer_name)
             self.centerObject(fc)
         else:
@@ -1641,7 +1642,7 @@ class Map(folium.Map):
             ).add_to(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [check_color(c) for c in marker_colors]
+            marker_colors = [coreutils.check_color(c) for c in marker_colors]
             self.add_legend(
                 title=color_column.title(), colors=marker_colors, labels=items
             )
@@ -1671,7 +1672,7 @@ class Map(folium.Map):
             max_width (int, optional): The maximum width of the popup. Defaults to 200.
 
         """
-        data = github_raw_url(data)
+        data = coreutils.github_raw_url(data)
 
         if isinstance(data, pd.DataFrame):
             df = data
@@ -2435,7 +2436,7 @@ class Map(folium.Map):
             lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
         """
 
-        if in_colab_shell():
+        if coreutils.in_colab_shell():
             print("The add_netcdf() function is not supported in Colab.")
             return
 
@@ -3119,7 +3120,7 @@ def ee_tile_layer(
                 print("The provided palette is invalid.")
                 raise Exception(e)
         elif isinstance(vis_params["palette"], str):
-            vis_params["palette"] = check_cmap(vis_params["palette"])
+            vis_params["palette"] = coreutils.check_cmap(vis_params["palette"])
         elif not isinstance(vis_params["palette"], list):
             raise ValueError(
                 "The palette must be a list of colors or a string or a Box object."
