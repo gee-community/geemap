@@ -7,16 +7,16 @@
 
 import json
 import os
+import pathlib
 import shutil
 import urllib.request
-from pathlib import Path
 
-import ipywidgets as widgets
-import importlib.resources
 import box
+import importlib.resources
+import ipywidgets as widgets
 from IPython.display import display
 
-from .common import download_from_url, ee_data_html, search_ee_data
+from . import common
 
 
 def get_data_csv() -> str:
@@ -51,12 +51,12 @@ def update_data_list(out_dir=".") -> None:
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
 
-        download_from_url(
+        common.download_from_url(
             url, out_file_name=filename, out_dir=out_dir, unzip=True, verbose=False
         )
 
         work_dir = os.path.join(out_dir, dir_name)
-        in_csv = list(Path(work_dir).rglob("*.csv"))[0]
+        in_csv = list(pathlib.Path(work_dir).rglob("*.csv"))[0]
 
         out_csv = get_data_csv()
 
@@ -109,7 +109,7 @@ def get_community_data_list() -> list:
     Returns:
         list: The list of Earth Engine asset IDs.
     """
-    collections = search_ee_data(".*", regex=True, source="community")
+    collections = common.search_ee_data(".*", regex=True, source="community")
     return [collection.get("id", None) for collection in collections]
 
 
@@ -184,8 +184,8 @@ def get_metadata(asset_id: str, source: str = "ee") -> dict:
         Exception: If search fails.
     """
     try:
-        ee_assets = search_ee_data(asset_id, source=source)
-        html = ee_data_html(ee_assets[0])
+        ee_assets = common.search_ee_data(asset_id, source=source)
+        html = common.ee_data_html(ee_assets[0])
         html_widget = widgets.HTML()
         html_widget.value = html
         display(html_widget)
