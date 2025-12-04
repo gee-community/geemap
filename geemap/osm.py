@@ -9,7 +9,7 @@ https://wiki.openstreetmap.org/wiki/Map_features
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
-from .common import check_package
+from . import common
 
 
 def osm_gdf_from_address(address, tags, dist=1000):
@@ -23,7 +23,9 @@ def osm_gdf_from_address(address, tags, dist=1000):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
+    common.check_package(
+        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
+    )
     import osmnx as ox
 
     gdf = ox.features.features_from_address(address, tags, dist)
@@ -74,7 +76,9 @@ def osm_gdf_from_place(query, tags, which_result=None):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
+    common.check_package(
+        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
+    )
     import osmnx as ox
 
     ox.config(use_cache=True, log_console=True)
@@ -127,7 +131,9 @@ def osm_gdf_from_point(center_point, tags, dist=1000):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
+    common.check_package(
+        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
+    )
     import osmnx as ox
 
     gdf = ox.features.features_from_point(center_point, tags, dist)
@@ -176,7 +182,9 @@ def osm_gdf_from_polygon(polygon, tags):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
+    common.check_package(
+        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
+    )
     import osmnx as ox
 
     gdf = ox.features.features_from_polygon(polygon, tags)
@@ -226,7 +234,9 @@ def osm_gdf_from_bbox(north, south, east, west, tags):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
+    common.check_package(
+        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
+    )
     import osmnx as ox
 
     gdf = ox.features.features_from_bbox(north, south, east, west, tags)
@@ -280,7 +290,9 @@ def osm_gdf_from_xml(filepath, polygon=None, tags=None):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/#installation")
+    common.check_package(
+        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
+    )
     import osmnx as ox
 
     gdf = ox.features.features_from_xml(filepath, polygon, tags)
@@ -303,7 +315,7 @@ def osm_gdf_from_geocode(
         GeoDataFrame: A GeoPandas GeoDataFrame.
     """
 
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/")
+    common.check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/")
 
     import osmnx as ox
 
