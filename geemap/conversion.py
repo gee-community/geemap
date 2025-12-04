@@ -18,12 +18,18 @@ import os
 import pathlib
 import re
 import shutil
+from typing import Sequence
 import urllib.request
 
 from . import coreutils
 
 
-def find_matching_bracket(lines, start_line_index, start_char_index, matching_char="{"):
+def find_matching_bracket(
+    lines: list[str],
+    start_line_index: int,
+    start_char_index: int,
+    matching_char: str = "{",
+) -> tuple[int, int]:
     """Finds the position of the matching closing bracket from a list of lines.
 
     Args:
@@ -78,7 +84,7 @@ def find_matching_bracket(lines, start_line_index, start_char_index, matching_ch
     return matching_line_index, matching_char_index
 
 
-def format_params(line, sep=":"):
+def format_params(line: str, sep: str = ":") -> str:
     """Formats keys in a dictionary and adds quotes to the keys.
     For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)
 
@@ -89,10 +95,8 @@ def format_params(line, sep=":"):
     Returns:
         [str]: A string with keys quoted
     """
-    # print(line)
     new_line = line
     prefix = ""
-    # suffix = ""
 
     if line.strip().startswith("for"):  # skip for loop
         return line
@@ -147,7 +151,7 @@ def format_params(line, sep=":"):
     return prefix + new_line
 
 
-def use_math(lines):
+def use_math(lines: Sequence[str]) -> bool:
     """Checks if an Earth Engine uses Math library
 
     Args:
@@ -180,7 +184,7 @@ def convert_for_loop(line):
     end_index = line.index(")")
 
     prefix = line[:(start_index)]
-    suffix = line[(end_index + 1) :]
+    suffix = line[(end_index + 1) :].lstrip()
 
     params = line[(start_index + 1) : end_index]
 
@@ -206,8 +210,6 @@ def convert_for_loop(line):
     elif "--" in step:
         step = -1
 
-    prefix = line[:(start_index)]
-    suffix = line[(end_index + 1) :]
     new_line = (
         prefix
         + "{} in range({}, {}, {}):".format(param_name, start, end, step)
@@ -218,8 +220,8 @@ def convert_for_loop(line):
 
 
 # Removes all indentation from file to reformat indentation for python later
-def remove_all_indentation(input_lines):
-    """Removes all indentation for reformatting according to python's indentation rules
+def remove_all_indentation(input_lines: Sequence[str]) -> list[str]:
+    """Removes all indentation for reformatting according to python's indentation rules.
 
     Args:
         input_lines (list): List of Earth Engine JavaScrips
@@ -227,13 +229,10 @@ def remove_all_indentation(input_lines):
     Returns:
         list: Output JavaScript with indentation removed
     """
-    output_lines = []
-    for _, line in enumerate(input_lines):
-        output_lines.append(line.lstrip())
-    return output_lines
+    return [line.lstrip() for line in input_lines]
 
 
-def check_map_functions(input_lines):
+def check_map_functions(input_lines: Sequence[str]) -> list[str]:
     """Extracts Earth Engine map function
 
     Args:
