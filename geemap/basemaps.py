@@ -26,7 +26,7 @@ import ipyleaflet
 import requests
 import xyzservices
 
-from .common import check_package, planet_tiles
+from . import common
 from . import coreutils
 
 XYZ_TILES = {
@@ -495,7 +495,7 @@ def xyz_to_folium():
         )
 
     if os.environ.get("PLANET_API_KEY") is not None:
-        planet_dict = planet_tiles(tile_format="folium")
+        planet_dict = common.planet_tiles(tile_format="folium")
         folium_dict.update(planet_dict)
 
     return folium_dict
@@ -519,7 +519,9 @@ def xyz_to_pydeck():
         dict: A dictionary of pydeck tile layers.
     """
 
-    check_package("pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html")
+    common.check_package(
+        "pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html"
+    )
     import pydeck as pdk
 
     pydeck_dict = {}
@@ -537,7 +539,7 @@ def xyz_to_pydeck():
         pydeck_dict[key] = url
 
         if os.environ.get("PLANET_API_KEY") is not None:
-            planet_dict = planet_tiles(tile_format="ipyleaflet")
+            planet_dict = common.planet_tiles(tile_format="ipyleaflet")
             for id_, tile in planet_dict.items():
                 pydeck_dict[id_] = tile.url
 
