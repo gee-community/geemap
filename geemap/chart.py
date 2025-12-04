@@ -6,26 +6,27 @@
 # *******************************************************************************#
 
 import math
-from typing import List, Optional, Union, Dict, Any
+from typing import Any
 
 import ee
-import pandas as pd
-import numpy as np
 import bqplot as bq
-import ipywidgets as widgets
 from bqplot import Tooltip
 from bqplot import pyplot as plt
+import ipywidgets as widgets
+import numpy as np
+import pandas as pd
 from IPython.display import display
-from .common import ee_to_df, zonal_stats, image_dates, hex_to_rgba
+
+from . import common
 
 
 class DataTable(pd.DataFrame):
 
     def __init__(
         self,
-        data: Union[Dict[str, List[Any]], pd.DataFrame, None] = None,
-        date_column: Optional[str] = None,
-        date_format: Optional[str] = None,
+        data: dict[str, list[Any]] | pd.DataFrame | None = None,
+        date_column: str | None = None,
+        date_format: str | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -40,7 +41,7 @@ class DataTable(pd.DataFrame):
                 constructor.
         """
         if isinstance(data, ee.FeatureCollection):
-            data = ee_to_df(data)
+            data = common.ee_to_df(data)
         elif isinstance(data, ee.List):
             data = data.getInfo()
             kwargs["columns"] = data[0]
@@ -122,9 +123,9 @@ def pivot_df(df: pd.DataFrame, index: str, columns: str, values: str) -> pd.Data
 
 
 def array_to_df(
-    y_values: Union[ee.Array, ee.List, List[List[float]]],
-    x_values: Optional[Union[ee.Array, ee.List, List[float]]] = None,
-    y_labels: Optional[List[str]] = None,
+    y_values: ee.Array | ee.List | list[list[float]],
+    x_values: ee.Array | ee.List | list[float] | None = None,
+    y_labels: list[str] | None = None,
     x_label: str = "x",
     axis: int = 1,
     **kwargs: Any,
@@ -191,14 +192,14 @@ class Chart:
 
     def __init__(
         self,
-        data_table: Union[Dict[str, List[Any]], pd.DataFrame],
+        data_table: dict[str, list[Any]] | pd.DataFrame,
         chart_type: str = "LineChart",
-        x_cols: Optional[List[str]] = None,
-        y_cols: Optional[List[str]] = None,
-        colors: Optional[List[str]] = None,
-        title: Optional[str] = None,
-        x_label: Optional[str] = None,
-        y_label: Optional[str] = None,
+        x_cols: list[str] | None = None,
+        y_cols: list[str] | None = None,
+        colors: list[str] | None = None,
+        title: str | None = None,
+        x_label: str | None = None,
+        y_label: str | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -463,7 +464,7 @@ class Chart:
 
         self._set_plt_options()
 
-    def get_chart_type(self) -> Optional[str]:
+    def get_chart_type(self) -> str | None:
         """
         Get the current chart type.
 
@@ -481,7 +482,7 @@ class Chart:
         """
         return self.data_table
 
-    def set_data_table(self, data: Union[Dict[str, List[Any]], pd.DataFrame]) -> None:
+    def set_data_table(self, data: dict[str, list[Any]] | pd.DataFrame) -> None:
         """
         Set a new DataTable for the chart.
 
@@ -507,8 +508,8 @@ class BaseChartClass:
 
     def __init__(
         self,
-        features: Union[ee.FeatureCollection, pd.DataFrame],
-        default_labels: List[str],
+        features: ee.FeatureCollection | pd.DataFrame,
+        default_labels: list[str],
         name: str,
         **kwargs: Any,
     ):
@@ -554,7 +555,7 @@ class BaseChartClass:
             self.colors = "black"
 
         if isinstance(features, ee.FeatureCollection):
-            self.df = ee_to_df(features)
+            self.df = common.ee_to_df(features)
         elif isinstance(features, pd.DataFrame):
             self.df = features
 
@@ -590,8 +591,8 @@ class BarChart(BaseChartClass):
 
     def __init__(
         self,
-        features: Union[ee.FeatureCollection, pd.DataFrame],
-        default_labels: List[str],
+        features: ee.FeatureCollection | pd.DataFrame,
+        default_labels: list[str],
         name: str,
         type: str = "grouped",
         **kwargs: Any,
@@ -681,8 +682,8 @@ class LineChart(BarChart):
 
     def __init__(
         self,
-        features: Union[ee.FeatureCollection, pd.DataFrame],
-        labels: List[str],
+        features: ee.FeatureCollection | pd.DataFrame,
+        labels: list[str],
         name: str = "line.chart",
         **kwargs: Any,
     ):
@@ -732,9 +733,9 @@ class Feature_ByFeature(BarChart):
 
     def __init__(
         self,
-        features: Union[ee.FeatureCollection, pd.DataFrame],
+        features: ee.FeatureCollection | pd.DataFrame,
         x_property: str,
-        y_properties: List[str],
+        y_properties: list[str],
         name: str = "feature.byFeature",
         **kwargs: Any,
     ):
@@ -755,8 +756,8 @@ class Feature_ByFeature(BarChart):
         self.x_data, self.y_data = self.get_data(x_property, y_properties)
 
     def get_data(
-        self, x_property: str, y_properties: List[str]
-    ) -> tuple[List[Any], List[Any]]:
+        self, x_property: str, y_properties: list[str]
+    ) -> tuple[list[Any], list[Any]]:
         """
         Gets the data for the chart.
 
@@ -777,8 +778,8 @@ class Feature_ByProperty(BarChart):
 
     def __init__(
         self,
-        features: Union[ee.FeatureCollection, pd.DataFrame],
-        x_properties: Union[List[str], Dict[str, str]],
+        features: ee.FeatureCollection | pd.DataFrame,
+        x_properties: list[str] | dict[str, str],
         series_property: str,
         name: str = "feature.byProperty",
         **kwargs: Any,
@@ -808,8 +809,8 @@ class Feature_ByProperty(BarChart):
         self.x_data, self.y_data = self.get_data(x_properties)
 
     def get_data(
-        self, x_properties: Union[List[str], Dict[str, str]]
-    ) -> tuple[List[Any], List[Any]]:
+        self, x_properties: list[str] | dict[str, str]
+    ) -> tuple[list[Any], list[Any]]:
         """
         Gets the data for the chart.
 
@@ -840,7 +841,7 @@ class Feature_Groups(BarChart):
 
     def __init__(
         self,
-        features: Union[ee.FeatureCollection, pd.DataFrame],
+        features: ee.FeatureCollection | pd.DataFrame,
         x_property: str,
         y_property: str,
         series_property: str,
@@ -862,7 +863,7 @@ class Feature_Groups(BarChart):
                 Defaults to 'stacked'.
             **kwargs: Additional keyword arguments to set as attributes.
         """
-        df = ee_to_df(features)
+        df = common.ee_to_df(features)
         self.unique_series_values = df[series_property].unique().tolist()
         default_labels = [str(x) for x in self.unique_series_values]
         self.yProperty = y_property
@@ -871,7 +872,7 @@ class Feature_Groups(BarChart):
         self.new_column_names = self.get_column_names(series_property, y_property)
         self.x_data, self.y_data = self.get_data(x_property, self.new_column_names)
 
-    def get_column_names(self, series_property: str, y_property: str) -> List[str]:
+    def get_column_names(self, series_property: str, y_property: str) -> list[str]:
         """
         Gets the new column names for the DataFrame.
 
@@ -893,8 +894,8 @@ class Feature_Groups(BarChart):
         return new_column_names
 
     def get_data(
-        self, x_property: str, new_column_names: List[str]
-    ) -> tuple[List[Any], List[Any]]:
+        self, x_property: str, new_column_names: list[str]
+    ) -> tuple[list[Any], list[Any]]:
         """
         Gets the data for the chart.
 
@@ -914,7 +915,7 @@ class Feature_Groups(BarChart):
 def feature_by_feature(
     features: ee.FeatureCollection,
     x_property: str,
-    y_properties: List[str],
+    y_properties: list[str],
     **kwargs: Any,
 ) -> None:
     """
@@ -943,7 +944,7 @@ def feature_by_feature(
 
 def feature_by_property(
     features: ee.FeatureCollection,
-    x_properties: Union[list, dict],
+    x_properties: list | dict,
     series_property: str,
     **kwargs,
 ):
@@ -1020,11 +1021,11 @@ def feature_groups(
 def feature_histogram(
     features: ee.FeatureCollection,
     property: str,
-    max_buckets: Optional[int] = None,
-    min_bucket_width: Optional[float] = None,
+    max_buckets: int | None = None,
+    min_bucket_width: float | None = None,
     show: bool = True,
     **kwargs: Any,
-) -> Optional[Any]:
+) -> Any | None:
     """
     Generates a Chart from a set of features.
     Computes and plots a histogram of the given property.
@@ -1178,11 +1179,11 @@ def feature_histogram(
 def image_by_class(
     image: ee.Image,
     class_band: str,
-    region: Union[ee.Geometry, ee.FeatureCollection],
-    reducer: Union[str, ee.Reducer] = "MEAN",
-    scale: Optional[int] = None,
-    class_labels: Optional[List[str]] = None,
-    x_labels: Optional[List[str]] = None,
+    region: ee.Geometry | ee.FeatureCollection,
+    reducer: str | ee.Reducer = "MEAN",
+    scale: int | None = None,
+    class_labels: list[str] | None = None,
+    x_labels: list[str] | None = None,
     chart_type: str = "LineChart",
     **kwargs: Any,
 ) -> Any:
@@ -1206,11 +1207,11 @@ def image_by_class(
     Returns:
         Any: The generated chart.
     """
-    fc = zonal_stats(
+    fc = common.zonal_stats(
         image, region, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
-    df = ee_to_df(fc)[bands + [class_band]]
+    df = common.ee_to_df(fc)[bands + [class_band]]
 
     df_transposed = df.set_index(class_band).T
 
@@ -1233,8 +1234,8 @@ def image_by_class(
 
 def image_by_region(
     image: ee.Image,
-    regions: Union[ee.FeatureCollection, ee.Geometry],
-    reducer: Union[str, ee.Reducer],
+    regions: ee.FeatureCollection | ee.Geometry,
+    reducer: str | ee.Reducer,
     scale: int,
     x_property: str,
     **kwargs: Any,
@@ -1259,27 +1260,27 @@ def image_by_region(
         None
     """
 
-    fc = zonal_stats(
+    fc = common.zonal_stats(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
-    df = ee_to_df(fc)[bands + [x_property]]
+    df = common.ee_to_df(fc)[bands + [x_property]]
     feature_by_feature(df, x_property, bands, **kwargs)
 
 
 def image_doy_series(
     image_collection: ee.ImageCollection,
-    region: Optional[Union[ee.Geometry, ee.FeatureCollection]] = None,
-    region_reducer: Optional[Union[str, ee.Reducer]] = None,
-    scale: Optional[int] = None,
-    year_reducer: Optional[Union[str, ee.Reducer]] = None,
+    region: ee.Geometry | ee.FeatureCollection | None = None,
+    region_reducer: str | ee.Reducer | None = None,
+    scale: int | None = None,
+    year_reducer: str | ee.Reducer | None = None,
     start_day: int = 1,
     end_day: int = 366,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
-    title: Optional[str] = None,
-    x_label: Optional[str] = None,
-    y_label: Optional[str] = None,
+    colors: list[str] | None = None,
+    title: str | None = None,
+    x_label: str | None = None,
+    y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1376,7 +1377,7 @@ def image_doy_series(
 
     reduced = ee.FeatureCollection(doy_images.map(reduce_doy_images))
 
-    df = ee_to_df(reduced)
+    df = common.ee_to_df(reduced)
     df.columns = df.columns.str.replace(r"_.*", "", regex=True)
 
     x_cols = "doy"
@@ -1401,17 +1402,17 @@ def image_doy_series_by_region(
     image_collection: ee.ImageCollection,
     band_name: str,
     regions: ee.FeatureCollection,
-    region_reducer: Optional[Union[str, ee.Reducer]] = None,
-    scale: Optional[int] = None,
-    year_reducer: Optional[Union[str, ee.Reducer]] = None,
-    series_property: Optional[str] = None,
+    region_reducer: str | ee.Reducer | None = None,
+    scale: int | None = None,
+    year_reducer: str | ee.Reducer | None = None,
+    series_property: str | None = None,
     start_day: int = 1,
     end_day: int = 366,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
-    title: Optional[str] = None,
-    x_label: Optional[str] = None,
-    y_label: Optional[str] = None,
+    colors: list[str] | None = None,
+    title: str | None = None,
+    x_label: str | None = None,
+    y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1498,7 +1499,7 @@ def image_doy_series_by_region(
     if series_property is None:
         series_property = "system:index"
     regions = regions.select([series_property])
-    fc = zonal_stats(
+    fc = common.zonal_stats(
         doy_images.toBands(),
         regions,
         stat_type=region_reducer,
@@ -1506,7 +1507,7 @@ def image_doy_series_by_region(
         verbose=False,
         return_fc=True,
     )
-    df = ee_to_df(fc)
+    df = common.ee_to_df(fc)
     df = transpose_df(df, label_col=series_property, index_name="doy")
     df["doy"] = df.index.str.split("_").str[0].astype(int)
     df.sort_values("doy", inplace=True)
@@ -1530,17 +1531,17 @@ def image_doy_series_by_region(
 def doy_series_by_year(
     image_collection: ee.ImageCollection,
     band_name: str,
-    region: Optional[Union[ee.Geometry, ee.FeatureCollection]] = None,
-    region_reducer: Optional[Union[str, ee.Reducer]] = None,
-    scale: Optional[int] = None,
-    same_day_reducer: Optional[Union[str, ee.Reducer]] = None,
+    region: ee.Geometry | ee.FeatureCollection | None = None,
+    region_reducer: str | ee.Reducer | None = None,
+    scale: int | None = None,
+    same_day_reducer: str | ee.Reducer | None = None,
     start_day: int = 1,
     end_day: int = 366,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
-    title: Optional[str] = None,
-    x_label: Optional[str] = None,
-    y_label: Optional[str] = None,
+    colors: list[str] | None = None,
+    title: str | None = None,
+    x_label: str | None = None,
+    y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1636,7 +1637,7 @@ def doy_series_by_year(
 
     reduced = joined.map(reduce_features)
 
-    df = ee_to_df(reduced, columns=["doy", "year", "value"])
+    df = common.ee_to_df(reduced, columns=["doy", "year", "value"])
     df = pivot_df(df, index="doy", columns="year", values="value")
     y_cols = df.columns.tolist()[1:]
     x_cols = "doy"
@@ -1663,8 +1664,8 @@ def image_histogram(
     min_bucket_width: float,
     max_raw: int,
     max_pixels: int,
-    reducer_args: Dict[str, Any] = {},
-    **kwargs: Dict[str, Any],
+    reducer_args: dict[str, Any] = {},
+    **kwargs: dict[str, Any],
 ) -> bq.Figure:
     """
     Creates a histogram for each band of the specified image within the given
@@ -1706,7 +1707,7 @@ def image_histogram(
 
     # Create bqplot histograms for each band.
     def create_histogram(
-        hist_data: Dict[str, Any], color: str, label: str
+        hist_data: dict[str, Any], color: str, label: str
     ) -> bq.Figure:
         """
         Creates a bqplot histogram for the given histogram data.
@@ -1766,11 +1767,11 @@ def image_histogram(
 
 def image_regions(
     image: ee.Image,
-    regions: Union[ee.FeatureCollection, ee.Geometry],
-    reducer: Union[str, ee.Reducer],
+    regions: ee.FeatureCollection | ee.Geometry,
+    reducer: str | ee.Reducer,
     scale: int,
     series_property: str,
-    x_labels: List[str],
+    x_labels: list[str],
     **kwargs: Any,
 ) -> None:
     """
@@ -1791,7 +1792,7 @@ def image_regions(
     Returns:
         bq.Figure: The bqplot figure.
     """
-    fc = zonal_stats(
+    fc = common.zonal_stats(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
@@ -1801,17 +1802,17 @@ def image_regions(
 
 def image_series(
     image_collection: ee.ImageCollection,
-    region: Union[ee.Geometry, ee.FeatureCollection],
-    reducer: Optional[Union[str, ee.Reducer]] = None,
-    scale: Optional[int] = None,
+    region: ee.Geometry | ee.FeatureCollection,
+    reducer: str | ee.Reducer | None = None,
+    scale: int | None = None,
     x_property: str = "system:time_start",
     chart_type: str = "LineChart",
-    x_cols: Optional[List[str]] = None,
-    y_cols: Optional[List[str]] = None,
-    colors: Optional[List[str]] = None,
-    title: Optional[str] = None,
-    x_label: Optional[str] = None,
-    y_label: Optional[str] = None,
+    x_cols: list[str] | None = None,
+    y_cols: list[str] | None = None,
+    colors: list[str] | None = None,
+    title: str | None = None,
+    x_label: str | None = None,
+    y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1870,7 +1871,7 @@ def image_series(
     fc = ee.FeatureCollection(
         image_collection.map(get_stats).filter(ee.Filter.notNull(band_names))
     )
-    df = ee_to_df(fc)
+    df = common.ee_to_df(fc)
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"])
 
@@ -1890,19 +1891,19 @@ def image_series(
 
 def image_series_by_region(
     image_collection: ee.ImageCollection,
-    regions: Union[ee.FeatureCollection, ee.Geometry],
-    reducer: Optional[Union[str, ee.Reducer]] = None,
-    band: Optional[str] = None,
-    scale: Optional[int] = None,
+    regions: ee.FeatureCollection | ee.Geometry,
+    reducer: str | ee.Reducer | None = None,
+    band: str | None = None,
+    scale: int | None = None,
     x_property: str = "system:time_start",
     series_property: str = "system:index",
     chart_type: str = "LineChart",
-    x_cols: Optional[List[str]] = None,
-    y_cols: Optional[List[str]] = None,
-    colors: Optional[List[str]] = None,
-    title: Optional[str] = None,
-    x_label: Optional[str] = None,
-    y_label: Optional[str] = None,
+    x_cols: list[str] | None = None,
+    y_cols: list[str] | None = None,
+    colors: list[str] | None = None,
+    title: str | None = None,
+    x_label: str | None = None,
+    y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
     """
@@ -1946,18 +1947,18 @@ def image_series_by_region(
 
     image = image_collection.select(band).toBands()
 
-    fc = zonal_stats(
+    fc = common.zonal_stats(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     columns = image.bandNames().getInfo() + [series_property]
-    df = ee_to_df(fc, columns=columns)
+    df = common.ee_to_df(fc, columns=columns)
 
     headers = df[series_property].tolist()
     df = df.drop(columns=[series_property]).T
     df.columns = headers
 
     if x_property == "system:time_start" or x_property == "system:time_end":
-        indexes = image_dates(image_collection).getInfo()
+        indexes = common.image_dates(image_collection).getInfo()
         df["index"] = pd.to_datetime(indexes)
 
     else:
@@ -1979,15 +1980,15 @@ def image_series_by_region(
 
 
 def array_values(
-    array: Union[ee.Array, ee.List, List[List[float]]],
-    x_labels: Optional[Union[ee.Array, ee.List, List[float]]] = None,
+    array: ee.Array | ee.List | list[list[float]],
+    x_labels: ee.Array | ee.List | list[float] | None = None,
     axis: int = 1,
-    series_names: Optional[List[str]] = None,
+    series_names: list[str] | None = None,
     chart_type: str = "LineChart",
-    colors: Optional[List[str]] = None,
-    title: Optional[str] = None,
-    x_label: Optional[str] = None,
-    y_label: Optional[str] = None,
+    colors: list[str] | None = None,
+    title: str | None = None,
+    x_label: str | None = None,
+    y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
     """
