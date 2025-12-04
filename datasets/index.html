@@ -7097,7 +7097,7 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        list: The list of Earth Engine asset IDs.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">collections</span> <span class="o">=</span> <span class="n">search_ee_data</span><span class="p">(</span><span class="s2">&quot;.*&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;community&quot;</span><span class="p">)</span>
+    <span class="n">collections</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">search_ee_data</span><span class="p">(</span><span class="s2">&quot;.*&quot;</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="s2">&quot;community&quot;</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">[</span><span class="n">collection</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span> <span class="k">for</span> <span class="n">collection</span> <span class="ow">in</span> <span class="n">collections</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -7629,8 +7629,8 @@
 <span class="sd">        Exception: If search fails.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">ee_assets</span> <span class="o">=</span> <span class="n">search_ee_data</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">)</span>
-        <span class="n">html</span> <span class="o">=</span> <span class="n">ee_data_html</span><span class="p">(</span><span class="n">ee_assets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">ee_assets</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">search_ee_data</span><span class="p">(</span><span class="n">asset_id</span><span class="p">,</span> <span class="n">source</span><span class="o">=</span><span class="n">source</span><span class="p">)</span>
+        <span class="n">html</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ee_data_html</span><span class="p">(</span><span class="n">ee_assets</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
         <span class="n">html_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HTML</span><span class="p">()</span>
         <span class="n">html_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">html</span>
         <span class="n">display</span><span class="p">(</span><span class="n">html_widget</span><span class="p">)</span>
@@ -7880,12 +7880,12 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
             <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
 
-        <span class="n">download_from_url</span><span class="p">(</span>
+        <span class="n">common</span><span class="o">.</span><span class="n">download_from_url</span><span class="p">(</span>
             <span class="n">url</span><span class="p">,</span> <span class="n">out_file_name</span><span class="o">=</span><span class="n">filename</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">unzip</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
         <span class="p">)</span>
 
         <span class="n">work_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">dir_name</span><span class="p">)</span>
-        <span class="n">in_csv</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.csv&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">in_csv</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">work_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.csv&quot;</span><span class="p">))[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="n">out_csv</span> <span class="o">=</span> <span class="n">get_data_csv</span><span class="p">()</span>
 

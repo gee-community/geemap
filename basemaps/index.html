@@ -8158,9 +8158,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">617</span>
-<span class="normal">618</span>
-<span class="normal">619</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">619</span>
 <span class="normal">620</span>
 <span class="normal">621</span>
 <span class="normal">622</span>
@@ -8173,7 +8171,9 @@ Defaults to False.</p>
 <span class="normal">629</span>
 <span class="normal">630</span>
 <span class="normal">631</span>
-<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">):</span>
+<span class="normal">632</span>
+<span class="normal">633</span>
+<span class="normal">634</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a qms service to an ipyleaflet tile layer.</span>
 
 <span class="sd">    Args:</span>
@@ -8258,9 +8258,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">590</span>
-<span class="normal">591</span>
-<span class="normal">592</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">592</span>
 <span class="normal">593</span>
 <span class="normal">594</span>
 <span class="normal">595</span>
@@ -8276,7 +8274,9 @@ Defaults to False.</p>
 <span class="normal">605</span>
 <span class="normal">606</span>
 <span class="normal">607</span>
-<span class="normal">608</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">search_qms</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="normal">608</span>
+<span class="normal">609</span>
+<span class="normal">610</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">search_qms</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Search qms files for keywords. Reference: https://github.com/geopandas/xyzservices/issues/65</span>
 
 <span class="sd">    Args:</span>
@@ -8434,7 +8434,7 @@ Defaults to False.</p>
         <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PLANET_API_KEY&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">planet_dict</span> <span class="o">=</span> <span class="n">planet_tiles</span><span class="p">(</span><span class="n">tile_format</span><span class="o">=</span><span class="s2">&quot;folium&quot;</span><span class="p">)</span>
+        <span class="n">planet_dict</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">planet_tiles</span><span class="p">(</span><span class="n">tile_format</span><span class="o">=</span><span class="s2">&quot;folium&quot;</span><span class="p">)</span>
         <span class="n">folium_dict</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">planet_dict</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">folium_dict</span>
@@ -8577,9 +8577,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">557</span>
-<span class="normal">558</span>
-<span class="normal">559</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">559</span>
 <span class="normal">560</span>
 <span class="normal">561</span>
 <span class="normal">562</span>
@@ -8607,7 +8605,9 @@ Defaults to False.</p>
 <span class="normal">584</span>
 <span class="normal">585</span>
 <span class="normal">586</span>
-<span class="normal">587</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_plotly</span><span class="p">():</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_plotly</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to plotly tile layers.</span>
 
 <span class="sd">    Returns:</span>
@@ -8721,14 +8721,18 @@ Defaults to False.</p>
 <span class="normal">551</span>
 <span class="normal">552</span>
 <span class="normal">553</span>
-<span class="normal">554</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_pydeck</span><span class="p">():</span>
+<span class="normal">554</span>
+<span class="normal">555</span>
+<span class="normal">556</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_pydeck</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to pydeck custom tile layers.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: A dictionary of pydeck tile layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">check_package</span><span class="p">(</span><span class="s2">&quot;pydeck&quot;</span><span class="p">,</span> <span class="s2">&quot;https://deckgl.readthedocs.io/en/latest/installation.html&quot;</span><span class="p">)</span>
+    <span class="n">common</span><span class="o">.</span><span class="n">check_package</span><span class="p">(</span>
+        <span class="s2">&quot;pydeck&quot;</span><span class="p">,</span> <span class="s2">&quot;https://deckgl.readthedocs.io/en/latest/installation.html&quot;</span>
+    <span class="p">)</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">pydeck</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdk</span>
 
     <span class="n">pydeck_dict</span> <span class="o">=</span> <span class="p">{}</span>
@@ -8746,7 +8750,7 @@ Defaults to False.</p>
         <span class="n">pydeck_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">url</span>
 
         <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;PLANET_API_KEY&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">planet_dict</span> <span class="o">=</span> <span class="n">planet_tiles</span><span class="p">(</span><span class="n">tile_format</span><span class="o">=</span><span class="s2">&quot;ipyleaflet&quot;</span><span class="p">)</span>
+            <span class="n">planet_dict</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">planet_tiles</span><span class="p">(</span><span class="n">tile_format</span><span class="o">=</span><span class="s2">&quot;ipyleaflet&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">id_</span><span class="p">,</span> <span class="n">tile</span> <span class="ow">in</span> <span class="n">planet_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="n">pydeck_dict</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="n">tile</span><span class="o">.</span><span class="n">url</span>
 
