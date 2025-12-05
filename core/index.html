@@ -11504,10 +11504,10 @@ the draw control.</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            Dict[str, Any]: The available basemaps.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">tile_providers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="n">tile_providers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">basemaps</span><span class="o">.</span><span class="n">get_xyz_dict</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
         <span class="k">if</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">():</span>
             <span class="n">tile_providers</span> <span class="o">=</span> <span class="n">tile_providers</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span>
-                <span class="n">get_google_map_tile_providers</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
+                <span class="n">basemaps</span><span class="o">.</span><span class="n">get_google_map_tile_providers</span><span class="p">()</span><span class="o">.</span><span class="n">values</span><span class="p">()</span>
             <span class="p">)</span>
 
         <span class="n">ret_dict</span> <span class="o">=</span> <span class="p">{}</span>
