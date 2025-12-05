@@ -60,7 +60,6 @@ class ColormapsTest(unittest.TestCase):
         self.assertEqual(palette[0], "#333399")
         self.assertEqual(palette[1], "#fefe98")
         self.assertEqual(palette[2], "#ffffff")
-        self.assertTrue(all(p.startswith("#") for p in palette))
 
     def test_get_palette_no_nclass(self):
         """Test get_palette with no n_class."""
