@@ -61,8 +61,8 @@ from tenacity import (
     retry_if_exception_type,
 )
 
-from .geemap import Map, js_snippet_to_py
 from . import coreutils
+from . import geemap
 
 # Google Colab-specific imports (only if you're working in Google Colab)
 if "google.colab" in sys.modules:
@@ -130,7 +130,7 @@ class Genie(widgets.VBox):
         self.iteration = 1
         self.map_dirty = False
 
-        m = Map()
+        m = geemap.Map()
         m.add("layer_manager")
         self.map = m
 
@@ -1470,7 +1470,7 @@ class Catalog:
         # geemap appears to have some stray print statements.
         _ = io.StringIO()
         with redirect_stdout(_):
-            code_list = js_snippet_to_py(
+            code_list = geemap.js_snippet_to_py(
                 js_code,
                 add_new_cell=False,
                 import_ee=False,
@@ -1918,7 +1918,7 @@ class DatasetSearchInterface:
 
         # Initialize map
         self.map_output = widgets.Output(layout=widgets.Layout(width="100%"))
-        self.geemap_instance = Map(height="600px", width="100%")
+        self.geemap_instance = geemap.Map(height="600px", width="100%")
 
     def display(self):
         """Display the UI in the cell."""
@@ -2239,7 +2239,7 @@ class DatasetExplorer:
 
         # Make sure geemap initialized correctly.
         coreutils.ee_initialize(project=project_name)
-        m = Map(draw_ctrl=False)
+        m = geemap.Map(draw_ctrl=False)
         m.add("layer_manager")
 
         catalog = Catalog(storage_client)
