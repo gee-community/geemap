@@ -5,11 +5,10 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
-
+import box
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-import box
 
 
 _palette_dict = {
@@ -70,8 +69,16 @@ _palette_dict = {
 }
 
 
-def get_palette(cmap_name=None, n_class=None, hashtag=False):
-    """Get a palette from a matplotlib colormap. See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
+def get_palette(
+    cmap_name: str | None = None, n_class: int | None = None, hashtag: bool = False
+) -> list[str]:
+    """Get a palette from a matplotlib colormap.
+
+    WARNING: This function is inconsistent with how it handles hashes in the
+    color names w.r.t. if there is a leading hash (`#`).
+
+    See the list of colormaps at
+    https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
     Args:
         cmap_name (str, optional): The name of the matplotlib colormap. Defaults to None.
@@ -92,8 +99,15 @@ def get_palette(cmap_name=None, n_class=None, hashtag=False):
             ]
         else:
             colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
+
+    def add_hashtag(color: str) -> str:
+        if color.startswith("#"):
+            return color
+        else:
+            return f"#{color}"
+
     if hashtag:
-        colors = ["#" + i for i in colors]
+        colors = [add_hashtag(color) for color in colors]
 
     return colors
 
