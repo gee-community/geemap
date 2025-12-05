@@ -26,14 +26,13 @@ from matplotlib import figure
 import numpy as np
 import pandas as pd
 
-from . import coreutils
-from . import examples
-from .basemaps import xyz_to_folium
+from . import basemaps
 from .common import *
 from .conversion import *
-from .ee_tile_layers import *
-from .legends import builtin_legends
-from .osm import *
+from . import coreutils
+from . import ee_tile_layers
+from . import examples
+from . import osm
 from .plot import *
 from .timelapse import *
 
@@ -41,7 +40,7 @@ if not coreutils.in_colab_shell():
     from .plot import *
 
 
-basemaps = box.Box(xyz_to_folium(), frozen_box=True)
+basemaps = box.Box(basemaps.xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
@@ -288,7 +287,9 @@ class Map(folium.Map):
             opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
 
-        layer = EEFoliumTileLayer(ee_object, vis_params, name, shown, opacity, **kwargs)
+        layer = ee_tile_layers.EEFoliumTileLayer(
+            ee_object, vis_params, name, shown, opacity, **kwargs
+        )
         layer.add_to(self)
         arc_add_layer(layer.url_format, name, shown, opacity)
 
@@ -1237,7 +1238,7 @@ class Map(folium.Map):
 
         """
 
-        gdf = osm_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
+        gdf = osm.osm_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
         geojson = gdf.__geo_interface__
 
         if to_ee:
@@ -1276,7 +1277,9 @@ class Map(folium.Map):
 
         """
 
-        gdf = osm_gdf_from_geocode(query, which_result=which_result, by_osmid=by_osmid)
+        gdf = osm.osm_gdf_from_geocode(
+            query, which_result=which_result, by_osmid=by_osmid
+        )
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
@@ -1316,7 +1319,7 @@ class Map(folium.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
-        gdf = osm_gdf_from_address(address, tags, dist)
+        gdf = osm.osm_gdf_from_address(address, tags, dist)
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
@@ -1356,7 +1359,7 @@ class Map(folium.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
-        gdf = osm_gdf_from_place(query, tags, which_result)
+        gdf = osm.osm_gdf_from_place(query, tags, which_result)
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
@@ -1396,7 +1399,7 @@ class Map(folium.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
-        gdf = osm_gdf_from_point(center_point, tags, dist)
+        gdf = osm.osm_gdf_from_point(center_point, tags, dist)
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
@@ -1434,7 +1437,7 @@ class Map(folium.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
-        gdf = osm_gdf_from_polygon(polygon, tags)
+        gdf = osm.osm_gdf_from_polygon(polygon, tags)
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
@@ -1479,7 +1482,7 @@ class Map(folium.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
         """
-        gdf = osm_gdf_from_bbox(north, south, east, west, tags)
+        gdf = osm.osm_gdf_from_bbox(north, south, east, west, tags)
         geojson = gdf.__geo_interface__
 
         self.add_geojson(
