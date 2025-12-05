@@ -7,7 +7,7 @@
 
 from collections.abc import Iterable
 import importlib
-from io import BytesIO
+import io
 import logging
 import os
 import subprocess
@@ -24,7 +24,7 @@ from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
 from matplotlib.lines import Line2D
 
-from .basemaps import custom_tiles
+from . import basemaps
 
 try:
     import cartopy.crs as ccrs
@@ -32,7 +32,6 @@ try:
     from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
     from PIL import Image
-
 except ImportError:
     print(
         "cartopy is not installed. Please see https://scitools.org.uk/cartopy/docs/latest/installing.html#installing for instructions on how to install cartopy.\n"
@@ -42,7 +41,7 @@ except ImportError:
     )
 
 
-def check_dependencies():
+def check_dependencies() -> None:
     """Helper function to check dependencies used for cartoee
     Dependencies not included in main geemap are: cartopy, PIL, and scipys
 
@@ -167,7 +166,7 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
         if isinstance(basemap, str):
             if basemap.upper() in ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"]:
                 basemap = cimgt.GoogleTiles(
-                    url=custom_tiles["xyz"][basemap.upper()]["url"]
+                    url=basemaps.custom_tiles["xyz"][basemap.upper()]["url"]
                 )
 
         try:
@@ -272,7 +271,7 @@ def add_layer(
         error = eval(response.content)["error"]
         raise requests.exceptions.HTTPError(f"{error}")
 
-    image = np.array(Image.open(BytesIO(response.content)))
+    image = np.array(Image.open(io.BytesIO(response.content)))
 
     if image.shape[-1] == 2:
         image = np.concatenate(
@@ -290,7 +289,7 @@ def add_layer(
     return
 
 
-def build_palette(cmap, n=256):
+def build_palette(cmap: str, n: int = 256) -> list[str]:
     """Creates hex color code palette from a matplotlib colormap
 
     args:
