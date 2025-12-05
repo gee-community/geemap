@@ -74,8 +74,8 @@ def get_palette(
 ) -> list[str]:
     """Get a palette from a matplotlib colormap.
 
-    WARNING: This function is inconsistent with it handles hashes in the
-    color names.
+    WARNING: This function is inconsistent with how it handles hashes in the
+    color names w.r.t. if there is a leading hash (`#`).
 
     See the list of colormaps at
     https://matplotlib.org/stable/tutorials/colors/colormaps.html.
@@ -104,7 +104,7 @@ def get_palette(
         if color.startswith("#"):
             return color
         else:
-            return "#" + color
+            return f"#{color}"
 
     if hashtag:
         colors = [add_hashtag(color) for color in colors]
