@@ -10,11 +10,11 @@ import ee
 import ipyleaflet
 import ipywidgets
 
+from . import basemaps
 from . import coreutils
 from . import ee_tile_layers
 from . import map_widgets
 from . import toolbar
-from .basemaps import get_xyz_dict, get_google_map_tile_providers
 
 _DRAWN_FEATURES_LAYER = "Drawn Features"
 
@@ -1457,10 +1457,10 @@ class Map(ipyleaflet.Map, MapInterface):
         Returns:
             Dict[str, Any]: The available basemaps.
         """
-        tile_providers = list(get_xyz_dict().values())
+        tile_providers = list(basemaps.get_xyz_dict().values())
         if coreutils.get_google_maps_api_key():
             tile_providers = tile_providers + list(
-                get_google_map_tile_providers().values()
+                basemaps.get_google_map_tile_providers().values()
             )
 
         ret_dict = {}
