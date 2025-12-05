@@ -8,16 +8,15 @@ import os
 import sys
 
 
-def in_colab_shell():
+def in_colab_shell() -> bool:
     """Tests if the code is being executed within Google Colab."""
-
     if "google.colab" in sys.modules:
         return True
     else:
         return False
 
 
-def use_folium():
+def use_folium() -> bool:
     """Whether to use the folium or ipyleaflet plotting backend."""
     if os.environ.get("USE_FOLIUM") is not None:
         return True
@@ -25,13 +24,12 @@ def use_folium():
         return False
 
 
-def _use_eerepr(token="USE_EEREPR"):
+def _use_eerepr(token: str = "USE_EEREPR") -> bool:
     """Whether to use eerepr for printing Earth Engine objects.
 
     Returns:
         bool: True if eerepr is used for printing Earth Engine objects.
     """
-
     if os.environ.get(token) is None:
         return True
     else:
