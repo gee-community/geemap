@@ -485,7 +485,7 @@ builtin_legends = {
 }
 
 
-def ee_table_to_legend(in_table, out_file):
+def ee_table_to_legend(in_table: str, out_file: str) -> None:
     """Converts an Earth Engine color table to a dictionary
 
     Args:
