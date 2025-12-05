@@ -1,6 +1,7 @@
-import box
-import os
 import importlib.resources
+import os
+
+import box
 
 _pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
 _datasets_path = os.path.join(_pkg_dir, "examples/datasets.txt")
@@ -15,7 +16,7 @@ _links = [f"{_baseurl}{_name}" for _name in _names]
 datasets = box.Box(dict(zip(_names, _links)), frozen_box=True)
 
 
-def get_path(name):
+def get_path(name: str) -> str:
     """Get the HTTP URL to an example dataset.
 
     Args:
@@ -35,7 +36,7 @@ def get_path(name):
         )
 
 
-def get_ee_path(name):
+def get_ee_path(name: str) -> str:
     """Get the Earth Engine asset ID of an example dataset.
 
     Args:
@@ -48,7 +49,7 @@ def get_ee_path(name):
     return f"{'users/giswqs/public/'}{name}"
 
 
-def get_names():
+def get_names() -> list[str]:
     """Get a list of names of the example datasets.
 
     Returns:
@@ -58,7 +59,7 @@ def get_names():
     return list(datasets.keys())
 
 
-def get_links():
+def get_links() -> list[str]:
     """Get a list of HTTP URLs to the example datasets.
 
     Returns:
