@@ -271,7 +271,8 @@ def add_layer(
         error = eval(response.content)["error"]
         raise requests.exceptions.HTTPError(f"{error}")
 
-    image = np.array(Image.open(io.BytesIO(response.content)))
+    with io.BytesIO(response.content) as f:
+        image = np.array(Image.open(f))
 
     if image.shape[-1] == 2:
         image = np.concatenate(
