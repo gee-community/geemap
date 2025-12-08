@@ -9323,7 +9323,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
         <span class="c1"># geemap appears to have some stray print statements.</span>
         <span class="n">_</span> <span class="o">=</span> <span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">()</span>
         <span class="k">with</span> <span class="n">redirect_stdout</span><span class="p">(</span><span class="n">_</span><span class="p">):</span>
-            <span class="n">code_list</span> <span class="o">=</span> <span class="n">js_snippet_to_py</span><span class="p">(</span>
+            <span class="n">code_list</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">js_snippet_to_py</span><span class="p">(</span>
                 <span class="n">js_code</span><span class="p">,</span>
                 <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">import_ee</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -12654,7 +12654,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
         <span class="c1"># Make sure geemap initialized correctly.</span>
         <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
-        <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">draw_ctrl</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">draw_ctrl</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
 
         <span class="n">catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="p">(</span><span class="n">storage_client</span><span class="p">)</span>
@@ -12986,7 +12986,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
     <span class="c1"># Make sure geemap initialized correctly.</span>
     <span class="n">coreutils</span><span class="o">.</span><span class="n">ee_initialize</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project_name</span><span class="p">)</span>
-    <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">draw_ctrl</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">draw_ctrl</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
 
     <span class="n">catalog</span> <span class="o">=</span> <span class="n">Catalog</span><span class="p">(</span><span class="n">storage_client</span><span class="p">)</span>
@@ -13643,7 +13643,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
         <span class="c1"># Initialize map</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">map_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">geemap_instance</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;600px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">geemap_instance</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;600px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Display the UI in the cell.&quot;&quot;&quot;</span>
@@ -14056,7 +14056,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
     <span class="c1"># Initialize map</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">map_output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">))</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">geemap_instance</span> <span class="o">=</span> <span class="n">Map</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;600px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">geemap_instance</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;600px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -16464,7 +16464,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
         <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span> <span class="o">=</span> <span class="kc">False</span>
 
-        <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
         <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">m</span>
 
@@ -17855,7 +17855,7 @@ For a list of available models, see https://bit.ly/4fKfXW7.</p>
     <span class="bp">self</span><span class="o">.</span><span class="n">iteration</span> <span class="o">=</span> <span class="mi">1</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">map_dirty</span> <span class="o">=</span> <span class="kc">False</span>
 
-    <span class="n">m</span> <span class="o">=</span> <span class="n">Map</span><span class="p">()</span>
+    <span class="n">m</span> <span class="o">=</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span><span class="p">()</span>
     <span class="n">m</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;layer_manager&quot;</span><span class="p">)</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">map</span> <span class="o">=</span> <span class="n">m</span>
 
