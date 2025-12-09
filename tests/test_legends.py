@@ -8,19 +8,23 @@ from geemap import legends
 class LegendsTest(unittest.TestCase):
 
     def test_ee_table_to_legend(self):
-        in_table_content = textwrap.dedent("""\
+        in_table_content = textwrap.dedent(
+            """\
             Value\tColor\tDescription
             11\t466b9f\tOpen Water
             12\td1def8\tPerennial Ice/Snow
             21\tdec5c5\tDeveloped, Open Space
-        """)
-        expected_output = textwrap.dedent("""\
+        """
+        )
+        expected_output = textwrap.dedent(
+            """\
             {
             \t'11 Open Water': '466b9f',
             \t'12 Perennial Ice/Snow': 'd1def8',
             \t'21 Developed, Open Space': 'dec5c5'
             }
-        """)
+        """
+        )
 
         with tempfile.TemporaryDirectory() as tmpdir:
             tmpdir = pathlib.Path(tmpdir)
