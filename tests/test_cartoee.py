@@ -29,7 +29,7 @@ class TestCartoee(unittest.TestCase):
         cartoee.add_colorbar(ax, vis_params, loc="right")
         self.assertEqual(len(fig.axes), 2)
 
-    def test__buffer_box(self):
+    def test_buffer_box(self):
         bbox = [1.1, 2.9, 3.1, 4.9]
         interval = 1
         self.assertEqual(cartoee._buffer_box(bbox, interval), (1.0, 3.0, 3.0, 5.0))
