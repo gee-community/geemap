@@ -1,5 +1,6 @@
 """Tests for conversion module."""
 
+import textwrap
 import unittest
 
 from geemap import conversion
@@ -47,6 +48,19 @@ class TestConversion(unittest.TestCase):
         line_index, char_index = conversion.find_matching_bracket(lines, 0, 0)
         self.assertEqual(line_index, -1)
         self.assertEqual(char_index, -1)
+
+    def test_find_matching_bracket_not_at_start(self):
+        input = textwrap.dedent(
+            """\
+            [
+              {
+              }
+            ]
+        """
+        )
+        line_index, char_index = conversion.find_matching_bracket(input, 3, 4)
+        self.assertEqual(line_index, 8)
+        self.assertEqual(char_index, 0)
 
     def test_format_params_simple(self):
         line = "min: 0"
