@@ -12,18 +12,23 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
-
 import collections
 import os
 import pathlib
 import re
 import shutil
+from typing import Sequence
 import urllib.request
 
 from . import coreutils
 
 
-def find_matching_bracket(lines, start_line_index, start_char_index, matching_char="{"):
+def find_matching_bracket(
+    lines: list[str],
+    start_line_index: int,
+    start_char_index: int,
+    matching_char: str = "{",
+) -> tuple[int, int]:
     """Finds the position of the matching closing bracket from a list of lines.
 
     Args:
@@ -78,8 +83,9 @@ def find_matching_bracket(lines, start_line_index, start_char_index, matching_ch
     return matching_line_index, matching_char_index
 
 
-def format_params(line, sep=":"):
+def format_params(line: str, sep: str = ":") -> str:
     """Formats keys in a dictionary and adds quotes to the keys.
+
     For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)
 
     Args:
@@ -89,10 +95,8 @@ def format_params(line, sep=":"):
     Returns:
         [str]: A string with keys quoted
     """
-    # print(line)
     new_line = line
     prefix = ""
-    # suffix = ""
 
     if line.strip().startswith("for"):  # skip for loop
         return line
@@ -147,8 +151,8 @@ def format_params(line, sep=":"):
     return prefix + new_line
 
 
-def use_math(lines):
-    """Checks if an Earth Engine uses Math library
+def use_math(lines: Sequence[str]) -> bool:
+    """Checks if an Earth Engine uses Math library.
 
     Args:
         lines (list): An Earth Engine JavaScript.
@@ -164,7 +168,7 @@ def use_math(lines):
     return math_import
 
 
-def convert_for_loop(line):
+def convert_for_loop(line: str) -> str:
     """Converts JavaScript for loop to Python for loop.
 
     Args:
@@ -173,7 +177,6 @@ def convert_for_loop(line):
     Returns:
         str: Converted Python for loop.
     """
-    new_line = ""
     if "var " in line:
         line = line.replace("var ", "")
     start_index = line.index("(")
@@ -217,9 +220,8 @@ def convert_for_loop(line):
     return new_line
 
 
-# Removes all indentation from file to reformat indentation for python later
-def remove_all_indentation(input_lines):
-    """Removes all indentation for reformatting according to python's indentation rules
+def remove_all_indentation(input_lines: Sequence[str]) -> list[str]:
+    """Removes all indentation for reformatting according to python's indentation rules.
 
     Args:
         input_lines (list): List of Earth Engine JavaScrips
@@ -233,8 +235,8 @@ def remove_all_indentation(input_lines):
     return output_lines
 
 
-def check_map_functions(input_lines):
-    """Extracts Earth Engine map function
+def check_map_functions(input_lines: Sequence[str]) -> list[str]:
+    """Extracts Earth Engine map function.
 
     Args:
         input_lines (list): List of Earth Engine JavaScrips
@@ -308,7 +310,6 @@ def check_map_functions(input_lines):
                 input_lines[matching_line_index] = footer_line
 
                 output_lines.append(header_line)
-                # output_lines.append(footer_line)
             except Exception as e:
                 print(
                     f"An error occurred: {e}. The closing curly bracket could not be found in Line {index+1}: {line}. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. "
@@ -353,7 +354,6 @@ def js_to_python(
         out_file = os.path.join(root_dir, out_file)
 
     is_python = False
-    # add_github_url = False
 
     if use_qgis and import_geemap:
         raise Exception(
@@ -718,7 +718,7 @@ def js_to_python(
     return output
 
 
-def create_new_cell(contents, replace=False):
+def create_new_cell(contents: str, replace: bool = False) -> None:
     """Create a new cell in Jupyter notebook based on the contents.
 
     Args:
@@ -774,9 +774,6 @@ def js_snippet_to_py(
         out_lines = []
         if import_ee:
             out_lines.append("import ee\n")
-        # if import_geemap:
-        #     out_lines.append("import geemap\n\n")
-        #     out_lines.append(f"{Map} = geemap.Map()\n")
 
         with open(out_py, encoding="utf-8") as f:
             lines = f.readlines()
@@ -857,23 +854,9 @@ def js_to_python_dir(
             import_geemap=import_geemap,
             Map=Map,
         )
-    # print("Output Python script folder: {}".format(out_dir))
 
 
-# def dict_key_str(line):
-
-#     keys = """asFloat bands bestEffort bias collection color connectedness crs eeObject eightConnected format gain gamma
-#               geometry groupField groupName image iterations kernel labelBand leftField magnitude max maxDistance
-#               maxOffset maxPixels maxSize minBucketWidth min name normalize opacity palette patchWidth
-#               radius reducer referenceImage region rightField scale selectors shown sigma size source
-#               strokeWidth threshold units visParams width""".split()
-#     for key in keys:
-#         if ":" in line and key in line:
-#             line = line.replace(key + ":", "'" + key + "':")
-#     return line
-
-
-def remove_qgis_import(in_file, Map="m"):
+def remove_qgis_import(in_file: str, Map: str = "m") -> None:
     """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
 
     Args:
@@ -884,7 +867,7 @@ def remove_qgis_import(in_file, Map="m"):
         list: List of lines  'from ee_plugin import Map' removed.
     """
     in_file = os.path.abspath(in_file)
-    start_index = 0
+
     with open(in_file, encoding="utf-8") as f:
         lines = f.readlines()
         for index, line in enumerate(lines):
@@ -902,7 +885,7 @@ def remove_qgis_import(in_file, Map="m"):
                 return lines[index + 1 :]
 
 
-def get_js_examples(out_dir=None):
+def get_js_examples(out_dir: str | None = None) -> str:
     """Gets Earth Engine JavaScript examples from the geemap package.
 
     Args:
@@ -948,7 +931,7 @@ def get_nb_template(download_latest=False, out_file=None):
         return out_file
 
     out_file = out_file.with_suffix(".py")
-    outfile.parent.mkdir(parents=True, exist_ok=True)
+    out_file.parent.mkdir(parents=True, exist_ok=True)
 
     if download_latest:
         template_url = "https://raw.githubusercontent.com/gee-community/geemap/master/examples/template/template.py"
@@ -969,8 +952,6 @@ def template_header(in_template):
     Returns:
         list: List of lines.
     """
-    header = []
-    template_lines = []
     header_end_index = 0
 
     with open(in_template, encoding="utf-8") as f:
@@ -993,8 +974,6 @@ def template_footer(in_template):
     Returns:
         list: List of lines.
     """
-    footer = []
-    template_lines = []
     footer_start_index = 0
 
     with open(in_template, encoding="utf-8") as f:
@@ -1145,19 +1124,17 @@ def py_to_ipynb_dir(
         py_to_ipynb(in_file, template_file, out_file, github_username, github_repo, Map)
 
 
-def execute_notebook(in_file):
-    """Executes a Jupyter notebook and save output cells
+def execute_notebook(in_file: str) -> None:
+    """Executes a Jupyter notebook and save output cells.
 
     Args:
         in_file (str): Input Jupyter notebook.
     """
-    # command = 'jupyter nbconvert --to notebook --execute ' + in_file + ' --inplace'
     command = 'jupyter nbconvert --to notebook --execute "{}" --inplace'.format(in_file)
     print(os.popen(command).read().rstrip())
-    # os.popen(command)
 
 
-def execute_notebook_dir(in_dir):
+def execute_notebook_dir(in_dir: str) -> None:
     """Executes all Jupyter notebooks in the given directory recursively and save output cells.
 
     Args:
@@ -1175,7 +1152,9 @@ def execute_notebook_dir(in_dir):
             execute_notebook(in_file)
 
 
-def update_nb_header(in_file, github_username=None, github_repo=None):
+def update_nb_header(
+    in_file: str, github_username: str | None = None, github_repo: str | None = None
+) -> None:
     """Updates notebook header (binder and Google Colab URLs).
 
     Args:
@@ -1229,8 +1208,10 @@ def update_nb_header(in_file, github_username=None, github_repo=None):
             f.writelines(output_lines)
 
 
-def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
-    """Updates header (binder and Google Colab URLs) of all notebooks in a folder .
+def update_nb_header_dir(
+    in_dir: str, github_username: str | None = None, github_repo: str | None = None
+) -> None:
+    """Updates header (binder and Google Colab URLs) of all notebooks in a folder.
 
     Args:
         in_dir (str): The input directory containing Jupyter notebooks.
@@ -1250,53 +1231,8 @@ def update_nb_header_dir(in_dir, github_username=None, github_repo=None):
             update_nb_header(in_file, github_username, github_repo)
 
 
-# def download_from_url(url, out_file_name=None, out_dir='.', unzip=True):
-#     """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
-
-#     Args:
-#         url (str): The HTTP URL to download.
-#         out_file_name (str, optional): The output file name to use. Defaults to None.
-#         out_dir (str, optional): The output directory to use. Defaults to '.'.
-#         unzip (bool, optional): Whether to unzip the downloaded file if it is a zip file. Defaults to True.
-#     """
-#     in_file_name = os.path.basename(url)
-
-#     if out_file_name is None:
-#         out_file_name = in_file_name
-#     out_file_path = os.path.join(os.path.abspath(out_dir), out_file_name)
-
-#     print('Downloading {} ...'.format(url))
-
-#     try:
-#         urllib.request.urlretrieve(url, out_file_path)
-#     except:
-#         print("The URL is invalid. Please double check the URL.")
-#         return
-
-#     final_path = out_file_path
-
-#     if unzip:
-#         # if it is a zip file
-#         if '.zip' in out_file_name:
-#             print("Unzipping {} ...".format(out_file_name))
-#             with zipfile.ZipFile(out_file_path, "r") as zip_ref:
-#                 zip_ref.extractall(out_dir)
-#             final_path = os.path.join(os.path.abspath(
-#                 out_dir), out_file_name.replace('.zip', ''))
-
-#         # if it is a tar file
-#         if '.tar' in out_file_name:
-#             print("Unzipping {} ...".format(out_file_name))
-#             with tarfile.open(out_file_path, "r") as tar_ref:
-#                 tar_ref.extractall(out_dir)
-#             final_path = os.path.join(os.path.abspath(
-#                 out_dir), out_file_name.replace('.tart', ''))
-
-#     print('Data downloaded to: {}'.format(final_path))
-
-
-def download_gee_app(url, out_file=None):
-    """Downloads JavaScript source code from a GEE App
+def download_gee_app(url: str, out_file: str | None = None) -> None:
+    """Downloads JavaScript source code from a GEE App.
 
     Args:
         url (str): The URL of the GEE App.
