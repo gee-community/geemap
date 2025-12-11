@@ -5,6 +5,7 @@ import glob
 import importlib.resources
 import os
 import re
+from typing import Any
 
 import box
 import geopandas as gpd
@@ -35,7 +36,6 @@ from .basemaps import (
     get_google_map_tile_providers,
 )
 from .common import *
-from typing import Dict, Any, Optional
 
 from . import coreutils
 
@@ -45,7 +45,7 @@ basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 class Map(MapWidget):
     """The Map class inherits from the MapWidget class of the maplibre.ipywidget module."""
 
-    _BASEMAP_ALIASES: Dict[str, List[str]] = {
+    _BASEMAP_ALIASES: dict[str, List[str]] = {
         "DEFAULT": ["Google.Roadmap", "OpenStreetMap.Mapnik"],
         "ROADMAP": ["Google.Roadmap", "Esri.WorldStreetMap"],
         "SATELLITE": ["Google.Satellite", "Esri.WorldImagery"],
@@ -61,7 +61,7 @@ class Map(MapWidget):
         bearing: float = 0,
         style: str = "dark-matter",
         height: str = "600px",
-        controls: Dict[str, str] = {
+        controls: dict[str, str] = {
             "navigation": "top-right",
             "fullscreen": "top-right",
             "scale": "bottom-left",
@@ -165,7 +165,7 @@ class Map(MapWidget):
             self.style_dict[layer["id"]] = layer
         self.source_dict = {}
 
-    def _get_available_basemaps(self) -> Dict[str, Any]:
+    def _get_available_basemaps(self) -> dict[str, Any]:
         """Convert xyz tile services to a dictionary of basemaps."""
         tile_providers = list(get_xyz_dict().values())
         if coreutils.get_google_maps_api_key():
@@ -212,8 +212,8 @@ class Map(MapWidget):
     def add_layer(
         self,
         layer: "Layer",
-        before_id: Optional[str] = None,
-        name: Optional[str] = None,
+        before_id: str | None = None,
+        name: str | None = None,
     ) -> None:
         """
         Adds a layer to the map.
@@ -333,9 +333,9 @@ class Map(MapWidget):
 
     def add_draw_control(
         self,
-        options: Optional[Dict[str, Any]] = None,
+        options: dict[str, Any] | None = None,
         position: str = "top-left",
-        geojson: Optional[Dict[str, Any]] = None,
+        geojson: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -389,7 +389,7 @@ class Map(MapWidget):
         else:
             print("There are no features to save.")
 
-    def add_source(self, id: str, source: Union[str, Dict]) -> None:
+    def add_source(self, id: str, source: Union[str, dict]) -> None:
         """
         Adds a source to the map.
 
@@ -403,7 +403,7 @@ class Map(MapWidget):
         super().add_source(id, source)
         self.source_dict[id] = source
 
-    def set_center(self, lon: float, lat: float, zoom: Optional[int] = None) -> None:
+    def set_center(self, lon: float, lat: float, zoom: int | None = None) -> None:
         """
         Sets the center of the map.
 
@@ -425,7 +425,7 @@ class Map(MapWidget):
         if zoom is not None:
             self.add_call("setZoom", zoom)
 
-    def set_zoom(self, zoom: Optional[int] = None) -> None:
+    def set_zoom(self, zoom: int | None = None) -> None:
         """
         Sets the zoom level of the map.
 
@@ -470,7 +470,7 @@ class Map(MapWidget):
         basemap: Union[str, xyzservices.TileProvider] = None,
         opacity: float = 1.0,
         visible: bool = True,
-        attribution: Optional[str] = None,
+        attribution: str | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -560,15 +560,15 @@ class Map(MapWidget):
 
     def add_geojson(
         self,
-        data: Union[str, Dict],
-        layer_type: Optional[str] = None,
-        filter: Optional[Dict] = None,
-        paint: Optional[Dict] = None,
-        name: Optional[str] = None,
+        data: Union[str, dict],
+        layer_type: str | None = None,
+        filter: dict | None = None,
+        paint: dict | None = None,
+        name: str | None = None,
         fit_bounds: bool = True,
         visible: bool = True,
-        before_id: Optional[str] = None,
-        source_args: Dict = {},
+        before_id: str | None = None,
+        source_args: dict = {},
         **kwargs: Any,
     ) -> None:
         """
@@ -680,15 +680,15 @@ class Map(MapWidget):
 
     def add_vector(
         self,
-        data: Union[str, Dict],
-        layer_type: Optional[str] = None,
-        filter: Optional[Dict] = None,
-        paint: Optional[Dict] = None,
-        name: Optional[str] = None,
+        data: Union[str, dict],
+        layer_type: str | None = None,
+        filter: dict | None = None,
+        paint: dict | None = None,
+        name: str | None = None,
         fit_bounds: bool = True,
         visible: bool = True,
-        before_id: Optional[str] = None,
-        source_args: Dict = {},
+        before_id: str | None = None,
+        source_args: dict = {},
         **kwargs: Any,
     ) -> None:
         """
@@ -748,14 +748,14 @@ class Map(MapWidget):
     def add_gdf(
         self,
         gdf: gpd.GeoDataFrame,
-        layer_type: Optional[str] = None,
-        filter: Optional[Dict] = None,
-        paint: Optional[Dict] = None,
-        name: Optional[str] = None,
+        layer_type: str | None = None,
+        filter: dict | None = None,
+        paint: dict | None = None,
+        name: str | None = None,
         fit_bounds: bool = True,
         visible: bool = True,
-        before_id: Optional[str] = None,
-        source_args: Dict = {},
+        before_id: str | None = None,
+        source_args: dict = {},
         **kwargs: Any,
     ) -> None:
         """
@@ -813,8 +813,8 @@ class Map(MapWidget):
         opacity: float = 1.0,
         visible: bool = True,
         tile_size: int = 256,
-        before_id: Optional[str] = None,
-        source_args: Dict = {},
+        before_id: str | None = None,
+        source_args: dict = {},
         **kwargs: Any,
     ) -> None:
         """
@@ -866,8 +866,8 @@ class Map(MapWidget):
         opacity: float = 1.0,
         visible: bool = True,
         tile_size: int = 256,
-        before_id: Optional[str] = None,
-        source_args: Dict = {},
+        before_id: str | None = None,
+        source_args: dict = {},
         **kwargs: Any,
     ) -> None:
         """
@@ -923,7 +923,7 @@ class Map(MapWidget):
         opacity: float = 1.0,
         attribution: str = "Google Earth Engine",
         visible: bool = True,
-        before_id: Optional[str] = None,
+        before_id: str | None = None,
         ee_initialize: bool = False,
         **kwargs,
     ) -> None:
@@ -1004,15 +1004,15 @@ class Map(MapWidget):
     def add_cog_layer(
         self,
         url: str,
-        name: Optional[str] = None,
+        name: str | None = None,
         attribution: str = "",
         opacity: float = 1.0,
         visible: bool = True,
-        bands: Optional[List[int]] = None,
-        nodata: Optional[Union[int, float]] = 0,
+        bands: List[int] | None = None,
+        nodata: Union[int, float] | None = 0,
         titiler_endpoint: str = None,
         fit_bounds: bool = True,
-        before_id: Optional[str] = None,
+        before_id: str | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -1062,19 +1062,19 @@ class Map(MapWidget):
 
     def add_stac_layer(
         self,
-        url: Optional[str] = None,
-        collection: Optional[str] = None,
-        item: Optional[str] = None,
-        assets: Optional[Union[str, List[str]]] = None,
-        bands: Optional[List[str]] = None,
-        nodata: Optional[Union[int, float]] = 0,
-        titiler_endpoint: Optional[str] = None,
+        url: str | None = None,
+        collection: str | None = None,
+        item: str | None = None,
+        assets: Union[str, List[str]] | None = None,
+        bands: List[str] | None = None,
+        nodata: Union[int, float] | None = 0,
+        titiler_endpoint: str | None = None,
         name: str = "STAC Layer",
         attribution: str = "",
         opacity: float = 1.0,
         visible: bool = True,
         fit_bounds: bool = True,
-        before_id: Optional[str] = None,
+        before_id: str | None = None,
         **kwargs: Any,
     ) -> None:
         """
@@ -1720,13 +1720,13 @@ class Map(MapWidget):
     def add_pmtiles(
         self,
         url: str,
-        style: Optional[Dict] = None,
+        style: dict | None = None,
         visible: bool = True,
         opacity: float = 1.0,
         exclude_mask: bool = False,
         tooltip: bool = True,
-        properties: Optional[Dict] = None,
-        template: Optional[str] = None,
+        properties: dict | None = None,
+        template: str | None = None,
         attribution: str = "PMTiles",
         fit_bounds: bool = True,
         **kwargs: Any,
@@ -1805,8 +1805,8 @@ class Map(MapWidget):
         self,
         marker: Marker = None,
         lng_lat: List[Union[float, float]] = [],
-        popup: Optional[Dict] = {},
-        options: Optional[Dict] = {},
+        popup: dict | None = {},
+        options: dict | None = {},
     ) -> None:
         """
         Adds a marker to the map.
@@ -1832,8 +1832,8 @@ class Map(MapWidget):
         self,
         lon: float,
         lat: float,
-        zoom: Optional[float] = None,
-        speed: Optional[float] = None,
+        zoom: float | None = None,
+        speed: float | None = None,
         essential: bool = True,
         **kwargs: Any,
     ) -> None:
@@ -1866,7 +1866,7 @@ class Map(MapWidget):
 
         super().add_call("flyTo", kwargs)
 
-    def _read_image(self, image: str) -> Dict[str, Union[int, List[int]]]:
+    def _read_image(self, image: str) -> dict[str, Union[int, List[int]]]:
         """
         Reads an image from a URL or a local file path and returns a dictionary
             with the image data.
@@ -1937,7 +1937,7 @@ class Map(MapWidget):
     def add_image(
         self,
         id: str = None,
-        image: Union[str, Dict] = None,
+        image: Union[str, dict] = None,
         width: int = None,
         height: int = None,
         coordinates: List[float] = None,
@@ -2030,9 +2030,9 @@ class Map(MapWidget):
 
     def to_streamlit(
         self,
-        width: Optional[int] = None,
-        height: Optional[int] = 600,
-        scrolling: Optional[bool] = False,
+        width: int | None = None,
+        height: int | None = 600,
+        scrolling: bool | None = False,
         **kwargs: Any,
     ) -> Any:
         """
@@ -2075,7 +2075,7 @@ class Map(MapWidget):
             raise Exception(e)
 
     def rotate_to(
-        self, bearing: float, options: Dict[str, Any] = {}, **kwargs: Any
+        self, bearing: float, options: dict[str, Any] = {}, **kwargs: Any
     ) -> None:
         """
         Rotate the map to a specified bearing.
@@ -2129,7 +2129,7 @@ class Map(MapWidget):
     def pan_to(
         self,
         lnglat: List[float],
-        options: Dict[str, Any] = {},
+        options: dict[str, Any] = {},
         **kwargs: Any,
     ) -> None:
         """
@@ -2167,7 +2167,7 @@ class Map(MapWidget):
         """
         super().add_call("setPitch", pitch, **kwargs)
 
-    def jump_to(self, options: Dict[str, Any] = {}, **kwargs: Any) -> None:
+    def jump_to(self, options: dict[str, Any] = {}, **kwargs: Any) -> None:
         """
         Jumps the map to a specified location.
 
@@ -2189,8 +2189,8 @@ class Map(MapWidget):
         satellite=True,
         exaggeration: float = 1,
         token: str = "MAPTILER_KEY",
-        api_key: Optional[str] = None,
-    ) -> Dict[str, Any]:
+        api_key: str | None = None,
+    ) -> dict[str, Any]:
         """
         Get the 3D terrain style for the map.
 
@@ -2300,7 +2300,7 @@ class Map(MapWidget):
         else:
             return []
 
-    def find_style_layer(self, id: str) -> Optional[Dict]:
+    def find_style_layer(self, id: str) -> dict | None:
         """
         Searches for a style layer in the map's current style by its ID and returns it if found.
 
@@ -2316,7 +2316,7 @@ class Map(MapWidget):
                 return layer
         return None
 
-    def zoom_to(self, zoom: float, options: Dict[str, Any] = {}, **kwargs: Any) -> None:
+    def zoom_to(self, zoom: float, options: dict[str, Any] = {}, **kwargs: Any) -> None:
         """
         Zooms the map to a specified zoom level.
 
@@ -2334,7 +2334,7 @@ class Map(MapWidget):
         """
         super().add_call("zoomTo", zoom, options, **kwargs)
 
-    def find_first_symbol_layer(self) -> Optional[Dict]:
+    def find_first_symbol_layer(self) -> dict | None:
         """
         Find the first symbol layer in the map's current style.
 
@@ -2429,13 +2429,13 @@ class Map(MapWidget):
     def add_legend(
         self,
         title: str = "Legend",
-        legend_dict: Optional[Dict[str, str]] = None,
-        labels: Optional[List[str]] = None,
-        colors: Optional[List[str]] = None,
+        legend_dict: dict[str, str] | None = None,
+        labels: List[str] | None = None,
+        colors: List[str] | None = None,
         fontsize: int = 15,
         bg_color: str = "white",
         position: str = "bottom-right",
-        builtin_legend: Optional[str] = None,
+        builtin_legend: str | None = None,
         **kwargs: Union[str, int, float],
     ) -> None:
         """
@@ -2580,22 +2580,22 @@ class Map(MapWidget):
 
     def add_colorbar(
         self,
-        width: Optional[float] = 3.0,
-        height: Optional[float] = 0.2,
-        vmin: Optional[float] = 0,
-        vmax: Optional[float] = 1.0,
-        palette: Optional[List[str]] = None,
-        vis_params: Optional[Dict[str, Union[str, float, int]]] = None,
-        cmap: Optional[str] = "gray",
-        discrete: Optional[bool] = False,
-        label: Optional[str] = None,
-        label_size: Optional[int] = 10,
-        label_weight: Optional[str] = "normal",
-        tick_size: Optional[int] = 8,
-        bg_color: Optional[str] = "white",
-        orientation: Optional[str] = "horizontal",
-        dpi: Optional[Union[str, float]] = "figure",
-        transparent: Optional[bool] = False,
+        width: float | None = 3.0,
+        height: float | None = 0.2,
+        vmin: float | None = 0,
+        vmax: float | None = 1.0,
+        palette: List[str] | None = None,
+        vis_params: dict[str, Union[str, float, int]] | None = None,
+        cmap: str | None = "gray",
+        discrete: bool | None = False,
+        label: str | None = None,
+        label_size: int | None = 10,
+        label_weight: str | None = "normal",
+        tick_size: int | None = 8,
+        bg_color: str | None = "white",
+        orientation: str | None = "horizontal",
+        dpi: Union[str, float] | None = "figure",
+        transparent: bool | None = False,
         position: str = "bottom-right",
         **kwargs,
     ) -> str:
@@ -2660,11 +2660,11 @@ class Map(MapWidget):
 
     def add_layer_control(
         self,
-        layer_ids: Optional[List[str]] = None,
+        layer_ids: List[str] | None = None,
         theme: str = "default",
-        css_text: Optional[str] = None,
+        css_text: str | None = None,
         position: str = "top-left",
-        bg_layers: Optional[Union[bool, List[str]]] = False,
+        bg_layers: Union[bool, List[str]] | None = False,
     ) -> None:
         """
         Adds a layer control to the map.
@@ -2791,7 +2791,7 @@ class Map(MapWidget):
         urls: Union[str, List[str]],
         coordinates: List[List[float]],
         layer_id: str = "video",
-        before_id: Optional[str] = None,
+        before_id: str | None = None,
     ) -> None:
         """
         Adds a video layer to the map.
@@ -2881,7 +2881,7 @@ class Container(v.Container):
         super().__init__(fluid=True, children=[row])
 
 
-def construct_maptiler_style(style: str, api_key: Optional[str] = None) -> str:
+def construct_maptiler_style(style: str, api_key: str | None = None) -> str:
     """
     Constructs a URL for a MapTiler style with an optional API key.
 
@@ -2926,8 +2926,8 @@ def maptiler_3d_style(
     max_zoom: int = 24,
     hillshade: bool = True,
     token: str = "MAPTILER_KEY",
-    api_key: Optional[str] = None,
-) -> Dict[str, Any]:
+    api_key: str | None = None,
+) -> dict[str, Any]:
     """
     Get the 3D terrain style for the map.
 
