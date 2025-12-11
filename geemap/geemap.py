@@ -328,9 +328,7 @@ class Map(core.Map):
             pair[1]["ee_object"], (ee.Geometry, ee.Feature, ee.FeatureCollection)
         )
 
-    def add(
-        self, obj: str | Any, position: str = "topright", **kwargs: Any
-    ) -> None:
+    def add(self, obj: str | Any, position: str = "topright", **kwargs: Any) -> None:
         """Adds a layer or control to the map.
 
         Args:
@@ -410,9 +408,7 @@ class Map(core.Map):
 
     def add_ee_layer(
         self,
-        ee_object: (
-            ee.FeatureCollection | ee.Feature | ee.Image | ee.ImageCollection
-        ),
+        ee_object: ee.FeatureCollection | ee.Feature | ee.Image | ee.ImageCollection,
         vis_params: dict[str, Any] | None = None,
         name: str | None = None,
         shown: bool = True,
