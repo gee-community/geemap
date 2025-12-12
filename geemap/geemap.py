@@ -11,15 +11,15 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 # The core features include classes and functions below until the line # ******* #
 # *******************************************************************************#
 
-from base64 import b64encode
+import base64
 import csv
-from io import BytesIO
+import threading
+import io
 import json
 import os
 import random
 import time
 import warnings
-import threading
 from typing import Any
 
 import ee
@@ -42,9 +42,9 @@ from . import core
 from . import coreutils
 from . import examples
 from . import map_widgets
-from . import toolbar
 from .plot import *
 from .timelapse import *
+from . import toolbar
 
 
 basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
@@ -1480,7 +1480,6 @@ class Map(core.Map):
         )
         self.setCenter(-50.078877, 25.190030, 3)
         band_names = image.bandNames().getInfo()
-        # band_count = len(band_names)
 
         latitudes = np.random.uniform(30, 48, size=iterations)
         longitudes = np.random.uniform(-121, -76, size=iterations)
@@ -1794,7 +1793,6 @@ class Map(core.Map):
             )
 
             self.add(control)
-            # self.dragging = False
 
             if left_label is not None:
                 if widget_layout is None:
@@ -1835,8 +1833,6 @@ class Map(core.Map):
                     self.controls = controls
                     self.layers = layers[:-1]
                     self.add(layers[-1])
-
-                # self.dragging = True
 
             close_button.observe(close_btn_click, "value")
             close_control = ipyleaflet.WidgetControl(
@@ -2016,7 +2012,6 @@ class Map(core.Map):
             value=False,
             tooltip="Close the tool",
             icon="times",
-            # button_style="primary",
             layout=widgets.Layout(
                 height="28px", width="28px", padding="0px 0px 0px 4px"
             ),
@@ -2038,7 +2033,6 @@ class Map(core.Map):
                 left_layer=left_layer, right_layer=right_layer
             )
             self.add(split_control)
-            # self.dragging = False
 
             if add_close_button:
                 self.add(close_control)
@@ -2151,13 +2145,13 @@ class Map(core.Map):
                 ext = os.path.splitext(url)[1][1:]  # file extension
                 image = Image.open(url)
 
-                f = BytesIO()
+                f = io.BytesIO()
                 if ext.lower() == "gif":
                     frames = []
                     # Loop over each frame in the animated image
                     for frame in ImageSequence.Iterator(image):
                         frame = frame.convert("RGBA")
-                        b = BytesIO()
+                        b = io.BytesIO()
                         frame.save(b, format="gif")
                         frame = Image.open(b)
                         frames.append(frame)
@@ -2171,7 +2165,7 @@ class Map(core.Map):
                 else:
                     image.save(f, ext)
 
-                data = b64encode(f.getvalue())
+                data = base64.b64encode(f.getvalue())
                 data = data.decode("ascii")
                 url = f"data:image/{ext};base64," + data
             img = ipyleaflet.ImageOverlay(url=url, bounds=bounds, name=name)
@@ -2326,9 +2320,6 @@ class Map(core.Map):
                     progress_bar_color=progress_bar_color,
                     progress_bar_height=progress_bar_height,
                 )
-                # if nd_bands is not None:
-                #     add_text_to_gif(in_nd_gif, in_nd_gif, xy=('2%', '90%'), text_sequence=label,
-                #                     font_size=font_size, font_color=font_color, duration=int(1000 / frames_per_second), add_progress_bar=add_progress_bar, progress_bar_color=progress_bar_color, progress_bar_height=progress_bar_height)
 
             if is_tool("ffmpeg"):
                 reduce_gif_size(in_gif)
@@ -2607,7 +2598,6 @@ class Map(core.Map):
                     self._chart_values = self._chart_values[:-1]
                 if hasattr(self, "_chart_points"):
                     self._chart_points = self._chart_points[:-1]
-                # self._chart_labels = None
 
     def extract_values_to_points(self, filename):
         """Exports pixel values to a csv file based on user-drawn geometries.
@@ -3562,12 +3552,6 @@ class Map(core.Map):
         else:
             raise TypeError("The ee_object must be an ee.Image or ee.ImageCollection")
 
-        # if labels is not None:
-        #     size = len(labels)
-        # else:
-        #     size = ee_object.size().getInfo()
-        #     labels = [str(i) for i in range(1, size + 1)]
-
         first = ee.Image(ee_object.first())
 
         if layer_name not in self.ee_layers:
@@ -4063,13 +4047,6 @@ class Map(core.Map):
         try:
             import streamlit.components.v1 as components
 
-            # if responsive:
-            #     make_map_responsive = """
-            #     <style>
-            #     [title~="st.iframe"] { width: 100%}
-            #     </style>
-            #     """
-            #     st.markdown(make_map_responsive, unsafe_allow_html=True)
             return components.html(
                 self.to_html(), width=width, height=height, scrolling=scrolling
             )
@@ -4885,9 +4862,6 @@ class Map(core.Map):
             os.remove(geotiff)
 
 
-# The functions below are outside the Map class.
-
-
 class ImageOverlay(ipyleaflet.ImageOverlay):
     """ImageOverlay class.
 
@@ -4910,13 +4884,13 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
                 ext = os.path.splitext(url)[1][1:]  # file extension
                 image = Image.open(url)
 
-                f = BytesIO()
+                f = io.BytesIO()
                 if ext.lower() == "gif":
                     frames = []
                     # Loop over each frame in the animated image
                     for frame in ImageSequence.Iterator(image):
                         frame = frame.convert("RGBA")
-                        b = BytesIO()
+                        b = io.BytesIO()
                         frame.save(b, format="gif")
                         frame = Image.open(b)
                         frames.append(frame)
@@ -4930,7 +4904,7 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
                 else:
                     image.save(f, ext)
 
-                data = b64encode(f.getvalue())
+                data = base64.b64encode(f.getvalue())
                 data = data.decode("ascii")
                 url = f"data:image/{ext};base64," + data
                 kwargs["url"] = url
@@ -5105,7 +5079,6 @@ def ts_inspector(
     m = Map(center=center, zoom=zoom, **kwargs)
     control = ipyleaflet.SplitMapControl(left_layer=left_layer, right_layer=right_layer)
     m.add(control)
-    # m.dragging = False
 
     left_dropdown = widgets.Dropdown(
         options=keys, value=left_name, layout=widgets.Layout(width=width)
