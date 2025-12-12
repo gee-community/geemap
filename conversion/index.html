@@ -7364,7 +7364,7 @@
                 <code>input_lines</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="typing.Sequence">Sequence</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7383,18 +7383,18 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
+            <td>
                   <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Output JavaScript with map function</p>
+                <p>Output JavaScript with map function.</p>
               </div>
             </td>
           </tr>
@@ -7490,10 +7490,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts Earth Engine map function.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input_lines (list): List of Earth Engine JavaScrips</span>
+<span class="sd">        input_lines: List of Earth Engine JavaScrips</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: Output JavaScript with map function</span>
+<span class="sd">        Output JavaScript with map function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_lines</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">currentNumOfNestedFuncs</span> <span class="o">=</span> <span class="mi">0</span>
@@ -7624,13 +7624,13 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
+            <td>
                   <code><span title="str">str</span></code>
             </td>
             <td>
@@ -7698,10 +7698,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts JavaScript for loop to Python for loop.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        line (str): Input JavaScript for loop</span>
+<span class="sd">        line: Input JavaScript for loop</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: Converted Python for loop.</span>
+<span class="sd">        Converted Python for loop.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;var &quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;var &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -7810,7 +7810,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new cell in Jupyter notebook based on the contents.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        contents (str): A string of Python code.</span>
+<span class="sd">        contents: A string of Python code.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">IPython.core.getipython</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_ipython</span>
 
@@ -7868,7 +7868,7 @@
                 <code>out_file</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7929,13 +7929,12 @@
 <span class="normal">1275</span>
 <span class="normal">1276</span>
 <span class="normal">1277</span>
-<span class="normal">1278</span>
-<span class="normal">1279</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1278</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Downloads JavaScript source code from a GEE App.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        url (str): The URL of the GEE App.</span>
-<span class="sd">        out_file (str, optional): The output file path for the downloaded JavaScript. Defaults to None.</span>
+<span class="sd">        url: The URL of the GEE App.</span>
+<span class="sd">        out_file: The output file path for the downloaded JavaScript. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">out_file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.js&quot;</span>
@@ -7966,7 +7965,6 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">f2</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
-                <span class="c1"># print(line)</span>
                 <span class="n">items</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
                     <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
@@ -8040,7 +8038,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes a Jupyter notebook and save output cells.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_file (str): Input Jupyter notebook.</span>
+<span class="sd">        in_file: Input Jupyter notebook.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;jupyter nbconvert --to notebook --execute &quot;</span><span class="si">{}</span><span class="s1">&quot; --inplace&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
     <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
@@ -8116,7 +8114,7 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes all Jupyter notebooks in the given directory recursively and save output cells.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_dir (str): Input folder containing notebooks.</span>
+<span class="sd">        in_dir: Input folder containing notebooks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Executing Earth Engine Jupyter notebooks ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -8164,7 +8162,7 @@
                 <code>lines</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8328,14 +8326,14 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Finds the position of the matching closing bracket from a list of lines.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        lines (list): The input list of lines.</span>
-<span class="sd">        start_line_index (int): The line index where the starting bracket is located.</span>
-<span class="sd">        start_char_index (int): The position index of the starting bracket.</span>
-<span class="sd">        matching_char (str, optional): The starting bracket to search for. Defaults to &#39;{&#39;.</span>
+<span class="sd">        lines: The input list of lines.</span>
+<span class="sd">        start_line_index: The line index where the starting bracket is located.</span>
+<span class="sd">        start_char_index: The position index of the starting bracket.</span>
+<span class="sd">        matching_char: The starting bracket to search for. Defaults to &#39;{&#39;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        matching_line_index (int): The line index where the matching closing bracket is located.</span>
-<span class="sd">        matching_char_index (int): The position index of the matching closing bracket.</span>
+<span class="sd">        matching_line_index: The line index where the matching closing bracket is located.</span>
+<span class="sd">        matching_char_index: The position index of the matching closing bracket.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">matching_line_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">matching_char_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -8460,7 +8458,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>[str]: A string with keys quoted</p>
+                <p>A string with keys quoted.</p>
               </div>
             </td>
           </tr>
@@ -8541,11 +8539,11 @@
 <span class="sd">    For example, {min: 0, max: 10} will result in (&#39;min&#39;: 0, &#39;max&#39;: 10)</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        line (str): A string.</span>
-<span class="sd">        sep (str, optional): Separator. Defaults to &#39;:&#39;.</span>
+<span class="sd">        line: A string.</span>
+<span class="sd">        sep: Separator. Defaults to &#39;:&#39;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        [str]: A string with keys quoted</span>
+<span class="sd">        A string with keys quoted.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">new_line</span> <span class="o">=</span> <span class="n">line</span>
     <span class="n">prefix</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -8637,7 +8635,7 @@
                 <code>out_dir</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8656,13 +8654,13 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
+            <td>
                   <code><span title="str">str</span></code>
             </td>
             <td>
@@ -8704,10 +8702,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets Earth Engine JavaScript examples from the geemap package.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        out_dir (str, optional): The folder to copy the JavaScript examples to. Defaults to None.</span>
+<span class="sd">        out_dir: The folder to copy the JavaScript examples to. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: The folder containing the JavaScript examples.</span>
+<span class="sd">        The folder containing the JavaScript examples.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
     <span class="n">example_dir</span> <span class="o">=</span> <span class="n">pkg_dir</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
@@ -9215,7 +9213,7 @@
         Map (str, optional): The name of the map variable. Defaults to "m".</p>
 <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
 <span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>Returns:
-    list: Python script
+    list: Python script.
 </code></pre></div></td></tr></table></div>
 
 
@@ -9637,7 +9635,7 @@
 <span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: Python script</span>
+<span class="sd">        list: Python script.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -10700,7 +10698,7 @@
                 <code>input_lines</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="typing.Sequence">Sequence</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10719,18 +10717,18 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
+            <td>
                   <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Output JavaScript with indentation removed</p>
+                <p>Output JavaScript with indentation removed.</p>
               </div>
             </td>
           </tr>
@@ -10756,10 +10754,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes all indentation for reformatting according to python&#39;s indentation rules.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input_lines (list): List of Earth Engine JavaScrips</span>
+<span class="sd">        input_lines: List of Earth Engine JavaScrips</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: Output JavaScript with indentation removed</span>
+<span class="sd">        Output JavaScript with indentation removed.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_lines</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_lines</span><span class="p">):</span>
@@ -10836,13 +10834,13 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
+            <td>
                   <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
@@ -10887,11 +10885,11 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes &#39;from ee_plugin import Map&#39; from an Earth Engine Python script.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_file (str): Input file path of the Python script.</span>
-<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        in_file: Input file path of the Python script.</span>
+<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: List of lines &#39;from ee_plugin import Map&#39; removed or None.</span>
+<span class="sd">        List of lines &#39;from ee_plugin import Map&#39; removed or None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
 
@@ -10965,13 +10963,14 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11004,14 +11003,14 @@
 <span class="normal">984</span>
 <span class="normal">985</span>
 <span class="normal">986</span>
-<span class="normal">987</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">):</span>
+<span class="normal">987</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts footer from the notebook template.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_template (str): Input notebook template file path.</span>
+<span class="sd">        in_template: Input notebook template file path.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: List of lines.</span>
+<span class="sd">        List of lines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">footer_start_index</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -11079,13 +11078,14 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11118,14 +11118,14 @@
 <span class="normal">962</span>
 <span class="normal">963</span>
 <span class="normal">964</span>
-<span class="normal">965</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">):</span>
+<span class="normal">965</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts header from the notebook template.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_template (str): Input notebook template file path.</span>
+<span class="sd">        in_template: Input notebook template file path.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: List of lines.</span>
+<span class="sd">        List of lines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">header_end_index</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -11190,7 +11190,7 @@
                 <code>github_username</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11206,7 +11206,7 @@
                 <code>github_repo</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11282,9 +11282,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates notebook header (binder and Google Colab URLs).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_file (str): The input Jupyter notebook.</span>
-<span class="sd">        github_username (str, optional): GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo (str, optional): GitHub repo name. Defaults to None.</span>
+<span class="sd">        in_file: The input Jupyter notebook.</span>
+<span class="sd">        github_username: GitHub username. Defaults to None.</span>
+<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">github_username</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">github_username</span> <span class="o">=</span> <span class="s2">&quot;giswqs&quot;</span>
@@ -11382,7 +11382,7 @@
                 <code>github_username</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11398,7 +11398,7 @@
                 <code>github_repo</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11441,9 +11441,9 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates header (binder and Google Colab URLs) of all notebooks in a folder.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_dir (str): The input directory containing Jupyter notebooks.</span>
-<span class="sd">        github_username (str, optional): GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo (str, optional): GitHub repo name. Defaults to None.</span>
+<span class="sd">        in_dir: The input directory containing Jupyter notebooks.</span>
+<span class="sd">        github_username: GitHub username. Defaults to None.</span>
+<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
@@ -11492,7 +11492,7 @@
                 <code>lines</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="typing.Sequence">Sequence</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11522,7 +11522,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>[bool]: Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'</p>
+                <p>Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'.</p>
               </div>
             </td>
           </tr>
@@ -11550,10 +11550,10 @@
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if an Earth Engine uses Math library.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        lines (list): An Earth Engine JavaScript.</span>
+<span class="sd">        lines: An Earth Engine JavaScript.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        [bool]: Returns True if the script contains &#39;Math.&#39;. For example &#39;Math.PI&#39;, &#39;Math.pow&#39;</span>
+<span class="sd">        Returns True if the script contains &#39;Math.&#39;. For example &#39;Math.PI&#39;, &#39;Math.pow&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">math_import</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
