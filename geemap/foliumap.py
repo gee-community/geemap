@@ -6,7 +6,7 @@
 # *******************************************************************************#
 
 import base64
-from io import BytesIO
+import io
 import json
 import logging
 import os
@@ -2642,7 +2642,7 @@ class Map(folium.Map):
                     # open in binary mode, read bytes, encode, decode obtained bytes as utf-8 string
                     b64_content = base64.b64encode(lf.read()).decode("utf-8")
                     widget = plugins.FloatImage(
-                        "data:image/png;base64,{}".format(b64_content),
+                        f"data:image/png;base64,{b64_content}",
                         bottom=position[1],
                         left=position[0],
                     )
@@ -2668,7 +2668,7 @@ class Map(folium.Map):
                 widget = CustomControl(content, position=position)
                 widget.add_to(self)
             elif isinstance(content, figure.Figure):
-                buf = BytesIO()
+                buf = io.BytesIO()
                 content.savefig(buf, format="png")
                 buf.seek(0)
                 b64_content = base64.b64encode(buf.read()).decode("utf-8")
@@ -2862,15 +2862,13 @@ class SplitControl(Layer):
     def __init__(
         self, layer_left, layer_right, name=None, overlay=True, control=False, show=True
     ):
-        super(SplitControl, self).__init__(
-            name=name, overlay=overlay, control=control, show=show
-        )
+        super().__init__(name=name, overlay=overlay, control=control, show=show)
         self._name = "SplitControl"
         self.layer_left = layer_left
         self.layer_right = layer_right
 
     def render(self, **kwargs):
-        super(SplitControl, self).render()
+        super().render()
 
         figure = self.get_root()
         assert isinstance(figure, Figure), (
@@ -3014,7 +3012,7 @@ class FloatText(MacroElement):
     )
 
     def __init__(self, text, bottom=75, left=75):
-        super(FloatText, self).__init__()
+        super().__init__()
         self._name = "FloatText"
         self.text = text
         self.bottom = bottom
