@@ -515,7 +515,7 @@ def ee_table_to_legend(in_table: str, out_file: str) -> None:
     out_lines.append("{\n")
 
     for key in legend_dict.keys():
-        line = "\t'{}': '{}',\n".format(key, legend_dict[key])
+        line = f"\t'{key}': '{legend_dict[key]}',\n"
         out_lines.append(line)
 
     out_lines[-1] = out_lines[-1].rstrip()[:-1] + "\n"
