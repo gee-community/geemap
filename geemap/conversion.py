@@ -856,7 +856,7 @@ def js_to_python_dir(
         )
 
 
-def remove_qgis_import(in_file: str, Map: str = "m") -> None:
+def remove_qgis_import(in_file: str, Map: str = "m") -> list[str] | None:
     """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
 
     Args:
@@ -864,7 +864,7 @@ def remove_qgis_import(in_file: str, Map: str = "m") -> None:
         Map (str, optional): The name of the map variable. Defaults to "m".
 
     Returns:
-        list: List of lines  'from ee_plugin import Map' removed.
+        list: List of lines 'from ee_plugin import Map' removed or None.
     """
     in_file = os.path.abspath(in_file)
 
