@@ -9634,9 +9634,9 @@ legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
     <span class="n">xl0</span><span class="p">,</span> <span class="n">xl1</span> <span class="o">=</span> <span class="n">x_targets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">x_targets</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
     <span class="c1"># calculate Axes Y coordinates of box top+bottom</span>
-    <span class="n">yl0</span><span class="p">,</span> <span class="n">yl1</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="n">yl0</span><span class="p">,</span> <span class="n">yl1</span> <span class="o">=</span> <span class="p">(</span>
         <span class="n">lat_0</span> <span class="o">+</span> <span class="n">ay_frac</span> <span class="o">*</span> <span class="p">(</span><span class="n">lat_1</span> <span class="o">-</span> <span class="n">lat_0</span><span class="p">)</span> <span class="k">for</span> <span class="n">ay_frac</span> <span class="ow">in</span> <span class="p">[</span><span class="n">ayfrac_ini</span><span class="p">,</span> <span class="n">ayfrac_final</span><span class="p">]</span>
-    <span class="p">]</span>
+    <span class="p">)</span>
 
     <span class="c1"># calculate Axes Y distance of ticks + label margins</span>
     <span class="n">y_margin</span> <span class="o">=</span> <span class="p">(</span><span class="n">yl1</span> <span class="o">-</span> <span class="n">yl0</span><span class="p">)</span> <span class="o">*</span> <span class="n">ytick_label_margins</span>
@@ -9707,7 +9707,7 @@ legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
         <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
             <span class="n">x</span><span class="p">,</span>
             <span class="n">yl0</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">y_margin</span><span class="p">,</span>
-            <span class="s2">&quot;</span><span class="si">{:g}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">((</span><span class="n">xlabel</span><span class="p">)),</span>
+            <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="p">(</span><span class="n">xlabel</span><span class="p">)</span><span class="si">:</span><span class="s2">g</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">verticalalignment</span><span class="o">=</span><span class="s2">&quot;top&quot;</span><span class="p">,</span>
             <span class="n">horizontalalignment</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
             <span class="n">fontproperties</span><span class="o">=</span><span class="n">font_props</span><span class="p">,</span>
