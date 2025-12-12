@@ -32,14 +32,14 @@ def find_matching_bracket(
     """Finds the position of the matching closing bracket from a list of lines.
 
     Args:
-        lines (list): The input list of lines.
-        start_line_index (int): The line index where the starting bracket is located.
-        start_char_index (int): The position index of the starting bracket.
-        matching_char (str, optional): The starting bracket to search for. Defaults to '{'.
+        lines: The input list of lines.
+        start_line_index: The line index where the starting bracket is located.
+        start_char_index: The position index of the starting bracket.
+        matching_char: The starting bracket to search for. Defaults to '{'.
 
     Returns:
-        matching_line_index (int): The line index where the matching closing bracket is located.
-        matching_char_index (int): The position index of the matching closing bracket.
+        matching_line_index: The line index where the matching closing bracket is located.
+        matching_char_index: The position index of the matching closing bracket.
     """
     matching_line_index = -1
     matching_char_index = -1
@@ -89,11 +89,11 @@ def format_params(line: str, sep: str = ":") -> str:
     For example, {min: 0, max: 10} will result in ('min': 0, 'max': 10)
 
     Args:
-        line (str): A string.
-        sep (str, optional): Separator. Defaults to ':'.
+        line: A string.
+        sep: Separator. Defaults to ':'.
 
     Returns:
-        [str]: A string with keys quoted
+        A string with keys quoted.
     """
     new_line = line
     prefix = ""
@@ -155,10 +155,10 @@ def use_math(lines: Sequence[str]) -> bool:
     """Checks if an Earth Engine uses Math library.
 
     Args:
-        lines (list): An Earth Engine JavaScript.
+        lines: An Earth Engine JavaScript.
 
     Returns:
-        [bool]: Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'
+        Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'.
     """
     math_import = False
     for line in lines:
@@ -172,10 +172,10 @@ def convert_for_loop(line: str) -> str:
     """Converts JavaScript for loop to Python for loop.
 
     Args:
-        line (str): Input JavaScript for loop
+        line: Input JavaScript for loop
 
     Returns:
-        str: Converted Python for loop.
+        Converted Python for loop.
     """
     if "var " in line:
         line = line.replace("var ", "")
@@ -224,10 +224,10 @@ def remove_all_indentation(input_lines: Sequence[str]) -> list[str]:
     """Removes all indentation for reformatting according to python's indentation rules.
 
     Args:
-        input_lines (list): List of Earth Engine JavaScrips
+        input_lines: List of Earth Engine JavaScrips
 
     Returns:
-        list: Output JavaScript with indentation removed
+        Output JavaScript with indentation removed.
     """
     output_lines = []
     for _, line in enumerate(input_lines):
@@ -239,10 +239,10 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
     """Extracts Earth Engine map function.
 
     Args:
-        input_lines (list): List of Earth Engine JavaScrips
+        input_lines: List of Earth Engine JavaScrips
 
     Returns:
-        list: Output JavaScript with map function
+        Output JavaScript with map function.
     """
     output_lines = []
     currentNumOfNestedFuncs = 0
@@ -341,7 +341,7 @@ def js_to_python(
         Map (str, optional): The name of the map variable. Defaults to "m".
 
     Returns:
-        list: Python script
+        list: Python script.
     """
     in_file = os.path.abspath(in_file)
     if out_file is None:
@@ -722,7 +722,7 @@ def create_new_cell(contents: str, replace: bool = False) -> None:
     """Create a new cell in Jupyter notebook based on the contents.
 
     Args:
-        contents (str): A string of Python code.
+        contents: A string of Python code.
     """
     from IPython.core.getipython import get_ipython
 
@@ -860,11 +860,11 @@ def remove_qgis_import(in_file: str, Map: str = "m") -> list[str] | None:
     """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
 
     Args:
-        in_file (str): Input file path of the Python script.
-        Map (str, optional): The name of the map variable. Defaults to "m".
+        in_file: Input file path of the Python script.
+        Map: The name of the map variable. Defaults to "m".
 
     Returns:
-        list: List of lines 'from ee_plugin import Map' removed or None.
+        List of lines 'from ee_plugin import Map' removed or None.
     """
     in_file = os.path.abspath(in_file)
 
@@ -889,10 +889,10 @@ def get_js_examples(out_dir: str | None = None) -> str:
     """Gets Earth Engine JavaScript examples from the geemap package.
 
     Args:
-        out_dir (str, optional): The folder to copy the JavaScript examples to. Defaults to None.
+        out_dir: The folder to copy the JavaScript examples to. Defaults to None.
 
     Returns:
-        str: The folder containing the JavaScript examples.
+        The folder containing the JavaScript examples.
     """
     pkg_dir = pathlib.Path(__file__).parent
     example_dir = pkg_dir / "data"
@@ -943,14 +943,14 @@ def get_nb_template(download_latest=False, out_file=None):
     return out_file
 
 
-def template_header(in_template):
+def template_header(in_template: str) -> list[str]:
     """Extracts header from the notebook template.
 
     Args:
-        in_template (str): Input notebook template file path.
+        in_template: Input notebook template file path.
 
     Returns:
-        list: List of lines.
+        List of lines.
     """
     header_end_index = 0
 
@@ -965,14 +965,14 @@ def template_header(in_template):
     return header
 
 
-def template_footer(in_template):
+def template_footer(in_template: str) -> list[str]:
     """Extracts footer from the notebook template.
 
     Args:
-        in_template (str): Input notebook template file path.
+        in_template: Input notebook template file path.
 
     Returns:
-        list: List of lines.
+        List of lines.
     """
     footer_start_index = 0
 
@@ -1128,7 +1128,7 @@ def execute_notebook(in_file: str) -> None:
     """Executes a Jupyter notebook and save output cells.
 
     Args:
-        in_file (str): Input Jupyter notebook.
+        in_file: Input Jupyter notebook.
     """
     command = 'jupyter nbconvert --to notebook --execute "{}" --inplace'.format(in_file)
     print(os.popen(command).read().rstrip())
@@ -1138,7 +1138,7 @@ def execute_notebook_dir(in_dir: str) -> None:
     """Executes all Jupyter notebooks in the given directory recursively and save output cells.
 
     Args:
-        in_dir (str): Input folder containing notebooks.
+        in_dir: Input folder containing notebooks.
     """
     print("Executing Earth Engine Jupyter notebooks ...\n")
 
@@ -1158,9 +1158,9 @@ def update_nb_header(
     """Updates notebook header (binder and Google Colab URLs).
 
     Args:
-        in_file (str): The input Jupyter notebook.
-        github_username (str, optional): GitHub username. Defaults to None.
-        github_repo (str, optional): GitHub repo name. Defaults to None.
+        in_file: The input Jupyter notebook.
+        github_username: GitHub username. Defaults to None.
+        github_repo: GitHub repo name. Defaults to None.
     """
     if github_username is None:
         github_username = "giswqs"
@@ -1214,9 +1214,9 @@ def update_nb_header_dir(
     """Updates header (binder and Google Colab URLs) of all notebooks in a folder.
 
     Args:
-        in_dir (str): The input directory containing Jupyter notebooks.
-        github_username (str, optional): GitHub username. Defaults to None.
-        github_repo (str, optional): GitHub repo name. Defaults to None.
+        in_dir: The input directory containing Jupyter notebooks.
+        github_username: GitHub username. Defaults to None.
+        github_repo: GitHub repo name. Defaults to None.
     """
     files = list(pathlib.Path(in_dir).rglob("*.ipynb"))
     for index, file in enumerate(files):
@@ -1235,8 +1235,8 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
     """Downloads JavaScript source code from a GEE App.
 
     Args:
-        url (str): The URL of the GEE App.
-        out_file (str, optional): The output file path for the downloaded JavaScript. Defaults to None.
+        url: The URL of the GEE App.
+        out_file: The output file path for the downloaded JavaScript. Defaults to None.
     """
     cwd = os.getcwd()
     out_file_name = os.path.basename(url) + ".js"
@@ -1267,7 +1267,6 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
         with open(json_path, encoding="utf-8") as f2:
             lines = f2.readlines()
             for line in lines:
-                # print(line)
                 items = line.split("\\n")
                 for index, item in enumerate(items):
                     if (index > 0) and (index < (len(items) - 1)):
@@ -1277,32 +1276,6 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
                         f1.write(item + "\n")
     os.remove(json_path)
     print(f"The JavaScript is saved at: {out_file_path}")
-
-
-# # Download file shared via Google Drive
-# def download_from_gdrive(gfile_url, file_name, out_dir='.', unzip=True):
-#     """Download a file shared via Google Drive
-#        (e.g., https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing)
-
-#     Args:
-#         gfile_url (str): The Google Drive shared file URL
-#         file_name (str): The output file name to use.
-#         out_dir (str, optional): The output directory. Defaults to '.'.
-#         unzip (bool, optional): Whether to unzip the output file if it is a zip file. Defaults to True.
-#     """
-#     try:
-#         from google_drive_downloader import GoogleDriveDownloader as gdd
-#     except ImportError:
-#         print('GoogleDriveDownloader package not installed. Installing ...')
-#         subprocess.check_call(
-#             ["python", '-m', 'pip', 'install', 'googledrivedownloader'])
-#         from google_drive_downloader import GoogleDriveDownloader as gdd
-
-#     file_id = gfile_url.split('/')[5]
-#     print('Google Drive file id: {}'.format(file_id))
-
-#     dest_path = os.path.join(out_dir, file_name)
-#     gdd.download_file_from_google_drive(file_id, dest_path, True, unzip)
 
 
 if __name__ == "__main__":
