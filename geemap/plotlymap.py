@@ -18,7 +18,6 @@ from .basemaps import xyz_to_plotly
 from .common import *
 from . import coreutils
 from . import examples
-from .osm import *
 
 
 try:
@@ -796,7 +795,7 @@ def fix_widget_error():
     shutil.copyfile(basedatatypesPath, backup_file)
 
     # read basedatatypes.py
-    with open(basedatatypesPath, "r") as f:
+    with open(basedatatypesPath) as f:
         lines = f.read()
 
     find = "if not BaseFigure._is_key_path_compatible(key_path_str, self.layout):"

@@ -864,9 +864,9 @@ def add_scale_bar(
     xl0, xl1 = x_targets[0], x_targets[-1]
 
     # calculate Axes Y coordinates of box top+bottom
-    yl0, yl1 = [
+    yl0, yl1 = (
         lat_0 + ay_frac * (lat_1 - lat_0) for ay_frac in [ayfrac_ini, ayfrac_final]
-    ]
+    )
 
     # calculate Axes Y distance of ticks + label margins
     y_margin = (yl1 - yl0) * ytick_label_margins
@@ -937,7 +937,7 @@ def add_scale_bar(
         plt.text(
             x,
             yl0 - 2 * y_margin,
-            "{:g}".format((xlabel)),
+            f"{(xlabel):g}",
             verticalalignment="top",
             horizontalalignment="center",
             fontproperties=font_props,
