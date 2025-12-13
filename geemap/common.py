@@ -2217,8 +2217,6 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
     if verbose:
         print(f"Data downloaded to: {final_path}")
 
-    return
-
 
 def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=True):
     """Download a file shared via Google Drive
@@ -2244,8 +2242,6 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
 
     dest_path = os.path.join(out_dir, file_name)
     gdd.coreutils.download_file_from_google_drive(file_id, dest_path, True, unzip)
-
-    return
 
 
 def create_download_link(filename, title="Click here to download: "):
