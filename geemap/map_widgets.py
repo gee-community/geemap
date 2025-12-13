@@ -1450,7 +1450,6 @@ class SearchBar(anywidget.AnyWidget):
 
         except Exception as e:
             pass
-        return
 
     def import_button_clicked(self):
         dataset_model = json.loads(self.dataset_model)
