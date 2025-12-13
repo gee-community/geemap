@@ -3038,7 +3038,6 @@ def delete_dp_report(name):
             dp.Report.delete(dp.Report.by_id(url))
     except Exception as e:
         print(e)
-        return
 
 
 def delete_dp_reports():
@@ -3055,7 +3054,6 @@ def delete_dp_reports():
             dp.Report.delete(dp.Report.by_id(url))
     except Exception as e:
         print(e)
-        return
 
 
 def ee_tile_layer(

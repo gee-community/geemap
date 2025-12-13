@@ -114,8 +114,6 @@ def check_dependencies() -> None:
     else:
         logging.info("All dependencies are successfully imported/installed!")
 
-    return
-
 
 # check_dependencies()
 
@@ -286,8 +284,6 @@ def add_layer(
         transform=ccrs.PlateCarree(),
         zorder=1,
     )
-
-    return
 
 
 def build_palette(cmap: str, n: int = 256) -> list[str]:
@@ -618,8 +614,6 @@ def add_gridlines(
     ax.xaxis.set_major_formatter(LONGITUDE_FORMATTER)
     ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)
 
-    return
-
 
 def pad_view(ax, factor=0.05):
     """Function to pad area around the view extent of a map, used for visual appeal
@@ -647,8 +641,6 @@ def pad_view(ax, factor=0.05):
 
     ax.set_ylim(ymin, ymax)
     ax.set_xlim(xmin, xmax)
-
-    return
 
 
 def add_north_arrow(
@@ -690,8 +682,6 @@ def add_north_arrow(
         fontsize=fontsize,
         xycoords=ax.transAxes,
     )
-
-    return
 
 
 def convert_SI(val, unit_in, unit_out):
@@ -1037,8 +1027,6 @@ def add_scale_bar_lite(
         fontsize=fontsize,
     )
 
-    return
-
 
 def create_legend(
     linewidth=None,
@@ -1132,7 +1120,6 @@ def add_legend(
         if font_color != "black":
             for text in leg.get_texts():
                 text.set_color(font_color)
-        return
     except Exception as e:
         raise Exception(e)
 

@@ -3858,7 +3858,6 @@ def _split_basemaps_tool_callback(map, selected, _):
             split_basemaps(map, layers_dict=planet_tiles())
         except Exception as e:
             print(e)
-        return
 
 
 def split_basemaps(
