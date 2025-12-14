@@ -1,14 +1,30 @@
 """Tests for `basemaps` module."""
 
+import os
 import unittest
-from unittest.mock import patch
+from unittest import mock
 
-from geemap.basemaps import custom_tiles, get_xyz_dict, xyz_to_leaflet
-
+import folium
+import ipyleaflet
+import requests
 import xyzservices
+
+# TODO - Why can't we just import basemaps?
+from geemap.basemaps import (
+    custom_tiles,
+    get_qms,
+    get_xyz_dict,
+    qms_to_geemap,
+    search_qms,
+    xyz_to_folium,
+    xyz_to_leaflet,
+    xyz_to_plotly,
+)
+from geemap import common
 
 
 class TestCustomTiles(unittest.TestCase):
+
     def test_custom_tiles_types(self):
         """Tests that custom_tiles is a dict and contains expected keys."""
         self.assertIsInstance(custom_tiles, dict)
@@ -38,6 +54,7 @@ class TestCustomTiles(unittest.TestCase):
 
 
 class TestXyzToLeaflet(unittest.TestCase):
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.tiles = xyz_to_leaflet()
@@ -57,7 +74,39 @@ class TestXyzToLeaflet(unittest.TestCase):
             self.assertIn(expected_name, self.tiles)
 
 
+class TestXyzToFolium(unittest.TestCase):
+
+    def test_xyz_to_folium_sources(self):
+        """Tests that xyz_to_folium has custom xyz, wms, and xyzservices."""
+        tiles = xyz_to_folium()
+        self.assertIn("OpenStreetMap", tiles)  # custom xyz
+        self.assertIn("FWS NWI Wetlands", tiles)  # custom wms
+        self.assertIn("CartoDB.Positron", tiles)  # xyzservices
+
+        for name, tile_layer in tiles.items():
+            if name in custom_tiles["wms"]:
+                self.assertIsInstance(tile_layer, folium.WmsTileLayer)
+            else:
+                self.assertIsInstance(tile_layer, folium.TileLayer)
+
+    @mock.patch.dict(os.environ, {"PLANET_API_KEY": "fake_api_key"})
+    @mock.patch.object(common, "planet_tiles")
+    def test_xyz_to_folium_with_planet(self, mock_planet_tiles):
+        """Tests that xyz_to_folium includes planet tiles if API key is set."""
+        mock_planet_tiles.return_value = {
+            "Planet Basemap": folium.TileLayer(
+                tiles="https://fake-planet.com/tiles/{z}/{x}/{y}",
+                attr="Planet",
+                name="Planet Basemap",
+            )
+        }
+        tiles = xyz_to_folium()
+        self.assertIn("Planet Basemap", tiles)
+        mock_planet_tiles.assert_called_once_with(tile_format="folium")
+
+
 class FakeProvider(xyzservices.TileProvider):
+
     def __init__(self, name: str, url: str):
         super().__init__(
             name=name,
@@ -68,6 +117,7 @@ class FakeProvider(xyzservices.TileProvider):
 
 
 class FakeXyz(xyzservices.Bunch):
+
     def __init__(self):
         token = "https://fake-server.com/tiles/{z}/{x}/{y}?apikey={accessToken}"
         no_token = "https://fake-server.com/tiles/{z}/{x}/{y}"
@@ -84,15 +134,15 @@ class FakeXyz(xyzservices.Bunch):
         )
 
 
-@patch("xyzservices.providers", FakeXyz().providers)
+@mock.patch.object(xyzservices, "providers", FakeXyz().providers)
 class TestGetXyzDict(unittest.TestCase):
+
     def test_get_xyz_dict_structure(self):
         """Tests that get_xyz_dict returns correct object structure."""
         xyz_dict = get_xyz_dict()
         tile_a = xyz_dict["a"]
         tile_a_keys = tile_a.keys()
 
-        self.assertIsInstance(xyz_dict, dict)
         self.assertEqual("c_1", list(xyz_dict.keys())[1])
         self.assertIsInstance(tile_a, xyzservices.lib.TileProvider)
         self.assertIn("name", tile_a_keys)
@@ -120,6 +170,90 @@ class TestGetXyzDict(unittest.TestCase):
 
         self.assertNotIn("c_France", xyz_dict_no_france.keys())
         self.assertIn("c_France", xyz_dict_all.keys())
+
+
+class TestXyzToPlotly(unittest.TestCase):
+
+    def test_xyz_to_plotly_sources(self):
+        """Tests that xyz_to_plotly has custom xyz and xyzservices."""
+        tiles = xyz_to_plotly()
+        self.assertIn("OpenStreetMap", tiles)  # custom xyz
+        self.assertIn("CartoDB.Positron", tiles)  # xyzservices
+
+        for name, tile_layer in tiles.items():
+            del name  # Unused.
+            self.assertIn("below", tile_layer)
+            self.assertIn("sourcetype", tile_layer)
+            self.assertEqual("raster", tile_layer["sourcetype"])
+            self.assertIn("source", tile_layer)
+            self.assertIsInstance(tile_layer["source"], list)
+
+
+class TestQms(unittest.TestCase):
+
+    @mock.patch.object(requests, "get")
+    def test_search_qms_no_results(self, mock_get):
+        """Tests search_qms with no results."""
+        mock_response = mock_get.return_value
+        mock_response.json.return_value = {"count": 0, "results": []}
+        result = search_qms("no results")
+        self.assertIsNone(result)
+        mock_get.assert_called_once_with(
+            "https://qms.nextgis.com/api/v1/geoservices/?search=no results&type=tms&epsg=3857&limit=10"
+        )
+
+    @mock.patch.object(requests, "get")
+    def test_search_qms_with_results(self, mock_get):
+        """Tests search_qms with results."""
+        mock_response = mock_get.return_value
+        mock_response.json.return_value = {
+            "count": 1,
+            "results": [{"id": 1, "name": "result1"}],
+        }
+        result = search_qms("results")
+        self.assertEqual(result, [{"id": 1, "name": "result1"}])
+        mock_get.assert_called_once_with(
+            "https://qms.nextgis.com/api/v1/geoservices/?search=results&type=tms&epsg=3857&limit=10"
+        )
+
+    @mock.patch.object(requests, "get")
+    def test_search_qms_with_limit(self, mock_get):
+        """Tests search_qms with limit."""
+        mock_response = mock_get.return_value
+        mock_response.json.return_value = {
+            "count": 1,
+            "results": [{"id": 1, "name": "result1"}],
+        }
+        result = search_qms("results", limit=5)
+        self.assertEqual(result, [{"id": 1, "name": "result1"}])
+        mock_get.assert_called_once_with(
+            "https://qms.nextgis.com/api/v1/geoservices/?search=results&type=tms&epsg=3857&limit=5"
+        )
+
+    @mock.patch.object(requests, "get")
+    def test_search_qms_count_greater_than_limit(self, mock_get):
+        """Tests search_qms with count > limit."""
+        mock_response = mock_get.return_value
+        mock_response.json.return_value = {
+            "count": 2,
+            "results": [{"id": 1, "name": "result1"}, {"id": 2, "name": "result2"}],
+        }
+        result = search_qms("results", limit=1)
+        self.assertEqual(result, [{"id": 1, "name": "result1"}])
+        mock_get.assert_called_once_with(
+            "https://qms.nextgis.com/api/v1/geoservices/?search=results&type=tms&epsg=3857&limit=1"
+        )
+
+    @mock.patch.object(requests, "get")
+    def test_get_qms(self, mock_get):
+        """Tests get_qms."""
+        mock_response = mock_get.return_value
+        mock_response.json.return_value = {"id": 123, "name": "service1"}
+        result = get_qms("123")
+        self.assertEqual(result, {"id": 123, "name": "service1"})
+        mock_get.assert_called_once_with(
+            "https://qms.nextgis.com/api/v1/geoservices/123"
+        )
 
 
 if __name__ == "__main__":
