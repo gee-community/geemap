@@ -180,8 +180,7 @@ class TestXyzToPlotly(unittest.TestCase):
         self.assertIn("OpenStreetMap", tiles)  # custom xyz
         self.assertIn("CartoDB.Positron", tiles)  # xyzservices
 
-        for name, tile_layer in tiles.items():
-            del name  # Unused.
+        for _, tile_layer in tiles.items():
             self.assertIn("below", tile_layer)
             self.assertIn("sourcetype", tile_layer)
             self.assertEqual("raster", tile_layer["sourcetype"])
