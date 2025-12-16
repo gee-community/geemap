@@ -126,7 +126,7 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
 
     Args:
         ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to
-            plot100.
+            plot.
         proj (cartopy.crs, optional): Cartopy projection that determines the projection
             of the resulting plot. By default uses an equirectangular projection,
             PlateCarree.
@@ -423,7 +423,7 @@ def add_colorbar(
             if discrete:
                 warnings.warn(
                     'Discrete keyword used when "palette" key is '
-                    "supplied with visParams, Creating a continuous "
+                    "supplied with visParams, creating a continuous "
                     "colorbar."
                 )
 
@@ -560,7 +560,7 @@ def add_gridlines(
             create gridlines, Units are decimal degrees. Lists will be
             interpreted as [x_interval, y_interval]. default = None.
         n_ticks (int | list[int], optional): Number of gridlines to create within map
-            extent. lists will be interpreted a [nx, ny]. default = None.
+            extent. Lists will be interpreted as [nx, ny]. default = None.
         xs (list, optional): x coordinates to create gridlines. Default = None.
         ys (list, optional): y coordinates to create gridlines. Default = None.
         buffer_out (boolean, optional): Buffer out the extent to insure coordinates
@@ -696,7 +696,7 @@ def add_north_arrow(
         text (str, optional): Text for north arrow. Defaults to "N".
 
         xy (tuple, optional): Location of the north arrow. Each number representing the
-            percentage length of the map from the lower-left cornor. Defaults to (0.1,
+            percentage length of the map from the lower-left corner. Defaults to (0.1,
             0.1).
         arrow_length (float, optional): Length of the north arrow. Defaults to 0.1 (10%
             length of the map).
@@ -1108,7 +1108,7 @@ def add_legend(
         https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html
 
     Args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required
             cartopy GeoAxesSubplot object.
         legend_elements (list, optional): A list of legend elements. Defaults to None.
         loc (str, optional): Location of the legend, can be any of
@@ -1220,7 +1220,7 @@ def get_image_collection_gif(
             Defaults to {}.
         scale_bar_dict (dict, optional): Parameters for the scale bar. See
             https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar.
-            Defaults. to {}.
+            Defaults to {}.
         overlay_layers (list, optional): A list of Earth Engine objects to overlay on
             the map. Defaults to [].
         overlay_styles (list, optional): A list of dictionaries of visualization
@@ -1282,7 +1282,7 @@ def get_image_collection_gif(
                 or isinstance(ee_object, ee.featurecollection.FeatureCollection)
             ):
                 overlay_vis_params = (
-                    None  # For vector data, we can pass style parameters directly
+                    None  # For vector data, we can pass style parameters directly.
                 )
             elif (
                 isinstance(ee_object, ee.image.Image)
