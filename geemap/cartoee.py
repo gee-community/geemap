@@ -558,9 +558,9 @@ def add_gridlines(
             GeoAxesSubplot object to add the gridlines to.
         interval (float | list[float], optional): Interval at which to
             create gridlines, Units are decimal degrees. Lists will be
-            interpreted as [x_interval, y_interval]. default = None.
+            interpreted as [x_interval, y_interval]. Default = None.
         n_ticks (int | list[int], optional): Number of gridlines to create within map
-            extent. Lists will be interpreted as [nx, ny]. default = None.
+            extent. Lists will be interpreted as [nx, ny]. Default = None.
         xs (list, optional): x coordinates to create gridlines. Default = None.
         ys (list, optional): y coordinates to create gridlines. Default = None.
         buffer_out (boolean, optional): Buffer out the extent to insure coordinates
