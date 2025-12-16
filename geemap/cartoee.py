@@ -33,56 +33,59 @@ try:
     from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
     from PIL import Image
 except ImportError:
-    print(
-        "cartopy is not installed. Please see https://scitools.org.uk/cartopy/docs/latest/installing.html#installing for instructions on how to install cartopy.\n"
+    installing_url = (
+        "https://scitools.org.uk/cartopy/docs/latest/installing.html#installing"
     )
     print(
-        "The easiest way to install cartopy is using conda: conda install -c conda-forge cartopy"
+        f"cartopy is not installed. Please see {installing_url} for instructions on "
+        "how to install cartopy.\n"
+        "The easiest way to install cartopy is using conda:\n"
+        "    conda install -c conda-forge cartopy"
     )
 
 
 def check_dependencies() -> None:
-    """Helper function to check dependencies used for cartoee
-    Dependencies not included in main geemap are: cartopy, PIL, and scipys
+    """Helper function to check dependencies used for cartoee.
+
+    Dependencies not included in main geemap are: cartopy, PIL, and scipys.
 
     raises:
-        Exception: when conda is not found in path
-        Exception: when auto install fails to install/import packages
+        Exception: When conda is not found in path.
+        Exception: When auto install fails to install/import packages.
     """
-    # check if conda in in path and available to use
+    # Check if conda in in path and available to use.
     is_conda = os.path.exists(os.path.join(sys.prefix, "conda-meta"))
 
-    # raise error if conda not found
+    # Raise error if conda not found.
     if not is_conda:
-        raise Exception(
-            "Auto installation requires `conda`. Please install conda using the following instructions before use: https://docs.conda.io/projects/conda/en/latest/user-guide/install/"
+        msg = (
+            "Auto installation requires `conda`. Please install conda using "
+            "the following instructions before use: "
+            "https://docs.conda.io/projects/conda/en/latest/user-guide/install/"
         )
+        raise Exception(msg)
 
-    # list of dependencies to check, ordered in decreasing complexity
-    # i.e. cartopy install should install PIL
+    # List of dependencies to check, ordered in decreasing complexity.
+    # i.e. cartopy install should install PIL.
     dependencies = ["cartopy", "pillow", "scipy"]
 
-    # loop through dependency list and check if we can import module
-    # if not try to install
-    # install fail will be silent to continue through others if there is a failure
-    # correct install will be checked later
+    # Loop through dependency list and check if we can import module.
+    # If not, try to install.
+    # Install fail will be silent to continue through others if there is a failure.
+    # Correct install will be checked later.
     for dependency in dependencies:
         try:
-            # see if we can import
             importlib.import_module(dependency)
         except ImportError:
-            # change the dependency name if it is PIL
-            # import vs install names are different for PIL...
+            # Change the dependency name if it is PIL.
+            # import vs install names are different for PIL.
             # dependency = dependency if dependency is not "PIL" else "pillow"
-
-            # print info if not installed
             logging.info(
                 f"The {dependency} package is not installed. Trying install..."
             )
 
             logging.info(f"Installing {dependency} ...")
 
-            # run the command
             cmd = f"conda install -c conda-forge {dependency} -y"
             proc = subprocess.Popen(
                 cmd,
@@ -90,26 +93,26 @@ def check_dependencies() -> None:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,
             )
-            # send command
+            # Send command.
             out, _ = proc.communicate()
 
             logging.info(out.decode())
 
-    # second pass through dependencies to check if everything was installed correctly
+    # Second pass through dependencies to check if everything was installed correctly.
     failed = []
 
     for dependency in dependencies:
         try:
             importlib.import_module(dependency)
         except ImportError:
-            # append failed imports
             failed.append(dependency)
 
-    # check if there were any failed imports after trying install
+    # Check if there were any failed imports after trying install.
     if len(failed) > 0:
         failed_str = ",".join(failed)
         raise Exception(
-            f"Auto installation failed...the following dependencies were not installed '{failed_str}'"
+            "Auto installation failed...the following dependencies were not "
+            f"installed '{failed_str}'"
         )
     else:
         logging.info("All dependencies are successfully imported/installed!")
@@ -119,19 +122,25 @@ def check_dependencies() -> None:
 
 
 def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
-    """
-    Wrapper function to create a new cartopy plot with project and adds Earth
-    Engine image results
+    """Returns a new cartopy plot with project and adds Earth Engine image results.
+
     Args:
-        ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to plot
-        proj (cartopy.crs, optional): Cartopy projection that determines the projection of the resulting plot. By default uses an equirectangular projection, PlateCarree
-        basemap (str, optional): Basemap to use. It can be one of ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"] or cartopy.io.img_tiles, such as cimgt.StamenTerrain(). Defaults to None. See https://scitools.org.uk/cartopy/docs/v0.19/cartopy/io/img_tiles.html
+        ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to
+            plot.
+        proj (cartopy.crs, optional): Cartopy projection that determines the projection
+            of the resulting plot. By default uses an equirectangular projection,
+            PlateCarree.
+        basemap (str, optional): Basemap to use. It can be one of ["ROADMAP",
+            "SATELLITE", "TERRAIN", "HYBRID"] or cartopy.io.img_tiles, such as
+            cimgt.StamenTerrain(). Defaults to None. See
+            https://scitools.org.uk/cartopy/docs/v0.19/cartopy/io/img_tiles.html.
         zoom_level (int, optional): Zoom level of the basemap. Defaults to 2.
         **kwargs: remaining keyword arguments are passed to addLayer()
-    Returns:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with Earth Engine results displayed
-    """
 
+    Returns:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with
+            Earth Engine results displayed.
+    """
     if (
         isinstance(ee_object, ee.geometry.Geometry)
         or isinstance(ee_object, ee.feature.Feature)
@@ -182,21 +191,29 @@ def add_layer(
 ):
     """Add an Earth Engine image to a cartopy plot.
 
-    args:
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required
+            cartopy GeoAxesSubplot object to add image overlay to.
         ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to plot.
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object to add image overlay to
-        dims (list | tuple | int, optional): dimensions to request earth engine result as [WIDTH,HEIGHT]. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Default None and infers dimensions
-        region (list | tuple, optional): geospatial region of the image to render in format [E,S,W,N]. By default, the whole image
-        cmap (str, optional): string specifying matplotlib colormap to colorize image. If cmap is specified visParams cannot contain 'palette' key
-        vis_params (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/image_visualization for options
+        dims (list | tuple | int, optional): dimensions to request earth engine result
+            as [WIDTH,HEIGHT]. If only one number is passed, it is used as the maximum,
+            and the other dimension is computed by proportional scaling. Default None
+            and infers dimensions.
+        region (list | tuple, optional): Geospatial region of the image to render in
+            format [E,S,W,N]. By default, the whole image.
+        cmap (str, optional): String specifying matplotlib colormap to colorize
+            image. If cmap is specified visParams cannot contain 'palette' key.
+        vis_params (dict, optional): visualization parameters as a dictionary. See
+            https://developers.google.com/earth-engine/image_visualization for options.
 
-    returns:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with Earth Engine results displayed
+    Returns:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with
+            Earth Engine results displayed.
 
-    raises:
-        ValueError: If `dims` is not of type list, tuple, or int
-        ValueError: If `imgObj` is not of type ee.image.Image
-        ValueError: If `ax` if not of type cartopy.mpl.geoaxes.GeoAxesSubplot '
+    Raises:
+        ValueError: If `dims` is not of type list, tuple, or int.
+        ValueError: If `imgObj` is not of type ee.image.Image.
+        ValueError: If `ax` if not of type cartopy.mpl.geoaxes.GeoAxesSubplot.
     """
 
     if (
@@ -232,9 +249,12 @@ def add_layer(
         view_extent = [min(x), max(x), min(y), max(y)]
 
         if ee_object.bandNames().getInfo() == ["vis-red", "vis-green", "vis-blue"]:
-            warnings.warn(
-                f"The region parameter is not specified. Using the default region {map_region}. Please specify a region if you get a blank image."
+            msg = (
+                "The region parameter is not specified. Using the default "
+                f"region {map_region}. Please specify a region if you get a blank "
+                "image."
             )
+            warnings.warn(msg)
 
     if type(dims) not in [list, tuple, int]:
         raise ValueError("provided dims not of type list, tuple, or int")
@@ -287,16 +307,16 @@ def add_layer(
 
 
 def build_palette(cmap: str, n: int = 256) -> list[str]:
-    """Creates hex color code palette from a matplotlib colormap
+    """Creates hex color code palette from a matplotlib colormap.
 
-    args:
-        cmap (str): string specifying matplotlib colormap to colorize image. If cmap is specified visParams cannot contain 'palette' key
-        n (int, optional): Number of hex color codes to create from colormap. Default is 256
+    Args:
+        cmap: String specifying matplotlib colormap to colorize image. If cmap is
+            specified visParams cannot contain 'palette' key.
+        n: Number of hex color codes to create from colormap. Default is 256.
 
-    returns:
-        palette (list[str]): list of hex color codes from matplotlib colormap for n intervals
+    Returns:
+        List of hex color codes from matplotlib colormap for n intervals.
     """
-
     colormap = cm.get_cmap(cmap, n)
     vals = np.linspace(0, 1, n)
     palette = list(map(lambda x: colors.rgb2hex(colormap(x)[:3]), vals))
@@ -307,22 +327,25 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
 def add_colorbar(
     ax, vis_params, loc=None, cmap="gray", discrete=False, label=None, **kwargs
 ):
-    """
-    Add a colorbar to the map based on visualization parameters provided
-    args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object to add image overlay to
-        loc (str, optional): string specifying the position
-        vis_params (dict, optional): visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
-        **kwargs: remaining keyword arguments are passed to colorbar()
+    """Add a colorbar to the map based on visualization parameters provided.
 
-    raises:
-        Warning: If 'discrete' is true when "palette" key is not in visParams
-        ValueError: If `ax` is not of type cartopy.mpl.geoaxes.GeoAxesSubplot
-        ValueError: If 'cmap' or "palette" key in visParams is not provided
-        ValueError: If "min" in visParams is not of type scalar
-        ValueError: If "max" in visParams is not of type scalar
-        ValueError: If 'loc' or 'cax' keywords are not provided
-        ValueError: If 'loc' is not of type str or does not equal available options
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required
+            cartopy GeoAxesSubplot object to add image overlay to.
+        loc (str, optional): String specifying the position.
+        vis_params (dict, optional): visualization parameters as a dictionary. See
+            https://developers.google.com/earth-engine/guides/image_visualization for
+            options.
+        **kwargs: Remaining keyword arguments are passed to colorbar().
+
+    Raises:
+        Warning: If 'discrete' is true when "palette" key is not in visParams.
+        ValueError: If `ax` is not of type cartopy.mpl.geoaxes.GeoAxesSubplot.
+        ValueError: If 'cmap' or "palette" key in visParams is not provided.
+        ValueError: If "min" in visParams is not of type scalar.
+        ValueError: If "max" in visParams is not of type scalar.
+        ValueError: If 'loc' or 'cax' keywords are not provided.
+        ValueError: If 'loc' is not of type str or does not equal available options.
     """
 
     if type(ax) not in [GeoAxes, GeoAxesSubplot]:
@@ -332,7 +355,7 @@ def add_colorbar(
         )
 
     if loc:
-        if (type(loc) == str) and (loc in ["left", "right", "bottom", "top"]):
+        if type(loc) == str and loc in ["left", "right", "bottom", "top"]:
             if "posOpts" not in kwargs:
                 posOpts = {
                     "left": [0.01, 0.25, 0.02, 0.5],
@@ -360,7 +383,7 @@ def add_colorbar(
 
         else:
             raise ValueError(
-                'provided loc not of type str. options are "left", '
+                'Provided loc not of type str. Options are "left", '
                 '"top", "right", or "bottom"'
             )
 
@@ -369,28 +392,28 @@ def add_colorbar(
         kwargs = {key: kwargs[key] for key in kwargs.keys() if key != "cax"}
 
     else:
-        raise ValueError("loc or cax keywords must be specified")
+        raise ValueError("loc or cax keywords must be specified.")
 
     vis_keys = list(vis_params.keys())
     if vis_params:
         if "min" in vis_params:
             vmin = vis_params["min"]
             if type(vmin) not in (int, float):
-                raise ValueError("provided min value not of scalar type")
+                raise ValueError("Provided min value not of scalar type.")
         else:
             vmin = 0
 
         if "max" in vis_params:
             vmax = vis_params["max"]
             if type(vmax) not in (int, float):
-                raise ValueError("provided max value not of scalar type")
+                raise ValueError("Provided max value not of scalar type.")
         else:
             vmax = 1
 
         if "opacity" in vis_params:
             alpha = vis_params["opacity"]
             if type(alpha) not in (int, float):
-                raise ValueError("provided opacity value of not type scalar")
+                raise ValueError("Provided opacity value of not type scalar.")
         elif "alpha" in kwargs:
             alpha = kwargs["alpha"]
         else:
@@ -399,9 +422,9 @@ def add_colorbar(
         if cmap is not None:
             if discrete:
                 warnings.warn(
-                    'discrete keyword used when "palette" key is '
+                    'Discrete keyword used when "palette" key is '
                     "supplied with visParams, creating a continuous "
-                    "colorbar..."
+                    "colorbar."
                 )
 
             cmap = mpl.pyplot.get_cmap(cmap)
@@ -468,17 +491,18 @@ def add_colorbar(
         cb.ax.tick_params(labelsize=tick_font_size)
 
 
-def _buffer_box(bbox, interval):
-    """Helper function to buffer a bounding box to the nearest multiple of interval
+def _buffer_box(
+    bbox: list[float], interval: float
+) -> tuple[float, float, float, float]:
+    """Buffer a bounding box to the nearest multiple of interval.
 
-    args:
-        bbox (list[float]): list of float values specifying coordinates, expects order to be [W,E,S,N]
-        interval (float): float specifying multiple at which to buffer coordianates to
+    Args:
+        bbox: Values specifying coordinates, Expects order to be [W,E,S,N].
+        interval: Multiple at which to buffer coordianates to.
 
-    returns:
-        extent (tuple[float]): returns tuple of buffered coordinates rounded to interval in order of [W,E,S,N]
+    Returns:
+        Extend of buffered coordinates rounded to interval in order of [W,E,S,N].
     """
-
     if bbox[0] % interval != 0:
         xmin = bbox[0] - (bbox[0] % interval)
     else:
@@ -499,19 +523,21 @@ def _buffer_box(bbox, interval):
     else:
         ymax = bbox[3]
 
-    return (xmin, xmax, ymin, ymax)
+    return xmin, xmax, ymin, ymax
 
 
-def bbox_to_extent(bbox):
-    """Helper function to reorder a list of coordinates from [W,S,E,N] to [W,E,S,N]
+def bbox_to_extent(
+    bbox: list[float] | tuple[float, float, float, float],
+) -> tuple[float, float, float, float]:
+    """Reorder a list of coordinates from [W,S,E,N] to [W,E,S,N].
 
-    args:
-        bbox (list[float]): list (or tuple) or coordinates in the order of [W,S,E,N]
+    Args:
+        bbox: Coordinates in the order of [W,S,E,N].
 
-    returns:
-        extent (tuple[float]): tuple of coordinates in the order of [W,E,S,N]
+    Returns:
+        Extent in the order of [W,E,S,N].
     """
-    return (bbox[0], bbox[2], bbox[1], bbox[3])
+    return bbox[0], bbox[2], bbox[1], bbox[3]
 
 
 def add_gridlines(
@@ -525,24 +551,27 @@ def add_gridlines(
     ytick_rotation="horizontal",
     **kwargs,
 ):
-    """Helper function to add gridlines and format ticks to map
+    """Add gridlines and format ticks to map.
 
-    args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object to add the gridlines to
-        interval (float | list[float], optional): float specifying an interval at which to create gridlines, units are decimal degrees. lists will be interpreted a [x_interval, y_interval]. default = None
-        n_ticks (int | list[int], optional): integer specifying number gridlines to create within map extent. lists will be interpreted a [nx, ny]. default = None
-        xs (list, optional): list of x coordinates to create gridlines. default = None
-        ys (list, optional): list of y coordinates to create gridlines. default = None
-        buffer_out (boolean, optional): boolean option to buffer out the extent to insure coordinates created cover map extent. default=true
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
+            GeoAxesSubplot object to add the gridlines to.
+        interval (float | list[float], optional): Interval at which to
+            create gridlines, Units are decimal degrees. Lists will be
+            interpreted as [x_interval, y_interval]. Default = None.
+        n_ticks (int | list[int], optional): Number of gridlines to create within map
+            extent. Lists will be interpreted as [nx, ny]. Default = None.
+        xs (list, optional): x coordinates to create gridlines. Default = None.
+        ys (list, optional): y coordinates to create gridlines. Default = None.
+        buffer_out (boolean, optional): Buffer out the extent to insure coordinates
+          created cover map extent. Default = true.
         xtick_rotation (str | float, optional):
         ytick_rotation (str | float, optional):
         **kwargs: remaining keyword arguments are passed to gridlines()
 
-    raises:
+    Raises:
         ValueError: if all interval, n_ticks, or (xs,ys) are set to None
-
     """
-
     view_extent = ax.get_extent()
     extent = view_extent
 
@@ -569,7 +598,8 @@ def add_gridlines(
         xmain = np.linspace(extent[0], extent[1], n_x)
     else:
         raise ValueError(
-            "one of variables interval, n_ticks, or xs must be defined. If you would like default gridlines, please use `ax.gridlines()`"
+            "One of variables interval, n_ticks, or xs must be defined. "
+            "If you would like default gridlines, please use `ax.gridlines()`."
         )
 
     if ys is not None:
@@ -596,7 +626,8 @@ def add_gridlines(
 
     else:
         raise ValueError(
-            "one of variables interval, n_ticks, or ys must be defined. If you would like default gridlines, please use `ax.gridlines()`"
+            "One of variables interval, n_ticks, or ys must be defined. "
+            "If you would like default gridlines, please use `ax.gridlines()`."
         )
 
     ax.gridlines(xlocs=xmain, ylocs=ymain, **kwargs)
@@ -604,7 +635,7 @@ def add_gridlines(
     xin = xmain[(xmain >= view_extent[0]) & (xmain <= view_extent[1])]
     yin = ymain[(ymain >= view_extent[2]) & (ymain <= view_extent[3])]
 
-    # set tick labels
+    # Set tick labels.
     ax.set_xticks(xin, crs=ccrs.PlateCarree())
     ax.set_yticks(yin, crs=ccrs.PlateCarree())
 
@@ -616,12 +647,13 @@ def add_gridlines(
 
 
 def pad_view(ax, factor=0.05):
-    """Function to pad area around the view extent of a map, used for visual appeal
+    """Pad area around the view extent of a map, used for visual appeal.
 
-    args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object to pad view extent
-        factor (float | list[float], optional): factor to pad view extent accepts float [0-1] of a list of floats which will be interpreted at [xfactor, yfactor]
-
+    Args:
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
+            GeoAxesSubplot object to pad view extent.
+        factor (float | list[float], optional): Pad view extent accepts float [0-1] or a
+            list of floats that will be interpreted at [xfactor, yfactor].
     """
 
     view_extent = ax.get_extent()
@@ -659,10 +691,15 @@ def add_north_arrow(
     """Add a north arrow to the map.
 
     Args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
+            GeoAxesSubplot object.
         text (str, optional): Text for north arrow. Defaults to "N".
-        xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
-        arrow_length (float, optional): Length of the north arrow. Defaults to 0.1 (10% length of the map).
+
+        xy (tuple, optional): Location of the north arrow. Each number representing the
+            percentage length of the map from the lower-left corner. Defaults to (0.1,
+            0.1).
+        arrow_length (float, optional): Length of the north arrow. Defaults to 0.1 (10%
+            length of the map).
         text_color (str, optional): Text color. Defaults to "black".
         arrow_color (str, optional): North arrow color. Defaults to "black".
         fontsize (int, optional): Text font size. Defaults to 20.
@@ -693,7 +730,7 @@ def convert_SI(val, unit_in, unit_out):
         unit_out (str): The output unit.
 
     Returns:
-        float: The value after unit conversion.
+        Value after unit conversion.
     """
     SI = {
         "cm": 0.01,
@@ -721,46 +758,46 @@ def add_scale_bar(
     paddings={"xmin": 0.05, "xmax": 0.05, "ymin": 1.5, "ymax": 0.5},
     bbox_kwargs={"facecolor": "white", "edgecolor": "black", "alpha": 0.5},
 ):
-    """
-    Add a scale bar to the map.
+    """Add a scale bar to the map.
 
     Args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
-        metric_distance (int | float, optional): length in meters of each region of the scale bar. Default to 4.
-        unit (str, optional): scale bar distance unit. Default to "km"
-        at_x (float, optional): target axes X coordinates (0..1) of box (= left, right). Default to (0.05, 0.2).
-        at_y (float, optional): axes Y coordinates (0..1) of box (= lower, upper). Default to (0.08, 0.11).
-        max_stripes (int, optional): typical/maximum number of black+white regions. Default to 5.
-        ytick_label_margins (float, optional): Location of distance labels on the Y axis. Default to 0.25.
-        fontsize (int, optional): scale bar text size. Default to 8.
-        font_weight (str, optional):font weight. Default to 'bold'.
-        rotation (int, optional): rotation of the length labels for each region of the scale bar. Default to 0.
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
+            GeoAxesSubplot object.
+        metric_distance (int | float, optional): Length in meters of each region of the
+          scale bar. Defaults to 4.
+        unit (str, optional): Scale bar distance unit. Defaults to "km"
+        at_x (float, optional): Target axes X coordinates (0..1) of box (= left,
+            right). Defaults to (0.05, 0.2).
+        at_y (float, optional): Axes Y coordinates (0..1) of box (= lower,
+            upper). Defaults to (0.08, 0.11).
+        max_stripes (int, optional): Typical/maximum number of black+white
+            regions. Defaults to 5.
+        ytick_label_margins (float, optional): Location of distance labels on the Y
+            axis. Defaults to 0.25.
+        fontsize (int, optional): Scale bar text size. Defaults to 8.
+        font_weight (str, optional): Font weight. Defaults to 'bold'.
+        rotation (int, optional): Rotation of the length labels for each region of the
+            scale bar. Defaults to 0.
         zorder (float, optional): z order of the text bounding box.
-        paddings (dict, optional): boundaries of the box that contains the scale bar.
-        bbox_kwargs (dict, optional): style of the box containing the scale bar.
-
+        paddings (dict, optional): Boundaries of the box that contains the scale bar.
+        bbox_kwargs (dict, optional): Style of the box containing the scale bar.
     """
 
     warnings.filterwarnings("ignore")
 
-    # --------------------------------------------------------------------------
-    # Auxiliary functions
-
     def _crs_coord_project(crs_target, xcoords, ycoords, crs_source):
-        """metric coordinates (x, y) from cartopy.crs_source"""
+        """Metric coordinates (x, y) from cartopy.crs_source."""
 
         axes_coords = crs_target.transform_points(crs_source, xcoords, ycoords)
 
         return axes_coords
 
     def _add_bbox(ax, list_of_patches, paddings={}, bbox_kwargs={}):
-        """
-        Description:
-            This helper function adds a box behind the scalebar:
-                Code inspired by: https://stackoverflow.com/questions/17086847/box-around-text-in-matplotlib
+        """Add a box behind the scalebar.
 
+        Code inspired by:
+            https://stackoverflow.com/questions/17086847/box-around-text-in-matplotlib
         """
-
         zorder = list_of_patches[0].get_zorder() - 1
 
         xmin = min([t.get_window_extent().xmin for t in list_of_patches])
@@ -780,7 +817,7 @@ def add_scale_bar(
         width = xmax - xmin
         height = ymax - ymin
 
-        # Setting xmin according to height
+        # Setting xmin according to height.
         rect = patches.Rectangle(
             (xmin, ymin),
             width,
@@ -797,34 +834,31 @@ def add_scale_bar(
         ax.add_patch(rect)
         return ax
 
-    # --------------------------------------------------------------------------
-
     old_proj = ax.projection
     ax.projection = ccrs.PlateCarree()
 
-    # Set a planar (metric) projection for the centroid of a given axes projection:
-    # First get centroid lon and lat coordinates:
-
+    # Set a planar (metric) projection for the centroid of a given axes projection.
+    # First get centroid lon and lat coordinates.
     lon_0, lon_1, lat_0, lat_1 = ax.get_extent(ax.projection.as_geodetic())
 
     central_lon = np.mean([lon_0, lon_1])
     central_lat = np.mean([lat_0, lat_1])
 
-    # Second: set the planar (metric) projection centered in the centroid of the axes;
+    # Second, set the planar (metric) projection centered in the centroid of the axes.
     # Centroid coordinates must be in lon/lat.
     proj = ccrs.EquidistantConic(
         central_longitude=central_lon, central_latitude=central_lat
     )
 
-    # fetch axes coordinates in meters
+    # Fetch axes coordinates in meters.
     x0, _, y0, y1 = ax.get_extent(proj)
     ymean = np.mean([y0, y1])
 
-    # set target rectangle in-visible-area (aka 'Axes') coordinates
+    # Set target rectangle in-visible-area (aka 'Axes') coordinates.
     axfrac_ini, _ = at_x
     ayfrac_ini, ayfrac_final = at_y
 
-    # choose exact X points as sensible grid ticks with Axis 'ticker' helper
+    # Choose exact X points as sensible grid ticks with Axis 'ticker' helper.
     converted_metric_distance = convert_SI(metric_distance, unit, "m")
 
     xcoords = []
@@ -836,38 +870,33 @@ def add_scale_bar(
         xcoords.append(dx)
         ycoords.append(ymean)
 
-    # Converting to arrays:
     xcoords = np.asanyarray(xcoords)
     ycoords = np.asanyarray(ycoords)
 
-    # Ensuring that the coordinate projection is in degrees:
+    # Ensure that the coordinate projection is in degrees.
     x_targets, _, _ = _crs_coord_project(ax.projection, xcoords, ycoords, proj).T
     x_targets = [x + (axfrac_ini * (lon_1 - lon_0)) for x in x_targets]
 
-    # Checking x_ticks in axes projection coordinates
-    # print('x_targets', x_targets)
-
-    # Setting transform for plotting
+    # Set transform for plotting.
     transform = ax.projection
 
-    # grab min+max for limits
+    # Minimum and maximum for limits.
     xl0, xl1 = x_targets[0], x_targets[-1]
 
-    # calculate Axes Y coordinates of box top+bottom
+    # Calculate Axes Y coordinates of box top+bottom.
     yl0, yl1 = (
         lat_0 + ay_frac * (lat_1 - lat_0) for ay_frac in [ayfrac_ini, ayfrac_final]
     )
 
-    # calculate Axes Y distance of ticks + label margins
+    # Calculate Axes Y distance of ticks + label margins.
     y_margin = (yl1 - yl0) * ytick_label_margins
 
-    # fill black/white 'stripes' and draw their boundaries
+    # Fill 'stripes' and draw their boundaries.
     fill_colors = ["black", "white"]
     i_color = 0
 
     filled_boxs = []
     for xi0, xi1 in zip(x_targets[:-1], x_targets[1:]):
-        # fill region
         filled_box = plt.fill(
             (xi0, xi1, xi1, xi0, xi0),
             (yl0, yl0, yl1, yl1, yl0),
@@ -879,7 +908,7 @@ def add_scale_bar(
 
         filled_boxs.append(filled_box[0])
 
-        # draw boundary
+        # Draw boundary.
         plt.plot(
             (xi0, xi1, xi1, xi0, xi0),
             (yl0, yl0, yl1, yl1, yl0),
@@ -894,7 +923,7 @@ def add_scale_bar(
     # adding boxes
     _add_bbox(ax, filled_boxs, bbox_kwargs=bbox_kwargs, paddings=paddings)
 
-    # add short tick lines
+    # Add short tick lines.
     for x in x_targets:
         plt.plot(
             (x, x),
@@ -905,7 +934,7 @@ def add_scale_bar(
             clip_on=False,
         )
 
-    # add a scale legend unit
+    # Add a scale legend unit.
     font_props = mfonts.FontProperties(size=fontsize, weight=font_weight)
 
     plt.text(
@@ -923,7 +952,6 @@ def add_scale_bar(
 
     # add numeric labels
     for x, xlabel in zip(x_targets, xlabels):
-        # print("Label set in: ", x, yl0 - 2 * y_margin)
         plt.text(
             x,
             yl0 - 2 * y_margin,
@@ -935,13 +963,11 @@ def add_scale_bar(
             rotation=rotation,
             clip_on=False,
             zorder=zorder + 1,
-            # bbox=dict(facecolor='red', alpha=0.5) # this would add a box only around the xticks
         )
 
-    # Adjusting figure borders to ensure that the scalebar is within its limits
+    # Adjust figure borders to ensure that the scalebar is within its limits.
     ax.projection = old_proj
     ax.get_figure().canvas.draw()
-    # fig.tight_layout()
 
 
 def add_scale_bar_lite(
@@ -955,19 +981,23 @@ def add_scale_bar_lite(
     ha="center",
     va="bottom",
 ):
-    """Add a lite version of scale bar to the map. Reference: https://stackoverflow.com/a/50674451/2676166
+    """Add a lite version of scale bar to the map.
+
+    Reference: https://stackoverflow.com/a/50674451/2676166
 
     Args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
+            GeoAxesSubplot object.
         length ([type], optional): Length of the scale car. Defaults to None.
-        xy (tuple, optional): Location of the north arrow. Each number representing the percentage length of the map from the lower-left cornor. Defaults to (0.1, 0.1).
+        xy (tuple, optional): Location of the north arrow. Each number representing the
+            percentage length of the map from the lower-left cornor.
+            Defaults to (0.1, 0.1).
         linewidth (int, optional): Line width of the scale bar. Defaults to 3.
         fontsize (int, optional): Text font size. Defaults to 20.
         color (str, optional): Color for the scale bar. Defaults to "black".
         unit (str, optional): Length unit for the scale bar. Defaults to "km".
         ha (str, optional): Horizontal alignment. Defaults to "center".
         va (str, optional): Vertical alignment. Defaults to "bottom".
-
     """
 
     allow_units = ["cm", "m", "km", "inch", "foot", "mile"]
@@ -979,26 +1009,26 @@ def add_scale_bar_lite(
 
     num = length
 
-    # Get the limits of the axis in lat long
+    # Get the limits of the axis in lat long.
     llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
     # Make tmc horizontally centred on the middle of the map,
-    # vertically at scale bar location
+    # Vertically at scale bar location.
     sbllx = (llx1 + llx0) / 2
     sblly = lly0 + (lly1 - lly0) * xy[1]
     tmc = ccrs.TransverseMercator(sbllx, sblly, approx=True)
-    # Get the extent of the plotted area in coordinates in metres
+    # Get the extent of the plotted area in coordinates in meters.
     x0, x1, y0, y1 = ax.get_extent(tmc)
-    # Turn the specified scalebar location into coordinates in metres
+    # Turn the specified scalebar location into coordinates in meters.
     sbx = x0 + (x1 - x0) * xy[0]
     sby = y0 + (y1 - y0) * xy[1]
 
-    # Calculate a scale bar length if none has been given
-    # (There's probably a more pythonic way of rounding the number but this works)
+    # Calculate a scale bar length if none has been given.
+    # There's probably a more pythonic way of rounding the number but this works.
     if not length:
         length = (x1 - x0) / 5000  # in km
-        ndim = int(np.floor(np.log10(length)))  # number of digits in number
+        ndim = int(np.floor(np.log10(length)))  # Number of digits in number.
         length = round(length, -ndim)  # round to 1sf
-        # Returns numbers starting with the list
+        # Returns numbers starting with the list.
 
         def scale_number(x):
             if str(x)[0] in ["1", "2", "5"]:
@@ -1011,11 +1041,11 @@ def add_scale_bar_lite(
     else:
         length = convert_SI(length, unit, "km")
 
-    # Generate the x coordinate for the ends of the scalebar
+    # Generate the x coordinate for the ends of the scalebar.
     bar_xs = [sbx - length * 500, sbx + length * 500]
-    # Plot the scalebar
     ax.plot(bar_xs, [sby, sby], transform=tmc, color=color, linewidth=linewidth)
-    # Plot the scalebar label
+
+    # Plot the scalebar label.
     ax.text(
         sbx,
         sby,
@@ -1066,19 +1096,35 @@ def add_legend(
     title_fontproperties=None,
     **kwargs,
 ):
-    """Adds a legend to the map. The legend elements can be formatted as:
-    legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
-        Line2D([], [], marker='o', color='#A8321D', label='City', markerfacecolor='#A8321D', markersize=10, ls ='')]
-        For more legend properties, see: https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html
+    """Adds a legend to the map.
+
+    The legend elements can be formatted as:
+
+        legend_elements = [Line2D([], [], color='#00ffff', lw=2, label='Coastline'),
+        Line2D([], [], marker='o', color='#A8321D', label='City',
+        markerfacecolor='#A8321D', markersize=10, ls ='')]
+
+    For more legend properties, see:
+        https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.legend.html
 
     Args:
-        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): required cartopy GeoAxesSubplot object.
+        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required
+            cartopy GeoAxesSubplot object.
         legend_elements (list, optional): A list of legend elements. Defaults to None.
-        loc (str, optional): Location of the legend, can be any of ['upper left', 'upper right', 'lower left', 'lower right']. Defaults to "lower right".
-        font_size(int|string, optional): Font size. Either an absolute font size or an relative value of 'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large', 'xx-large'. defaults to 14.
-        font_weight(string|int, optional): Font weight. A numeric value in the range 0-1000 or one of 'ultralight', 'light', 'normal' (default), 'regular', 'book', 'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold', 'black'. Defaults to 'normal'.
+        loc (str, optional): Location of the legend, can be any of
+            ['upper left', 'upper right', 'lower left', 'lower right'].
+            Defaults to "lower right".
+        font_size(int|string, optional): Font size. Either an absolute font size or an
+            relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
+            'x-large', 'xx-large'. Defaults to 14.
+        font_weight(string|int, optional): Font weight. A numeric value in the range
+            0-1000 or one of 'ultralight', 'light', 'normal' (default), 'regular', 'book',
+            'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy',
+            'extra bold', 'black'. Defaults to 'normal'.
         font_color(str, optional): Text color. Defaults to "black".
-        font_family(string, optional): Name of font family. Set to a font family like 'SimHei' if you want to show Chinese in the legend. Defaults to None.
+        font_family(string, optional): Name of font family. Set to a font family like
+            'SimHei' if you want to show Chinese in the legend. Defaults to None.
+
     Raises:
         Exception: If the legend fails to add.
     """
@@ -1148,30 +1194,44 @@ def get_image_collection_gif(
     verbose=True,
     **kwargs,
 ):
-    """Download all the images in an image collection and use them to generate a gif/video.
+    """Download all images in an image collection and generate a gif/video.
+
     Args:
-        ee_ic (object): ee.ImageCollection
+        ee_ic (object): ee.ImageCollection.
         out_dir (str): The output directory of images and video.
         out_gif (str): The name of the gif file.
         vis_params (dict): Visualization parameters as a dictionary.
-        region (list | tuple): Geospatial region of the image to render in format [E,S,W,N].
+        region (list | tuple): Geospatial region of the image to render in format
+            [E,S,W,N].
         fps (int, optional): Video frames per second. Defaults to 10.
         mp4 (bool, optional): Whether to create mp4 video.
-        grid_interval (float | tuple[float]): Float specifying an interval at which to create gridlines, units are decimal degrees. lists will be interpreted a (x_interval, y_interval), such as (0.1, 0.1). Defaults to None.
+        grid_interval (float | tuple[float]): Interval at which to create gridlines,
+            units are decimal degrees. Lists will be interpreted a (x_interval,
+            y_interval), such as (0.1, 0.1). Defaults to None.
         plot_title (str): Plot title. Defaults to "".
-        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to "YYYY-MM-dd".
+        date_format (str, optional): A pattern, as described at
+            http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html.
+            Defaults to "YYYY-MM-dd".
         fig_size (tuple, optional): Size of the figure.
         dpi_plot (int, optional): The resolution in dots per inch of the plot.
         file_format (str, optional): Either 'png' or 'jpg'. Defaults to 'png'.
-        north_arrow_dict (dict, optional): Parameters for the north arrow. See https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow. Defaults to {}.
-        scale_bar_dict (dict, optional): Parameters for the scale bar. See https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar. Defaults. to {}.
-        overlay_layers (list, optional): A list of Earth Engine objects to overlay on the map. Defaults to [].
-        overlay_styles (list, optional): A list of dictionaries of visualization parameters for overlay layers. Defaults to [].
-        colorbar_dict (dict, optional): Parameters for the colorbar. See https://geemap.org/cartoee/#geemap.cartoee.add_colorbar. Defaults to {}.
-        verbose (bool, optional): Whether or not to print text when the program is running. Defaults to True.
+        north_arrow_dict (dict, optional): Parameters for the north arrow. See
+            https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow.
+            Defaults to {}.
+        scale_bar_dict (dict, optional): Parameters for the scale bar. See
+            https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar.
+            Defaults to {}.
+        overlay_layers (list, optional): A list of Earth Engine objects to overlay on
+            the map. Defaults to [].
+        overlay_styles (list, optional): A list of dictionaries of visualization
+            parameters for overlay layers. Defaults to [].
+        colorbar_dict (dict, optional): Parameters for the colorbar. See
+            https://geemap.org/cartoee/#geemap.cartoee.add_colorbar.
+            Defaults to {}.
+        verbose (bool, optional): Whether or not to print text when the program is
+            running. Defaults to True.
         **kwargs: Additional keyword arguments are passed to the add_layer() function.
     """
-
     from .geemap import png_to_gif, jpg_to_gif
 
     out_dir = os.path.abspath(out_dir)
@@ -1189,7 +1249,7 @@ def get_image_collection_gif(
 
     digits = len(str(len(dates)))
 
-    # list of file name
+    # List of file names.
     img_list = []
 
     for i, date in enumerate(dates):
@@ -1201,16 +1261,15 @@ def get_image_collection_gif(
         if verbose:
             print(f"Downloading {i+1}/{count}: {name} ...")
 
-        # Size plot
+        # Size plot.
         fig = plt.figure(figsize=fig_size)
 
-        # Set the facecolor
         fig.patch.set_facecolor("white")
 
-        # Plot image
+        # Plot image.
         ax = get_map(image, region=region, vis_params=vis_params, cmap=cmap, proj=proj)
 
-        # check length of overlay layers and styles
+        # Check length of overlay layers and styles.
         if len(overlay_layers) != len(overlay_styles):
             raise ValueError(
                 "The length of overlay_layers and overlay_styles must be the same."
@@ -1223,18 +1282,19 @@ def get_image_collection_gif(
                 or isinstance(ee_object, ee.featurecollection.FeatureCollection)
             ):
                 overlay_vis_params = (
-                    None  # for vector data, we can pass style parameters directly
+                    None  # For vector data, we can pass style parameters directly.
                 )
             elif (
                 isinstance(ee_object, ee.image.Image)
                 or isinstance(ee_object, ee.imagecollection.ImageCollection)
                 or isinstance(ee_object, ee.imagecollection.ImageCollection)
             ):
-                overlay_vis_params = style  # for raster, we need to pass vis_params
+                overlay_vis_params = style  # For raster, need to pass vis_params.
                 style = None
             else:
                 raise ValueError(
-                    "The overlay object must be an ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image, or ee.ImageCollection."
+                    "The overlay object must be an ee.Geometry, ee.Feature, "
+                    "ee.FeatureCollection, ee.Image, or ee.ImageCollection."
                 )
 
             add_layer(
@@ -1247,26 +1307,22 @@ def get_image_collection_gif(
                 **kwargs,
             )
 
-        # Add colorbar if colorbar_dict is not empty
         if colorbar_dict:
             add_colorbar(ax, vis_params, **colorbar_dict)
 
-        # Add grid
         if grid_interval is not None:
             add_gridlines(ax, interval=grid_interval, linestyle=":")
 
-        # Add title
         if len(plot_title) > 0:
             ax.set_title(label=plot_title + " " + date + "\n", fontsize=15)
 
-        # Add scale bar
+        # Add scale bar.
         if len(scale_bar_dict) > 0:
             add_scale_bar_lite(ax, **scale_bar_dict)
-        # Add north arrow
+        # Add north arrow.
         if len(north_arrow_dict) > 0:
             add_north_arrow(ax, **north_arrow_dict)
 
-        # Save plot
         plt.savefig(
             fname=out_img,
             dpi=dpi_plot,
@@ -1295,7 +1351,6 @@ def get_image_collection_gif(
             subprocess.check_call(["python", "-m", "pip", "install", "opencv-python"])
             import cv2
 
-        # Video file name
         output_video_file_name = os.path.join(out_dir, video_filename)
 
         frame = cv2.imread(img_list[0])
@@ -1306,16 +1361,15 @@ def get_image_collection_gif(
         # Make mp4
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
-        # Function
         def convert_frames_to_video(
             input_list, output_video_file_name, fps_video, frame_size
         ):
             """Convert frames to video
 
             Args:
-
                 input_list (list): Downloaded Image Name List.
-                output_video_file_name (str): The name of the video file in the image directory.
+                output_video_file_name (str): The name of the video file in the image
+                    directory.
                 fps_video (int): Video frames per second.
                 frame_size (tuple): Frame size.
             """
@@ -1330,7 +1384,6 @@ def get_image_collection_gif(
             out.release()
             cv2.destroyAllWindows()
 
-        # Use function
         convert_frames_to_video(
             input_list=img_list,
             output_video_file_name=output_video_file_name,
@@ -1344,15 +1397,20 @@ def get_image_collection_gif(
 
 def savefig(fig, fname, dpi="figure", bbox_inches="tight", **kwargs):
     """Save figure to file. It wraps the matplotlib.pyplot.savefig() function.
-            See https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html for more details.
+
+    See https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html for
+    more details.
 
     Args:
         fig (matplotlib.figure.Figure): The figure to save.
         fname (str): A path to a file, or a Python file-like object.
-        dpi (int | str, optional): The resolution in dots per inch. If 'figure', use the figure's dpi value. Defaults to 'figure'.
-        bbox_inches (str, optional): Bounding box in inches: only the given portion of the figure is saved.
-            If 'tight', try to figure out the tight bbox of the figure.
-        kwargs (dict, optional): Additional keyword arguments are passed on to the savefig() method.
+        dpi (int | str, optional): The resolution in dots per inch. If 'figure', use the
+            figure's dpi value. Defaults to 'figure'.
+        bbox_inches (str, optional): Bounding box in inches: only the given portion of
+            the figure is saved.  If 'tight', try to figure out the tight bbox of the
+            figure.
+        kwargs (dict, optional): Additional keyword arguments are passed on to the
+            savefig() method.
     """
 
     fig.savefig(fname=fname, dpi=dpi, bbox_inches=bbox_inches, **kwargs)
