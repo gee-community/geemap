@@ -72,7 +72,7 @@ _palette_dict = {
 def get_palette(
     cmap_name: str | None = None, n_class: int | None = None, hashtag: bool = False
 ) -> list[str]:
-    """Get a palette from a matplotlib colormap.
+    """Returns a palette of hex colors from a matplotlib colormap.
 
     WARNING: This function is inconsistent with how it handles hashes in the
     color names w.r.t. if there is a leading hash (`#`).
@@ -81,12 +81,9 @@ def get_palette(
     https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
     Args:
-        cmap_name (str, optional): The name of the matplotlib colormap. Defaults to None.
-        n_class (int, optional): The number of colors. Defaults to None.
-        hashtag (bool, optional): Whether to return a list of hex colors. Defaults to False.
-
-    Returns:
-        list: A list of hex colors.
+        cmap_name: The name of the matplotlib colormap. Defaults to None.
+        n_class: The number of colors. Defaults to None.
+        hashtag: Whether to return a list of hex colors. Defaults to False.
     """
 
     if cmap_name in ["ndvi", "ndwi", "dem", "dw", "esri_lulc"]:
@@ -113,26 +110,26 @@ def get_palette(
 
 
 def get_colorbar(
-    colors,
-    vmin=0,
-    vmax=1,
-    width=6.0,
-    height=0.4,
-    orientation="horizontal",
-    discrete=False,
-    return_fig=False,
-):
+    colors: list[str],
+    vmin: float = 0,
+    vmax: float = 1,
+    width: float = 6.0,
+    height: float = 0.4,
+    orientation: str = "horizontal",
+    discrete: bool = False,
+    return_fig: bool = False,
+) -> mpl.figure.Figure | None:
     """Creates a colorbar based on custom colors.
 
     Args:
-        colors (list): A list of hex colors.
-        vmin (float, optional): The minimum value range. Defaults to 0.
-        vmax (float, optional): The maximum value range. Defaults to 1.0.
-        width (float, optional): The width of the colormap. Defaults to 6.0.
-        height (float, optional): The height of the colormap. Defaults to 0.4.
-        orientation (str, optional): The orientation of the colormap. Defaults to "horizontal".
-        discrete (bool, optional): Whether to create a discrete colormap.
-        return_fig (bool, optional): Whether to return the figure. Defaults to False.
+        colors: A list of hex colors.
+        vmin: The minimum value range. Defaults to 0.
+        vmax: The maximum value range. Defaults to 1.0.
+        width: The width of the colormap. Defaults to 6.0.
+        height: The height of the colormap. Defaults to 0.4.
+        orientation: The orientation of the colormap. Defaults to "horizontal".
+        discrete: Whether to create a discrete colormap.
+        return_fig: Whether to return the figure. Defaults to False.
     """
     hexcodes = [i if i[0] == "#" else "#" + i for i in colors]
     fig, ax = plt.subplots(figsize=(width, height))
@@ -144,17 +141,19 @@ def get_colorbar(
         cmap = mpl.colors.LinearSegmentedColormap.from_list("custom", hexcodes, N=256)
         norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
     mpl.colorbar.ColorbarBase(ax, norm=norm, cmap=cmap, orientation=orientation)
+
     if return_fig:
         return fig
     else:
         plt.show()
 
 
-def list_colormaps(add_extra=False, lowercase=False):
-    """List all available colormaps. See a complete lost of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
+def list_colormaps(add_extra: bool = False, lowercase: bool = False) -> list[str]:
+    """Returns a list of all the available colormap names.
 
-    Returns:
-        list: The list of colormap names.
+    See a complete lost of colormaps:
+
+        https://matplotlib.org/stable/tutorials/colors/colormaps.html
     """
     result = plt.colormaps()
     if add_extra:
@@ -166,30 +165,30 @@ def list_colormaps(add_extra=False, lowercase=False):
 
 
 def plot_colormap(
-    cmap,
-    width=8.0,
-    height=0.4,
-    orientation="horizontal",
-    vmin=0,
-    vmax=1.0,
-    axis_off=True,
-    show_name=False,
-    font_size=12,
-    return_fig=False,
-):
+    cmap: str,
+    width: float = 8.0,
+    height: float = 0.4,
+    orientation: str = "horizontal",
+    vmin: float = 0,
+    vmax: float = 1.0,
+    axis_off: bool = True,
+    show_name: bool = False,
+    font_size: int = 12,
+    return_fig: bool = False,
+) -> mpl.figure.Figure | None:
     """Plot a matplotlib colormap.
 
     Args:
-        cmap (str): The name of the colormap.
-        width (float, optional): The width of the colormap. Defaults to 8.0.
-        height (float, optional): The height of the colormap. Defaults to 0.4.
-        orientation (str, optional): The orientation of the colormap. Defaults to "horizontal".
-        vmin (float, optional): The minimum value range. Defaults to 0.
-        vmax (float, optional): The maximum value range. Defaults to 1.0.
-        axis_off (bool, optional): Whether to turn axis off. Defaults to True.
-        show_name (bool, optional): Whether to show the colormap name. Defaults to False.
-        font_size (int, optional): Font size of the text. Defaults to 12.
-        return_fig (bool, optional): Whether to return the figure. Defaults to False.
+        cmap: The name of the colormap.
+        width: The width of the colormap. Defaults to 8.0.
+        height: The height of the colormap. Defaults to 0.4.
+        orientation: The orientation of the colormap. Defaults to "horizontal".
+        vmin: The minimum value range. Defaults to 0.
+        vmax: The maximum value range. Defaults to 1.0.
+        axis_off: Whether to turn axis off. Defaults to True.
+        show_name: Whether to show the colormap name. Defaults to False.
+        font_size: Font size of the text. Defaults to 12.
+        return_fig: Whether to return the figure. Defaults to False.
     """
     fig, ax = plt.subplots(figsize=(width, height))
     col_map = mpl.colormaps[cmap]
@@ -212,12 +211,12 @@ def plot_colormap(
         plt.show()
 
 
-def plot_colormaps(width=8.0, height=0.4):
+def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
     """Plot all available colormaps.
 
     Args:
-        width (float, optional): Width of the colormap. Defaults to 8.0.
-        height (float, optional): Height of the colormap. Defaults to 0.4.
+        width: Width of the colormap. Defaults to 8.0.
+        height: Height of the colormap. Defaults to 0.4.
     """
     cmap_list = list_colormaps()
     nrows = len(cmap_list)
