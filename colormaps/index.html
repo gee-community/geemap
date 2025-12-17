@@ -6984,7 +6984,7 @@
                 <code>colors</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7113,7 +7113,10 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/colormaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">115</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
 <span class="normal">116</span>
 <span class="normal">117</span>
 <span class="normal">118</span>
@@ -7146,29 +7149,27 @@
 <span class="normal">145</span>
 <span class="normal">146</span>
 <span class="normal">147</span>
-<span class="normal">148</span>
-<span class="normal">149</span>
-<span class="normal">150</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_colorbar</span><span class="p">(</span>
-    <span class="n">colors</span><span class="p">,</span>
-    <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mf">6.0</span><span class="p">,</span>
-    <span class="n">height</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
-    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
-    <span class="n">discrete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">return_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="normal">148</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_colorbar</span><span class="p">(</span>
+    <span class="n">colors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+    <span class="n">vmin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">vmax</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">6.0</span><span class="p">,</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+    <span class="n">orientation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+    <span class="n">discrete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">return_fig</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mpl</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a colorbar based on custom colors.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        colors (list): A list of hex colors.</span>
-<span class="sd">        vmin (float, optional): The minimum value range. Defaults to 0.</span>
-<span class="sd">        vmax (float, optional): The maximum value range. Defaults to 1.0.</span>
-<span class="sd">        width (float, optional): The width of the colormap. Defaults to 6.0.</span>
-<span class="sd">        height (float, optional): The height of the colormap. Defaults to 0.4.</span>
-<span class="sd">        orientation (str, optional): The orientation of the colormap. Defaults to &quot;horizontal&quot;.</span>
-<span class="sd">        discrete (bool, optional): Whether to create a discrete colormap.</span>
-<span class="sd">        return_fig (bool, optional): Whether to return the figure. Defaults to False.</span>
+<span class="sd">        colors: A list of hex colors.</span>
+<span class="sd">        vmin: The minimum value range. Defaults to 0.</span>
+<span class="sd">        vmax: The maximum value range. Defaults to 1.0.</span>
+<span class="sd">        width: The width of the colormap. Defaults to 6.0.</span>
+<span class="sd">        height: The height of the colormap. Defaults to 0.4.</span>
+<span class="sd">        orientation: The orientation of the colormap. Defaults to &quot;horizontal&quot;.</span>
+<span class="sd">        discrete: Whether to create a discrete colormap.</span>
+<span class="sd">        return_fig: Whether to return the figure. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">hexcodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;#&quot;</span> <span class="k">else</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
@@ -7180,6 +7181,7 @@
         <span class="n">cmap</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">LinearSegmentedColormap</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="s2">&quot;custom&quot;</span><span class="p">,</span> <span class="n">hexcodes</span><span class="p">,</span> <span class="n">N</span><span class="o">=</span><span class="mi">256</span><span class="p">)</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Normalize</span><span class="p">(</span><span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">vmax</span><span class="p">)</span>
     <span class="n">mpl</span><span class="o">.</span><span class="n">colorbar</span><span class="o">.</span><span class="n">ColorbarBase</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">norm</span><span class="o">=</span><span class="n">norm</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">orientation</span><span class="o">=</span><span class="n">orientation</span><span class="p">)</span>
+
     <span class="k">if</span> <span class="n">return_fig</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fig</span>
     <span class="k">else</span><span class="p">:</span>
@@ -7201,7 +7203,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Get a palette from a matplotlib colormap.</p>
+        <p>Returns a palette of hex colors from a matplotlib colormap.</p>
 <p>WARNING: This function is inconsistent with how it handles hashes in the
 color names w.r.t. if there is a leading hash (<code>#</code>).</p>
 <p>See the list of colormaps at
@@ -7224,7 +7226,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
                 <code>cmap_name</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7240,7 +7242,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
                 <code>n_class</code>
             </td>
             <td>
-                  <code><span title="int">int</span></code>
+                  <code><span title="int">int</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7265,29 +7267,6 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
                   <code>False</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
-                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A list of hex colors.</p>
-              </div>
             </td>
           </tr>
       </tbody>
@@ -7333,13 +7312,10 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="normal">106</span>
 <span class="normal">107</span>
 <span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span>
-<span class="normal">112</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_palette</span><span class="p">(</span>
+<span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_palette</span><span class="p">(</span>
     <span class="n">cmap_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">hashtag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get a palette from a matplotlib colormap.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a palette of hex colors from a matplotlib colormap.</span>
 
 <span class="sd">    WARNING: This function is inconsistent with how it handles hashes in the</span>
 <span class="sd">    color names w.r.t. if there is a leading hash (`#`).</span>
@@ -7348,12 +7324,9 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="sd">    https://matplotlib.org/stable/tutorials/colors/colormaps.html.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cmap_name (str, optional): The name of the matplotlib colormap. Defaults to None.</span>
-<span class="sd">        n_class (int, optional): The number of colors. Defaults to None.</span>
-<span class="sd">        hashtag (bool, optional): Whether to return a list of hex colors. Defaults to False.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        list: A list of hex colors.</span>
+<span class="sd">        cmap_name: The name of the matplotlib colormap. Defaults to None.</span>
+<span class="sd">        n_class: The number of colors. Defaults to None.</span>
+<span class="sd">        hashtag: Whether to return a list of hex colors. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">if</span> <span class="n">cmap_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ndvi&quot;</span><span class="p">,</span> <span class="s2">&quot;ndwi&quot;</span><span class="p">,</span> <span class="s2">&quot;dem&quot;</span><span class="p">,</span> <span class="s2">&quot;dw&quot;</span><span class="p">,</span> <span class="s2">&quot;esri_lulc&quot;</span><span class="p">]:</span>
@@ -7394,34 +7367,17 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 
     <div class="doc doc-contents ">
 
-        <p>List all available colormaps. See a complete lost of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The list of colormap names.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+        <p>Returns a list of all the available colormap names.</p>
+<p>See a complete lost of colormaps:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span></pre></div></td><td class="code"><div><pre><span></span><code>https://matplotlib.org/stable/tutorials/colors/colormaps.html
+</code></pre></div></td></tr></table></div>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/colormaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">153</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">151</span>
+<span class="normal">152</span>
+<span class="normal">153</span>
 <span class="normal">154</span>
 <span class="normal">155</span>
 <span class="normal">156</span>
@@ -7432,12 +7388,12 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="normal">161</span>
 <span class="normal">162</span>
 <span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">list_colormaps</span><span class="p">(</span><span class="n">add_extra</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">lowercase</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;List all available colormaps. See a complete lost of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.</span>
+<span class="normal">164</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">list_colormaps</span><span class="p">(</span><span class="n">add_extra</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">lowercase</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a list of all the available colormap names.</span>
 
-<span class="sd">    Returns:</span>
-<span class="sd">        list: The list of colormap names.</span>
+<span class="sd">    See a complete lost of colormaps:</span>
+
+<span class="sd">        https://matplotlib.org/stable/tutorials/colors/colormaps.html</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">result</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">colormaps</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">add_extra</span><span class="p">:</span>
@@ -7643,7 +7599,8 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/colormaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">168</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
+<span class="normal">168</span>
 <span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
@@ -7686,32 +7643,31 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="normal">208</span>
 <span class="normal">209</span>
 <span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_colormap</span><span class="p">(</span>
-    <span class="n">cmap</span><span class="p">,</span>
-    <span class="n">width</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span>
-    <span class="n">height</span><span class="o">=</span><span class="mf">0.4</span><span class="p">,</span>
-    <span class="n">orientation</span><span class="o">=</span><span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
-    <span class="n">vmin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">vmax</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
-    <span class="n">axis_off</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">show_name</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">font_size</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span>
-    <span class="n">return_fig</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="normal">211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_colormap</span><span class="p">(</span>
+    <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8.0</span><span class="p">,</span>
+    <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">,</span>
+    <span class="n">orientation</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;horizontal&quot;</span><span class="p">,</span>
+    <span class="n">vmin</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">vmax</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span>
+    <span class="n">axis_off</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">show_name</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">12</span><span class="p">,</span>
+    <span class="n">return_fig</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">mpl</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">Figure</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot a matplotlib colormap.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cmap (str): The name of the colormap.</span>
-<span class="sd">        width (float, optional): The width of the colormap. Defaults to 8.0.</span>
-<span class="sd">        height (float, optional): The height of the colormap. Defaults to 0.4.</span>
-<span class="sd">        orientation (str, optional): The orientation of the colormap. Defaults to &quot;horizontal&quot;.</span>
-<span class="sd">        vmin (float, optional): The minimum value range. Defaults to 0.</span>
-<span class="sd">        vmax (float, optional): The maximum value range. Defaults to 1.0.</span>
-<span class="sd">        axis_off (bool, optional): Whether to turn axis off. Defaults to True.</span>
-<span class="sd">        show_name (bool, optional): Whether to show the colormap name. Defaults to False.</span>
-<span class="sd">        font_size (int, optional): Font size of the text. Defaults to 12.</span>
-<span class="sd">        return_fig (bool, optional): Whether to return the figure. Defaults to False.</span>
+<span class="sd">        cmap: The name of the colormap.</span>
+<span class="sd">        width: The width of the colormap. Defaults to 8.0.</span>
+<span class="sd">        height: The height of the colormap. Defaults to 0.4.</span>
+<span class="sd">        orientation: The orientation of the colormap. Defaults to &quot;horizontal&quot;.</span>
+<span class="sd">        vmin: The minimum value range. Defaults to 0.</span>
+<span class="sd">        vmax: The maximum value range. Defaults to 1.0.</span>
+<span class="sd">        axis_off: Whether to turn axis off. Defaults to True.</span>
+<span class="sd">        show_name: Whether to show the colormap name. Defaults to False.</span>
+<span class="sd">        font_size: Font size of the text. Defaults to 12.</span>
+<span class="sd">        return_fig: Whether to return the figure. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
     <span class="n">col_map</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colormaps</span><span class="p">[</span><span class="n">cmap</span><span class="p">]</span>
@@ -7801,7 +7757,8 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/colormaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">215</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">214</span>
+<span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
 <span class="normal">218</span>
@@ -7827,13 +7784,12 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="normal">238</span>
 <span class="normal">239</span>
 <span class="normal">240</span>
-<span class="normal">241</span>
-<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_colormaps</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mf">8.0</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">0.4</span><span class="p">):</span>
+<span class="normal">241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_colormaps</span><span class="p">(</span><span class="n">width</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">8.0</span><span class="p">,</span> <span class="n">height</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.4</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plot all available colormaps.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        width (float, optional): Width of the colormap. Defaults to 8.0.</span>
-<span class="sd">        height (float, optional): Height of the colormap. Defaults to 0.4.</span>
+<span class="sd">        width: Width of the colormap. Defaults to 8.0.</span>
+<span class="sd">        height: Height of the colormap. Defaults to 0.4.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cmap_list</span> <span class="o">=</span> <span class="n">list_colormaps</span><span class="p">()</span>
     <span class="n">nrows</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cmap_list</span><span class="p">)</span>
