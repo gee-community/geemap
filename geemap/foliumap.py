@@ -44,10 +44,9 @@ basemaps = box.Box(basemaps.xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
-    """The Map class inherits from folium.Map. By default, the Map will use OpenStreetMap as the basemap.
+    """The Map class inherits from folium.Map.
 
-    Returns:
-        object: folium map object.
+    By default, the Map will use OpenStreetMap as the basemap.
     """
 
     def __init__(self, **kwargs):
@@ -59,11 +58,11 @@ class Map(folium.Map):
         if kwargs["ee_initialize"]:
             coreutils.ee_initialize()
 
-        # Default map center location and zoom level
+        # Default map center location and zoom level.
         latlon = [20, 0]
         zoom = 2
 
-        # Interchangeable parameters between ipyleaflet and folium
+        # Interchangeable parameters between ipyleaflet and folium.
         if "center" in kwargs.keys():
             kwargs["location"] = kwargs["center"]
             kwargs.pop("center")
@@ -132,9 +131,9 @@ class Map(folium.Map):
         super().__init__(**kwargs)
         self.baseclass = "folium"
 
-        # The list of Earth Engine Geometry objects converted from geojson
+        # The list of Earth Engine Geometry objects converted from geojson.
         self.draw_features = []
-        # The Earth Engine Geometry object converted from the last drawn feature
+        # The Earth Engine Geometry object converted from the last drawn feature.
         self.draw_last_feature = None
         self.draw_layer = None
         self.user_roi = None
@@ -177,9 +176,15 @@ class Map(folium.Map):
         """Adds Google basemap to the map.
 
         Args:
-            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google Maps API map types. Defaults to 'HYBRID'.
-            styles ([type], optional): A dictionary of custom MapTypeStyle objects keyed with a name that will appear in the map's Map Type Controls. Defaults to None.
-            types ([type], optional): A list of mapTypeIds to make available. If omitted, but opt_styles is specified, appends all of the style keys to the standard Google Maps API map types. Defaults to None.
+            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of
+                "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the
+                standard Google Maps API map types. Defaults to 'HYBRID'.
+            styles ([type], optional): A dictionary of custom MapTypeStyle objects keyed
+                with a name that will appear in the map's Map Type Controls. Defaults to
+                None.
+            types ([type], optional): A list of mapTypeIds to make available. If
+                omitted, but opt_styles is specified, appends all of the style keys to
+                the standard Google Maps API map types. Defaults to None.
         """
         try:
             basemaps[mapTypeId].add_to(self)
@@ -198,7 +203,7 @@ class Map(folium.Map):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from ee_basemaps. Defaults to 'ROADMAP'.
+            basemap: Can be one of string from ee_basemaps. Defaults to 'ROADMAP'.
         """
         import xyzservices
 
@@ -283,8 +288,10 @@ class Map(folium.Map):
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to {}.
             name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+            shown (bool, optional): A flag indicating whether the layer should be on by
+                default. Defaults to True.
+            opacity (float, optional): The layer's opacity represented as a number
+                between 0 and 1. Defaults to 1.
         """
 
         layer = ee_tile_layers.EEFoliumTileLayer(
@@ -296,17 +303,20 @@ class Map(folium.Map):
     addLayer = add_layer
 
     def _repr_mimebundle_(self, **kwargs):
-        """Adds Layer control to the map. Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_"""
+        """Adds Layer control to the map.
+
+        Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
+        """
         if self.options["layersControl"]:
             self.add_layer_control()
 
-    def set_center(self, lon, lat, zoom=10):
+    def set_center(self, lon: float, lat: float, zoom: int = 10) -> None:
         """Centers the map view at a given coordinates with the given zoom level.
 
         Args:
-            lon (float): The longitude of the center, in degrees.
-            lat (float): The latitude of the center, in degrees.
-            zoom (int, optional): The zoom level, from 1 to 24. Defaults to 10.
+            lon: The longitude of the center, in degrees.
+            lat: The latitude of the center, in degrees.
+            zoom: The zoom level, from 1 to 24. Defaults to 10.
         """
         self.fit_bounds([[lat, lon], [lat, lon]], max_zoom=zoom)
 
@@ -319,9 +329,11 @@ class Map(folium.Map):
         """Zooms to a bounding box in the form of [minx, miny, maxx, maxy].
 
         Args:
-            bounds (list | tuple): A list/tuple containing minx, miny, maxx, maxy values for the bounds.
+          bounds (list | tuple): A list/tuple containing minx, miny, maxx, maxy values
+            for the bounds.
         """
-        #  The folium fit_bounds method takes lat/lon bounds in the form [[south, west], [north, east]].
+        # The folium fit_bounds method takes lat/lon bounds in the form:
+        #     [[south, west], [north, east]]
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
     def zoom_to_gdf(self, gdf):
@@ -333,13 +345,18 @@ class Map(folium.Map):
         bounds = gdf.total_bounds
         self.zoom_to_bounds(bounds)
 
-    def center_object(self, ee_object, zoom=None, max_error=0.001):
+    def center_object(
+        self,
+        ee_object: ee.ComputedObject,
+        zoom: int | None = None,
+        max_error: float = 0.001,
+    ) -> None:
         """Centers the map view on a given object.
 
         Args:
-            ee_object (Element|Geometry): An Earth Engine object to center on a geometry, image or feature.
-            zoom (int, optional): The zoom level, from 1 to 24. Defaults to None.
-            max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.
+            ee_object: An Earth Engine object to center on a geometry, image or feature.
+            zoom: The zoom level, from 1 to 24. Defaults to None.
+            max_error: The maximum error for the geometry. Defaults to 0.001.
         """
         if isinstance(ee_object, ee.Geometry):
             geometry = ee_object.transform(maxError=max_error)
@@ -350,22 +367,21 @@ class Map(folium.Map):
                 )
             except Exception:
                 raise Exception(
-                    "ee_object must be an instance of one of ee.Geometry, ee.FeatureCollection, ee.Image, or ee.ImageCollection."
+                    "ee_object must be an instance of one of ee.Geometry, "
+                    "ee.FeatureCollection, ee.Image, or ee.ImageCollection."
                 )
 
         if zoom is not None:
             if not isinstance(zoom, int):
                 raise Exception("Zoom must be an integer.")
-            else:
-                centroid = geometry.centroid(maxError=max_error).getInfo()[
-                    "coordinates"
-                ]
-                lat = centroid[1]
-                lon = centroid[0]
-                self.set_center(lon, lat, zoom)
 
-                if is_arcpy():
-                    arc_zoom_to_extent(lon, lat, lon, lat)
+            centroid = geometry.centroid(maxError=max_error).getInfo()["coordinates"]
+            lat = centroid[1]
+            lon = centroid[0]
+            self.set_center(lon, lat, zoom)
+
+            if is_arcpy():
+                arc_zoom_to_extent(lon, lat, lon, lat)
 
         else:
             coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][
@@ -386,14 +402,20 @@ class Map(folium.Map):
     centerObject = center_object
 
     def set_control_visibility(
-        self, layerControl=True, fullscreenControl=True, latLngPopup=True
-    ):
+        self,
+        layerControl: bool = True,
+        fullscreenControl: bool = True,
+        latLngPopup: bool = True,
+    ) -> None:
         """Sets the visibility of the controls on the map.
 
         Args:
-            layerControl (bool, optional): Whether to show the control that allows the user to toggle layers on/off. Defaults to True.
-            fullscreenControl (bool, optional): Whether to show the control that allows the user to make the map full-screen. Defaults to True.
-            latLngPopup (bool, optional): Whether to show the control that pops up the Lat/lon when the user clicks on the map. Defaults to True.
+            layerControl: Whether to show the control that allows the user to toggle
+                layers on/off. Defaults to True.
+            fullscreenControl: Whether to show the control that allows the user to make
+                the map full-screen. Defaults to True.
+            latLngPopup: Whether to show the control that pops up the Lat/lon when the
+                user clicks on the map. Defaults to True.
         """
         if layerControl:
             folium.LayerControl().add_to(self)
@@ -419,14 +441,19 @@ class Map(folium.Map):
     def add_marker(
         self, location, popup=None, tooltip=None, icon=None, draggable=False, **kwargs
     ):
-        """Adds a marker to the map. More info about marker options at https://python-visualization.github.io/folium/modules.html#folium.map.Marker.
+        """Adds a marker to the map.
+
+        More info about marker options at
+
+        https://python-visualization.github.io/folium/modules.html#folium.map.Marker.
 
         Args:
-            location (list | tuple): The location of the marker in the format of [lat, lng].
+            location (list | tuple): Location of the marker in the format of [lat, lng].
             popup (str, optional): The popup text. Defaults to None.
             tooltip (str, optional): The tooltip text. Defaults to None.
             icon (str, optional): The icon to use. Defaults to None.
-            draggable (bool, optional): Whether the marker is draggable. Defaults to False.
+            draggable (bool, optional): Whether the marker is draggable.
+                Defaults to False.
         """
         if isinstance(location, list):
             location = tuple(location)
@@ -445,33 +472,35 @@ class Map(folium.Map):
 
     def add_wms_layer(
         self,
-        url,
-        layers,
-        name=None,
-        attribution="",
-        overlay=True,
-        control=True,
-        shown=True,
-        format="image/png",
-        transparent=True,
-        version="1.1.1",
-        styles="",
+        url: str,
+        layers: str,
+        name: str | None = None,
+        attribution: str | None = "",
+        overlay: bool = True,
+        control: bool = True,
+        shown: bool = True,
+        format: str = "image/png",
+        transparent: bool = True,
+        version: str = "1.1.1",
+        styles: str = "",
         **kwargs,
-    ):
+    ) -> None:
         """Add a WMS layer to the map.
 
         Args:
-            url (str): The URL of the WMS web service.
-            layers (str): Comma-separated list of WMS layers to show.
-            name (str, optional): The layer name to use on the layer control. Defaults to None.
-            attribution (str, optional): The attribution of the data layer. Defaults to ''.
-            overlay (str, optional): Allows overlay. Defaults to True.
-            control (str, optional): Adds the layer to the layer control. Defaults to True.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/png'.
-            transparent (bool, optional): Whether the layer shall allow transparency. Defaults to True.
-            version (str, optional): Version of the WMS service to use. Defaults to "1.1.1".
-            styles (str, optional): Comma-separated list of WMS styles. Defaults to "".
+            url: The URL of the WMS web service.
+            layers: Comma-separated list of WMS layers to show.
+            name: The layer name to use on the layer control. Defaults to None.
+            attribution: The attribution of the data layer. Defaults to ''.
+            overlay: Allows overlay. Defaults to True.
+            control: Adds the layer to the layer control. Defaults to True.
+            shown: A flag indicating whether the layer should be on by default.
+                Defaults to True.
+            format: WMS image format (use ‘image/png’ for layers with transparency).
+                Defaults to 'image/png'.
+            transparent: Whether the layer shall allow transparency. Defaults to True.
+            version: Version of the WMS service to use. Defaults to "1.1.1".
+            styles: Comma-separated list of WMS styles. Defaults to "".
         """
         try:
             folium.raster_layers.WmsTileLayer(
@@ -493,27 +522,29 @@ class Map(folium.Map):
 
     def add_tile_layer(
         self,
-        tiles="OpenStreetMap",
-        name="Untitled",
-        attribution=".",
-        overlay=True,
-        control=True,
-        shown=True,
-        opacity=1.0,
-        API_key=None,
+        tiles: str = "OpenStreetMap",
+        name: str = "Untitled",
+        attribution: str = ".",
+        overlay: bool = True,
+        control: bool = True,
+        shown: bool = True,
+        opacity: float = 1.0,
+        API_key: str | None = None,
         **kwargs,
-    ):
+    ) -> None:
         """Add a XYZ tile layer to the map.
 
         Args:
-            tiles (str): The URL of the XYZ tile service.
-            name (str, optional): The layer name to use on the layer control. Defaults to 'Untitled'.
-            attribution (str, optional): The attribution of the data layer. Defaults to '.'.
-            overlay (str, optional): Allows overlay. Defaults to True.
-            control (str, optional): Adds the layer to the layer control. Defaults to True.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            opacity (float, optional): Sets the opacity for the layer.
-            API_key (str, optional): – API key for Cloudmade or Mapbox tiles. Defaults to True.
+            tiles: The URL of the XYZ tile service.
+            name: The layer name to use on the layer control.
+                Defaults to 'Untitled'.
+            attribution: The attribution of the data layer. Defaults to '.'.
+            overlay: Allows overlay. Defaults to True.
+            control: Adds the layer to the layer control. Defaults to True.
+            shown: A flag indicating whether the layer should be on by default.
+                Defaults to True.
+            opacity: Sets the opacity for the layer.
+            API_key: – API key for Cloudmade or Mapbox tiles. Defaults to True.
         """
 
         if "max_zoom" not in kwargs:
@@ -538,25 +569,27 @@ class Map(folium.Map):
 
     def add_cog_layer(
         self,
-        url,
-        name="Untitled",
-        attribution=".",
-        opacity=1.0,
-        shown=True,
-        bands=None,
+        url: str,
+        name: str = "Untitled",
+        attribution: str = ".",
+        opacity: float = 1.0,
+        shown: bool = True,
+        bands: list[str] | None = None,
         titiler_endpoint=None,
         **kwargs,
-    ):
+    ) -> None:
         """Adds a COG TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer.
-            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
-            attribution (str, optional): The attribution to use. Defaults to '.'.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            bands (list, optional): A list of bands to use. Defaults to None.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
+            urlThe URL of the COG tile layer.
+            name: The layer name to use for the layer. Defaults to 'Untitled'.
+            attribution: The attribution to use. Defaults to '.'.
+            opacity: The opacity of the layer. Defaults to 1.
+            shown: A flag indicating whether the layer should be on by default.
+                Defaults to True.
+            bands: A list of bands to use. Defaults to None.
+            titiler_endpoint: Titiler endpoint.
+                Defaults to "https://giswqs-titiler-endpoint.hf.space".
         """
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
         bounds = cog_bounds(url, titiler_endpoint)
@@ -571,36 +604,45 @@ class Map(folium.Map):
 
     def add_cog_mosaic(self, **kwargs):
         raise NotImplementedError(
-            "This function is no longer supported.See https://github.com/giswqs/leafmap/issues/180."
+            "This function is no longer supported. "
+            "See https://github.com/giswqs/leafmap/issues/180."
         )
 
     def add_stac_layer(
         self,
-        url=None,
-        collection=None,
-        item=None,
-        assets=None,
-        bands=None,
-        titiler_endpoint=None,
-        name="STAC Layer",
-        attribution=".",
-        opacity=1.0,
-        shown=True,
+        url: str = None,
+        collection: str | None = None,
+        item: str | None = None,
+        assets: str | list[str] | None = None,
+        bands: list[str] | None = None,
+        titiler_endpoint: str | None = None,
+        name: str = "STAC Layer",
+        # TODO: Why `.`? This does not match the doc string.
+        attribution: str = ".",
+        opacity: str = 1.0,
+        shown: bool = True,
         **kwargs,
-    ):
+    ) -> None:
         """Adds a STAC TileLayer to the map.
 
         Args:
-            url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-            collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-            item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-            assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-            bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-            name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
-            attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            url: HTTP URL to a STAC item, e.g.,
+                https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+            collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+                landsat-8-c2-l2.
+            item: The Microsoft Planetary Computer STAC item ID, e.g.,
+                LC08_L2SP_047027_20201204_02_T1.
+            assets: The Microsoft Planetary Computer STAC asset ID, e.g.,
+                ["SR_B7", "SR_B5", "SR_B4"].
+            bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
+            titiler_endpoint: Titiler endpoint, e.g.,
+                "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc".
+                Defaults to None.
+            name: The layer name to use for the layer. Defaults to 'STAC Layer'.
+            attribution: The attribution to use. Defaults to ''.
+            opacity: The opacity of the layer. Defaults to 1.
+            shown: A flag indicating whether the layer should be on by default.
+                Defaults to True.
         """
         tile_url = stac_tile(
             url, collection, item, assets, bands, titiler_endpoint, **kwargs
@@ -618,34 +660,46 @@ class Map(folium.Map):
     def add_raster(
         self,
         source: str,
-        indexes: Optional[int] = None,
-        colormap: Optional[str] = None,
-        vmin: Optional[float] = None,
-        vmax: Optional[float] = None,
-        nodata: Optional[float] = None,
-        attribution: Optional[str] = None,
-        layer_name: Optional[str] = "Raster",
-        array_args: Optional[Dict] = {},
+        indexes: int | None = None,
+        colormap: str | None = None,
+        vmin: float | None = None,
+        vmax: float | None = None,
+        nodata: float | None = None,
+        attribution: str | None = None,
+        layer_name: str | None = "Raster",
+        array_args: dict | None = {},
         **kwargs,
-    ):
+    ) -> None:
         """Add a local raster dataset to the map.
-            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer) and
-            if the raster does not render properly, try installing jupyter-server-proxy using `pip install jupyter-server-proxy`,
-            then running the following code before calling this function. For more info, see https://bit.ly/3JbmF93.
+
+        If you are using this function in JupyterHub on a remote server (e.g., Binder,
+        Microsoft Planetary Computer) and if the raster does not render properly, try
+        installing jupyter-server-proxy using `pip install jupyter-server-proxy`, then
+        running the following code before calling this function. For more info, see
+        https://bit.ly/3JbmF93.
 
             import os
             os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = 'proxy/{port}'
 
         Args:
-            source (str): The path to the GeoTIFF file or the URL of the Cloud Optimized GeoTIFF.
-            indexes (int, optional): The band(s) to use. Band indexing starts at 1. Defaults to None.
-            colormap (str, optional): The name of the colormap from `matplotlib` to use when plotting a single band. See https://matplotlib.org/stable/gallery/color/colormap_reference.html. Default is greyscale.
-            vmin (float, optional): The minimum value to use when colormapping the colormap when plotting a single band. Defaults to None.
-            vmax (float, optional): The maximum value to use when colormapping the colormap when plotting a single band. Defaults to None.
-            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
-            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to 'Raster'.
-            array_args (dict, optional): Additional arguments to pass to `array_to_image`. Defaults to {}.
+            source: The path to the GeoTIFF file or the URL of the Cloud Optimized
+                GeoTIFF.
+            indexes: The band(s) to use. Band indexing starts at 1. Defaults to None.
+            colormap: The name of the colormap from `matplotlib` to use when plotting a
+                single band. See
+                https://matplotlib.org/stable/gallery/color/colormap_reference.html.
+                Default is greyscale.
+            vmin: The minimum value to use when colormapping the colormap when plotting
+                a single band. Defaults to None.
+            vmax: The maximum value to use when colormapping the colormap when plotting
+                a single band. Defaults to None.
+            nodata: The value from the band to use to interpret as not valid data.
+                Defaults to None.
+            attribution: Attribution for the source raster. This defaults to a message
+                about it being a local file. Defaults to None.
+            layer_name: The layer name to use. Defaults to 'Raster'.
+            array_args: Additional arguments to pass to `array_to_image`.
+                Defaults to {}.
         """
 
         import xarray as xr
