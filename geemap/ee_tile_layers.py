@@ -22,15 +22,11 @@ def _get_tile_url_format(
     ),
     vis_params: dict[str, Any] | None,
 ) -> str:
-    """Gets the tile URL format for an EE object.
+    """Returns the tile URL format for an EE object.
 
     Args:
-        ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image,
-            ee.ImageCollection]): The EE object.
-        vis_params (Optional[Dict[str, Any]]): The visualization parameters.
-
-    Returns:
-        str: The tile URL format.
+        ee_object: The EE object.
+        vis_params: The visualization parameters.
     """
     image = _ee_object_to_image(ee_object, vis_params)
     map_id_dict = ee.Image(image).getMapId(vis_params)
@@ -38,13 +34,10 @@ def _get_tile_url_format(
 
 
 def _validate_vis_params(vis_params: dict[str, Any] | None) -> dict[str, Any]:
-    """Validates and returns the visualization parameters.
+    """Returns the validatesd visualization parameters.
 
     Args:
-        vis_params (Optional[Dict[str, Any]]): The visualization parameters.
-
-    Returns:
-        Dict[str, Any]: The validated visualization parameters.
+        vis_params: The visualization parameters.
     """
     if vis_params is None:
         return {}
@@ -66,15 +59,11 @@ def _ee_object_to_image(
     ),
     vis_params: dict[str, Any],
 ) -> ee.Image:
-    """Converts an EE object to an EE image.
+    """Returns an EE object converted to an EE image.
 
     Args:
-        ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection, ee.Image,
-            ee.ImageCollection]): The EE object.
-        vis_params (Dict[str, Any]): The visualization parameters.
-
-    Returns:
-        ee.Image: The EE image.
+        ee_object: The EE object.
+        vis_params: The visualization parameters.
     """
     if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
@@ -103,13 +92,10 @@ def _ee_object_to_image(
 def _validate_palette(
     palette: str | list[str] | tuple[str, ...] | box.Box,
 ) -> list[str]:
-    """Validates and returns the palette.
+    """Returns the validated palette.
 
     Args:
-        palette (Union[str, List[str], tuple[str, ...], box.Box]): The palette.
-
-    Returns:
-        List[str]: The validated palette.
+        palette: The palette.
     """
     if isinstance(palette, tuple):
         palette = list(palette)
@@ -145,15 +131,13 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
         """Initialize the folium tile layer.
 
         Args:
-            ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,
-                ee.Image, ee.ImageCollection]): The object to add to the map.
-            vis_params (Optional[Dict[str, Any]]): The visualization parameters.
-                Defaults to None.
-            name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-            shown (bool, optional): A flag indicating whether the layer should
-                be on by default. Defaults to True.
-            opacity (float, optional): The layer's opacity represented as a
-                number between 0 and 1. Defaults to 1.
+            ee_object: The object to add to the map.
+            vis_params: The visualization parameters. Defaults to None.
+            name: The name of the layer. Defaults to 'Layer untitled'.
+            shown: A flag indicating whether the layer should be on by default.
+                Defaults to True.
+            opacity: Layer's opacity represented as a number between 0 and 1.
+                Defaults to 1.
         """
         self.url_format = _get_tile_url_format(
             ee_object, _validate_vis_params(vis_params)
@@ -200,15 +184,13 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         """Initialize the ipyleaflet tile layer.
 
         Args:
-            ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,
-                ee.Image, ee.ImageCollection]): The object to add to the map.
-            vis_params (Optional[Dict[str, Any]]): The visualization parameters.
-                Defaults to None.
-            name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-            shown (bool, optional): A flag indicating whether the layer should
-                be on by default. Defaults to True.
-            opacity (float, optional): The layer's opacity represented as a
-                number between 0 and 1. Defaults to 1.
+            ee_object: The object to add to the map.
+            vis_params: The visualization parameters. Defaults to None.
+            name: The name of the layer. Defaults to 'Layer untitled'.
+            shown: A flag indicating whether the layer should be on by default.
+                Defaults to True.
+            opacity: Layer's opacity represented as a number between 0 and 1.
+                Defaults to 1.
         """
         self._ee_object = ee_object
         self.url_format = _get_tile_url_format(
@@ -237,13 +219,13 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         and are cached to avoid recomputing for the same bounds and bands.
 
         Args:
-            bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The
-                bounds to sample.
-            bands (tuple[str, ...]): The bands to sample.
+            bounds: The bounds to sample.
+            bands: The bands to sample.
 
         Returns:
-            tuple[float, float, float, float]: The minimum, maximum, standard
-                deviation, and mean values across the specified bands.
+            The minimum, maximum, standard deviation, and mean values across the
+                specified bands.
+
         """
         stat_reducer = (
             ee.Reducer.minMax()
@@ -276,7 +258,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         std_dev = sum(stds) / len(stds)
         mean = sum(means) / len(means)
 
-        return (min_val, max_val, std_dev, mean)
+        return min_val, max_val, std_dev, mean
 
     def calculate_vis_minmax(
         self,
@@ -289,13 +271,13 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         """Calculate the min and max clip values for visualization.
 
         Args:
-            bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The bounds to sample.
-            bands (Optional[List[str]]): The bands to sample. If None, all bands are used.
-            percent (Optional[float]): The percent to use when stretching.
-            sigma (Optional[float]): The number of standard deviations to use when stretching.
+            bounds: The bounds to sample.
+            bands: The bands to sample. If None, all bands are used.
+            percent: The percent to use when stretching.
+            sigma: The number of standard deviations to use when stretching.
 
         Returns:
-            tuple[float, float]: The minimum and maximum values to clip to.
+            The minimum and maximum values to clip to.
         """
         bands = self._ee_object.bandNames() if bands is None else tuple(bands)
         try:
@@ -316,4 +298,4 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             stretch_min = min_val
             stretch_max = max_val
 
-        return (stretch_min, stretch_max)
+        return stretch_min, stretch_max
