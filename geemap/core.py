@@ -99,7 +99,7 @@ class AbstractDrawControl:
         """Resets the draw controls.
 
         Args:
-            Whether to clear the draw control.
+            clear_draw_control: Whether to clear the draw control.
         """
         if self.layer is not None:
             self.host_map.remove_layer(self.layer)
@@ -279,7 +279,7 @@ class AbstractDrawControl:
         """Handles the editing of a geometry.
 
         Args:
-            geo_json The GeoJSON representation of the geometry.
+            geo_json: The GeoJSON representation of the geometry.
         """
         geometry = coreutils.geojson_to_ee(geo_json, geodesic=False)
         self.last_geometry = geometry
@@ -410,11 +410,7 @@ class MapInterface:
         raise NotImplementedError()
 
     def get_center(self) -> Sequence[float]:
-        """Returns the current center of the map (lat, lon).
-
-        Returns:
-            The current center of the map as a tuple (lat, lon).
-        """
+        """Returns the current center of the map (lat, lon)."""
         raise NotImplementedError()
 
     def set_center(self, lon: float, lat: float, zoom: int | None = None) -> None:
@@ -1399,7 +1395,6 @@ class Map(ipyleaflet.Map, MapInterface):
 
         Args:
             change: The change event.
-            None
         """
         del change  # Unused.
         if self._layer_manager:
