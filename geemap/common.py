@@ -1661,7 +1661,7 @@ def check_titiler_endpoint(titiler_endpoint=None):
 
 
 def set_proxy(
-    port: int = 1080, ip: str = "http://127.0.0.1", timeout: str = 300
+    port: int = 1080, ip: str = "http://127.0.0.1", timeout: int = 300
 ) -> None:
     """Sets proxy if needed.
 
@@ -2000,7 +2000,7 @@ def open_youtube() -> None:
     """Opens the YouTube tutorials for geemap."""
     import webbrowser
 
-    url = "https://www.youtube.com/playlist" "?list=PLAxJ4-o7ZoPccOFv1dCwvGI6TYnirRTg3"
+    url = "https://www.youtube.com/playlist?list=PLAxJ4-o7ZoPccOFv1dCwvGI6TYnirRTg3"
     webbrowser.open_new_tab(url)
 
 
