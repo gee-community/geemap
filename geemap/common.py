@@ -81,17 +81,30 @@ def ee_export_image(
     Args:
         ee_object (object): The ee.Image to download.
         filename (str): Output filename for the exported image.
-        scale (float, optional): A default scale to use for any bands that do not specify one; ignored if crs and crs_transform is specified. Defaults to None.
-        crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
-        crs_transform (list, optional): a default affine transform to use for any bands that do not specify one, of the same format as the crs_transform of bands. Defaults to None.
-        region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
-        dimensions (list, optional): An optional array of two integers defining the width and height to which the band is cropped. Defaults to None.
-        file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
-        format (str, optional):  One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If "GEO_TIFF" or "NPY",
-            filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
+        scale (float, optional): A default scale to use for any bands that do not
+            specify one; ignored if crs and crs_transform is specified. Defaults to
+            None.
+        crs (str, optional): A default CRS string to use for any bands that do not
+            explicitly specify one. Defaults to None.
+        crs_transform (list, optional): a default affine transform to use for any bands
+            that do not specify one, of the same format as the crs_transform of
+            bands. Defaults to None.
+        region (object, optional): A polygon specifying a region to download; ignored if
+            crs and crs_transform is specified. Defaults to None.
+        dimensions (list, optional): An optional array of two integers defining the
+            width and height to which the band is cropped. Defaults to None.
+        file_per_band (bool, optional): Whether to produce a different GeoTIFF per
+            band. Defaults to False.
+        format (str, optional): One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a
+            zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary
+            format). If "GEO_TIFF" or "NPY", filePerBand and all band-level
+            transformations will be ignored. Loading a NumPy output results in a
+            structured array.
         unzip (bool, optional): Whether to unzip the downloaded file. Defaults to True.
-        unmask_value (float, optional): The value to use for pixels that are masked in the input image.
-            If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
+        unmask_value (float, optional): The value to use for pixels that are masked in
+            the input image.  If the exported image contains zero values, you should set
+            the unmask value to a non-zero value so that the zero values are not treated
+            as missing data. Defaults to None.
         timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
         verbose (bool, optional): Whether to print out descriptive text. Defaults to True.
@@ -146,8 +159,8 @@ def ee_export_image(
 
         if verbose:
             print(f"Downloading data from {url}\nPlease wait ...")
-        # Need to initialize r to something because of how we currently handle errors
-        # We should aim to refactor the code such that only one try block is needed
+        # Need to initialize r to something because of how we currently handle errors.
+        # We should aim to refactor the code such that only one try block is needed.
         r = None
         r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
@@ -201,20 +214,38 @@ def ee_export_image_collection(
     Args:
         ee_object (object): The ee.Image to download.
         out_dir (str): The output directory for the exported images.
-        scale (float, optional): A default scale to use for any bands that do not specify one; ignored if crs and crs_transform is specified. Defaults to None.
-        crs (str, optional): A default CRS string to use for any bands that do not explicitly specify one. Defaults to None.
-        crs_transform (list, optional): a default affine transform to use for any bands that do not specify one, of the same format as the crs_transform of bands. Defaults to None.
-        region (object, optional): A polygon specifying a region to download; ignored if crs and crs_transform is specified. Defaults to None.
-        dimensions (list, optional): An optional array of two integers defining the width and height to which the band is cropped. Defaults to None.
-        file_per_band (bool, optional): Whether to produce a different GeoTIFF per band. Defaults to False.
-        format (str, optional):  One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If "GEO_TIFF" or "NPY",
-            filePerBand and all band-level transformations will be ignored. Loading a NumPy output results in a structured array.
-        unmask_value (float, optional): The value to use for pixels that are masked in the input image.
-            If the exported image contains zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
-        filenames (list | int, optional): A list of filenames to use for the exported images. Defaults to None.
-        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
-        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.
+
+        scale (float, optional): A default scale to use for any bands that do not
+            specify one; ignored if crs and crs_transform is specified. Defaults to
+            None.
+        crs (str, optional): A default CRS string to use for any bands that do not
+            explicitly specify one. Defaults to None.
+        crs_transform (list, optional): a default affine transform to use for any bands
+            that do not specify one, of the same format as the crs_transform of
+            bands. Defaults to None.
+        region (object, optional): A polygon specifying a region to download; ignored if
+            crs and crs_transform is specified. Defaults to None.
+        dimensions (list, optional): An optional array of two integers defining the
+            width and height to which the band is cropped. Defaults to None.
+        file_per_band (bool, optional): Whether to produce a different GeoTIFF per
+            band. Defaults to False.
+        format (str, optional): One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a
+            zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary
+            format). If "GEO_TIFF" or "NPY", filePerBand and all band-level
+            transformations will be ignored. Loading a NumPy output results in a
+            structured array.
+        unmask_value (float, optional): The value to use for pixels that are masked in
+            the input image.  If the exported image contains zero values, you should set
+            the unmask value to a non-zero value so that the zero values are not treated
+            as missing data. Defaults to None.
+        filenames (list | int, optional): A list of filenames to use for the exported
+            images. Defaults to None.
+        timeout (int, optional): The timeout in seconds for the request.
+            Defaults to 300.
+        proxies (dict, optional): A dictionary of proxy servers to use.
+            Defaults to None.
+        verbose (bool, optional): Whether to print out descriptive text.
+            Defaults to True.
     """
 
     if not isinstance(ee_object, ee.ImageCollection):
@@ -539,7 +570,7 @@ def ee_export_image_collection_to_drive(
     formatOptions=None,
     **kwargs,
 ):
-    """Creates a batch task to export an ImageCollection as raster images to Google Drive.
+    """Creates a batch task to export an ImageCollection to Google Drive.
 
     Args:
         ee_object: The image collection to export.
@@ -645,7 +676,7 @@ def ee_export_image_collection_to_asset(
     maxPixels=None,
     **kwargs,
 ):
-    """Creates a batch task to export an ImageCollection as raster images to Google Drive.
+    """Creates a batch task to export an ImageCollection as assets.
 
     Args:
         ee_object: The image collection to export.
@@ -742,7 +773,7 @@ def ee_export_image_collection_to_cloud_storage(
     formatOptions=None,
     **kwargs,
 ):
-    """Creates a batch task to export an ImageCollection as raster images to a Google Cloud bucket.
+    """Creates a batch task to export an ImageCollection to a Google Cloud bucket.
 
     Args:
         ee_object: The image collection to export.
@@ -929,14 +960,16 @@ def ee_export_vector(
     timeout=300,
     proxies=None,
 ):
-    """Exports Earth Engine FeatureCollection to other formats, including shp, csv, json, kml, and kmz.
+    """Exports Earth Engine FeatureCollection to other formats.
+
+    Includes shp, csv, json, kml, and kmz.
 
     Args:
         ee_object (object): ee.FeatureCollection to export.
         filename (str): Output file name.
         selectors (list, optional): A list of attributes to export. Defaults to None.
         verbose (bool, optional): Whether to print out descriptive text.
-        keep_zip (bool, optional): Whether to keep the downloaded shapefile as a zip file.
+        keep_zip (bool, optional): Whether to keep the shapefile as a zip file.
         timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
         proxies (dict, optional): A dictionary of proxies to use. Defaults to None.
     """
@@ -1124,7 +1157,8 @@ def ee_export_vector_to_asset(
 
     print(assetId)
     print(
-        f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
+        f"Exporting {description}... "
+        "Please check the Task Manager from the JavaScript Code Editor."
     )
 
     task = ee.batch.Export.table.toAsset(
@@ -1181,7 +1215,8 @@ def ee_export_vector_to_cloud_storage(
         return
 
     print(
-        f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
+        f"Exporting {description}... "
+        "Please check the Task Manager from the JavaScript Code Editor."
     )
 
     task = ee.batch.Export.table.toCloudStorage(
@@ -1220,7 +1255,8 @@ def ee_export_vector_to_feature_view(
         return
 
     print(
-        f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
+        f"Exporting {description}... "
+        "Please check the Task Manager from the JavaScript Code Editor."
     )
 
     task = ee.batch.Export.table.toFeatureView(
@@ -1292,7 +1328,8 @@ def ee_export_video_to_drive(
         return
 
     print(
-        f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
+        f"Exporting {description}... "
+        "Please check the Task Manager from the JavaScript Code Editor."
     )
 
     task = ee.batch.Export.video.toDrive(
@@ -1371,7 +1408,8 @@ def ee_export_video_to_cloud_storage(
         return
 
     print(
-        f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
+        f"Exporting {description}... "
+        "Please check the Task Manager from the JavaScript Code Editor."
     )
 
     task = ee.batch.Export.video.toCloudStorage(
@@ -1452,7 +1490,8 @@ def ee_export_map_to_cloud_storage(
         return
 
     print(
-        f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
+        f"Exporting {description}... "
+        "Please check the Task Manager from the JavaScript Code Editor."
     )
 
     task = ee.batch.Export.map.toCloudStorage(
@@ -1487,45 +1526,52 @@ def ee_export_map_to_cloud_storage(
 class TitilerEndpoint:
     """This class contains the methods for the titiler endpoint."""
 
+    endpoint: str
+    name: str
+    TileMatrixSetId: str
+
     def __init__(
         self,
-        endpoint="https://giswqs-titiler-endpoint.hf.space",
-        name="stac",
-        TileMatrixSetId="WebMercatorQuad",
+        endpoint: str = "https://giswqs-titiler-endpoint.hf.space",
+        name: str = "stac",
+        TileMatrixSetId: str = "WebMercatorQuad",
     ):
         """Initialize the TitilerEndpoint object.
 
         Args:
-            endpoint (str, optional): The endpoint of the titiler server. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-            name (str, optional): The name to be used in the file path. Defaults to "stac".
-            TileMatrixSetId (str, optional): The TileMatrixSetId to be used in the file path. Defaults to "WebMercatorQuad".
+
+            endpoint: The endpoint of the titiler server. Defaults to
+                "https://giswqs-titiler-endpoint.hf.space".
+            name: The name to be used in the file path. Defaults to "stac".
+            TileMatrixSetId: The TileMatrixSetId to be used in the file path. Defaults
+                to "WebMercatorQuad".
         """
         self.endpoint = endpoint
         self.name = name
         self.TileMatrixSetId = TileMatrixSetId
 
-    def url_for_stac_item(self):
+    def url_for_stac_item(self) -> str:
         return f"{self.endpoint}/{self.name}/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_stac_assets(self):
+    def url_for_stac_assets(self) -> str:
         return f"{self.endpoint}/{self.name}/assets"
 
-    def url_for_stac_bounds(self):
+    def url_for_stac_bounds(self) -> str:
         return f"{self.endpoint}/{self.name}/bounds"
 
-    def url_for_stac_info(self):
+    def url_for_stac_info(self) -> str:
         return f"{self.endpoint}/{self.name}/info"
 
-    def url_for_stac_info_geojson(self):
+    def url_for_stac_info_geojson(self) -> str:
         return f"{self.endpoint}/{self.name}/info.geojson"
 
-    def url_for_stac_statistics(self):
+    def url_for_stac_statistics(self) -> str:
         return f"{self.endpoint}/{self.name}/statistics"
 
-    def url_for_stac_pixel_value(self, lon, lat):
+    def url_for_stac_pixel_value(self, lon: float, lat: float) -> str:
         return f"{self.endpoint}/{self.name}/point/{lon},{lat}"
 
-    def url_for_stac_wmts(self):
+    def url_for_stac_wmts(self) -> str:
         return (
             f"{self.endpoint}/{self.name}/{self.TileMatrixSetId}/WMTSCapabilities.xml"
         )
@@ -1534,46 +1580,54 @@ class TitilerEndpoint:
 class PlanetaryComputerEndpoint(TitilerEndpoint):
     """This class contains the methods for the Microsoft Planetary Computer endpoint."""
 
+    endpoint: str
+    name: str
+    TileMatrixSetId: str
+
     def __init__(
         self,
-        endpoint="https://planetarycomputer.microsoft.com/api/data/v1",
-        name="item",
-        TileMatrixSetId="WebMercatorQuad",
+        endpoint: str = "https://planetarycomputer.microsoft.com/api/data/v1",
+        name: str = "item",
+        TileMatrixSetId: str = "WebMercatorQuad",
     ):
         """Initialize the PlanetaryComputerEndpoint object.
 
         Args:
-            endpoint (str, optional): The endpoint of the titiler server. Defaults to "https://planetarycomputer.microsoft.com/api/data/v1".
-            name (str, optional): The name to be used in the file path. Defaults to "item".
-            TileMatrixSetId (str, optional): The TileMatrixSetId to be used in the file path. Defaults to "WebMercatorQuad".
+            endpoint: The endpoint of the titiler server. Defaults to
+                "https://planetarycomputer.microsoft.com/api/data/v1".
+            name: The name to be used in the file path. Defaults to "item".
+            TileMatrixSetId: The TileMatrixSetId to be used in the
+                file path. Defaults to "WebMercatorQuad".
         """
         super().__init__(endpoint, name, TileMatrixSetId)
 
-    def url_for_stac_collection(self):
+    def url_for_stac_collection(self) -> str:
         return f"{self.endpoint}/collection/{self.TileMatrixSetId}/tilejson.json"
 
-    def url_for_collection_assets(self):
+    def url_for_collection_assets(self) -> str:
         return f"{self.endpoint}/collection/assets"
 
-    def url_for_collection_bounds(self):
+    def url_for_collection_bounds(self) -> str:
         return f"{self.endpoint}/collection/bounds"
 
-    def url_for_collection_info(self):
+    def url_for_collection_info(self) -> str:
         return f"{self.endpoint}/collection/info"
 
-    def url_for_collection_info_geojson(self):
+    def url_for_collection_info_geojson(self) -> str:
         return f"{self.endpoint}/collection/info.geojson"
 
-    def url_for_collection_pixel_value(self, lon, lat):
+    def url_for_collection_pixel_value(self, lon: float, lat: float) -> str:
         return f"{self.endpoint}/collection/point/{lon},{lat}"
 
-    def url_for_collection_wmts(self):
+    def url_for_collection_wmts(self) -> str:
         return f"{self.endpoint}/collection/{self.TileMatrixSetId}/WMTSCapabilities.xml"
 
-    def url_for_collection_lat_lon_assets(self, lng, lat):
+    def url_for_collection_lat_lon_assets(self, lng: float, lat: float) -> str:
         return f"{self.endpoint}/collection/{lng},{lat}/assets"
 
-    def url_for_collection_bbox_assets(self, minx, miny, maxx, maxy):
+    def url_for_collection_bbox_assets(
+        self, minx: float, miny: float, maxx: float, maxy: float
+    ) -> str:
         return f"{self.endpoint}/collection/{minx},{miny},{maxx},{maxy}/assets"
 
     def url_for_stac_mosaic(self, searchid):
@@ -1606,34 +1660,35 @@ def check_titiler_endpoint(titiler_endpoint=None):
     return titiler_endpoint
 
 
-def set_proxy(port=1080, ip="http://127.0.0.1", timeout=300):
-    """Sets proxy if needed. This is only needed for countries where Google services are not available.
+def set_proxy(
+    port: int = 1080, ip: str = "http://127.0.0.1", timeout: int = 300
+) -> None:
+    """Sets proxy if needed.
+
+    This is only needed for countries where Google services are not available.
 
     Args:
-        port (int, optional): The proxy port number. Defaults to 1080.
-        ip (str, optional): The IP address. Defaults to 'http://127.0.0.1'.
-        timeout (int, optional): The timeout in seconds. Defaults to 300.
+        port: The proxy port number. Defaults to 1080.
+        ip: The IP address. Defaults to 'http://127.0.0.1'.
+        timeout: The timeout in seconds. Defaults to 300.
     """
-    try:
-        if not ip.startswith("http"):
-            ip = "http://" + ip
-        proxy = f"{ip}:{port}"
+    if not ip.startswith("http"):
+        ip = "http://" + ip
+    proxy = f"{ip}:{port}"
 
-        os.environ["HTTP_PROXY"] = proxy
-        os.environ["HTTPS_PROXY"] = proxy
+    os.environ["HTTP_PROXY"] = proxy
+    os.environ["HTTPS_PROXY"] = proxy
 
-        a = requests.get("https://earthengine.google.com/", timeout=timeout)
+    a = requests.get("https://earthengine.google.com/", timeout=timeout)
 
-        if a.status_code != 200:
-            print(
-                "Failed to connect to Earth Engine. Please double check the port number and ip address."
-            )
-
-    except Exception as e:
-        print(e)
+    if a.status_code != 200:
+        print(
+            "Failed to connect to Earth Engine. "
+            "Please double check the port number and ip address."
+        )
 
 
-def is_drive_mounted():
+def is_drive_mounted() -> bool:
     """Checks whether Google Drive is mounted in Google Colab.
 
     Returns:
@@ -1646,7 +1701,7 @@ def is_drive_mounted():
         return False
 
 
-def credentials_in_drive():
+def credentials_in_drive() -> bool:
     """Checks if the ee credentials file exists in Google Drive.
 
     Returns:
@@ -1659,7 +1714,7 @@ def credentials_in_drive():
         return False
 
 
-def credentials_in_colab():
+def credentials_in_colab() -> bool:
     """Checks if the ee credentials file exists in Google Colab.
 
     Returns:
@@ -1672,7 +1727,7 @@ def credentials_in_colab():
         return False
 
 
-def copy_credentials_to_drive():
+def copy_credentials_to_drive() -> bool:
     """Copies ee credentials from Google Colab to Google Drive."""
     src = "/root/.config/earthengine/credentials"
     dst = "/content/drive/My Drive/.config/earthengine/credentials"
@@ -1684,7 +1739,7 @@ def copy_credentials_to_drive():
     shutil.copyfile(src, dst)
 
 
-def copy_credentials_to_colab():
+def copy_credentials_to_colab() -> bool:
     """Copies ee credentials from Google Drive to Google Colab."""
     src = "/content/drive/My Drive/.config/earthengine/credentials"
     dst = "/root/.config/earthengine/credentials"
@@ -1701,8 +1756,10 @@ def copy_credentials_to_colab():
 ########################################
 
 
-def check_install(package):
-    """Checks whether a package is installed. If not, it will install the package.
+def check_install(package: str) -> None:
+    """Checks whether a package is installed.
+
+    If not, it will install the package.
 
     Args:
         package (str): The name of the package to check.
@@ -1721,38 +1778,38 @@ def check_install(package):
 
 
 def update_package():
-    """Updates the geemap package from the geemap GitHub repository without the need to use pip or conda.
-    In this way, I don't have to keep updating pypi and conda-forge with every minor update of the package.
+    """Updates geemap package from GitHub.
 
+    Avoids the need to use pip or conda.
+
+    In this way, I don't have to keep updating pypi and conda-forge
+    with every minor update of the package.
     """
+    download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
+    clone_repo(out_dir=download_dir)
 
-    try:
-        download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        if not os.path.exists(download_dir):
-            os.makedirs(download_dir)
-        clone_repo(out_dir=download_dir)
+    pkg_dir = os.path.join(download_dir, "geemap-master")
+    work_dir = os.getcwd()
+    os.chdir(pkg_dir)
 
-        pkg_dir = os.path.join(download_dir, "geemap-master")
-        work_dir = os.getcwd()
-        os.chdir(pkg_dir)
+    if shutil.which("pip") is None:
+        cmd = "pip3 install ."
+    else:
+        cmd = "pip install ."
 
-        if shutil.which("pip") is None:
-            cmd = "pip3 install ."
-        else:
-            cmd = "pip install ."
+    os.system(cmd)
+    os.chdir(work_dir)
 
-        os.system(cmd)
-        os.chdir(work_dir)
-
-        print(
-            "\nPlease comment out 'geemap.update_package()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output"
-        )
-
-    except Exception as e:
-        raise Exception(e)
+    print(
+        "\nPlease comment out 'geemap.update_package()' and "
+        "restart the kernel to take effect:\n"
+        "Jupyter menu -> Kernel -> Restart & Clear Output"
+    )
 
 
-def check_package(name, URL=""):
+def check_package(name: str, URL: str = "") -> None:
     try:
         __import__(name.lower())
     except Exception:
@@ -1761,11 +1818,12 @@ def check_package(name, URL=""):
         )
 
 
-def install_package(package):
+def install_package(package: str | list[str]) -> None:
     """Install a Python package.
 
     Args:
-        package (str | list): The package name or a GitHub URL or a list of package names or GitHub URLs.
+        package: The package name or a GitHub URL or a list of package
+            names or GitHub URLs.
     """
     if isinstance(package, str):
         packages = [package]
@@ -1794,53 +1852,47 @@ def install_package(package):
         process.wait()
 
 
-def clone_repo(out_dir=".", unzip=True):
+def clone_repo(out_dir: str = ".", unzip: bool = True) -> None:
     """Clones the geemap GitHub repository.
 
     Args:
-        out_dir (str, optional): Output folder for the repo. Defaults to '.'.
-        unzip (bool, optional): Whether to unzip the repository. Defaults to True.
+        out_dir: Output folder for the repo. Defaults to '.'.
+        unzip: Whether to unzip the repository. Defaults to True.
     """
     url = "https://github.com/gee-community/geemap/archive/master.zip"
     filename = "geemap-master.zip"
     download_from_url(url, out_file_name=filename, out_dir=out_dir, unzip=unzip)
 
 
-def install_from_github(url):
+def install_from_github(url: str) -> None:
     """Install a package from a GitHub repository.
 
     Args:
-        url (str): The URL of the GitHub repository.
+        url: The URL of the GitHub repository.
     """
+    download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
 
-    try:
-        download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-        if not os.path.exists(download_dir):
-            os.makedirs(download_dir)
+    repo_name = os.path.basename(url)
+    zip_url = os.path.join(url, "archive/master.zip")
+    filename = repo_name + "-master.zip"
+    download_from_url(
+        url=zip_url, out_file_name=filename, out_dir=download_dir, unzip=True
+    )
 
-        repo_name = os.path.basename(url)
-        zip_url = os.path.join(url, "archive/master.zip")
-        filename = repo_name + "-master.zip"
-        download_from_url(
-            url=zip_url, out_file_name=filename, out_dir=download_dir, unzip=True
-        )
-
-        pkg_dir = os.path.join(download_dir, repo_name + "-master")
-        pkg_name = os.path.basename(url)
-        work_dir = os.getcwd()
-        os.chdir(pkg_dir)
-        print(f"Installing {pkg_name}...")
-        cmd = "pip install ."
-        os.system(cmd)
-        os.chdir(work_dir)
-        print(f"{pkg_name} has been installed successfully.")
-        # print("\nPlease comment out 'install_from_github()' and restart the kernel to take effect:\nJupyter menu -> Kernel -> Restart & Clear Output")
-
-    except Exception as e:
-        print(e)
+    pkg_dir = os.path.join(download_dir, repo_name + "-master")
+    pkg_name = os.path.basename(url)
+    work_dir = os.getcwd()
+    os.chdir(pkg_dir)
+    print(f"Installing {pkg_name}...")
+    cmd = "pip install ."
+    os.system(cmd)
+    os.chdir(work_dir)
+    print(f"{pkg_name} has been installed successfully.")
 
 
-def check_git_install():
+def check_git_install() -> bool:
     """Checks if Git is installed.
 
     Returns:
@@ -1860,21 +1912,20 @@ def check_git_install():
         return False
 
 
-def clone_github_repo(url, out_dir):
+def clone_github_repo(url: str, out_dir: str) -> None:
     """Clones a GitHub repository.
 
     Args:
-        url (str): The link to the GitHub repository
-        out_dir (str): The output directory for the cloned repository.
+        url: The link to the GitHub repository
+        out_dir: The output directory for the cloned repository.
     """
-
     repo_name = os.path.basename(url)
-    # url_zip = os.path.join(url, 'archive/master.zip')
     url_zip = url + "/archive/master.zip"
 
     if os.path.exists(out_dir):
         print(
-            "The specified output directory already exists. Please choose a new directory."
+            "The specified output directory already exists. "
+            "Please choose a new directory."
         )
         return
 
@@ -1895,12 +1946,15 @@ def clone_github_repo(url, out_dir):
     os.remove(out_file_path)
 
 
-def clone_google_repo(url, out_dir=None):
-    """Clones an Earth Engine repository from https://earthengine.googlesource.com, such as https://earthengine.googlesource.com/users/google/datasets
+def clone_google_repo(url: str, out_dir: str = None):
+    """Clones an Earth Engine user repository.
+
+    From https://earthengine.googlesource.com, such as
+    https://earthengine.googlesource.com/users/google/datasets
 
     Args:
-        url (str): The link to the Earth Engine repository
-        out_dir (str, optional): The output directory for the cloned repository. Defaults to None.
+        url: The link to the Earth Engine repository
+        out_dir: The output directory for the cloned repository. Defaults to None.
     """
     repo_name = os.path.basename(url)
 
@@ -1912,7 +1966,8 @@ def clone_google_repo(url, out_dir=None):
 
     if os.path.exists(out_dir):
         print(
-            "The specified output directory already exists. Please choose a new directory."
+            "The specified output directory already exists. "
+            "Please choose a new directory."
         )
         return
 
@@ -1921,11 +1976,11 @@ def clone_google_repo(url, out_dir=None):
         os.popen(cmd).read()
 
 
-def open_github(subdir=None):
+def open_github(subdir: str | None = None) -> None:
     """Opens the GitHub repository for this package.
 
     Args:
-        subdir (str, optional): Sub-directory of the repository. Defaults to None.
+        subdir: Sub-directory of the repository. Defaults to None.
     """
     import webbrowser
 
@@ -1941,7 +1996,7 @@ def open_github(subdir=None):
     webbrowser.open_new_tab(url)
 
 
-def open_youtube():
+def open_youtube() -> None:
     """Opens the YouTube tutorials for geemap."""
     import webbrowser
 
@@ -1954,7 +2009,7 @@ def open_youtube():
 ########################################
 
 
-def is_tool(name):
+def is_tool(name: str) -> bool:
     """Check whether `name` is on PATH and marked as executable."""
 
     return shutil.which(name) is not None
@@ -1989,14 +2044,11 @@ def show_image(img_path, width=None, height=None):
         img_path (str): The image file path.
         width (int, optional): Width of the image in pixels. Defaults to None.
         height (int, optional): Height of the image in pixels. Defaults to None.
-
     """
     from IPython.display import display
 
     try:
         out = widgets.Output()
-        # layout={'border': '1px solid black'})
-        # layout={'border': '1px solid black', 'width': str(width + 20) + 'px', 'height': str(height + 10) + 'px'},)
         out.outputs = ()
         display(out)
         with out:
