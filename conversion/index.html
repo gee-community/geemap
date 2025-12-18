@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -7368,7 +7368,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of Earth Engine JavaScrips</p>
+                <p>List of Earth Engine JavaScript.</p>
               </div>
             </td>
             <td>
@@ -7486,11 +7486,15 @@
 <span class="normal">317</span>
 <span class="normal">318</span>
 <span class="normal">319</span>
-<span class="normal">320</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_map_functions</span><span class="p">(</span><span class="n">input_lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_map_functions</span><span class="p">(</span><span class="n">input_lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts Earth Engine map function.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        input_lines: List of Earth Engine JavaScrips</span>
+<span class="sd">        input_lines: List of Earth Engine JavaScript.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Output JavaScript with map function.</span>
@@ -7563,7 +7567,11 @@
                 <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">header_line</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;An error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. The closing curly bracket could not be found in Line </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;An error occurred: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">. &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;The closing curly bracket could not be found in Line </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: &quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">. Please reformat the function definition and make sure &quot;</span>
+                    <span class="s2">&quot;that both the opening and closing curly brackets appear on the &quot;</span>
+                    <span class="s2">&quot;same line as the function keyword.&quot;</span>
                 <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -7797,16 +7805,16 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">721</span>
-<span class="normal">722</span>
-<span class="normal">723</span>
-<span class="normal">724</span>
-<span class="normal">725</span>
-<span class="normal">726</span>
-<span class="normal">727</span>
-<span class="normal">728</span>
-<span class="normal">729</span>
-<span class="normal">730</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">732</span>
+<span class="normal">733</span>
+<span class="normal">734</span>
+<span class="normal">735</span>
+<span class="normal">736</span>
+<span class="normal">737</span>
+<span class="normal">738</span>
+<span class="normal">739</span>
+<span class="normal">740</span>
+<span class="normal">741</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new cell in Jupyter notebook based on the contents.</span>
 
 <span class="sd">    Args:</span>
@@ -7885,10 +7893,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1234</span>
-<span class="normal">1235</span>
-<span class="normal">1236</span>
-<span class="normal">1237</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1237</span>
 <span class="normal">1238</span>
 <span class="normal">1239</span>
 <span class="normal">1240</span>
@@ -7929,7 +7934,10 @@
 <span class="normal">1275</span>
 <span class="normal">1276</span>
 <span class="normal">1277</span>
-<span class="normal">1278</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1278</span>
+<span class="normal">1279</span>
+<span class="normal">1280</span>
+<span class="normal">1281</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Downloads JavaScript source code from a GEE App.</span>
 
 <span class="sd">    Args:</span>
@@ -8027,14 +8035,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1127</span>
-<span class="normal">1128</span>
-<span class="normal">1129</span>
-<span class="normal">1130</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1130</span>
 <span class="normal">1131</span>
 <span class="normal">1132</span>
 <span class="normal">1133</span>
-<span class="normal">1134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1134</span>
+<span class="normal">1135</span>
+<span class="normal">1136</span>
+<span class="normal">1137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes a Jupyter notebook and save output cells.</span>
 
 <span class="sd">    Args:</span>
@@ -8059,7 +8067,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Executes all Jupyter notebooks in the given directory recursively and save output cells.</p>
+        <p>Executes all notebooks in the given directory recursively and saves output cells.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -8095,10 +8103,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1137</span>
-<span class="normal">1138</span>
-<span class="normal">1139</span>
-<span class="normal">1140</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1140</span>
 <span class="normal">1141</span>
 <span class="normal">1142</span>
 <span class="normal">1143</span>
@@ -8110,13 +8115,16 @@
 <span class="normal">1149</span>
 <span class="normal">1150</span>
 <span class="normal">1151</span>
-<span class="normal">1152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes all Jupyter notebooks in the given directory recursively and save output cells.</span>
+<span class="normal">1152</span>
+<span class="normal">1153</span>
+<span class="normal">1154</span>
+<span class="normal">1155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes all notebooks in the given directory recursively and saves output cells.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_dir: Input folder containing notebooks.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Executing Earth Engine Jupyter notebooks ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Executing Earth Engine Jupyter notebooks ...&quot;</span><span class="p">)</span>
 
     <span class="n">in_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span>
     <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">))</span>
@@ -8240,7 +8248,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The line index where the matching closing bracket is located.</p>
+                <p>Line index where the matching closing bracket is located.</p>
               </div>
             </td>
           </tr>
@@ -8250,7 +8258,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The position index of the matching closing bracket.</p>
+                <p>Position index of the matching closing bracket.</p>
               </div>
             </td>
           </tr>
@@ -8332,8 +8340,8 @@
 <span class="sd">        matching_char: The starting bracket to search for. Defaults to &#39;{&#39;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        matching_line_index: The line index where the matching closing bracket is located.</span>
-<span class="sd">        matching_char_index: The position index of the matching closing bracket.</span>
+<span class="sd">        matching_line_index: Line index where the matching closing bracket is located.</span>
+<span class="sd">        matching_char_index: Position index of the matching closing bracket.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">matching_line_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">matching_char_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
@@ -8357,14 +8365,14 @@
             <span class="n">line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">line_index</span><span class="p">][</span><span class="n">start_char_index</span><span class="p">:]</span>
 
         <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
-            <span class="c1"># Pops a starting bracket for each closing bracket</span>
+            <span class="c1"># Pops a starting bracket for each closing bracket.</span>
             <span class="k">if</span> <span class="n">item</span> <span class="o">==</span> <span class="n">matching_chars</span><span class="p">[</span><span class="n">matching_char</span><span class="p">]:</span>
                 <span class="n">d</span><span class="o">.</span><span class="n">popleft</span><span class="p">()</span>
-            <span class="c1"># Push all starting brackets</span>
+            <span class="c1"># Push all starting brackets.</span>
             <span class="k">elif</span> <span class="n">item</span> <span class="o">==</span> <span class="n">matching_char</span><span class="p">:</span>
                 <span class="n">d</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">matching_char</span><span class="p">)</span>
 
-            <span class="c1"># If deque becomes empty</span>
+            <span class="c1"># If deque becomes empty.</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="p">:</span>
                 <span class="n">matching_line_index</span> <span class="o">=</span> <span class="n">line_index</span>
                 <span class="k">if</span> <span class="n">line_index</span> <span class="o">==</span> <span class="n">start_line_index</span><span class="p">:</span>
@@ -8551,7 +8559,7 @@
     <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;for&quot;</span><span class="p">):</span>  <span class="c1"># skip for loop</span>
         <span class="k">return</span> <span class="n">line</span>
 
-    <span class="c1"># find all occurrences of a substring</span>
+    <span class="c1"># Find all occurrences of a substring.</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">find_all</span><span class="p">(</span><span class="n">a_str</span><span class="p">,</span> <span class="n">sub</span><span class="p">):</span>
         <span class="n">start</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
@@ -8559,7 +8567,7 @@
             <span class="k">if</span> <span class="n">start</span> <span class="o">==</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
                 <span class="k">return</span>
             <span class="k">yield</span> <span class="n">start</span>
-            <span class="n">start</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>  <span class="c1"># use start += 1 to find overlapping matches</span>
+            <span class="n">start</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sub</span><span class="p">)</span>  <span class="c1"># Use start += 1 to find overlapping matches.</span>
 
     <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">find_all</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">sep</span><span class="p">))</span>
     <span class="n">count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
@@ -8675,13 +8683,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">888</span>
-<span class="normal">889</span>
-<span class="normal">890</span>
-<span class="normal">891</span>
-<span class="normal">892</span>
-<span class="normal">893</span>
-<span class="normal">894</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">894</span>
 <span class="normal">895</span>
 <span class="normal">896</span>
 <span class="normal">897</span>
@@ -8698,7 +8700,13 @@
 <span class="normal">908</span>
 <span class="normal">909</span>
 <span class="normal">910</span>
-<span class="normal">911</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">911</span>
+<span class="normal">912</span>
+<span class="normal">913</span>
+<span class="normal">914</span>
+<span class="normal">915</span>
+<span class="normal">916</span>
+<span class="normal">917</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets Earth Engine JavaScript examples from the geemap package.</span>
 
 <span class="sd">    Args:</span>
@@ -8762,7 +8770,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If True, downloads the latest notebook template from GitHub. Defaults to False.</p>
+                <p>If True, downloads the latest notebook template from GitHub.
+Defaults to False.</p>
               </div>
             </td>
             <td>
@@ -8793,17 +8802,18 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
+            <td>
+                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The file path of the template.</p>
+                <p>File path of the template.</p>
               </div>
             </td>
           </tr>
@@ -8813,13 +8823,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">914</span>
-<span class="normal">915</span>
-<span class="normal">916</span>
-<span class="normal">917</span>
-<span class="normal">918</span>
-<span class="normal">919</span>
-<span class="normal">920</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">920</span>
 <span class="normal">921</span>
 <span class="normal">922</span>
 <span class="normal">923</span>
@@ -8842,15 +8846,26 @@
 <span class="normal">940</span>
 <span class="normal">941</span>
 <span class="normal">942</span>
-<span class="normal">943</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span><span class="n">download_latest</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">943</span>
+<span class="normal">944</span>
+<span class="normal">945</span>
+<span class="normal">946</span>
+<span class="normal">947</span>
+<span class="normal">948</span>
+<span class="normal">949</span>
+<span class="normal">950</span>
+<span class="normal">951</span>
+<span class="normal">952</span>
+<span class="normal">953</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span><span class="n">download_latest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the Earth Engine Jupyter notebook template.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        download_latest (bool, optional): If True, downloads the latest notebook template from GitHub. Defaults to False.</span>
-<span class="sd">        out_file (str, optional): Set the output file path of the notebook template. Defaults to None.</span>
+<span class="sd">        download_latest: If True, downloads the latest notebook template from GitHub.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        out_file: Set the output file path of the notebook template. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: The file path of the template.</span>
+<span class="sd">        File path of the template.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">pkg_dir</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span>
     <span class="n">example_dir</span> <span class="o">=</span> <span class="n">pkg_dir</span> <span class="o">/</span> <span class="s2">&quot;data&quot;</span>
@@ -8865,7 +8880,10 @@
     <span class="n">out_file</span><span class="o">.</span><span class="n">parent</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parents</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">download_latest</span><span class="p">:</span>
-        <span class="n">template_url</span> <span class="o">=</span> <span class="s2">&quot;https://raw.githubusercontent.com/gee-community/geemap/master/examples/template/template.py&quot;</span>
+        <span class="n">template_url</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;https://raw.githubusercontent.com/gee-community/geemap/master/&quot;</span>
+            <span class="s2">&quot;examples/template/template.py&quot;</span>
+        <span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Downloading the latest notebook template from </span><span class="si">{</span><span class="n">template_url</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">template_url</span><span class="p">,</span> <span class="n">out_file</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -8889,7 +8907,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.</p>
+        <p>EE JavaScript snippet wrapped in triple quotes to Python in a notebook.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -9007,17 +9025,18 @@
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>list</code></td>            <td>
+            <td>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A list of Python script.</p>
+                <p>A list of lines of Python script.</p>
               </div>
             </td>
           </tr>
@@ -9027,18 +9046,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">733</span>
-<span class="normal">734</span>
-<span class="normal">735</span>
-<span class="normal">736</span>
-<span class="normal">737</span>
-<span class="normal">738</span>
-<span class="normal">739</span>
-<span class="normal">740</span>
-<span class="normal">741</span>
-<span class="normal">742</span>
-<span class="normal">743</span>
-<span class="normal">744</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">744</span>
 <span class="normal">745</span>
 <span class="normal">746</span>
 <span class="normal">747</span>
@@ -9103,83 +9111,84 @@
 <span class="normal">806</span>
 <span class="normal">807</span>
 <span class="normal">808</span>
-<span class="normal">809</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_snippet_to_py</span><span class="p">(</span>
-    <span class="n">in_js_snippet</span><span class="p">,</span>
-    <span class="n">add_new_cell</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">import_ee</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an Earth Engine JavaScript snippet wrapped in triple quotes to Python directly on a Jupyter notebook.</span>
+<span class="normal">809</span>
+<span class="normal">810</span>
+<span class="normal">811</span>
+<span class="normal">812</span>
+<span class="normal">813</span>
+<span class="normal">814</span>
+<span class="normal">815</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_snippet_to_py</span><span class="p">(</span>
+    <span class="n">in_js_snippet</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">add_new_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">import_ee</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">import_geemap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">show_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;EE JavaScript snippet wrapped in triple quotes to Python in a notebook.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_js_snippet (str): Earth Engine JavaScript within triple quotes.</span>
-<span class="sd">        add_new_cell (bool, optional): Whether add the converted Python to a new cell.</span>
-<span class="sd">        import_ee (bool, optional): Whether to import ee. Defaults to True.</span>
-<span class="sd">        import_geemap (bool, optional): Whether to import geemap. Defaults to False.</span>
-<span class="sd">        show_map (bool, optional): Whether to show the map. Defaults to True.</span>
-<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        in_js_snippet: Earth Engine JavaScript within triple quotes.</span>
+<span class="sd">        add_new_cell: Whether add the converted Python to a new cell.</span>
+<span class="sd">        import_ee: Whether to import ee. Defaults to True.</span>
+<span class="sd">        import_geemap: Whether to import geemap. Defaults to False.</span>
+<span class="sd">        show_map: Whether to show the map. Defaults to True.</span>
+<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: A list of Python script.</span>
+<span class="sd">        A list of lines of Python script.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">in_js</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">temp_file_path</span><span class="p">(</span><span class="s2">&quot;.js&quot;</span><span class="p">)</span>
     <span class="n">out_py</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">temp_file_path</span><span class="p">(</span><span class="s2">&quot;.py&quot;</span><span class="p">)</span>
 
-    <span class="n">in_js_snippet</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span>
-        <span class="sa">r</span><span class="s2">&quot;([a-zA-Z0-9_]+)\s*:&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;&quot;\1&quot;:&#39;</span><span class="p">,</span> <span class="n">in_js_snippet</span>
-    <span class="p">)</span>  <span class="c1"># Add quotes around keys</span>
+    <span class="c1"># Add quotes around keys.</span>
+    <span class="n">in_js_snippet</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([a-zA-Z0-9_]+)\s*:&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;&quot;\1&quot;:&#39;</span><span class="p">,</span> <span class="n">in_js_snippet</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_js</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">)</span>
-        <span class="n">js_to_python</span><span class="p">(</span>
-            <span class="n">in_js</span><span class="p">,</span>
-            <span class="n">out_file</span><span class="o">=</span><span class="n">out_py</span><span class="p">,</span>
-            <span class="n">use_qgis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-            <span class="n">show_map</span><span class="o">=</span><span class="n">show_map</span><span class="p">,</span>
-            <span class="n">import_geemap</span><span class="o">=</span><span class="n">import_geemap</span><span class="p">,</span>
-            <span class="n">Map</span><span class="o">=</span><span class="n">Map</span><span class="p">,</span>
-        <span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_js</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">)</span>
+    <span class="n">js_to_python</span><span class="p">(</span>
+        <span class="n">in_js</span><span class="p">,</span>
+        <span class="n">out_file</span><span class="o">=</span><span class="n">out_py</span><span class="p">,</span>
+        <span class="n">use_qgis</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+        <span class="n">show_map</span><span class="o">=</span><span class="n">show_map</span><span class="p">,</span>
+        <span class="n">import_geemap</span><span class="o">=</span><span class="n">import_geemap</span><span class="p">,</span>
+        <span class="n">Map</span><span class="o">=</span><span class="n">Map</span><span class="p">,</span>
+    <span class="p">)</span>
 
-        <span class="n">out_lines</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">import_ee</span><span class="p">:</span>
-            <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;import ee</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">out_lines</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">if</span> <span class="n">import_ee</span><span class="p">:</span>
+        <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;import ee</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_py</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
-            <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
-                <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;import ee&quot;</span><span class="p">:</span>
-                        <span class="k">continue</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_py</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;import ee&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
 
-                    <span class="n">next_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
-                    <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">next_line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-                        <span class="k">continue</span>
-                    <span class="k">elif</span> <span class="s2">&quot;.style(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;.style(**&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.style(&quot;</span><span class="p">,</span> <span class="s2">&quot;.style(**&quot;</span><span class="p">)</span>
-                        <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                    <span class="k">elif</span> <span class="s2">&quot;({&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                        <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;({&quot;</span><span class="p">,</span> <span class="s2">&quot;(**{&quot;</span><span class="p">)</span>
-                        <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
-                <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">next_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">next_line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                    <span class="k">continue</span>
+                <span class="k">elif</span> <span class="s2">&quot;.style(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;.style(**&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.style(&quot;</span><span class="p">,</span> <span class="s2">&quot;.style(**&quot;</span><span class="p">)</span>
                     <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="s2">&quot;({&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;({&quot;</span><span class="p">,</span> <span class="s2">&quot;(**{&quot;</span><span class="p">)</span>
+                    <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">index</span> <span class="o">==</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
 
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">in_js</span><span class="p">)</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">out_py</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">in_js</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">out_py</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">add_new_cell</span><span class="p">:</span>
-            <span class="n">contents</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_lines</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-            <span class="n">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">out_lines</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">add_new_cell</span><span class="p">:</span>
+        <span class="n">contents</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_lines</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+        <span class="n">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">out_lines</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -9198,32 +9207,163 @@
     <div class="doc doc-contents ">
 
         <p>Converts an Earth Engine JavaScript to Python script.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>Args:
-    in_file (str): File path of the input JavaScript.
-    out_file (str, optional): File path of the output Python script. Defaults to None.
-    use_qgis (bool, optional): Whether to add &quot;from ee_plugin import Map
-</code></pre></div></td></tr></table></div>
-<p>" to the output script. Defaults to True.
-        github_repo (str, optional): GitHub repo url. Defaults to None.
-        show_map (bool, optional): Whether to add "Map" to the output script. Defaults to True.
-        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
-        Map (str, optional): The name of the map variable. Defaults to "m".</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>Returns:
-    list: Python script.
-</code></pre></div></td></tr></table></div>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>in_file</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>File path of the input JavaScript.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>out_file</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>File path of the output Python script. Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>use_qgis</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether to add "from ee_plugin import Map" to the output script.
+Defaults to True.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>github_repo</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GitHub repo url. Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>show_map</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether to add "Map" to the output script. Defaults to True.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>import_geemap</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether to add "import geemap" to the output script.
+Defaults to False.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>Map</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the map variable. Defaults to "m".</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;m&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Python script.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
-<span class="normal">327</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">327</span>
 <span class="normal">328</span>
 <span class="normal">329</span>
 <span class="normal">330</span>
@@ -9614,28 +9754,41 @@
 <span class="normal">715</span>
 <span class="normal">716</span>
 <span class="normal">717</span>
-<span class="normal">718</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python</span><span class="p">(</span>
-    <span class="n">in_file</span><span class="p">,</span>
-    <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">show_map</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="normal">718</span>
+<span class="normal">719</span>
+<span class="normal">720</span>
+<span class="normal">721</span>
+<span class="normal">722</span>
+<span class="normal">723</span>
+<span class="normal">724</span>
+<span class="normal">725</span>
+<span class="normal">726</span>
+<span class="normal">727</span>
+<span class="normal">728</span>
+<span class="normal">729</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python</span><span class="p">(</span>
+    <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_qgis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">show_map</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">import_geemap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an Earth Engine JavaScript to Python script.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_file (str): File path of the input JavaScript.</span>
-<span class="sd">        out_file (str, optional): File path of the output Python script. Defaults to None.</span>
-<span class="sd">        use_qgis (bool, optional): Whether to add &quot;from ee_plugin import Map \n&quot; to the output script. Defaults to True.</span>
-<span class="sd">        github_repo (str, optional): GitHub repo url. Defaults to None.</span>
-<span class="sd">        show_map (bool, optional): Whether to add &quot;Map&quot; to the output script. Defaults to True.</span>
-<span class="sd">        import_geemap (bool, optional): Whether to add &quot;import geemap&quot; to the output script. Defaults to False.</span>
-<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        in_file: File path of the input JavaScript.</span>
+<span class="sd">        out_file: File path of the output Python script. Defaults to None.</span>
+<span class="sd">        use_qgis: Whether to add &quot;from ee_plugin import Map&quot; to the output script.</span>
+<span class="sd">            Defaults to True.</span>
+<span class="sd">        github_repo: GitHub repo url. Defaults to None.</span>
+<span class="sd">        show_map: Whether to add &quot;Map&quot; to the output script. Defaults to True.</span>
+<span class="sd">        import_geemap: Whether to add &quot;import geemap&quot; to the output script.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        list: Python script.</span>
+<span class="sd">        Python script.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -9651,7 +9804,8 @@
 
     <span class="k">if</span> <span class="n">use_qgis</span> <span class="ow">and</span> <span class="n">import_geemap</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
-            <span class="s2">&quot;use_qgis and import_geemap cannot be both True. Please set one of them to False.&quot;</span>
+            <span class="s2">&quot;use_qgis and import_geemap cannot be both True. &quot;</span>
+            <span class="s2">&quot;Please set one of them to False.&quot;</span>
         <span class="p">)</span>
 
     <span class="n">import_str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -9683,9 +9837,9 @@
 
     <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-    <span class="k">if</span> <span class="n">is_python</span><span class="p">:</span>  <span class="c1"># only update the GitHub URL if it is already a GEE Python script</span>
+    <span class="k">if</span> <span class="n">is_python</span><span class="p">:</span>  <span class="c1"># Only update the GitHub URL if it is already a GEE Python script.</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">github_url</span> <span class="o">+</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="n">lines</span><span class="p">))</span>
-    <span class="k">else</span><span class="p">:</span>  <span class="c1"># deal with JavaScript</span>
+    <span class="k">else</span><span class="p">:</span>  <span class="c1"># Deal with JavaScript.</span>
         <span class="n">header</span> <span class="o">=</span> <span class="n">github_url</span> <span class="o">+</span> <span class="s2">&quot;import ee </span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="n">math_import_str</span> <span class="o">+</span> <span class="n">import_str</span>
         <span class="c1"># function_defs = []</span>
         <span class="n">output</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -9699,16 +9853,17 @@
             <span class="n">currentDictionaryScopeDepth</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">currentNumOfNestedFuncs</span> <span class="o">=</span> <span class="mi">0</span>
 
-            <span class="c1"># We need to remove all spaces from the beginning of each line to accurately format the indentation</span>
+            <span class="c1"># We need to remove all spaces from the beginning of each line to accurately</span>
+            <span class="c1"># format the indentation.</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">remove_all_indentation</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
 
-            <span class="c1"># print(&#39;Processing {}&#39;.format(in_file))</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">check_map_functions</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span>
 
             <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lines</span><span class="p">):</span>
 
                 <span class="k">if</span> <span class="s2">&quot;Map.setOptions&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="c1"># Regular expression to remove everything after the comma and before &#39;);&#39;</span>
+                    <span class="c1"># Regular expression to remove everything after the comma and before</span>
+                    <span class="c1"># &#39;);&#39;.</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;,[^)]+(?=\);)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;/* color&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;*/&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
@@ -9736,7 +9891,6 @@
                             <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
                                 <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
                             <span class="p">):</span>
-                                <span class="c1"># lines[sub_index] = (&#39;    &#39; * currentNumOfNestedFuncs) + tmp_line</span>
                                 <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                                     <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
                                 <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
@@ -9762,7 +9916,12 @@
 
                     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
                         <span class="nb">print</span><span class="p">(</span>
-                            <span class="sa">f</span><span class="s2">&quot;An error occurred when processing </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">. The closing curly bracket could not be found in Line </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">. Please reformat the function definition and make sure that both the opening and closing curly brackets appear on the same line as the function keyword. &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;An error occurred when processing </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">. &quot;</span>
+                            <span class="s2">&quot;The closing curly bracket could not be found in &quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot;Line </span><span class="si">{</span><span class="n">index</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">line</span><span class="si">}</span><span class="s2">. Please reformat the function &quot;</span>
+                            <span class="s2">&quot;definition and make sure that both the opening and &quot;</span>
+                            <span class="s2">&quot;closing curly brackets appear on the same line as the &quot;</span>
+                            <span class="s2">&quot;function keyword.&quot;</span>
                         <span class="p">)</span>
                         <span class="k">return</span>
 
@@ -9875,7 +10034,7 @@
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;, def)&quot;</span><span class="p">,</span> <span class="s2">&quot;, _def)&quot;</span><span class="p">)</span>
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;===&quot;</span><span class="p">,</span> <span class="s2">&quot;==&quot;</span><span class="p">)</span>
 
-                <span class="c1"># Replaces all javascript operators with python operators</span>
+                <span class="c1"># Replaces all javascript operators with python operators.</span>
                 <span class="k">if</span> <span class="s2">&quot;!&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                     <span class="k">try</span><span class="p">:</span>
                         <span class="k">if</span> <span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))[</span><span class="n">line</span><span class="o">.</span><span class="n">find</span><span class="p">(</span><span class="s2">&quot;!&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="s2">&quot;=&quot;</span><span class="p">:</span>
@@ -9885,13 +10044,15 @@
 
                 <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
 
-                <span class="c1"># If the function concat is used, replace it with python&#39;s concatenation</span>
+                <span class="c1"># If the function concat is used, replace it with python&#39;s</span>
+                <span class="c1"># concatenation.</span>
                 <span class="k">if</span> <span class="s2">&quot;concat&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.concat(&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="s2">&quot;+&quot;</span><span class="p">)</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
 
-                <span class="c1"># Checks if an equal sign is at the end of a line. If so, add backslashes</span>
+                <span class="c1"># Checks if an equal sign is at the end of a line. If so, add</span>
+                <span class="c1"># backslashes.</span>
                 <span class="k">if</span> <span class="n">shouldCheckForEmptyLines</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">):</span>
@@ -9921,14 +10082,14 @@
                     <span class="k">else</span><span class="p">:</span>
                         <span class="n">checkNextLineForPrint</span> <span class="o">=</span> <span class="kc">True</span>
 
-                <span class="c1"># Removes potential commas after imports. Causes tuple type errors</span>
+                <span class="c1"># Removes potential commas after imports. Causes tuple type errors.</span>
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
                     <span class="k">if</span> <span class="s2">&quot;=&quot;</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">lines</span><span class="p">[</span>
                         <span class="n">index</span> <span class="o">+</span> <span class="mi">1</span>
                     <span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;&#39;&quot;</span><span class="p">):</span>
                         <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
 
-                <span class="c1"># Changes object argument to individual parameters</span>
+                <span class="c1"># Changes object argument to individual parameters.</span>
                 <span class="k">if</span> <span class="p">(</span>
                     <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;({&quot;</span><span class="p">)</span>
                     <span class="ow">and</span> <span class="ow">not</span> <span class="s2">&quot;ee.Dictionary&quot;</span> <span class="ow">in</span> <span class="n">line</span>
@@ -9953,9 +10114,6 @@
 
                 <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">currentDictionaryScopeDepth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">currentDictionaryScopeDepth</span> <span class="o">-=</span> <span class="mi">1</span>
-
-                <span class="c1"># if &quot;.style(&quot; in line and &quot;.style(**&quot; not in line:</span>
-                <span class="c1">#     line = line.replace(&quot;.style(&quot;, &quot;.style(**&quot;)</span>
 
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\\</span><span class="s2">&quot;</span>
@@ -10027,30 +10185,126 @@
 
     <div class="doc doc-contents ">
 
-        <p>Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.</p>
-<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span>
-<span class="normal">3</span>
-<span class="normal">4</span></pre></div></td><td class="code"><div><pre><span></span><code>Args:
-    in_dir (str): The input folder containing Earth Engine JavaScripts.
-    out_dir (str, optional): The output folder containing Earth Engine Python scripts. Defaults to None.
-    use_qgis (bool, optional): Whether to add &quot;from ee_plugin import Map
-</code></pre></div></td></tr></table></div>
-<p>" to the output script. Defaults to True.
-        github_repo (str, optional): GitHub repo url. Defaults to None.
-        import_geemap (bool, optional): Whether to add "import geemap" to the output script. Defaults to False.
-        Map (str, optional): The name of the map variable. Defaults to "m".</p>
+        <p>Converts EE JavaScript files in a folder recursively to Python scripts.</p>
+
+
+<p><span class="doc-section-title">Parameters:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Type</th>
+          <th>Description</th>
+          <th>Default</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                <code>in_dir</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The input folder containing Earth Engine JavaScript files.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>out_dir</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The output folder containing Earth Engine Python files.
+Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>use_qgis</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether to add "from ee_plugin import Map" to the output file.
+Defaults to True.</p>
+              </div>
+            </td>
+            <td>
+                  <code>True</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>github_repo</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>GitHub repo url. Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>import_geemap</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Whether to add "import geemap" to the output file.
+Defaults to False.</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>Map</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The name of the map variable. Defaults to "m".</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;m&#39;</code>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">812</span>
-<span class="normal">813</span>
-<span class="normal">814</span>
-<span class="normal">815</span>
-<span class="normal">816</span>
-<span class="normal">817</span>
-<span class="normal">818</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">818</span>
 <span class="normal">819</span>
 <span class="normal">820</span>
 <span class="normal">821</span>
@@ -10088,25 +10342,34 @@
 <span class="normal">853</span>
 <span class="normal">854</span>
 <span class="normal">855</span>
-<span class="normal">856</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python_dir</span><span class="p">(</span>
-    <span class="n">in_dir</span><span class="p">,</span>
-    <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">use_qgis</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-    <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">import_geemap</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts all Earth Engine JavaScripts in a folder recursively to Python scripts.</span>
+<span class="normal">856</span>
+<span class="normal">857</span>
+<span class="normal">858</span>
+<span class="normal">859</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
+<span class="normal">862</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python_dir</span><span class="p">(</span>
+    <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">use_qgis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">import_geemap</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts EE JavaScript files in a folder recursively to Python scripts.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_dir (str): The input folder containing Earth Engine JavaScripts.</span>
-<span class="sd">        out_dir (str, optional): The output folder containing Earth Engine Python scripts. Defaults to None.</span>
-<span class="sd">        use_qgis (bool, optional): Whether to add &quot;from ee_plugin import Map \n&quot; to the output script. Defaults to True.</span>
-<span class="sd">        github_repo (str, optional): GitHub repo url. Defaults to None.</span>
-<span class="sd">        import_geemap (bool, optional): Whether to add &quot;import geemap&quot; to the output script. Defaults to False.</span>
-<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        in_dir: The input folder containing Earth Engine JavaScript files.</span>
+<span class="sd">        out_dir: The output folder containing Earth Engine Python files.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        use_qgis: Whether to add &quot;from ee_plugin import Map&quot; to the output file.</span>
+<span class="sd">            Defaults to True.</span>
+<span class="sd">        github_repo: GitHub repo url. Defaults to None.</span>
+<span class="sd">        import_geemap: Whether to add &quot;import geemap&quot; to the output file.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine JavaScripts to Python scripts...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine JavaScripts to Python scripts...&quot;</span><span class="p">)</span>
     <span class="n">in_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out_dir</span> <span class="o">=</span> <span class="n">in_dir</span>
@@ -10120,9 +10383,6 @@
 
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">in_file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="n">index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">files</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">in_file</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="c1"># if use_qgis:</span>
-        <span class="c1">#     out_file = os.path.splitext(in_file)[0] + &quot;_qgis.py&quot;</span>
-        <span class="c1"># else:</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">in_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_geemap.py&quot;</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">out_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
         <span class="n">js_to_python</span><span class="p">(</span>
@@ -10201,7 +10461,7 @@
                 <code>out_file</code>
             </td>
             <td>
-                  <code>str, optional)</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10217,7 +10477,7 @@
                 <code>github_username</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10233,7 +10493,7 @@
                 <code>github_repo</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10266,17 +10526,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 990</span>
-<span class="normal"> 991</span>
-<span class="normal"> 992</span>
-<span class="normal"> 993</span>
-<span class="normal"> 994</span>
-<span class="normal"> 995</span>
-<span class="normal"> 996</span>
-<span class="normal"> 997</span>
-<span class="normal"> 998</span>
-<span class="normal"> 999</span>
-<span class="normal">1000</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1000</span>
 <span class="normal">1001</span>
 <span class="normal">1002</span>
 <span class="normal">1003</span>
@@ -10349,23 +10599,31 @@
 <span class="normal">1070</span>
 <span class="normal">1071</span>
 <span class="normal">1072</span>
-<span class="normal">1073</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
-    <span class="n">in_file</span><span class="p">,</span>
-    <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">out_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="normal">1073</span>
+<span class="normal">1074</span>
+<span class="normal">1075</span>
+<span class="normal">1076</span>
+<span class="normal">1077</span>
+<span class="normal">1078</span>
+<span class="normal">1079</span>
+<span class="normal">1080</span>
+<span class="normal">1081</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
+    <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts Earth Engine Python script to Jupyter notebook.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_file (str): Input Earth Engine Python script.</span>
-<span class="sd">        template_file (str): Input Jupyter notebook template.</span>
-<span class="sd">        out_file (str, optional)): Output Jupyter notebook.</span>
-<span class="sd">        github_username (str, optional): GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo (str, optional): GitHub repo name. Defaults to None.</span>
-<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        in_file: Input Earth Engine Python script.</span>
+<span class="sd">        template_file: Input Jupyter notebook template.</span>
+<span class="sd">        out_file: Output Jupyter notebook.</span>
+<span class="sd">        github_username: GitHub username. Defaults to None.</span>
+<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
+<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
 
@@ -10420,10 +10678,8 @@
         <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">out_text</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="c1"># command = &#39;ipynb-py-convert &#39; + out_py_file + &#39; &#39; + out_file</span>
-        <span class="n">command</span> <span class="o">=</span> <span class="s1">&#39;ipynb-py-convert &quot;</span><span class="si">{}</span><span class="s1">&quot; &quot;</span><span class="si">{}</span><span class="s1">&quot;&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_py_file</span><span class="p">,</span> <span class="n">out_file</span><span class="p">)</span>
+        <span class="n">command</span> <span class="o">=</span> <span class="sa">f</span><span class="s1">&#39;ipynb-py-convert &quot;</span><span class="si">{</span><span class="n">out_py_file</span><span class="si">}</span><span class="s1">&quot; &quot;</span><span class="si">{</span><span class="n">out_file</span><span class="si">}</span><span class="s1">&quot;&#39;</span>
         <span class="nb">print</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">popen</span><span class="p">(</span><span class="n">command</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">())</span>
-        <span class="c1"># os.popen(command)</span>
     <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Please install ipynb-py-convert using the following command:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pip install ipynb-py-convert&quot;</span><span class="p">)</span>
@@ -10450,7 +10706,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.</p>
+        <p>Converts EE Python scripts in a folder recursively to Jupyter notebooks.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -10482,25 +10738,10 @@
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>out_dir str, optional)</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Output folder. Defaults to None.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
                 <code>template_file</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10513,10 +10754,26 @@
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>out_dir</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>Output folder. Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>github_username</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10532,7 +10789,7 @@
                 <code>github_repo</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10565,15 +10822,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1076</span>
-<span class="normal">1077</span>
-<span class="normal">1078</span>
-<span class="normal">1079</span>
-<span class="normal">1080</span>
-<span class="normal">1081</span>
-<span class="normal">1082</span>
-<span class="normal">1083</span>
-<span class="normal">1084</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1084</span>
 <span class="normal">1085</span>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
@@ -10613,25 +10862,28 @@
 <span class="normal">1121</span>
 <span class="normal">1122</span>
 <span class="normal">1123</span>
-<span class="normal">1124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
-    <span class="n">in_dir</span><span class="p">,</span>
-    <span class="n">template_file</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">out_dir</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">github_username</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">github_repo</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">Map</span><span class="o">=</span><span class="s2">&quot;m&quot;</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts Earth Engine Python scripts in a folder recursively to Jupyter notebooks.</span>
+<span class="normal">1124</span>
+<span class="normal">1125</span>
+<span class="normal">1126</span>
+<span class="normal">1127</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
+    <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts EE Python scripts in a folder recursively to Jupyter notebooks.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_dir (str): Input folder containing Earth Engine Python scripts.</span>
-<span class="sd">        out_dir str, optional): Output folder. Defaults to None.</span>
-<span class="sd">        template_file (str): Input jupyter notebook template file.</span>
-<span class="sd">        github_username (str, optional): GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo (str, optional): GitHub repo name. Defaults to None.</span>
-<span class="sd">        Map (str, optional): The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        in_dir: Input folder containing Earth Engine Python scripts.</span>
+<span class="sd">        template_file: Input jupyter notebook template file.</span>
+<span class="sd">        out_dir: Output folder. Defaults to None.</span>
+<span class="sd">        github_username: GitHub username. Defaults to None.</span>
+<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
+<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine Python scripts to Jupyter notebooks ...</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine Python scripts to Jupyter notebooks ...&quot;</span><span class="p">)</span>
 
     <span class="n">in_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span>
     <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
@@ -10639,11 +10891,6 @@
     <span class="n">py_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.py&quot;</span><span class="p">))</span>
 
     <span class="n">files</span> <span class="o">=</span> <span class="n">qgis_files</span>
-
-    <span class="c1"># if len(qgis_files) == len(py_files) / 2:</span>
-    <span class="c1">#     files = qgis_files</span>
-    <span class="c1"># else:</span>
-    <span class="c1">#     files = py_files</span>
 
     <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out_dir</span> <span class="o">=</span> <span class="n">in_dir</span>
@@ -10679,7 +10926,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Removes all indentation for reformatting according to python's indentation rules.</p>
+        <p>Removes indentation for reformatting with Python's indentation rules.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -10751,7 +10998,7 @@
 <span class="normal">233</span>
 <span class="normal">234</span>
 <span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_all_indentation</span><span class="p">(</span><span class="n">input_lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes all indentation for reformatting according to python&#39;s indentation rules.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes indentation for reformatting with Python&#39;s indentation rules.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        input_lines: List of Earth Engine JavaScrips</span>
@@ -10780,7 +11027,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Removes 'from ee_plugin import Map' from an Earth Engine Python script.</p>
+        <p>Removes 'from ee_plugin import Map' from an Earth Engine Python file.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -10845,7 +11092,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of lines 'from ee_plugin import Map' removed or None.</p>
+                <p>Lines 'from ee_plugin import Map' removed or None.</p>
               </div>
             </td>
           </tr>
@@ -10855,13 +11102,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">859</span>
-<span class="normal">860</span>
-<span class="normal">861</span>
-<span class="normal">862</span>
-<span class="normal">863</span>
-<span class="normal">864</span>
-<span class="normal">865</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">865</span>
 <span class="normal">866</span>
 <span class="normal">867</span>
 <span class="normal">868</span>
@@ -10881,15 +11122,21 @@
 <span class="normal">882</span>
 <span class="normal">883</span>
 <span class="normal">884</span>
-<span class="normal">885</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes &#39;from ee_plugin import Map&#39; from an Earth Engine Python script.</span>
+<span class="normal">885</span>
+<span class="normal">886</span>
+<span class="normal">887</span>
+<span class="normal">888</span>
+<span class="normal">889</span>
+<span class="normal">890</span>
+<span class="normal">891</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes &#39;from ee_plugin import Map&#39; from an Earth Engine Python file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_file: Input file path of the Python script.</span>
 <span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List of lines &#39;from ee_plugin import Map&#39; removed or None.</span>
+<span class="sd">        Lines &#39;from ee_plugin import Map&#39; removed or None.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
 
@@ -10974,7 +11221,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of lines.</p>
+                <p>Lines.</p>
               </div>
             </td>
           </tr>
@@ -10984,17 +11231,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">968</span>
-<span class="normal">969</span>
-<span class="normal">970</span>
-<span class="normal">971</span>
-<span class="normal">972</span>
-<span class="normal">973</span>
-<span class="normal">974</span>
-<span class="normal">975</span>
-<span class="normal">976</span>
-<span class="normal">977</span>
-<span class="normal">978</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">978</span>
 <span class="normal">979</span>
 <span class="normal">980</span>
 <span class="normal">981</span>
@@ -11003,14 +11240,24 @@
 <span class="normal">984</span>
 <span class="normal">985</span>
 <span class="normal">986</span>
-<span class="normal">987</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">987</span>
+<span class="normal">988</span>
+<span class="normal">989</span>
+<span class="normal">990</span>
+<span class="normal">991</span>
+<span class="normal">992</span>
+<span class="normal">993</span>
+<span class="normal">994</span>
+<span class="normal">995</span>
+<span class="normal">996</span>
+<span class="normal">997</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts footer from the notebook template.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_template: Input notebook template file path.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List of lines.</span>
+<span class="sd">        Lines.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">footer_start_index</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -11089,7 +11336,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of lines.</p>
+                <p>Lines from the template script.</p>
               </div>
             </td>
           </tr>
@@ -11099,17 +11346,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">946</span>
-<span class="normal">947</span>
-<span class="normal">948</span>
-<span class="normal">949</span>
-<span class="normal">950</span>
-<span class="normal">951</span>
-<span class="normal">952</span>
-<span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span>
-<span class="normal">956</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">956</span>
 <span class="normal">957</span>
 <span class="normal">958</span>
 <span class="normal">959</span>
@@ -11118,14 +11355,24 @@
 <span class="normal">962</span>
 <span class="normal">963</span>
 <span class="normal">964</span>
-<span class="normal">965</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">965</span>
+<span class="normal">966</span>
+<span class="normal">967</span>
+<span class="normal">968</span>
+<span class="normal">969</span>
+<span class="normal">970</span>
+<span class="normal">971</span>
+<span class="normal">972</span>
+<span class="normal">973</span>
+<span class="normal">974</span>
+<span class="normal">975</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts header from the notebook template.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_template: Input notebook template file path.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List of lines.</span>
+<span class="sd">        Lines from the template script.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">header_end_index</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -11223,10 +11470,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1155</span>
-<span class="normal">1156</span>
-<span class="normal">1157</span>
-<span class="normal">1158</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1158</span>
 <span class="normal">1159</span>
 <span class="normal">1160</span>
 <span class="normal">1161</span>
@@ -11276,7 +11520,10 @@
 <span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
-<span class="normal">1208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span>
+<span class="normal">1210</span>
+<span class="normal">1211</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates notebook header (binder and Google Colab URLs).</span>
@@ -11415,10 +11662,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1211</span>
-<span class="normal">1212</span>
-<span class="normal">1213</span>
-<span class="normal">1214</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1214</span>
 <span class="normal">1215</span>
 <span class="normal">1216</span>
 <span class="normal">1217</span>
@@ -11435,7 +11679,10 @@
 <span class="normal">1228</span>
 <span class="normal">1229</span>
 <span class="normal">1230</span>
-<span class="normal">1231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
+<span class="normal">1231</span>
+<span class="normal">1232</span>
+<span class="normal">1233</span>
+<span class="normal">1234</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates header (binder and Google Colab URLs) of all notebooks in a folder.</span>
@@ -11522,7 +11769,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Returns True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'.</p>
+                <p>True if the script contains 'Math.'. For example 'Math.PI', 'Math.pow'.</p>
               </div>
             </td>
           </tr>
@@ -11553,7 +11800,7 @@
 <span class="sd">        lines: An Earth Engine JavaScript.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Returns True if the script contains &#39;Math.&#39;. For example &#39;Math.PI&#39;, &#39;Math.pow&#39;.</span>
+<span class="sd">        True if the script contains &#39;Math.&#39;. For example &#39;Math.PI&#39;, &#39;Math.pow&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">math_import</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
@@ -11728,10 +11975,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       

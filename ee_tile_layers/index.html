@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -7005,7 +7005,21 @@
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">127</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">113</span>
+<span class="normal">114</span>
+<span class="normal">115</span>
+<span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
 <span class="normal">128</span>
 <span class="normal">129</span>
 <span class="normal">130</span>
@@ -7033,23 +7047,7 @@
 <span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EEFoliumTileLayer</span><span class="p">(</span><span class="n">folium</span><span class="o">.</span><span class="n">raster_layers</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
+<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EEFoliumTileLayer</span><span class="p">(</span><span class="n">folium</span><span class="o">.</span><span class="n">raster_layers</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A Folium raster TileLayer that shows an EE object.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -7070,15 +7068,13 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the folium tile layer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
-<span class="sd">                ee.Image, ee.ImageCollection]): The object to add to the map.</span>
-<span class="sd">            vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">            shown (bool, optional): A flag indicating whether the layer should</span>
-<span class="sd">                be on by default. Defaults to True.</span>
-<span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a</span>
-<span class="sd">                number between 0 and 1. Defaults to 1.</span>
+<span class="sd">            ee_object: The object to add to the map.</span>
+<span class="sd">            vis_params: The visualization parameters. Defaults to None.</span>
+<span class="sd">            name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">            shown: A flag indicating whether the layer should be on by default.</span>
+<span class="sd">                Defaults to True.</span>
+<span class="sd">            opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
+<span class="sd">                Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
             <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
@@ -7137,15 +7133,30 @@
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>vis_params</code>
+                <code>ee_object</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+                  <code><span title="ee.Geometry">Geometry</span> | <span title="ee.Feature">Feature</span> | <span title="ee.FeatureCollection">FeatureCollection</span> | <span title="ee.Image">Image</span> | <span title="ee.ImageCollection">ImageCollection</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The visualization parameters.
-Defaults to None.</p>
+                <p>The object to add to the map.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>vis_params</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The visualization parameters. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -7177,8 +7188,8 @@ Defaults to None.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A flag indicating whether the layer should
-be on by default. Defaults to True.</p>
+                <p>A flag indicating whether the layer should be on by default.
+Defaults to True.</p>
               </div>
             </td>
             <td>
@@ -7194,8 +7205,8 @@ be on by default. Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The layer's opacity represented as a
-number between 0 and 1. Defaults to 1.</p>
+                <p>Layer's opacity represented as a number between 0 and 1.
+Defaults to 1.</p>
               </div>
             </td>
             <td>
@@ -7208,7 +7219,21 @@ number between 0 and 1. Defaults to 1.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">130</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">116</span>
+<span class="normal">117</span>
+<span class="normal">118</span>
+<span class="normal">119</span>
+<span class="normal">120</span>
+<span class="normal">121</span>
+<span class="normal">122</span>
+<span class="normal">123</span>
+<span class="normal">124</span>
+<span class="normal">125</span>
+<span class="normal">126</span>
+<span class="normal">127</span>
+<span class="normal">128</span>
+<span class="normal">129</span>
+<span class="normal">130</span>
 <span class="normal">131</span>
 <span class="normal">132</span>
 <span class="normal">133</span>
@@ -7233,23 +7258,7 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="normal">152</span>
 <span class="normal">153</span>
 <span class="normal">154</span>
-<span class="normal">155</span>
-<span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
-<span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span>
-<span class="normal">164</span>
-<span class="normal">165</span>
-<span class="normal">166</span>
-<span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span>
-<span class="normal">170</span>
-<span class="normal">171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">ee_object</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span>
@@ -7267,15 +7276,13 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the folium tile layer.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
-<span class="sd">            ee.Image, ee.ImageCollection]): The object to add to the map.</span>
-<span class="sd">        vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">        shown (bool, optional): A flag indicating whether the layer should</span>
-<span class="sd">            be on by default. Defaults to True.</span>
-<span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a</span>
-<span class="sd">            number between 0 and 1. Defaults to 1.</span>
+<span class="sd">        ee_object: The object to add to the map.</span>
+<span class="sd">        vis_params: The visualization parameters. Defaults to None.</span>
+<span class="sd">        name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">        shown: A flag indicating whether the layer should be on by default.</span>
+<span class="sd">            Defaults to True.</span>
+<span class="sd">        opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
+<span class="sd">            Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
         <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
@@ -7333,7 +7340,23 @@ number between 0 and 1. Defaults to 1.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">174</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">158</span>
+<span class="normal">159</span>
+<span class="normal">160</span>
+<span class="normal">161</span>
+<span class="normal">162</span>
+<span class="normal">163</span>
+<span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
+<span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
 <span class="normal">175</span>
 <span class="normal">176</span>
 <span class="normal">177</span>
@@ -7460,25 +7483,7 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="normal">298</span>
 <span class="normal">299</span>
 <span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EELeafletTileLayer</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
+<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EELeafletTileLayer</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An ipyleaflet TileLayer that shows an EE object.&quot;&quot;&quot;</span>
 
     <span class="n">EE_TYPES</span> <span class="o">=</span> <span class="p">(</span>
@@ -7507,15 +7512,13 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initialize the ipyleaflet tile layer.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
-<span class="sd">                ee.Image, ee.ImageCollection]): The object to add to the map.</span>
-<span class="sd">            vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">            shown (bool, optional): A flag indicating whether the layer should</span>
-<span class="sd">                be on by default. Defaults to True.</span>
-<span class="sd">            opacity (float, optional): The layer&#39;s opacity represented as a</span>
-<span class="sd">                number between 0 and 1. Defaults to 1.</span>
+<span class="sd">            ee_object: The object to add to the map.</span>
+<span class="sd">            vis_params: The visualization parameters. Defaults to None.</span>
+<span class="sd">            name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">            shown: A flag indicating whether the layer should be on by default.</span>
+<span class="sd">                Defaults to True.</span>
+<span class="sd">            opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
+<span class="sd">                Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
@@ -7544,13 +7547,13 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="sd">        and are cached to avoid recomputing for the same bounds and bands.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The</span>
-<span class="sd">                bounds to sample.</span>
-<span class="sd">            bands (tuple[str, ...]): The bands to sample.</span>
+<span class="sd">            bounds: The bounds to sample.</span>
+<span class="sd">            bands: The bands to sample.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            tuple[float, float, float, float]: The minimum, maximum, standard</span>
-<span class="sd">                deviation, and mean values across the specified bands.</span>
+<span class="sd">            The minimum, maximum, standard deviation, and mean values across the</span>
+<span class="sd">                specified bands.</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">stat_reducer</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="o">.</span><span class="n">minMax</span><span class="p">()</span>
@@ -7583,7 +7586,7 @@ number between 0 and 1. Defaults to 1.</p>
         <span class="n">std_dev</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">stds</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">stds</span><span class="p">)</span>
         <span class="n">mean</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">means</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">means</span><span class="p">)</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">,</span> <span class="n">mean</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std_dev</span><span class="p">,</span> <span class="n">mean</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">calculate_vis_minmax</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span>
@@ -7596,13 +7599,13 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The bounds to sample.</span>
-<span class="sd">            bands (Optional[List[str]]): The bands to sample. If None, all bands are used.</span>
-<span class="sd">            percent (Optional[float]): The percent to use when stretching.</span>
-<span class="sd">            sigma (Optional[float]): The number of standard deviations to use when stretching.</span>
+<span class="sd">            bounds: The bounds to sample.</span>
+<span class="sd">            bands: The bands to sample. If None, all bands are used.</span>
+<span class="sd">            percent: The percent to use when stretching.</span>
+<span class="sd">            sigma: The number of standard deviations to use when stretching.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            tuple[float, float]: The minimum and maximum values to clip to.</span>
+<span class="sd">            The minimum and maximum values to clip to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
         <span class="k">try</span><span class="p">:</span>
@@ -7623,7 +7626,7 @@ number between 0 and 1. Defaults to 1.</p>
             <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">min_val</span>
             <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">max_val</span>
 
-        <span class="k">return</span> <span class="p">(</span><span class="n">stretch_min</span><span class="p">,</span> <span class="n">stretch_max</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">stretch_min</span><span class="p">,</span> <span class="n">stretch_max</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -7667,15 +7670,30 @@ number between 0 and 1. Defaults to 1.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>vis_params</code>
+                <code>ee_object</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+                  <code><span title="ee.Geometry">Geometry</span> | <span title="ee.Feature">Feature</span> | <span title="ee.FeatureCollection">FeatureCollection</span> | <span title="ee.Image">Image</span> | <span title="ee.ImageCollection">ImageCollection</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The visualization parameters.
-Defaults to None.</p>
+                <p>The object to add to the map.</p>
+              </div>
+            </td>
+            <td>
+                <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>vis_params</code>
+            </td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>The visualization parameters. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -7707,8 +7725,8 @@ Defaults to None.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A flag indicating whether the layer should
-be on by default. Defaults to True.</p>
+                <p>A flag indicating whether the layer should be on by default.
+Defaults to True.</p>
               </div>
             </td>
             <td>
@@ -7724,8 +7742,8 @@ be on by default. Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The layer's opacity represented as a
-number between 0 and 1. Defaults to 1.</p>
+                <p>Layer's opacity represented as a number between 0 and 1.
+Defaults to 1.</p>
               </div>
             </td>
             <td>
@@ -7738,7 +7756,23 @@ number between 0 and 1. Defaults to 1.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">185</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">169</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span>
+<span class="normal">174</span>
+<span class="normal">175</span>
+<span class="normal">176</span>
+<span class="normal">177</span>
+<span class="normal">178</span>
+<span class="normal">179</span>
+<span class="normal">180</span>
+<span class="normal">181</span>
+<span class="normal">182</span>
+<span class="normal">183</span>
+<span class="normal">184</span>
+<span class="normal">185</span>
 <span class="normal">186</span>
 <span class="normal">187</span>
 <span class="normal">188</span>
@@ -7760,25 +7794,7 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="normal">204</span>
 <span class="normal">205</span>
 <span class="normal">206</span>
-<span class="normal">207</span>
-<span class="normal">208</span>
-<span class="normal">209</span>
-<span class="normal">210</span>
-<span class="normal">211</span>
-<span class="normal">212</span>
-<span class="normal">213</span>
-<span class="normal">214</span>
-<span class="normal">215</span>
-<span class="normal">216</span>
-<span class="normal">217</span>
-<span class="normal">218</span>
-<span class="normal">219</span>
-<span class="normal">220</span>
-<span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
-<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">ee_object</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span>
@@ -7796,15 +7812,13 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initialize the ipyleaflet tile layer.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ee_object (Union[ee.Geometry, ee.Feature, ee.FeatureCollection,</span>
-<span class="sd">            ee.Image, ee.ImageCollection]): The object to add to the map.</span>
-<span class="sd">        vis_params (Optional[Dict[str, Any]]): The visualization parameters.</span>
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        name (str, optional): The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
-<span class="sd">        shown (bool, optional): A flag indicating whether the layer should</span>
-<span class="sd">            be on by default. Defaults to True.</span>
-<span class="sd">        opacity (float, optional): The layer&#39;s opacity represented as a</span>
-<span class="sd">            number between 0 and 1. Defaults to 1.</span>
+<span class="sd">        ee_object: The object to add to the map.</span>
+<span class="sd">        vis_params: The visualization parameters. Defaults to None.</span>
+<span class="sd">        name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">        shown: A flag indicating whether the layer should be on by default.</span>
+<span class="sd">            Defaults to True.</span>
+<span class="sd">        opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
+<span class="sd">            Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
@@ -7855,7 +7869,7 @@ number between 0 and 1. Defaults to 1.</p>
                 <code>bounds</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Union">Union</span>[<span title="ee.Geometry">Geometry</span>, <span title="ee.Feature">Feature</span>, <span title="ee.FeatureCollection">FeatureCollection</span>]</code>
+                  <code><span title="ee.Geometry">Geometry</span> | <span title="ee.Feature">Feature</span> | <span title="ee.FeatureCollection">FeatureCollection</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7871,7 +7885,7 @@ number between 0 and 1. Defaults to 1.</p>
                 <code>bands</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7887,7 +7901,7 @@ number between 0 and 1. Defaults to 1.</p>
                 <code>percent</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="float">float</span>]</code>
+                  <code><span title="float">float</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7903,7 +7917,7 @@ number between 0 and 1. Defaults to 1.</p>
                 <code>sigma</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="float">float</span>]</code>
+                  <code><span title="float">float</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7933,7 +7947,7 @@ number between 0 and 1. Defaults to 1.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>tuple[float, float]: The minimum and maximum values to clip to.</p>
+                <p>The minimum and maximum values to clip to.</p>
               </div>
             </td>
           </tr>
@@ -7943,7 +7957,25 @@ number between 0 and 1. Defaults to 1.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">281</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">263</span>
+<span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
+<span class="normal">268</span>
+<span class="normal">269</span>
+<span class="normal">270</span>
+<span class="normal">271</span>
+<span class="normal">272</span>
+<span class="normal">273</span>
+<span class="normal">274</span>
+<span class="normal">275</span>
+<span class="normal">276</span>
+<span class="normal">277</span>
+<span class="normal">278</span>
+<span class="normal">279</span>
+<span class="normal">280</span>
+<span class="normal">281</span>
 <span class="normal">282</span>
 <span class="normal">283</span>
 <span class="normal">284</span>
@@ -7963,25 +7995,7 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="normal">298</span>
 <span class="normal">299</span>
 <span class="normal">300</span>
-<span class="normal">301</span>
-<span class="normal">302</span>
-<span class="normal">303</span>
-<span class="normal">304</span>
-<span class="normal">305</span>
-<span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span>
-<span class="normal">310</span>
-<span class="normal">311</span>
-<span class="normal">312</span>
-<span class="normal">313</span>
-<span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">calculate_vis_minmax</span><span class="p">(</span>
+<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">calculate_vis_minmax</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">bounds</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
@@ -7992,13 +8006,13 @@ number between 0 and 1. Defaults to 1.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Calculate the min and max clip values for visualization.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        bounds (Union[ee.Geometry, ee.Feature, ee.FeatureCollection]): The bounds to sample.</span>
-<span class="sd">        bands (Optional[List[str]]): The bands to sample. If None, all bands are used.</span>
-<span class="sd">        percent (Optional[float]): The percent to use when stretching.</span>
-<span class="sd">        sigma (Optional[float]): The number of standard deviations to use when stretching.</span>
+<span class="sd">        bounds: The bounds to sample.</span>
+<span class="sd">        bands: The bands to sample. If None, all bands are used.</span>
+<span class="sd">        percent: The percent to use when stretching.</span>
+<span class="sd">        sigma: The number of standard deviations to use when stretching.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        tuple[float, float]: The minimum and maximum values to clip to.</span>
+<span class="sd">        The minimum and maximum values to clip to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
     <span class="k">try</span><span class="p">:</span>
@@ -8019,7 +8033,7 @@ number between 0 and 1. Defaults to 1.</p>
         <span class="n">stretch_min</span> <span class="o">=</span> <span class="n">min_val</span>
         <span class="n">stretch_max</span> <span class="o">=</span> <span class="n">max_val</span>
 
-    <span class="k">return</span> <span class="p">(</span><span class="n">stretch_min</span><span class="p">,</span> <span class="n">stretch_max</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">stretch_min</span><span class="p">,</span> <span class="n">stretch_max</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -8196,10 +8210,10 @@ number between 0 and 1. Defaults to 1.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       

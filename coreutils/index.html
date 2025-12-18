@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.0">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.1">
     
     
       
@@ -33,7 +33,7 @@
       
     
     
-      <link rel="stylesheet" href="../assets/stylesheets/main.618322db.min.css">
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
       
         
         <link rel="stylesheet" href="../assets/stylesheets/palette.ab4e12ef.min.css">
@@ -7336,7 +7336,7 @@ Credits to Tyler Erickson.</p>
                 <code>ee_object</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="ee.FeatureCollection">FeatureCollection</span>, <span title="ee.Image">Image</span>, <span title="ee.Geometry">Geometry</span>, <span title="ee.Feature">Feature</span>]</code>
+                  <code><span title="ee.FeatureCollection">FeatureCollection</span> | <span title="ee.Image">Image</span> | <span title="ee.Geometry">Geometry</span> | <span title="ee.Feature">Feature</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7398,7 +7398,7 @@ Credits to Tyler Erickson.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>dict[str, Any]: The node representing the Earth Engine object information.</p>
+                <p>The node representing the Earth Engine object information.</p>
               </div>
             </td>
           </tr>
@@ -7408,7 +7408,8 @@ Credits to Tyler Erickson.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">198</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">197</span>
+<span class="normal">198</span>
 <span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
@@ -7455,10 +7456,7 @@ Credits to Tyler Erickson.</p>
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_computed_object_tree</span><span class="p">(</span>
+<span class="normal">245</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_computed_object_tree</span><span class="p">(</span>
     <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span>
     <span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">opened</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -7469,15 +7467,13 @@ Credits to Tyler Erickson.</p>
 <span class="sd">    Credits to Tyler Erickson.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ee_object (Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature]):</span>
-<span class="sd">            The Earth Engine object.</span>
-<span class="sd">        layer_name (str, optional): The name of the layer. Defaults to &quot;&quot;.</span>
-<span class="sd">        opened (bool, optional): Whether to expand the tree. Defaults to False.</span>
+<span class="sd">        ee_object: The Earth Engine object.</span>
+<span class="sd">        layer_name: The name of the layer. Defaults to &quot;&quot;.</span>
+<span class="sd">        opened: Whether to expand the tree. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict[str, Any]: The node representing the Earth Engine object information.</span>
+<span class="sd">        The node representing the Earth Engine object information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="c1"># Convert EE object props to dicts. It&#39;s easier to traverse the nested structure.</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">):</span>
         <span class="n">ee_object</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">f</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">f</span><span class="o">.</span><span class="n">toDictionary</span><span class="p">()))</span>
@@ -7545,7 +7541,7 @@ Credits to Tyler Erickson.</p>
                 <code>cmap</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="str">str</span>, <span title="typing.List">List</span>[<span title="str">str</span>], <span title="Box">Box</span>]</code>
+                  <code><span title="str">str</span> | <span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7575,7 +7571,7 @@ Credits to Tyler Erickson.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List[str]: A list of colors.</p>
+                <p>A list of colors.</p>
               </div>
             </td>
           </tr>
@@ -7585,7 +7581,11 @@ Credits to Tyler Erickson.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">423</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
 <span class="normal">424</span>
 <span class="normal">425</span>
 <span class="normal">426</span>
@@ -7609,21 +7609,15 @@ Credits to Tyler Erickson.</p>
 <span class="normal">444</span>
 <span class="normal">445</span>
 <span class="normal">446</span>
-<span class="normal">447</span>
-<span class="normal">448</span>
-<span class="normal">449</span>
-<span class="normal">450</span>
-<span class="normal">451</span>
-<span class="normal">452</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">447</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check the colormap and return a list of colors.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cmap (Union[str, List[str], Box]): The colormap to check.</span>
+<span class="sd">        cmap: The colormap to check.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[str]: A list of colors.</span>
+<span class="sd">        A list of colors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="kn">import</span><span class="w"> </span><span class="nn">box</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.colormaps</span><span class="w"> </span><span class="kn">import</span> <span class="n">get_palette</span>
 
@@ -7680,11 +7674,12 @@ Credits to Tyler Erickson.</p>
                 <code>in_color</code>
             </td>
             <td>
-                  <code><span title="str">str</span> or <span title="tuple">tuple</span> or <span title="list">list</span></code>
+                  <code><span title="str">str</span> | <span title="tuple">tuple</span> | <span title="list">list</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>It can be a string (e.g., 'red', '#ffff00', 'ffff00', 'ff0') or RGB tuple/list (e.g., (255, 127, 0)).</p>
+                <p>Can be a string (e.g., 'red', '#ffff00', 'ffff00', 'ff0') or RGB
+tuple/list (e.g., (255, 127, 0)).</p>
               </div>
             </td>
             <td>
@@ -7699,13 +7694,13 @@ Credits to Tyler Erickson.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
+            <td>
                   <code><span title="str">str</span></code>
             </td>
             <td>
@@ -7720,7 +7715,15 @@ Credits to Tyler Erickson.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">378</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">370</span>
+<span class="normal">371</span>
+<span class="normal">372</span>
+<span class="normal">373</span>
+<span class="normal">374</span>
+<span class="normal">375</span>
+<span class="normal">376</span>
+<span class="normal">377</span>
+<span class="normal">378</span>
 <span class="normal">379</span>
 <span class="normal">380</span>
 <span class="normal">381</span>
@@ -7758,21 +7761,18 @@ Credits to Tyler Erickson.</p>
 <span class="normal">413</span>
 <span class="normal">414</span>
 <span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span>
-<span class="normal">420</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_color</span><span class="p">(</span><span class="n">in_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">416</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_color</span><span class="p">(</span><span class="n">in_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks the input color and returns the corresponding hex color code.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_color (str or tuple or list): It can be a string (e.g., &#39;red&#39;, &#39;#ffff00&#39;, &#39;ffff00&#39;, &#39;ff0&#39;) or RGB tuple/list (e.g., (255, 127, 0)).</span>
+<span class="sd">        in_color: Can be a string (e.g., &#39;red&#39;, &#39;#ffff00&#39;, &#39;ffff00&#39;, &#39;ff0&#39;) or RGB</span>
+<span class="sd">          tuple/list (e.g., (255, 127, 0)).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: A hex color code.</span>
+<span class="sd">        A hex color code.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">out_color</span> <span class="o">=</span> <span class="s2">&quot;#000000&quot;</span>  <span class="c1"># default black color</span>
-    <span class="c1"># Handle RGB tuple or list</span>
+    <span class="c1"># Handle RGB tuple or list.</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">in_color</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">))</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">in_color</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
         <span class="c1"># rescale color if necessary</span>
         <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">item</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">in_color</span><span class="p">):</span>
@@ -7782,14 +7782,15 @@ Credits to Tyler Erickson.</p>
             <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">in_color</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span>
-                <span class="sa">f</span><span class="s2">&quot;The provided RGB color (</span><span class="si">{</span><span class="n">in_color</span><span class="si">}</span><span class="s2">) is invalid. Using the default black color.&quot;</span>
+                <span class="sa">f</span><span class="s2">&quot;The provided RGB color (</span><span class="si">{</span><span class="n">in_color</span><span class="si">}</span><span class="s2">) is invalid. &quot;</span>
+                <span class="s2">&quot;Using the default black color.&quot;</span>
             <span class="p">)</span>
             <span class="k">return</span> <span class="n">out_color</span>
 
-    <span class="c1"># Handle string color input</span>
+    <span class="c1"># Handle string color input.</span>
     <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">in_color</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="c1"># Try converting directly (handles color names and hex with #)</span>
+            <span class="c1"># Try converting directly (handles color names and hex with #).</span>
             <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="n">in_color</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
@@ -7797,12 +7798,14 @@ Credits to Tyler Erickson.</p>
                 <span class="k">return</span> <span class="n">colors</span><span class="o">.</span><span class="n">to_hex</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">in_color</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span>
-                    <span class="sa">f</span><span class="s2">&quot;The provided color string (</span><span class="si">{</span><span class="n">in_color</span><span class="si">}</span><span class="s2">) is invalid. Using the default black color.&quot;</span>
+                    <span class="sa">f</span><span class="s2">&quot;The provided color string (</span><span class="si">{</span><span class="n">in_color</span><span class="si">}</span><span class="s2">) is invalid. &quot;</span>
+                    <span class="s2">&quot;Using the default black color.&quot;</span>
                 <span class="p">)</span>
                 <span class="k">return</span> <span class="n">out_color</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;The provided color type (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">in_color</span><span class="p">)</span><span class="si">}</span><span class="s2">) is invalid. Using the default black color.&quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;The provided color type (</span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">in_color</span><span class="p">)</span><span class="si">}</span><span class="s2">) is invalid. &quot;</span>
+            <span class="s2">&quot;Using the default black color.&quot;</span>
         <span class="p">)</span>
         <span class="k">return</span> <span class="n">out_color</span>
 </code></pre></div></td></tr></table></div>
@@ -7861,8 +7864,8 @@ Credits to Tyler Erickson.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Where to add the new code cell. It can be one of
-the following: above, below, at_bottom. Defaults to 'below'.</p>
+                <p>Where to add the new code cell. It can be one of the following: above,
+below, at_bottom. Defaults to 'below'.</p>
               </div>
             </td>
             <td>
@@ -7875,7 +7878,11 @@ the following: above, below, at_bottom. Defaults to 'below'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">297</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">293</span>
+<span class="normal">294</span>
+<span class="normal">295</span>
+<span class="normal">296</span>
+<span class="normal">297</span>
 <span class="normal">298</span>
 <span class="normal">299</span>
 <span class="normal">300</span>
@@ -7896,17 +7903,13 @@ the following: above, below, at_bottom. Defaults to 'below'.</p>
 <span class="normal">315</span>
 <span class="normal">316</span>
 <span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_code_cell</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">where</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;below&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">318</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_code_cell</span><span class="p">(</span><span class="n">code</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">where</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;below&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a code cell in the IPython Notebook.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        code (str, optional): Code to fill the new code cell with. Defaults to &#39;&#39;.</span>
-<span class="sd">        where (str, optional): Where to add the new code cell. It can be one of</span>
-<span class="sd">            the following: above, below, at_bottom. Defaults to &#39;below&#39;.</span>
+<span class="sd">        code: Code to fill the new code cell with. Defaults to &#39;&#39;.</span>
+<span class="sd">        where: Where to add the new code cell. It can be one of the following: above,</span>
+<span class="sd">            below, at_bottom. Defaults to &#39;below&#39;.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">pyperclip</span>
 
@@ -7962,7 +7965,7 @@ the following: above, below, at_bottom. Defaults to 'below'.</p>
                 <code>url</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7979,7 +7982,7 @@ Defaults to None.</p>
                 <code>output</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8011,7 +8014,7 @@ Defaults to None.</p>
                 <code>proxy</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8027,12 +8030,12 @@ Defaults to None.</p>
                 <code>speed</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="float">float</span>]</code>
+                  <code><span title="float">float</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Download byte size per second (e.g.,
-256KB/s = 256 * 1024). Defaults to None.</p>
+                <p>Download byte size per second (e.g., 256KB/s = 256 * 1024).
+Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -8060,13 +8063,13 @@ Defaults to None.</p>
                 <code>verify</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="bool">bool</span>, <span title="str">str</span>]</code>
+                  <code><span title="bool">bool</span> | <span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Either a bool, in which case it
-controls whether the server's TLS certificate is verified, or a
-string, in which case it must be a path to a CA bundle to use.
+                <p>Either a bool, in which case it controls whether the server's TLS
+certificate is verified, or a string, in which case it must be a path to a
+CA bundle to use.
 Default is True.</p>
               </div>
             </td>
@@ -8079,7 +8082,7 @@ Default is True.</p>
                 <code>id</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8116,8 +8119,8 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Resume the download from existing tmp file if
-possible. Defaults to False.</p>
+                <p>Resume the download from existing tmp file if possible.
+Defaults to False.</p>
               </div>
             </td>
             <td>
@@ -8165,13 +8168,13 @@ Defaults to False.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
+            <td>
                   <code><span title="str">str</span></code>
             </td>
             <td>
@@ -8186,7 +8189,26 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">699</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">680</span>
+<span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
+<span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
+<span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span>
+<span class="normal">690</span>
+<span class="normal">691</span>
+<span class="normal">692</span>
+<span class="normal">693</span>
+<span class="normal">694</span>
+<span class="normal">695</span>
+<span class="normal">696</span>
+<span class="normal">697</span>
+<span class="normal">698</span>
+<span class="normal">699</span>
 <span class="normal">700</span>
 <span class="normal">701</span>
 <span class="normal">702</span>
@@ -8237,26 +8259,7 @@ Defaults to False.</p>
 <span class="normal">747</span>
 <span class="normal">748</span>
 <span class="normal">749</span>
-<span class="normal">750</span>
-<span class="normal">751</span>
-<span class="normal">752</span>
-<span class="normal">753</span>
-<span class="normal">754</span>
-<span class="normal">755</span>
-<span class="normal">756</span>
-<span class="normal">757</span>
-<span class="normal">758</span>
-<span class="normal">759</span>
-<span class="normal">760</span>
-<span class="normal">761</span>
-<span class="normal">762</span>
-<span class="normal">763</span>
-<span class="normal">764</span>
-<span class="normal">765</span>
-<span class="normal">766</span>
-<span class="normal">767</span>
-<span class="normal">768</span>
-<span class="normal">769</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span>
+<span class="normal">750</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_file</span><span class="p">(</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">quiet</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -8273,29 +8276,29 @@ Defaults to False.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download a file from URL, including Google Drive shared URL.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        url (Optional[str], optional): Google Drive URL is also supported.</span>
+<span class="sd">        url: Google Drive URL is also supported.</span>
 <span class="sd">            Defaults to None.</span>
-<span class="sd">        output (Optional[str], optional): Output filename. Default is basename of URL.</span>
-<span class="sd">        quiet (bool, optional): Suppress terminal output. Default is False.</span>
-<span class="sd">        proxy (Optional[str], optional): Proxy. Defaults to None.</span>
-<span class="sd">        speed (Optional[float], optional): Download byte size per second (e.g.,</span>
-<span class="sd">            256KB/s = 256 * 1024). Defaults to None.</span>
-<span class="sd">        use_cookies (bool, optional): Flag to use cookies. Defaults to True.</span>
-<span class="sd">        verify (Union[bool, str], optional): Either a bool, in which case it</span>
-<span class="sd">            controls whether the server&#39;s TLS certificate is verified, or a</span>
-<span class="sd">            string, in which case it must be a path to a CA bundle to use.</span>
+<span class="sd">        output: Output filename. Default is basename of URL.</span>
+<span class="sd">        quiet: Suppress terminal output. Default is False.</span>
+<span class="sd">        proxy: Proxy. Defaults to None.</span>
+<span class="sd">        speed: Download byte size per second (e.g., 256KB/s = 256 * 1024).</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        use_cookies: Flag to use cookies. Defaults to True.</span>
+<span class="sd">        verify: Either a bool, in which case it controls whether the server&#39;s TLS</span>
+<span class="sd">            certificate is verified, or a string, in which case it must be a path to a</span>
+<span class="sd">            CA bundle to use.</span>
 <span class="sd">            Default is True.</span>
-<span class="sd">        id (Optional[str], optional): Google Drive&#39;s file ID. Defaults to None.</span>
-<span class="sd">        fuzzy (bool, optional): Fuzzy extraction of Google Drive&#39;s file Id.</span>
+<span class="sd">        id: Google Drive&#39;s file ID. Defaults to None.</span>
+<span class="sd">        fuzzy: Fuzzy extraction of Google Drive&#39;s file Id.</span>
 <span class="sd">            Defaults to False.</span>
-<span class="sd">        resume (bool, optional): Resume the download from existing tmp file if</span>
-<span class="sd">            possible. Defaults to False.</span>
-<span class="sd">        unzip (bool, optional): Unzip the file. Defaults to True.</span>
-<span class="sd">        overwrite (bool, optional): Overwrite the file if it already exists.</span>
+<span class="sd">        resume: Resume the download from existing tmp file if possible.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        unzip: Unzip the file. Defaults to True.</span>
+<span class="sd">        overwrite: Overwrite the file if it already exists.</span>
 <span class="sd">            Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: The output file path.</span>
+<span class="sd">        The output file path.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="kn">import</span><span class="w"> </span><span class="nn">gdown</span>
@@ -8344,7 +8347,7 @@ Defaults to False.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Authenticates Earth Engine and initialize an Earth Engine session</p>
+        <p>Authenticates Earth Engine and initialize an Earth Engine session.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -8381,13 +8384,12 @@ named "EE_PROJECT_ID" to initialize Earth Engine.</p>
                 <code>auth_mode</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The authentication mode, can be one of colab,
-notebook, localhost, or gcloud.
-See https://developers.google.com/earth-engine/guides/auth for more
+                <p>The authentication mode, can be one of colab, notebook, localhost, or
+gcloud. See https://developers.google.com/earth-engine/guides/auth for more
 details. Defaults to None.</p>
               </div>
             </td>
@@ -8400,12 +8402,12 @@ details. Defaults to None.</p>
                 <code>auth_args</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Additional authentication parameters for
-aa.Authenticate(). Defaults to {}.</p>
+                <p>Additional authentication parameters for aa.Authenticate().
+Defaults to {}.</p>
               </div>
             </td>
             <td>
@@ -8421,8 +8423,8 @@ aa.Authenticate(). Defaults to {}.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If set, the prefix (version-less)
-value used for setting the user-agent string. Defaults to "geemap".</p>
+                <p>If set, the prefix (version-less) value used for setting the
+user-agent string. Defaults to "geemap".</p>
               </div>
             </td>
             <td>
@@ -8434,12 +8436,11 @@ value used for setting the user-agent string. Defaults to "geemap".</p>
                 <code>project</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The Google cloud project ID for Earth Engine.
-Defaults to None.</p>
+                <p>The Google cloud project ID for Earth Engine. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -8451,13 +8452,13 @@ Defaults to None.</p>
                 <code>kwargs</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Additional parameters for ee.Initialize().
-For example, opt_url='https://earthengine-highvolume.googleapis.com'
-to use the Earth Engine High-Volume platform. Defaults to {}.</p>
+                <p>Additional parameters for ee.Initialize(). For example,
+opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth
+Engine High-Volume platform. Defaults to {}.</p>
               </div>
             </td>
             <td>
@@ -8470,8 +8471,7 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 48</span>
-<span class="normal"> 49</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 49</span>
 <span class="normal"> 50</span>
 <span class="normal"> 51</span>
 <span class="normal"> 52</span>
@@ -8543,8 +8543,7 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p>
 <span class="normal">118</span>
 <span class="normal">119</span>
 <span class="normal">120</span>
-<span class="normal">121</span>
-<span class="normal">122</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ee_initialize</span><span class="p">(</span>
+<span class="normal">121</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">ee_initialize</span><span class="p">(</span>
     <span class="n">token_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;EARTHENGINE_TOKEN&quot;</span><span class="p">,</span>
     <span class="n">auth_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">auth_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -8552,25 +8551,23 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p>
     <span class="n">project</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authenticates Earth Engine and initialize an Earth Engine session</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Authenticates Earth Engine and initialize an Earth Engine session.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        token_name (str, optional): The name of the Earth Engine token.</span>
+<span class="sd">        token_name: The name of the Earth Engine token.</span>
 <span class="sd">            Defaults to &quot;EARTHENGINE_TOKEN&quot;. In Colab, you can also set a secret</span>
 <span class="sd">            named &quot;EE_PROJECT_ID&quot; to initialize Earth Engine.</span>
-<span class="sd">        auth_mode (str, optional): The authentication mode, can be one of colab,</span>
-<span class="sd">            notebook, localhost, or gcloud.</span>
-<span class="sd">            See https://developers.google.com/earth-engine/guides/auth for more</span>
+<span class="sd">        auth_mode: The authentication mode, can be one of colab, notebook, localhost, or</span>
+<span class="sd">            gcloud. See https://developers.google.com/earth-engine/guides/auth for more</span>
 <span class="sd">            details. Defaults to None.</span>
-<span class="sd">        auth_args (dict, optional): Additional authentication parameters for</span>
-<span class="sd">            aa.Authenticate(). Defaults to {}.</span>
-<span class="sd">        user_agent_prefix (str, optional): If set, the prefix (version-less)</span>
-<span class="sd">            value used for setting the user-agent string. Defaults to &quot;geemap&quot;.</span>
-<span class="sd">        project (str, optional): The Google cloud project ID for Earth Engine.</span>
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        kwargs (dict, optional): Additional parameters for ee.Initialize().</span>
-<span class="sd">            For example, opt_url=&#39;https://earthengine-highvolume.googleapis.com&#39;</span>
-<span class="sd">            to use the Earth Engine High-Volume platform. Defaults to {}.</span>
+<span class="sd">        auth_args: Additional authentication parameters for aa.Authenticate().</span>
+<span class="sd">            Defaults to {}.</span>
+<span class="sd">        user_agent_prefix: If set, the prefix (version-less) value used for setting the</span>
+<span class="sd">            user-agent string. Defaults to &quot;geemap&quot;.</span>
+<span class="sd">        project: The Google cloud project ID for Earth Engine. Defaults to None.</span>
+<span class="sd">        kwargs: Additional parameters for ee.Initialize(). For example,</span>
+<span class="sd">            opt_url=&#39;https://earthengine-highvolume.googleapis.com&#39; to use the Earth</span>
+<span class="sd">            Engine High-Volume platform. Defaults to {}.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">google.oauth2.credentials</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">.__init__</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
@@ -8655,12 +8652,11 @@ to use the Earth Engine High-Volume platform. Defaults to {}.</p>
                 <code>geo_json</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>], <span title="str">str</span>]</code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | <span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A GeoJSON geometry dictionary or
-file path.</p>
+                <p>A GeoJSON geometry dictionary or file path.</p>
               </div>
             </td>
             <td>
@@ -8676,11 +8672,12 @@ file path.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether line segments should be interpreted
-as spherical geodesics. If false, indicates that line segments
-should be interpreted as planar lines in the specified CRS. If
-absent, defaults to true if the CRS is geographic (including the
-default EPSG:4326), or to false if the CRS is projected. Defaults to False.</p>
+                <p>Whether line segments should be interpreted as spherical geodesics. If
+false, indicates that line segments should be interpreted as planar lines in
+the specified CRS. If absent, defaults to true if the CRS is geographic
+(including the default EPSG:4326), or to false if the CRS is
+projected.
+Defaults to False.</p>
               </div>
             </td>
             <td>
@@ -8722,7 +8719,7 @@ default EPSG:4326), or to false if the CRS is projected. Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Union[ee.Geometry, ee.FeatureCollection]: An Earth Engine Geometry or FeatureCollection.</p>
+                <p>Earth Engine Geometry or FeatureCollection.</p>
               </div>
             </td>
           </tr>
@@ -8755,7 +8752,26 @@ default EPSG:4326), or to false if the CRS is projected. Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">772</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">753</span>
+<span class="normal">754</span>
+<span class="normal">755</span>
+<span class="normal">756</span>
+<span class="normal">757</span>
+<span class="normal">758</span>
+<span class="normal">759</span>
+<span class="normal">760</span>
+<span class="normal">761</span>
+<span class="normal">762</span>
+<span class="normal">763</span>
+<span class="normal">764</span>
+<span class="normal">765</span>
+<span class="normal">766</span>
+<span class="normal">767</span>
+<span class="normal">768</span>
+<span class="normal">769</span>
+<span class="normal">770</span>
+<span class="normal">771</span>
+<span class="normal">772</span>
 <span class="normal">773</span>
 <span class="normal">774</span>
 <span class="normal">775</span>
@@ -8808,26 +8824,7 @@ default EPSG:4326), or to false if the CRS is projected. Defaults to False.</p>
 <span class="normal">822</span>
 <span class="normal">823</span>
 <span class="normal">824</span>
-<span class="normal">825</span>
-<span class="normal">826</span>
-<span class="normal">827</span>
-<span class="normal">828</span>
-<span class="normal">829</span>
-<span class="normal">830</span>
-<span class="normal">831</span>
-<span class="normal">832</span>
-<span class="normal">833</span>
-<span class="normal">834</span>
-<span class="normal">835</span>
-<span class="normal">836</span>
-<span class="normal">837</span>
-<span class="normal">838</span>
-<span class="normal">839</span>
-<span class="normal">840</span>
-<span class="normal">841</span>
-<span class="normal">842</span>
-<span class="normal">843</span>
-<span class="normal">844</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geojson_to_ee</span><span class="p">(</span>
+<span class="normal">825</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geojson_to_ee</span><span class="p">(</span>
     <span class="n">geo_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">geodesic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
@@ -8835,17 +8832,17 @@ default EPSG:4326), or to false if the CRS is projected. Defaults to False.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a GeoJSON to an Earth Engine Geometry or FeatureCollection.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        geo_json (Union[Dict[str, Any], str]): A GeoJSON geometry dictionary or</span>
-<span class="sd">            file path.</span>
-<span class="sd">        geodesic (bool, optional): Whether line segments should be interpreted</span>
-<span class="sd">            as spherical geodesics. If false, indicates that line segments</span>
-<span class="sd">            should be interpreted as planar lines in the specified CRS. If</span>
-<span class="sd">            absent, defaults to true if the CRS is geographic (including the</span>
-<span class="sd">            default EPSG:4326), or to false if the CRS is projected. Defaults to False.</span>
-<span class="sd">        encoding (str, optional): The encoding of characters. Defaults to &quot;utf-8&quot;.</span>
+<span class="sd">        geo_json: A GeoJSON geometry dictionary or file path.</span>
+<span class="sd">        geodesic: Whether line segments should be interpreted as spherical geodesics. If</span>
+<span class="sd">            false, indicates that line segments should be interpreted as planar lines in</span>
+<span class="sd">            the specified CRS. If absent, defaults to true if the CRS is geographic</span>
+<span class="sd">            (including the default EPSG:4326), or to false if the CRS is</span>
+<span class="sd">            projected.</span>
+<span class="sd">            Defaults to False.</span>
+<span class="sd">        encoding: The encoding of characters. Defaults to &quot;utf-8&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[ee.Geometry, ee.FeatureCollection]: An Earth Engine Geometry or FeatureCollection.</span>
+<span class="sd">        Earth Engine Geometry or FeatureCollection.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        Exception: If the GeoJSON cannot be converted to an Earth Engine object.</span>
@@ -8955,19 +8952,19 @@ default EPSG:4326), or to false if the CRS is projected. Defaults to False.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
+            <td>
                   <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Returns geometry type. One of Point, MultiPoint, LineString,
-LinearRing, MultiLineString, BBox, Rectangle, Polygon, MultiPolygon.</p>
+                <p>One of Point, MultiPoint, LineString, LinearRing, MultiLineString, BBox,
+Rectangle, Polygon, MultiPolygon.</p>
               </div>
             </td>
           </tr>
@@ -9001,7 +8998,11 @@ ee.FeatureCollection.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">325</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span>
+<span class="normal">324</span>
+<span class="normal">325</span>
 <span class="normal">326</span>
 <span class="normal">327</span>
 <span class="normal">328</span>
@@ -9021,22 +9022,20 @@ ee.FeatureCollection.</p>
 <span class="normal">342</span>
 <span class="normal">343</span>
 <span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geometry_type</span><span class="p">(</span><span class="n">ee_object</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geometry_type</span><span class="p">(</span><span class="n">ee_object</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get geometry type of an Earth Engine object.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ee_object (Any): An Earth Engine object.</span>
+<span class="sd">        ee_object: An Earth Engine object.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: Returns geometry type. One of Point, MultiPoint, LineString,</span>
-<span class="sd">            LinearRing, MultiLineString, BBox, Rectangle, Polygon, MultiPolygon.</span>
+<span class="sd">        One of Point, MultiPoint, LineString, LinearRing, MultiLineString, BBox,</span>
+<span class="sd">            Rectangle, Polygon, MultiPolygon.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        TypeError: If the ee_object is not one of ee.Geometry, ee.Feature,</span>
 <span class="sd">            ee.FeatureCollection.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">type</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
@@ -9046,7 +9045,7 @@ ee.FeatureCollection.</p>
         <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">ee_object</span><span class="o">.</span><span class="n">first</span><span class="p">())</span><span class="o">.</span><span class="n">geometry</span><span class="p">()</span><span class="o">.</span><span class="n">type</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
-            <span class="s2">&quot;The ee_object must be one of ee.Geometry, ee.Feature, ee.FeatureCollection.&quot;</span>
+            <span class="s2">&quot;ee_object must be one of ee.Geometry, ee.Feature, ee.FeatureCollection.&quot;</span>
         <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -9115,7 +9114,7 @@ ee.FeatureCollection.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Optional[str]: The retrieved key, or None if no environment variable was found.</p>
+                <p>The retrieved key, or None if no environment variable was found.</p>
               </div>
             </td>
           </tr>
@@ -9125,8 +9124,7 @@ ee.FeatureCollection.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">23</span>
-<span class="normal">24</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">24</span>
 <span class="normal">25</span>
 <span class="normal">26</span>
 <span class="normal">27</span>
@@ -9147,16 +9145,17 @@ ee.FeatureCollection.</p>
 <span class="normal">42</span>
 <span class="normal">43</span>
 <span class="normal">44</span>
-<span class="normal">45</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_env_var</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">45</span>
+<span class="normal">46</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_env_var</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Retrieves an environment variable or Colab secret for the given key.</span>
 
 <span class="sd">    Colab secrets have precedence over environment variables.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        key (str): The key that&#39;s used to fetch the environment variable.</span>
+<span class="sd">        key: The key that&#39;s used to fetch the environment variable.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[str]: The retrieved key, or None if no environment variable was found.</span>
+<span class="sd">        The retrieved key, or None if no environment variable was found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">key</span><span class="p">:</span>
         <span class="k">return</span> <span class="kc">None</span>
@@ -9187,7 +9186,7 @@ ee.FeatureCollection.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Retrieves the Google Maps API key from the environment or Colab user data.</p>
+        <p>Returns the Google Maps API key from the environment or Colab user data.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -9223,56 +9222,25 @@ data key where the API key is stored. Defaults to
     </table>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
-                  <code><span title="str">str</span> | None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The API key, or None if it could not be found.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">351</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
 <span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
 <span class="normal">357</span>
-<span class="normal">358</span>
-<span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_google_maps_api_key</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GOOGLE_MAPS_API_KEY&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Retrieves the Google Maps API key from the environment or Colab user data.</span>
+<span class="normal">358</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_google_maps_api_key</span><span class="p">(</span><span class="n">key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GOOGLE_MAPS_API_KEY&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the Google Maps API key from the environment or Colab user data.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        key (str, optional): The name of the environment variable or Colab user</span>
 <span class="sd">            data key where the API key is stored. Defaults to</span>
 <span class="sd">            &#39;GOOGLE_MAPS_API_KEY&#39;.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The API key, or None if it could not be found.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">api_key</span> <span class="o">:=</span> <span class="n">get_env_var</span><span class="p">(</span><span class="n">key</span><span class="p">):</span>
         <span class="k">return</span> <span class="n">api_key</span>
@@ -9294,8 +9262,8 @@ data key where the API key is stored. Defaults to
 
     <div class="doc doc-contents ">
 
-        <p>Print out the information for an Earth Engine object using a tree structure.
-The source code was adapted from https://github.com/google/earthengine-jupyter.
+        <p>Print out the information for an Earth Engine object using a tree structure.</p>
+<p>The source code was adapted from https://github.com/google/earthengine-jupyter.
 Credits to Tyler Erickson.</p>
 
 
@@ -9315,7 +9283,7 @@ Credits to Tyler Erickson.</p>
                 <code>ee_object</code>
             </td>
             <td>
-                  <code><span title="typing.Union">Union</span>[<span title="ee.FeatureCollection">FeatureCollection</span>, <span title="ee.Image">Image</span>, <span title="ee.Geometry">Geometry</span>, <span title="ee.Feature">Feature</span>]</code>
+                  <code><span title="ee.FeatureCollection">FeatureCollection</span> | <span title="ee.Image">Image</span> | <span title="ee.Geometry">Geometry</span> | <span title="ee.Feature">Feature</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -9394,8 +9362,7 @@ If False, returns the widget as ipytree.Tree. Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Union[Node, Tree, None]: The tree or node representing the Earth Engine
-object information.</p>
+                <p>The tree or node representing the Earth Engine object information.</p>
               </div>
             </td>
           </tr>
@@ -9405,7 +9372,10 @@ object information.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">251</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
 <span class="normal">252</span>
 <span class="normal">253</span>
 <span class="normal">254</span>
@@ -9444,31 +9414,26 @@ object information.</p>
 <span class="normal">287</span>
 <span class="normal">288</span>
 <span class="normal">289</span>
-<span class="normal">290</span>
-<span class="normal">291</span>
-<span class="normal">292</span>
-<span class="normal">293</span>
-<span class="normal">294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_info</span><span class="p">(</span>
+<span class="normal">290</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_info</span><span class="p">(</span>
     <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">,</span>
     <span class="n">layer_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
     <span class="n">opened</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">return_node</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;Node&quot;</span><span class="p">,</span> <span class="s2">&quot;Tree&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Print out the information for an Earth Engine object using a tree structure.</span>
+
 <span class="sd">    The source code was adapted from https://github.com/google/earthengine-jupyter.</span>
 <span class="sd">    Credits to Tyler Erickson.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        ee_object (Union[ee.FeatureCollection, ee.Image, ee.Geometry, ee.Feature]):</span>
-<span class="sd">            The Earth Engine object.</span>
-<span class="sd">        layer_name (str, optional): The name of the layer. Defaults to &quot;&quot;.</span>
-<span class="sd">        opened (bool, optional): Whether to expand the tree. Defaults to False.</span>
-<span class="sd">        return_node (bool, optional): Whether to return the widget as ipytree.Node.</span>
+<span class="sd">        ee_object: The Earth Engine object.</span>
+<span class="sd">        layer_name: The name of the layer. Defaults to &quot;&quot;.</span>
+<span class="sd">        opened: Whether to expand the tree. Defaults to False.</span>
+<span class="sd">        return_node: Whether to return the widget as ipytree.Node.</span>
 <span class="sd">            If False, returns the widget as ipytree.Tree. Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Union[Node, Tree, None]: The tree or node representing the Earth Engine</span>
-<span class="sd">            object information.</span>
+<span class="sd">        The tree or node representing the Earth Engine object information.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">ipytree</span><span class="w"> </span><span class="kn">import</span> <span class="n">Node</span><span class="p">,</span> <span class="n">Tree</span>
 
@@ -9509,7 +9474,7 @@ object information.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Get the raw URL for a GitHub file.</p>
+        <p>Returns the raw URL for a GitHub file.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -9543,52 +9508,23 @@ object information.</p>
     </table>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
-                  <code><span title="str">str</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The raw URL.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">666</span>
-<span class="normal">667</span>
-<span class="normal">668</span>
-<span class="normal">669</span>
-<span class="normal">670</span>
-<span class="normal">671</span>
-<span class="normal">672</span>
-<span class="normal">673</span>
-<span class="normal">674</span>
-<span class="normal">675</span>
-<span class="normal">676</span>
-<span class="normal">677</span>
-<span class="normal">678</span>
-<span class="normal">679</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">github_raw_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the raw URL for a GitHub file.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">653</span>
+<span class="normal">654</span>
+<span class="normal">655</span>
+<span class="normal">656</span>
+<span class="normal">657</span>
+<span class="normal">658</span>
+<span class="normal">659</span>
+<span class="normal">660</span>
+<span class="normal">661</span>
+<span class="normal">662</span>
+<span class="normal">663</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">github_raw_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the raw URL for a GitHub file.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        url (str): The GitHub URL.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The raw URL.</span>
+<span class="sd">        url: The GitHub URL.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;https://github.com/&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="s2">&quot;blob&quot;</span> <span class="ow">in</span> <span class="n">url</span><span class="p">:</span>
         <span class="n">url</span> <span class="o">=</span> <span class="n">url</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;github.com&quot;</span><span class="p">,</span> <span class="s2">&quot;raw.githubusercontent.com&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
@@ -9661,7 +9597,7 @@ object information.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>tuple[int, int, int]: RGB color as a tuple.</p>
+                <p>RGB color as a tuple.</p>
               </div>
             </td>
           </tr>
@@ -9671,7 +9607,8 @@ object information.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">482</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">481</span>
+<span class="normal">482</span>
 <span class="normal">483</span>
 <span class="normal">484</span>
 <span class="normal">485</span>
@@ -9681,15 +9618,14 @@ object information.</p>
 <span class="normal">489</span>
 <span class="normal">490</span>
 <span class="normal">491</span>
-<span class="normal">492</span>
-<span class="normal">493</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hex_to_rgb</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FFFFFF&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
+<span class="normal">492</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hex_to_rgb</span><span class="p">(</span><span class="n">value</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;FFFFFF&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts hex color to RGB color.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        value (str, optional): Hex color code as a string. Defaults to &#39;FFFFFF&#39;.</span>
+<span class="sd">        value: Hex color code as a string. Defaults to &#39;FFFFFF&#39;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        tuple[int, int, int]: RGB color as a tuple.</span>
+<span class="sd">        RGB color as a tuple.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">value</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">lstrip</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">)</span>
     <span class="n">lv</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
@@ -9718,13 +9654,13 @@ object information.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>bool</code></td>            <td>
+            <td>
                   <code><span title="bool">bool</span></code>
             </td>
             <td>
@@ -9739,19 +9675,17 @@ object information.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">368</span>
-<span class="normal">369</span>
-<span class="normal">370</span>
-<span class="normal">371</span>
-<span class="normal">372</span>
-<span class="normal">373</span>
-<span class="normal">374</span>
-<span class="normal">375</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">in_colab_shell</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Checks if the code is running in a Google Colab environment.</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">361</span>
+<span class="normal">362</span>
+<span class="normal">363</span>
+<span class="normal">364</span>
+<span class="normal">365</span>
+<span class="normal">366</span>
+<span class="normal">367</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">in_colab_shell</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if the code is running in a Google Colab environment.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        bool: True if running in Google Colab, False otherwise.</span>
+<span class="sd">        True if running in Google Colab, False otherwise.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;google.colab&quot;</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">modules</span>
 </code></pre></div></td></tr></table></div>
@@ -9776,7 +9710,8 @@ object information.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">125</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">124</span>
+<span class="normal">125</span>
 <span class="normal">126</span>
 <span class="normal">127</span>
 <span class="normal">128</span>
@@ -9787,8 +9722,7 @@ object information.</p>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">new_tree_node</span><span class="p">(</span>
+<span class="normal">136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">new_tree_node</span><span class="p">(</span>
     <span class="n">label</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">children</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">expanded</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -9854,28 +9788,24 @@ object information.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">652</span>
-<span class="normal">653</span>
-<span class="normal">654</span>
-<span class="normal">655</span>
-<span class="normal">656</span>
-<span class="normal">657</span>
-<span class="normal">658</span>
-<span class="normal">659</span>
-<span class="normal">660</span>
-<span class="normal">661</span>
-<span class="normal">662</span>
-<span class="normal">663</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">open_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">641</span>
+<span class="normal">642</span>
+<span class="normal">643</span>
+<span class="normal">644</span>
+<span class="normal">645</span>
+<span class="normal">646</span>
+<span class="normal">647</span>
+<span class="normal">648</span>
+<span class="normal">649</span>
+<span class="normal">650</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">open_url</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Opens the URL in a new browser tab.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        url (str): The URL to open.</span>
+<span class="sd">        url: The URL to open.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">in_colab_shell</span><span class="p">():</span>
         <span class="n">display</span><span class="p">(</span><span class="n">Javascript</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;window.open(&quot;</span><span class="si">{</span><span class="n">url</span><span class="si">}</span><span class="s1">&quot;, &quot;_blank&quot;, &quot;noopener&quot;)&#39;</span><span class="p">))</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
-
         <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new_tab</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -9894,7 +9824,7 @@ object information.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Generates a random string of fixed length.</p>
+        <p>Returns a random string of fixed length.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -9928,52 +9858,21 @@ object information.</p>
     </table>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
-                  <code><span title="str">str</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>A random string.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">496</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">495</span>
+<span class="normal">496</span>
 <span class="normal">497</span>
 <span class="normal">498</span>
 <span class="normal">499</span>
 <span class="normal">500</span>
 <span class="normal">501</span>
-<span class="normal">502</span>
-<span class="normal">503</span>
-<span class="normal">504</span>
-<span class="normal">505</span>
-<span class="normal">506</span>
-<span class="normal">507</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">random_string</span><span class="p">(</span><span class="n">string_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a random string of fixed length.</span>
+<span class="normal">502</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">random_string</span><span class="p">(</span><span class="n">string_length</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a random string of fixed length.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        string_length (int, optional): Fixed length. Defaults to 3.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: A random string.</span>
+<span class="sd">        string_length: Fixed length. Defaults to 3.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># random.seed(1001)</span>
     <span class="n">letters</span> <span class="o">=</span> <span class="n">string</span><span class="o">.</span><span class="n">ascii_lowercase</span>
     <span class="k">return</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">letters</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">string_length</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
@@ -9993,53 +9892,27 @@ object information.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Converts RGB to hex color. In RGB color, R stands for Red, G stands for
-    Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>rgb</code>
-            </td>
-            <td>
-                  <code><span title="tuple">tuple</span>[<span title="int">int</span>, <span title="int">int</span>, <span title="int">int</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>RGB color code as a tuple of
-(red, green, blue). Defaults to (255, 255, 255).</p>
-              </div>
-            </td>
-            <td>
-                  <code>(255, 255, 255)</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+        <p>Converts RGB to hex color.</p>
+<p>In RGB color, R stands for Red, G stands for Green, and B stands
+for Blue, and it ranges from the decimal value of 0 – 255.</p>
+<p>Args:</p>
+<div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>rgb: RGB color code as a tuple of (red, green, blue).
+    Defaults to (255, 255, 255).
+</code></pre></div></td></tr></table></div>
 
 
     <p><span class="doc-section-title">Returns:</span></p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
+            <td>
                   <code><span title="str">str</span></code>
             </td>
             <td>
@@ -10054,7 +9927,11 @@ object information.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">468</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
 <span class="normal">469</span>
 <span class="normal">470</span>
 <span class="normal">471</span>
@@ -10064,17 +9941,19 @@ object information.</p>
 <span class="normal">475</span>
 <span class="normal">476</span>
 <span class="normal">477</span>
-<span class="normal">478</span>
-<span class="normal">479</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rgb_to_hex</span><span class="p">(</span><span class="n">rgb</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts RGB to hex color. In RGB color, R stands for Red, G stands for</span>
-<span class="sd">        Green, and B stands for Blue, and it ranges from the decimal value of 0 – 255.</span>
+<span class="normal">478</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rgb_to_hex</span><span class="p">(</span><span class="n">rgb</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">))</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts RGB to hex color.</span>
+
+<span class="sd">    In RGB color, R stands for Red, G stands for Green, and B stands</span>
+<span class="sd">    for Blue, and it ranges from the decimal value of 0 – 255.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        rgb (tuple[int, int, int], optional): RGB color code as a tuple of</span>
-<span class="sd">            (red, green, blue). Defaults to (255, 255, 255).</span>
+
+<span class="sd">        rgb: RGB color code as a tuple of (red, green, blue).</span>
+<span class="sd">            Defaults to (255, 255, 255).</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        str: Hex color code.</span>
+<span class="sd">        Hex color code.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%02x%02x%02x</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">rgb</span>
 </code></pre></div></td></tr></table></div>
@@ -10128,53 +10007,24 @@ object information.</p>
     </table>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>str</code></td>            <td>
-                  <code><span title="str">str</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>The temporary file path.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">682</span>
-<span class="normal">683</span>
-<span class="normal">684</span>
-<span class="normal">685</span>
-<span class="normal">686</span>
-<span class="normal">687</span>
-<span class="normal">688</span>
-<span class="normal">689</span>
-<span class="normal">690</span>
-<span class="normal">691</span>
-<span class="normal">692</span>
-<span class="normal">693</span>
-<span class="normal">694</span>
-<span class="normal">695</span>
-<span class="normal">696</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">temp_file_path</span><span class="p">(</span><span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">666</span>
+<span class="normal">667</span>
+<span class="normal">668</span>
+<span class="normal">669</span>
+<span class="normal">670</span>
+<span class="normal">671</span>
+<span class="normal">672</span>
+<span class="normal">673</span>
+<span class="normal">674</span>
+<span class="normal">675</span>
+<span class="normal">676</span>
+<span class="normal">677</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">temp_file_path</span><span class="p">(</span><span class="n">extension</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a temporary file path.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        extension (str): The file extension.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        str: The temporary file path.</span>
+<span class="sd">        extension: The file extension.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">extension</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">):</span>
         <span class="n">extension</span> <span class="o">=</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">extension</span>
@@ -10199,7 +10049,8 @@ object information.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Convert a GEE color palette into hexadecimal color codes. Can handle mixed formats.</p>
+        <p>Convert a GEE color palette into hexadecimal color codes.</p>
+<p>Can handle mixed formats.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -10218,7 +10069,7 @@ object information.</p>
                 <code>colors</code>
             </td>
             <td>
-                  <code><span title="typing.List">List</span>[<span title="typing.Union">Union</span>[<span title="str">str</span>, <span title="tuple">tuple</span>[<span title="int">int</span>, <span title="int">int</span>, <span title="int">int</span>]]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span> | <span title="tuple">tuple</span>[<span title="int">int</span>, <span title="int">int</span>, <span title="int">int</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10248,7 +10099,7 @@ object information.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List[str]: A list of hex color codes prefixed with #.</p>
+                <p>A list of hex color codes prefixed with #.</p>
               </div>
             </td>
           </tr>
@@ -10258,26 +10109,28 @@ object information.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">455</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
+<span class="normal">454</span>
+<span class="normal">455</span>
 <span class="normal">456</span>
 <span class="normal">457</span>
 <span class="normal">458</span>
 <span class="normal">459</span>
 <span class="normal">460</span>
-<span class="normal">461</span>
-<span class="normal">462</span>
-<span class="normal">463</span>
-<span class="normal">464</span>
-<span class="normal">465</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_hex_colors</span><span class="p">(</span><span class="n">colors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a GEE color palette into hexadecimal color codes. Can handle mixed formats.</span>
+<span class="normal">461</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">to_hex_colors</span><span class="p">(</span><span class="n">colors</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a GEE color palette into hexadecimal color codes.</span>
+
+<span class="sd">    Can handle mixed formats.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        colors (List[Union[str, tuple[int, int, int]]]): A list of colors in hex or RGB format.</span>
+<span class="sd">        colors: A list of colors in hex or RGB format.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        List[str]: A list of hex color codes prefixed with #.</span>
+<span class="sd">        A list of hex color codes prefixed with #.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">return</span> <span class="p">[</span><span class="n">check_color</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -10315,12 +10168,11 @@ object information.</p>
                 <code>widget</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="ipywidgets.Widget">Widget</span>]</code>
+                  <code><span title="ipywidgets.Widget">Widget</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The widget to be displayed.
-Defaults to None.</p>
+                <p>The widget to be displayed. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -10352,8 +10204,7 @@ Defaults to None.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to show the close button.
-Defaults to True.</p>
+                <p>Whether to show the close button. Defaults to True.</p>
               </div>
             </td>
             <td>
@@ -10369,8 +10220,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The icon name for the toolbar button.
-Defaults to 'gear'.</p>
+                <p>The icon name for the toolbar button. Defaults to 'gear'.</p>
               </div>
             </td>
             <td>
@@ -10386,8 +10236,7 @@ Defaults to 'gear'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The icon name for the close button.
-Defaults to "times".</p>
+                <p>The icon name for the close button. Defaults to "times".</p>
               </div>
             </td>
             <td>
@@ -10399,12 +10248,12 @@ Defaults to "times".</p>
                 <code>widget_args</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Additional arguments
-to pass to the toolbar button. Defaults to None.</p>
+                <p>Additional arguments to pass to the toolbar button.
+Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -10416,12 +10265,12 @@ to pass to the toolbar button. Defaults to None.</p>
                 <code>close_button_args</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="typing.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Additional
-arguments to pass to the close button. Defaults to None.</p>
+                <p>Additional arguments to pass to the close button.
+Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -10433,12 +10282,12 @@ arguments to pass to the close button. Defaults to None.</p>
                 <code>display_widget</code>
             </td>
             <td>
-                  <code><span title="typing.Optional">Optional</span>[<span title="ipywidgets.Widget">Widget</span>]</code>
+                  <code><span title="ipywidgets.Widget">Widget</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The widget to be
-displayed when the toolbar is clicked. Defaults to None.</p>
+                <p>The widget to be displayed when the toolbar is clicked.
+Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -10454,8 +10303,7 @@ displayed when the toolbar is clicked. Defaults to None.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The ipyleaflet.Map instance.
-Defaults to None.</p>
+                <p>The ipyleaflet.Map instance. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -10497,7 +10345,7 @@ Defaults to None.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Optional[widgets.Widget]: The created widget template.</p>
+                <p>The created widget template.</p>
               </div>
             </td>
           </tr>
@@ -10507,7 +10355,12 @@ Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/coreutils.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">510</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">505</span>
+<span class="normal">506</span>
+<span class="normal">507</span>
+<span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
 <span class="normal">511</span>
 <span class="normal">512</span>
 <span class="normal">513</span>
@@ -10635,18 +10488,7 @@ Defaults to None.</p>
 <span class="normal">635</span>
 <span class="normal">636</span>
 <span class="normal">637</span>
-<span class="normal">638</span>
-<span class="normal">639</span>
-<span class="normal">640</span>
-<span class="normal">641</span>
-<span class="normal">642</span>
-<span class="normal">643</span>
-<span class="normal">644</span>
-<span class="normal">645</span>
-<span class="normal">646</span>
-<span class="normal">647</span>
-<span class="normal">648</span>
-<span class="normal">649</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">widget_template</span><span class="p">(</span>
+<span class="normal">638</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">widget_template</span><span class="p">(</span>
     <span class="n">widget</span><span class="p">:</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">opened</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">show_close_button</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -10661,30 +10503,24 @@ Defaults to None.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a widget template.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        widget (Optional[widgets.Widget], optional): The widget to be displayed.</span>
+<span class="sd">        widget: The widget to be displayed. Defaults to None.</span>
+<span class="sd">        opened: Whether to open the toolbar. Defaults to True.</span>
+<span class="sd">        show_close_button: Whether to show the close button. Defaults to True.</span>
+<span class="sd">        widget_icon: The icon name for the toolbar button. Defaults to &#39;gear&#39;.</span>
+<span class="sd">        close_button_icon: The icon name for the close button. Defaults to &quot;times&quot;.</span>
+<span class="sd">        widget_args: Additional arguments to pass to the toolbar button.</span>
 <span class="sd">            Defaults to None.</span>
-<span class="sd">        opened (bool, optional): Whether to open the toolbar. Defaults to True.</span>
-<span class="sd">        show_close_button (bool, optional): Whether to show the close button.</span>
-<span class="sd">            Defaults to True.</span>
-<span class="sd">        widget_icon (str, optional): The icon name for the toolbar button.</span>
-<span class="sd">            Defaults to &#39;gear&#39;.</span>
-<span class="sd">        close_button_icon (str, optional): The icon name for the close button.</span>
-<span class="sd">            Defaults to &quot;times&quot;.</span>
-<span class="sd">        widget_args (Optional[Dict[str, Any]], optional): Additional arguments</span>
-<span class="sd">            to pass to the toolbar button. Defaults to None.</span>
-<span class="sd">        close_button_args (Optional[Dict[str, Any]], optional): Additional</span>
-<span class="sd">            arguments to pass to the close button. Defaults to None.</span>
-<span class="sd">        display_widget (Optional[widgets.Widget], optional): The widget to be</span>
-<span class="sd">            displayed when the toolbar is clicked. Defaults to None.</span>
-<span class="sd">        m (Optional[ipyleaflet.Map], optional): The ipyleaflet.Map instance.</span>
+<span class="sd">        close_button_args: Additional arguments to pass to the close button.</span>
 <span class="sd">            Defaults to None.</span>
-<span class="sd">        position (str, optional): The position of the toolbar. Defaults to &quot;topright&quot;.</span>
+<span class="sd">        display_widget: The widget to be displayed when the toolbar is clicked.</span>
+<span class="sd">            Defaults to None.</span>
+<span class="sd">        m: The ipyleaflet.Map instance. Defaults to None.</span>
+<span class="sd">        position: The position of the toolbar. Defaults to &quot;topright&quot;.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Optional[widgets.Widget]: The created widget template.</span>
+<span class="sd">        The created widget template.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">random_string</span><span class="p">()</span>  <span class="c1"># a random attribute name</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;_&quot;</span> <span class="o">+</span> <span class="n">random_string</span><span class="p">()</span>  <span class="c1"># A random attribute name.</span>
 
     <span class="k">if</span> <span class="n">widget_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">widget_args</span> <span class="o">=</span> <span class="p">{}</span>
@@ -10953,10 +10789,10 @@ Defaults to None.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.7a47a382.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.top", "search.highlight", "search.share"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="../assets/javascripts/bundle.e71a0d61.min.js"></script>
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
       
         <script src="../js/timeago.min.js"></script>
       
