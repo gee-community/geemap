@@ -61,14 +61,14 @@ def ee_initialize(
             Defaults to "EARTHENGINE_TOKEN". In Colab, you can also set a secret
             named "EE_PROJECT_ID" to initialize Earth Engine.
         auth_mode: The authentication mode, can be one of colab, notebook, localhost, or
-            gcloud.  See https://developers.google.com/earth-engine/guides/auth for more
+            gcloud. See https://developers.google.com/earth-engine/guides/auth for more
             details. Defaults to None.
         auth_args: Additional authentication parameters for aa.Authenticate().
             Defaults to {}.
-        user_agent_prefix (str, optional): If set, the prefix (version-less) value used
-            for setting the user-agent string. Defaults to "geemap".
-        project: The Google cloud project ID for Earth Engine.  Defaults to None.
-        kwargs: Additional parameters for ee.Initialize().  For example,
+        user_agent_prefix: If set, the prefix (version-less) value used for setting the
+            user-agent string. Defaults to "geemap".
+        project: The Google cloud project ID for Earth Engine. Defaults to None.
+        kwargs: Additional parameters for ee.Initialize(). For example,
             opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth
             Engine High-Volume platform. Defaults to {}.
     """
@@ -517,26 +517,19 @@ def widget_template(
     """Create a widget template.
 
     Args:
-        widget: The widget to be displayed.
-            Defaults to None.
-        opened: Whether to open the toolbar.
-            Defaults to True.
-        show_close_button: Whether to show the close button.
-            Defaults to True.
-        widget_icon: The icon name for the toolbar button.
-            Defaults to 'gear'.
-        close_button_icon: The icon name for the close button.
-            Defaults to "times".
+        widget: The widget to be displayed. Defaults to None.
+        opened: Whether to open the toolbar. Defaults to True.
+        show_close_button: Whether to show the close button. Defaults to True.
+        widget_icon: The icon name for the toolbar button. Defaults to 'gear'.
+        close_button_icon: The icon name for the close button. Defaults to "times".
         widget_args: Additional arguments to pass to the toolbar button.
             Defaults to None.
-        close_button_args): Additional arguments to pass to the close button.
+        close_button_args: Additional arguments to pass to the close button.
             Defaults to None.
         display_widget: The widget to be displayed when the toolbar is clicked.
             Defaults to None.
-        m: The ipyleaflet.Map instance.
-            Defaults to None.
-        position: The position of the toolbar.
-            Defaults to "topright".
+        m: The ipyleaflet.Map instance. Defaults to None.
+        position: The position of the toolbar. Defaults to "topright".
 
     Returns:
         The created widget template.
