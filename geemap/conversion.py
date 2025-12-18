@@ -221,7 +221,7 @@ def convert_for_loop(line: str) -> str:
 
 
 def remove_all_indentation(input_lines: Sequence[str]) -> list[str]:
-    """Removes indentation for reformatting with python's indentation rules.
+    """Removes indentation for reformatting with Python's indentation rules.
 
     Args:
         input_lines: List of Earth Engine JavaScrips
@@ -239,7 +239,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
     """Extracts Earth Engine map function.
 
     Args:
-        input_lines: List of Earth Engine JavaScrips.
+        input_lines: List of Earth Engine JavaScript.
 
     Returns:
         Output JavaScript with map function.
@@ -760,7 +760,7 @@ def js_snippet_to_py(
         Map: The name of the map variable. Defaults to "m".
 
     Returns:
-        A list of Python script.
+        A list of lines of Python script.
     """
 
     in_js = coreutils.temp_file_path(".js")
@@ -823,16 +823,16 @@ def js_to_python_dir(
     import_geemap: bool = False,
     Map: str = "m",
 ) -> None:
-    """Converts EE JavaScripts in a folder recursively to Python scripts.
+    """Converts EE JavaScript files in a folder recursively to Python scripts.
 
     Args:
-        in_dir: The input folder containing Earth Engine JavaScripts.
-        out_dir: The output folder containing Earth Engine Python scripts.
+        in_dir: The input folder containing Earth Engine JavaScript files.
+        out_dir: The output folder containing Earth Engine Python files.
             Defaults to None.
-        use_qgis: Whether to add "from ee_plugin import Map" to the output script.
+        use_qgis: Whether to add "from ee_plugin import Map" to the output file.
             Defaults to True.
         github_repo: GitHub repo url. Defaults to None.
-        import_geemap: Whether to add "import geemap" to the output script.
+        import_geemap: Whether to add "import geemap" to the output file.
             Defaults to False.
         Map: The name of the map variable. Defaults to "m".
     """
@@ -863,7 +863,7 @@ def js_to_python_dir(
 
 
 def remove_qgis_import(in_file: str, Map: str = "m") -> list[str] | None:
-    """Removes 'from ee_plugin import Map' from an Earth Engine Python script.
+    """Removes 'from ee_plugin import Map' from an Earth Engine Python file.
 
     Args:
         in_file: Input file path of the Python script.
@@ -960,7 +960,7 @@ def template_header(in_template: str) -> list[str]:
         in_template: Input notebook template file path.
 
     Returns:
-        Lines.
+        Lines from the template script.
     """
     header_end_index = 0
 
@@ -1093,7 +1093,7 @@ def py_to_ipynb_dir(
 
     Args:
         in_dir: Input folder containing Earth Engine Python scripts.
-        template_file): Input jupyter notebook template file.
+        template_file: Input jupyter notebook template file.
         out_dir: Output folder. Defaults to None.
         github_username: GitHub username. Defaults to None.
         github_repo: GitHub repo name. Defaults to None.
@@ -1138,7 +1138,7 @@ def execute_notebook(in_file: str) -> None:
 
 
 def execute_notebook_dir(in_dir: str) -> None:
-    """Executes all notebooks in the given directory recursively and save output cells.
+    """Executes all notebooks in the given directory recursively and saves output cells.
 
     Args:
         in_dir: Input folder containing notebooks.
