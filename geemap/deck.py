@@ -6,38 +6,51 @@
 # *******************************************************************************#
 
 import os
-
-from .common import *
-from .osm import *
-from .geemap import basemaps
-from . import examples
 from typing import Optional
 
+import box
+import ee
+
+from .common import *
 from . import coreutils
+from . import examples
+from .geemap import basemaps
+from .osm import *
+
 
 try:
     import pydeck as pdk
 
 except ImportError:
     raise ImportError(
-        "pydeck needs to be installed to use this module. Use 'pip install pydeck' to install the package. See https://deckgl.readthedocs.io/en/latest/installation.html for more details."
+        "pydeck needs to be installed to use this module. "
+        "Use 'pip install pydeck' to install the package. "
+        "See https://deckgl.readthedocs.io/en/latest/installation.html "
+        "for more details."
     )
 
 
 class Layer(pdk.Layer):
-    """Configures a deck.gl layer for rendering on a map. Parameters passed here will be specific to the particular deck.gl layer that you are choosing to use.
-    Please see the deck.gl Layer catalog (https://deck.gl/docs/api-reference/layers) to determine the particular parameters of your layer.
-    You are highly encouraged to look at the examples in the pydeck documentation.
+    """Configures a deck.gl layer for rendering on a map.
+
+    Parameters passed here will be specific to the particular deck.gl layer that you are
+    choosing to use. Please see the deck.gl Layer catalog
+    (https://deck.gl/docs/api-reference/layers) to determine the particular parameters
+    of your layer. You are highly encouraged to look at the examples in the pydeck
+    documentation.
     """
 
     def __init__(self, type, data=None, id=None, use_binary_transport=None, **kwargs):
         """Initialize a Layer object.
 
         Args:
-            type (str):  Type of layer to render, e.g., HexagonLayer. See deck.gl Layer catalog (https://deck.gl/docs/api-reference/layers)
+            type (str): Type of layer to render, e.g., HexagonLayer. See deck.gl Layer
+                catalog (https://deck.gl/docs/api-reference/layers)
             data (str, optional): Unique name for layer. Defaults to None.
-            id (str | dict | pandas.DataFrame, optional): Either a URL of data to load in or an array of data. Defaults to None.
-            use_binary_transport (bool, optional): Boolean indicating binary data. Defaults to None.
+            id (str | dict | pandas.DataFrame, optional): Either a URL of data to load
+                in or an array of data. Defaults to None.
+            use_binary_transport (bool, optional): Boolean indicating binary data.
+                Defaults to None.
         """
         super().__init__(type, data, id, use_binary_transport, **kwargs)
 
@@ -113,9 +126,6 @@ class Map(pdk.Deck):
             name (str, optional): The name of the layer. Defaults to 'Layer N'.
             **kwargs (Any): Additional keyword arguments for the pydeck Layer object.
         """
-        import ee
-        import box
-
         image = None
 
         if vis_params is None:
