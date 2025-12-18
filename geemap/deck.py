@@ -34,9 +34,9 @@ class Layer(pdk.Layer):
     """Configures a deck.gl layer for rendering on a map.
 
     Parameters passed here will be specific to the particular deck.gl layer that you are
-    choosing to use.  Please see the deck.gl Layer catalog
+    choosing to use. Please see the deck.gl Layer catalog
     (https://deck.gl/docs/api-reference/layers) to determine the particular parameters
-    of your layer.  You are highly encouraged to look at the examples in the pydeck
+    of your layer. You are highly encouraged to look at the examples in the pydeck
     documentation.
     """
 
