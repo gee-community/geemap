@@ -69,7 +69,7 @@ def get_data_list() -> list:
 
 
 def get_geemap_data_list() -> list[str]:
-    """Gets the list of the public datasets from GEE users."""
+    """Returns the list of the public datasets from GEE users."""
     extra_ids = [
         "countries",
         "us_states",
