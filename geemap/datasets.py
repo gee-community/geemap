@@ -85,7 +85,7 @@ def get_geemap_data_list() -> list[str]:
 
 
 def get_community_data_list() -> list[str]:
-    """Returns the list community dataset IDs.
+    """Returns the list of community dataset IDs.
 
     From https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
     """
