@@ -9,6 +9,7 @@ import json
 import os
 import pathlib
 import shutil
+from typing import Any
 import urllib.request
 
 import box
@@ -20,61 +21,46 @@ from . import common
 
 
 def get_data_csv() -> str:
-    """Gets the file path to the CSV file containing the information about the Earth Engine Data Catalog.
-
-    Returns:
-        str: File path to the CSV file.
-    """
+    """Returns the path to the CSV file summarizing the Earth Engine Data Catalog."""
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     template_dir = os.path.join(pkg_dir, "data/template")
     data_csv = os.path.join(template_dir, "ee_data_catalog.csv")
     return data_csv
 
 
-def update_data_list(out_dir=".") -> None:
+def update_data_list(out_dir: str = ".") -> None:
     """Updates the Earth Engine Data Catalog dataset list.
 
     Args:
-        out_dir (str, optional): The output directory to save the GitHub repository. Defaults to ".".
+        out_dir: The output directory to save the GitHub repository. Defaults to ".".
 
     Raises:
         Exception: If the CSV file fails to save.
     """
-    try:
-        url = (
-            "https://github.com/samapriya/Earth-Engine-Datasets-List/archive/master.zip"
-        )
-        filename = "Earth-Engine-Datasets-List-master.zip"
-        dir_name = filename.replace(".zip", "")
+    url = "https://github.com/samapriya/Earth-Engine-Datasets-List/archive/master.zip"
+    filename = "Earth-Engine-Datasets-List-master.zip"
+    dir_name = filename.replace(".zip", "")
 
-        out_dir = os.path.abspath(out_dir)
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
+    out_dir = os.path.abspath(out_dir)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
 
-        common.download_from_url(
-            url, out_file_name=filename, out_dir=out_dir, unzip=True, verbose=False
-        )
+    common.download_from_url(
+        url, out_file_name=filename, out_dir=out_dir, unzip=True, verbose=False
+    )
 
-        work_dir = os.path.join(out_dir, dir_name)
-        in_csv = list(pathlib.Path(work_dir).rglob("*.csv"))[0]
+    work_dir = os.path.join(out_dir, dir_name)
+    in_csv = list(pathlib.Path(work_dir).rglob("*.csv"))[0]
 
-        out_csv = get_data_csv()
+    out_csv = get_data_csv()
 
-        shutil.copyfile(in_csv, out_csv)
-        os.remove(os.path.join(out_dir, filename))
-        shutil.rmtree(os.path.join(out_dir, dir_name))
-
-    except Exception as e:
-        raise Exception(e)
+    shutil.copyfile(in_csv, out_csv)
+    os.remove(os.path.join(out_dir, filename))
+    shutil.rmtree(os.path.join(out_dir, dir_name))
 
 
 def get_data_list() -> list:
-    """Gets a list of Earth Engine datasets.
-
-    Returns:
-        list: The list of dataset ids.
-    """
-
+    """Returns a list of Earth Engine dataset IDs."""
     datasets = get_ee_stac_list()
     extra_datasets = get_geemap_data_list()
     community_datasets = get_community_data_list()
@@ -82,12 +68,8 @@ def get_data_list() -> list:
     return datasets + extra_datasets + community_datasets
 
 
-def get_geemap_data_list() -> list:
-    """Gets the list of the public datasets from GEE users.
-
-    Returns:
-        list: The list of public datasets from GEE users.
-    """
+def get_geemap_data_list() -> list[str]:
+    """Returns the list of the public datasets from GEE users."""
     extra_ids = [
         "countries",
         "us_states",
@@ -102,59 +84,46 @@ def get_geemap_data_list() -> list:
     return extra_datasets
 
 
-def get_community_data_list() -> list:
-    """Gets the list community datasets
-        from https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
+def get_community_data_list() -> list[str]:
+    """Returns the list community dataset IDs.
 
-    Returns:
-        list: The list of Earth Engine asset IDs.
+    From https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
     """
     collections = common.search_ee_data(".*", regex=True, source="community")
     return [collection.get("id", None) for collection in collections]
 
 
-def get_ee_stac_list() -> list:
-    """Gets the STAC list of the Earth Engine Data Catalog.
+def get_ee_stac_list() -> list[str]:
+    """Returns the STAC list of the Earth Engine Data Catalog.
 
     Raises:
         Exception: If the JSON file fails to download.
-
-    Returns:
-        list: The list of Earth Engine asset IDs.
     """
-    try:
-        stac_url = "https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json"
+    stac_url = "https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json"
 
-        datasets = []
-        with urllib.request.urlopen(stac_url) as url:
-            data = json.loads(url.read().decode())
-            datasets = [item["id"] for item in data]
+    datasets = []
+    with urllib.request.urlopen(stac_url) as url:
+        data = json.loads(url.read().decode())
+        datasets = [item["id"] for item in data]
 
-        return datasets
-
-    except Exception as e:
-        raise Exception(e)
+    return datasets
 
 
-def merge_dict(dict1: dict, dict2: dict) -> dict:
+def merge_dict(dict1: dict[Any, Any], dict2: dict[Any, Any]) -> dict:
     """Merges two nested dictionaries.
 
     Args:
-        dict1 (dict): The first dictionary to merge.
-        dict2 (dict): The second dictionary to merge.
+        dict1: The first dictionary to merge.
+        dict2: The second dictionary to merge.
 
     Returns:
-        dict: The merged dictionary.
+        The merged dictionary.
     """
     return {**dict1, **dict2}
 
 
-def get_data_dict() -> dict:
-    """Gets the Earth Engine Data Catalog as a nested dictionary.
-
-    Returns:
-        dict: The nested dictionary containing the information about the Earth Engine Data Catalog.
-    """
+def get_data_dict() -> dict[str, Any]:
+    """Returns the Earth Engine Data Catalog as a nested dictionary."""
     data_dict = {}
     datasets = get_data_list()
 
@@ -173,25 +142,21 @@ def get_data_dict() -> dict:
     return data_dict
 
 
-def get_metadata(asset_id: str, source: str = "ee") -> dict:
-    """Gets metadata about an Earth Engine asset.
+def get_metadata(asset_id: str, source: str = "ee") -> dict[str, Any]:
+    """Returns metadata about an Earth Engine asset.
 
     Args:
-        asset_id (str): The Earth Engine asset id.
-        source (str): 'ee', 'community' or 'all'.
+        asset_id: The Earth Engine asset id.
+        source: 'ee', 'community' or 'all'.
 
     Raises:
         Exception: If search fails.
     """
-    try:
-        ee_assets = common.search_ee_data(asset_id, source=source)
-        html = common.ee_data_html(ee_assets[0])
-        html_widget = widgets.HTML()
-        html_widget.value = html
-        display(html_widget)
-
-    except Exception as e:
-        raise Exception(e)
+    ee_assets = common.search_ee_data(asset_id, source=source)
+    html = common.ee_data_html(ee_assets[0])
+    html_widget = widgets.HTML()
+    html_widget.value = html
+    display(html_widget)
 
 
 DATA = box.Box(get_data_dict(), frozen_box=True)
