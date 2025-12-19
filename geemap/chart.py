@@ -141,10 +141,10 @@ def array_to_df(
     Returns:
         pd.DataFrame: The resulting DataFrame.
     """
-    if isinstance(y_values, ee.Array) or isinstance(y_values, ee.List):
+    if isinstance(y_values, (ee.Array, ee.List)):
         y_values = y_values.getInfo()
 
-    if isinstance(x_values, ee.Array) or isinstance(x_values, ee.List):
+    if isinstance(x_values, (ee.Array, ee.List)):
         x_values = x_values.getInfo()
 
     if axis == 0:
@@ -176,8 +176,8 @@ class Chart:
     """Create and display various types of charts from a data table.
 
     Attributes:
-        data_table (pd.DataFrame): The data to be displayed in the charts.
-        chart_type (str): The type of chart to create. Supported types are
+        data_table: The data to be displayed in the charts.
+        chart_type: The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart', 'PieChart',
             'AreaChart', and 'Table'.
         chart: The bqplot Figure object for the chart.
@@ -1573,19 +1573,17 @@ def image_histogram(
     reducer_args: dict[str, Any] = {},
     **kwargs: dict[str, Any],
 ) -> bq.Figure:
-    """
-    Creates a histogram for each band of the specified image within the given
-    region using bqplot.
+    """Creates a histogram for each band of the specified image within the given region.
 
     Args:
-        image (ee.Image): The Earth Engine image for which to create histograms.
-        region (ee.Geometry): The region over which to calculate the histograms.
-        scale (int): The scale in meters of the calculation.
-        max_buckets (int): The maximum number of buckets in the histogram.
-        min_bucket_width (float): The minimum width of the buckets in the histogram.
-        max_raw (int): The maximum number of pixels to include in the histogram.
-        max_pixels (int): The maximum number of pixels to reduce.
-        reducer_args (Dict[str, Any]): Additional arguments to pass to the image.reduceRegion.
+        image: The Earth Engine image for which to create histograms.
+        region: The region over which to calculate the histograms.
+        scale: The scale in meters of the calculation.
+        max_buckets: The maximum number of buckets in the histogram.
+        min_bucket_width: The minimum width of the buckets in the histogram.
+        max_raw: The maximum number of pixels to include in the histogram.
+        max_pixels: The maximum number of pixels to reduce.
+        reducer_args: Additional arguments to pass to the image.reduceRegion.
 
     Keyword Args:
         colors (List[str]): Colors for the histograms of each band.
@@ -1594,7 +1592,7 @@ def image_histogram(
         legend_location (str): Location of the legend in the plot.
 
     Returns:
-        bq.Figure: The bqplot figure containing the histograms.
+        The bqplot figure containing the histograms.
     """
     # Calculate the histogram data.
     histogram = image.reduceRegion(
@@ -1615,13 +1613,12 @@ def image_histogram(
     def create_histogram(
         hist_data: dict[str, Any], color: str, label: str
     ) -> bq.Figure:
-        """
-        Creates a bqplot histogram for the given histogram data.
+        """Creates a bqplot histogram for the given histogram data.
 
         Args:
-            hist_data (dict): The histogram data.
-            color (str): The color of the histogram.
-            label (str): The label of the histogram.
+            hist_data: The histogram data.
+            color: The color of the histogram.
+            label: The label of the histogram.
 
         Returns:
             bq.Figure: The bqplot figure for the histogram.
@@ -1680,30 +1677,26 @@ def image_regions(
     x_labels: list[str],
     **kwargs: Any,
 ) -> None:
-    """
-    Generates a Chart from an image by regions. Extracts and plots band values
-    in multiple regions.
+    """Generates a Chart from an image by regions.
+
+    Extracts and plots band values in multiple regions.
 
     Args:
-        image (ee.Image): Image to extract band values from.
-        regions (Union[ee.FeatureCollection, ee.Geometry]): Regions to reduce.
-            Defaults to the image's footprint.
-        reducer (Union[str, ee.Reducer]): The reducer type for zonal statistics.
+        image: Image to extract band values from.
+        regions: Regions to reduce. Defaults to the image's footprint.
+        reducer: The reducer type for zonal statistics.
             Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.
-        scale (int): The scale in meters at which to perform the analysis.
-        series_property (str): The property to use for labeling the series.
-        x_labels (List[str]): List of x-axis labels.
+        scale: The scale in meters at which to perform the analysis.
+        series_property: The property to use for labeling the series.
+        x_labels: List of x-axis labels.
         **kwargs: Additional keyword arguments.
-
-    Returns:
-        bq.Figure: The bqplot figure.
     """
     fc = common.zonal_stats(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
     fc = fc.select(bands + [series_property])
-    return feature_by_property(fc, x_labels, series_property, **kwargs)
+    feature_by_property(fc, x_labels, series_property, **kwargs)
 
 
 def image_series(
@@ -1721,30 +1714,26 @@ def image_series(
     y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
-    """
-    Generates a time series chart of an image collection for a specific region.
+    """Generates a time series chart of an image collection for a specific region.
 
     Args:
-        image_collection (ee.ImageCollection): The image collection to analyze.
-        region (Union[ee.Geometry, ee.FeatureCollection]): The region to reduce.
-        reducer (Optional[Union[str, ee.Reducer]]): The reducer to use.
-        scale (Optional[int]): The scale in meters at which to perform the analysis.
-        x_property (str): The name of the property to use as the x-axis values.
-        chart_type (str): The type of chart to create. Supported types are
+        image_collection: The image collection to analyze.
+        region: The region to reduce.
+        reducer: The reducer to use.
+        scale: The scale in meters at which to perform the analysis.
+        x_property: The name of the property to use as the x-axis values.
+        chart_type: The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
             'PieChart', 'AreaChart', and 'Table'.
-        x_cols (Optional[List[str]]): The columns to use for the x-axis.
+        x_cols: The columns to use for the x-axis.
             Defaults to the first column.
-        y_cols (Optional[List[str]]): The columns to use for the y-axis.
+        y_cols: The columns to use for the y-axis.
             Defaults to the second column.
-        colors (Optional[List[str]]): The colors to use for the chart.
+        colors: The colors to use for the chart.
             Defaults to a predefined list of colors.
-        title (Optional[str]): The title of the chart. Defaults to the
-            chart type.
-        x_label (Optional[str]): The label for the x-axis. Defaults to an
-            empty string.
-        y_label (Optional[str]): The label for the y-axis. Defaults to an
-            empty string.
+        title: The title of the chart. Defaults to the chart type.
+        x_label: The label for the x-axis. Defaults to an empty string.
+        y_label: The label for the y-axis. Defaults to an empty string.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
             or mark objects. For axes_options, see
             https://bqplot.github.io/bqplot/api/axes
@@ -1812,32 +1801,28 @@ def image_series_by_region(
     y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
-    """
-    Generates a time series chart of an image collection for multiple regions.
+    """Generates a time series chart of an image collection for multiple regions.
 
     Args:
-        image_collection (ee.ImageCollection): The image collection to analyze.
-        regions (ee.FeatureCollection | ee.Geometry): The regions to reduce.
-        reducer (str | ee.Reducer): The reducer type for zonal statistics.
-        band (str): The name of the band to analyze.
-        scale (int): The scale in meters at which to perform the analysis.
-        x_property (str): The name of the property to use as the x-axis values.
-        series_property (str): The property to use for labeling the series.
-        chart_type (str): The type of chart to create. Supported types are
+        image_collection: The image collection to analyze.
+        regions: The regions to reduce.
+        reducer: The reducer type for zonal statistics.
+        band: The name of the band to analyze.
+        scale: The scale in meters at which to perform the analysis.
+        x_property: The name of the property to use as the x-axis values.
+        series_property: The property to use for labeling the series.
+        chart_type: The type of chart to create. Supported types are
             'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
             'PieChart', 'AreaChart', and 'Table'.
-        x_cols (Optional[List[str]]): The columns to use for the x-axis.
+        x_cols: The columns to use for the x-axis.
             Defaults to the first column.
-        y_cols (Optional[List[str]]): The columns to use for the y-axis.
+        y_cols: The columns to use for the y-axis.
             Defaults to the second column.
-        colors (Optional[List[str]]): The colors to use for the chart.
+        colors: The colors to use for the chart.
             Defaults to a predefined list of colors.
-        title (Optional[str]): The title of the chart. Defaults to the
-            chart type.
-        x_label (Optional[str]): The label for the x-axis. Defaults to an
-            empty string.
-        y_label (Optional[str]): The label for the y-axis. Defaults to an
-            empty string.
+        title: The title of the chart. Defaults to the chart type.
+        x_label: The label for the x-axis. Defaults to an empty string.
+        y_label: The label for the y-axis. Defaults to an empty string.
         **kwargs: Additional keyword arguments to pass to the bqplot Figure
             or mark objects. For axes_options, see
             https://bqplot.github.io/bqplot/api/axes
@@ -1897,20 +1882,18 @@ def array_values(
     y_label: str | None = None,
     **kwargs: Any,
 ) -> Chart:
-    """
-    Converts an array to a DataFrame and generates a chart.
+    """Converts an array to a DataFrame and generates a chart.
 
     Args:
-        array (Union[ee.Array, ee.List, List[List[float]]]): The array to convert.
-        x_labels (Optional[Union[ee.Array, ee.List, List[float]]]): The labels
-            for the x-axis. Defaults to None.
-        axis (int): The axis along which to transpose the array if needed. Defaults to 1.
-        series_names (Optional[List[str]]): The names of the series. Defaults to None.
-        chart_type (str): The type of chart to create. Defaults to "LineChart".
-        colors (Optional[List[str]]): The colors to use for the chart. Defaults to None.
-        title (Optional[str]): The title of the chart. Defaults to None.
-        x_label (Optional[str]): The label for the x-axis. Defaults to None.
-        y_label (Optional[str]): The label for the y-axis. Defaults to None.
+        array: The array to convert.
+        x_labels: The labels for the x-axis. Defaults to None.
+        axis: The axis along which to transpose the array if needed. Defaults to 1.
+        series_names: The names of the series. Defaults to None.
+        chart_type: The type of chart to create. Defaults to "LineChart".
+        colors: The colors to use for the chart. Defaults to None.
+        title: The title of the chart. Defaults to None.
+        x_label: The label for the x-axis. Defaults to None.
+        y_label: The label for the y-axis. Defaults to None.
         **kwargs: Additional keyword arguments to pass to the Chart constructor.
 
     Returns:
