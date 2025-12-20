@@ -9173,7 +9173,6 @@ Defaults to 'grouped'.</p>
           <tr class="doc-section-item">
             <td><code><span title="geemap.chart.Chart.data_table">data_table</span></code></td>
             <td>
-                  <code><span title="pandas.DataFrame">DataFrame</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -9184,7 +9183,6 @@ Defaults to 'grouped'.</p>
           <tr class="doc-section-item">
             <td><code><span title="geemap.chart.Chart.chart_type">chart_type</span></code></td>
             <td>
-                  <code><span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -9524,8 +9522,8 @@ Defaults to 'grouped'.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and display various types of charts from a data table.</span>
 
 <span class="sd">    Attributes:</span>
-<span class="sd">        data_table (pd.DataFrame): The data to be displayed in the charts.</span>
-<span class="sd">        chart_type (str): The type of chart to create. Supported types are</span>
+<span class="sd">        data_table: The data to be displayed in the charts.</span>
+<span class="sd">        chart_type: The type of chart to create. Supported types are</span>
 <span class="sd">            &#39;ScatterChart&#39;, &#39;LineChart&#39;, &#39;ColumnChart&#39;, &#39;BarChart&#39;, &#39;PieChart&#39;,</span>
 <span class="sd">            &#39;AreaChart&#39;, and &#39;Table&#39;.</span>
 <span class="sd">        chart: The bqplot Figure object for the chart.</span>
@@ -13173,10 +13171,10 @@ Defaults to 'stacked'.</p>
 <span class="sd">    Returns:</span>
 <span class="sd">        pd.DataFrame: The resulting DataFrame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_values</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_values</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_values</span><span class="p">,</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span><span class="p">)):</span>
         <span class="n">y_values</span> <span class="o">=</span> <span class="n">y_values</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
 
-    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span><span class="p">)</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span><span class="p">):</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span><span class="p">)):</span>
         <span class="n">x_values</span> <span class="o">=</span> <span class="n">x_values</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -13238,7 +13236,7 @@ Defaults to 'stacked'.</p>
                 <code>array</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Union">Union</span>[<span title="ee.Array">Array</span>, <span title="ee.List">List</span>, <span title="geemap.geemap.List">List</span>[<span title="geemap.geemap.List">List</span>[<span title="float">float</span>]]]</code>
+                  <code><span title="ee.Array">Array</span> | <span title="ee.List">List</span> | <span title="list">list</span>[<span title="list">list</span>[<span title="float">float</span>]]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -13254,12 +13252,11 @@ Defaults to 'stacked'.</p>
                 <code>x_labels</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.Union">Union</span>[<span title="ee.Array">Array</span>, <span title="ee.List">List</span>, <span title="geemap.geemap.List">List</span>[<span title="float">float</span>]]]</code>
+                  <code><span title="ee.Array">Array</span> | <span title="ee.List">List</span> | <span title="list">list</span>[<span title="float">float</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The labels
-for the x-axis. Defaults to None.</p>
+                <p>The labels for the x-axis. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -13287,7 +13284,7 @@ for the x-axis. Defaults to None.</p>
                 <code>series_names</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -13319,7 +13316,7 @@ for the x-axis. Defaults to None.</p>
                 <code>colors</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -13335,7 +13332,7 @@ for the x-axis. Defaults to None.</p>
                 <code>title</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -13351,7 +13348,7 @@ for the x-axis. Defaults to None.</p>
                 <code>x_label</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -13367,7 +13364,7 @@ for the x-axis. Defaults to None.</p>
                 <code>y_label</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -13423,7 +13420,22 @@ for the x-axis. Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1888</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1873</span>
+<span class="normal">1874</span>
+<span class="normal">1875</span>
+<span class="normal">1876</span>
+<span class="normal">1877</span>
+<span class="normal">1878</span>
+<span class="normal">1879</span>
+<span class="normal">1880</span>
+<span class="normal">1881</span>
+<span class="normal">1882</span>
+<span class="normal">1883</span>
+<span class="normal">1884</span>
+<span class="normal">1885</span>
+<span class="normal">1886</span>
+<span class="normal">1887</span>
+<span class="normal">1888</span>
 <span class="normal">1889</span>
 <span class="normal">1890</span>
 <span class="normal">1891</span>
@@ -13450,24 +13462,7 @@ for the x-axis. Defaults to None.</p>
 <span class="normal">1912</span>
 <span class="normal">1913</span>
 <span class="normal">1914</span>
-<span class="normal">1915</span>
-<span class="normal">1916</span>
-<span class="normal">1917</span>
-<span class="normal">1918</span>
-<span class="normal">1919</span>
-<span class="normal">1920</span>
-<span class="normal">1921</span>
-<span class="normal">1922</span>
-<span class="normal">1923</span>
-<span class="normal">1924</span>
-<span class="normal">1925</span>
-<span class="normal">1926</span>
-<span class="normal">1927</span>
-<span class="normal">1928</span>
-<span class="normal">1929</span>
-<span class="normal">1930</span>
-<span class="normal">1931</span>
-<span class="normal">1932</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
+<span class="normal">1915</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
     <span class="n">x_labels</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -13479,20 +13474,18 @@ for the x-axis. Defaults to None.</p>
     <span class="n">y_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Chart</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Converts an array to a DataFrame and generates a chart.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts an array to a DataFrame and generates a chart.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        array (Union[ee.Array, ee.List, List[List[float]]]): The array to convert.</span>
-<span class="sd">        x_labels (Optional[Union[ee.Array, ee.List, List[float]]]): The labels</span>
-<span class="sd">            for the x-axis. Defaults to None.</span>
-<span class="sd">        axis (int): The axis along which to transpose the array if needed. Defaults to 1.</span>
-<span class="sd">        series_names (Optional[List[str]]): The names of the series. Defaults to None.</span>
-<span class="sd">        chart_type (str): The type of chart to create. Defaults to &quot;LineChart&quot;.</span>
-<span class="sd">        colors (Optional[List[str]]): The colors to use for the chart. Defaults to None.</span>
-<span class="sd">        title (Optional[str]): The title of the chart. Defaults to None.</span>
-<span class="sd">        x_label (Optional[str]): The label for the x-axis. Defaults to None.</span>
-<span class="sd">        y_label (Optional[str]): The label for the y-axis. Defaults to None.</span>
+<span class="sd">        array: The array to convert.</span>
+<span class="sd">        x_labels: The labels for the x-axis. Defaults to None.</span>
+<span class="sd">        axis: The axis along which to transpose the array if needed. Defaults to 1.</span>
+<span class="sd">        series_names: The names of the series. Defaults to None.</span>
+<span class="sd">        chart_type: The type of chart to create. Defaults to &quot;LineChart&quot;.</span>
+<span class="sd">        colors: The colors to use for the chart. Defaults to None.</span>
+<span class="sd">        title: The title of the chart. Defaults to None.</span>
+<span class="sd">        x_label: The label for the x-axis. Defaults to None.</span>
+<span class="sd">        y_label: The label for the y-axis. Defaults to None.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to pass to the Chart constructor.</span>
 
 <span class="sd">    Returns:</span>
@@ -16612,8 +16605,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
     <div class="doc doc-contents ">
 
-        <p>Creates a histogram for each band of the specified image within the given
-region using bqplot.</p>
+        <p>Creates a histogram for each band of the specified image within the given region.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -16636,7 +16628,7 @@ region using bqplot.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The Earth Engine image for which to create histograms.</p>
+                <p>The EE image for which to create histograms.</p>
               </div>
             </td>
             <td>
@@ -16744,7 +16736,7 @@ region using bqplot.</p>
                 <code>reducer_args</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -16832,7 +16824,7 @@ region using bqplot.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>bq.Figure: The bqplot figure containing the histograms.</p>
+                <p>The bqplot figure containing the histograms.</p>
               </div>
             </td>
           </tr>
@@ -16945,10 +16937,7 @@ region using bqplot.</p>
 <span class="normal">1665</span>
 <span class="normal">1666</span>
 <span class="normal">1667</span>
-<span class="normal">1668</span>
-<span class="normal">1669</span>
-<span class="normal">1670</span>
-<span class="normal">1671</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
+<span class="normal">1668</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -16959,19 +16948,17 @@ region using bqplot.</p>
     <span class="n">reducer_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{},</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bq</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Creates a histogram for each band of the specified image within the given</span>
-<span class="sd">    region using bqplot.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a histogram for each band of the specified image within the given region.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        image (ee.Image): The Earth Engine image for which to create histograms.</span>
-<span class="sd">        region (ee.Geometry): The region over which to calculate the histograms.</span>
-<span class="sd">        scale (int): The scale in meters of the calculation.</span>
-<span class="sd">        max_buckets (int): The maximum number of buckets in the histogram.</span>
-<span class="sd">        min_bucket_width (float): The minimum width of the buckets in the histogram.</span>
-<span class="sd">        max_raw (int): The maximum number of pixels to include in the histogram.</span>
-<span class="sd">        max_pixels (int): The maximum number of pixels to reduce.</span>
-<span class="sd">        reducer_args (Dict[str, Any]): Additional arguments to pass to the image.reduceRegion.</span>
+<span class="sd">        image: The EE image for which to create histograms.</span>
+<span class="sd">        region: The region over which to calculate the histograms.</span>
+<span class="sd">        scale: The scale in meters of the calculation.</span>
+<span class="sd">        max_buckets: The maximum number of buckets in the histogram.</span>
+<span class="sd">        min_bucket_width: The minimum width of the buckets in the histogram.</span>
+<span class="sd">        max_raw: The maximum number of pixels to include in the histogram.</span>
+<span class="sd">        max_pixels: The maximum number of pixels to reduce.</span>
+<span class="sd">        reducer_args: Additional arguments to pass to the image.reduceRegion.</span>
 
 <span class="sd">    Keyword Args:</span>
 <span class="sd">        colors (List[str]): Colors for the histograms of each band.</span>
@@ -16980,7 +16967,7 @@ region using bqplot.</p>
 <span class="sd">        legend_location (str): Location of the legend in the plot.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        bq.Figure: The bqplot figure containing the histograms.</span>
+<span class="sd">        The bqplot figure containing the histograms.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Calculate the histogram data.</span>
     <span class="n">histogram</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span>
@@ -17001,13 +16988,12 @@ region using bqplot.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">create_histogram</span><span class="p">(</span>
         <span class="n">hist_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">label</span><span class="p">:</span> <span class="nb">str</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">bq</span><span class="o">.</span><span class="n">Figure</span><span class="p">:</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Creates a bqplot histogram for the given histogram data.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a bqplot histogram for the given histogram data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            hist_data (dict): The histogram data.</span>
-<span class="sd">            color (str): The color of the histogram.</span>
-<span class="sd">            label (str): The label of the histogram.</span>
+<span class="sd">            hist_data: The histogram data.</span>
+<span class="sd">            color: The color of the histogram.</span>
+<span class="sd">            label: The label of the histogram.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            bq.Figure: The bqplot figure for the histogram.</span>
@@ -17072,8 +17058,8 @@ region using bqplot.</p>
 
     <div class="doc doc-contents ">
 
-        <p>Generates a Chart from an image by regions. Extracts and plots band values
-in multiple regions.</p>
+        <p>Generates a Chart from an image by regions.</p>
+<p>Extracts and plots band values in multiple regions.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -17108,12 +17094,11 @@ in multiple regions.</p>
                 <code>regions</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Union">Union</span>[<span title="ee.FeatureCollection">FeatureCollection</span>, <span title="ee.Geometry">Geometry</span>]</code>
+                  <code><span title="ee.FeatureCollection">FeatureCollection</span> | <span title="ee.Geometry">Geometry</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Regions to reduce.
-Defaults to the image's footprint.</p>
+                <p>Regions to reduce. Defaults to the image's footprint.</p>
               </div>
             </td>
             <td>
@@ -17125,7 +17110,7 @@ Defaults to the image's footprint.</p>
                 <code>reducer</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Union">Union</span>[<span title="str">str</span>, <span title="ee.Reducer">Reducer</span>]</code>
+                  <code><span title="str">str</span> | <span title="ee.Reducer">Reducer</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17174,7 +17159,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
                 <code>x_labels</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.List">List</span>[<span title="str">str</span>]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17205,32 +17190,12 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
     </table>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code>None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>bq.Figure: The bqplot figure.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1674</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1671</span>
+<span class="normal">1672</span>
+<span class="normal">1673</span>
+<span class="normal">1674</span>
 <span class="normal">1675</span>
 <span class="normal">1676</span>
 <span class="normal">1677</span>
@@ -17255,14 +17220,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
 <span class="normal">1696</span>
 <span class="normal">1697</span>
 <span class="normal">1698</span>
-<span class="normal">1699</span>
-<span class="normal">1700</span>
-<span class="normal">1701</span>
-<span class="normal">1702</span>
-<span class="normal">1703</span>
-<span class="normal">1704</span>
-<span class="normal">1705</span>
-<span class="normal">1706</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
+<span class="normal">1699</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="p">,</span>
@@ -17271,30 +17229,26 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
     <span class="n">x_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a Chart from an image by regions. Extracts and plots band values</span>
-<span class="sd">    in multiple regions.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a Chart from an image by regions.</span>
+
+<span class="sd">    Extracts and plots band values in multiple regions.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        image (ee.Image): Image to extract band values from.</span>
-<span class="sd">        regions (Union[ee.FeatureCollection, ee.Geometry]): Regions to reduce.</span>
-<span class="sd">            Defaults to the image&#39;s footprint.</span>
-<span class="sd">        reducer (Union[str, ee.Reducer]): The reducer type for zonal statistics.</span>
+<span class="sd">        image: Image to extract band values from.</span>
+<span class="sd">        regions: Regions to reduce. Defaults to the image&#39;s footprint.</span>
+<span class="sd">        reducer: The reducer type for zonal statistics.</span>
 <span class="sd">            Can be one of &#39;mean&#39;, &#39;median&#39;, &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;, etc.</span>
-<span class="sd">        scale (int): The scale in meters at which to perform the analysis.</span>
-<span class="sd">        series_property (str): The property to use for labeling the series.</span>
-<span class="sd">        x_labels (List[str]): List of x-axis labels.</span>
+<span class="sd">        scale: The scale in meters at which to perform the analysis.</span>
+<span class="sd">        series_property: The property to use for labeling the series.</span>
+<span class="sd">        x_labels: List of x-axis labels.</span>
 <span class="sd">        **kwargs: Additional keyword arguments.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        bq.Figure: The bqplot figure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fc</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">zonal_stats</span><span class="p">(</span>
         <span class="n">image</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">stat_type</span><span class="o">=</span><span class="n">reducer</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_fc</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
     <span class="n">bands</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
     <span class="n">fc</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span> <span class="o">+</span> <span class="p">[</span><span class="n">series_property</span><span class="p">])</span>
-    <span class="k">return</span> <span class="n">feature_by_property</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="n">x_labels</span><span class="p">,</span> <span class="n">series_property</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">feature_by_property</span><span class="p">(</span><span class="n">fc</span><span class="p">,</span> <span class="n">x_labels</span><span class="p">,</span> <span class="n">series_property</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -17347,7 +17301,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
                 <code>region</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Union">Union</span>[<span title="ee.Geometry">Geometry</span>, <span title="ee.FeatureCollection">FeatureCollection</span>]</code>
+                  <code><span title="ee.Geometry">Geometry</span> | <span title="ee.FeatureCollection">FeatureCollection</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17363,7 +17317,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
                 <code>reducer</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.Union">Union</span>[<span title="str">str</span>, <span title="ee.Reducer">Reducer</span>]]</code>
+                  <code><span title="str">str</span> | <span title="ee.Reducer">Reducer</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17379,7 +17333,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
                 <code>scale</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="int">int</span>]</code>
+                  <code><span title="int">int</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17429,7 +17383,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
                 <code>x_cols</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17446,7 +17400,7 @@ Defaults to the first column.</p>
                 <code>y_cols</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17463,7 +17417,7 @@ Defaults to the second column.</p>
                 <code>colors</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17480,12 +17434,11 @@ Defaults to a predefined list of colors.</p>
                 <code>title</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The title of the chart. Defaults to the
-chart type.</p>
+                <p>The title of the chart. Defaults to the chart type.</p>
               </div>
             </td>
             <td>
@@ -17497,12 +17450,11 @@ chart type.</p>
                 <code>x_label</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The label for the x-axis. Defaults to an
-empty string.</p>
+                <p>The label for the x-axis. Defaults to an empty string.</p>
               </div>
             </td>
             <td>
@@ -17514,12 +17466,11 @@ empty string.</p>
                 <code>y_label</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The label for the y-axis. Defaults to an
-empty string.</p>
+                <p>The label for the y-axis. Defaults to an empty string.</p>
               </div>
             </td>
             <td>
@@ -17573,7 +17524,14 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1709</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1702</span>
+<span class="normal">1703</span>
+<span class="normal">1704</span>
+<span class="normal">1705</span>
+<span class="normal">1706</span>
+<span class="normal">1707</span>
+<span class="normal">1708</span>
+<span class="normal">1709</span>
 <span class="normal">1710</span>
 <span class="normal">1711</span>
 <span class="normal">1712</span>
@@ -17648,18 +17606,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1781</span>
 <span class="normal">1782</span>
 <span class="normal">1783</span>
-<span class="normal">1784</span>
-<span class="normal">1785</span>
-<span class="normal">1786</span>
-<span class="normal">1787</span>
-<span class="normal">1788</span>
-<span class="normal">1789</span>
-<span class="normal">1790</span>
-<span class="normal">1791</span>
-<span class="normal">1792</span>
-<span class="normal">1793</span>
-<span class="normal">1794</span>
-<span class="normal">1795</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
+<span class="normal">1784</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -17674,30 +17621,26 @@ https://bqplot.github.io/bqplot/api/axes</p>
     <span class="n">y_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Chart</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a time series chart of an image collection for a specific region.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a time series chart of an image collection for a specific region.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        image_collection (ee.ImageCollection): The image collection to analyze.</span>
-<span class="sd">        region (Union[ee.Geometry, ee.FeatureCollection]): The region to reduce.</span>
-<span class="sd">        reducer (Optional[Union[str, ee.Reducer]]): The reducer to use.</span>
-<span class="sd">        scale (Optional[int]): The scale in meters at which to perform the analysis.</span>
-<span class="sd">        x_property (str): The name of the property to use as the x-axis values.</span>
-<span class="sd">        chart_type (str): The type of chart to create. Supported types are</span>
+<span class="sd">        image_collection: The image collection to analyze.</span>
+<span class="sd">        region: The region to reduce.</span>
+<span class="sd">        reducer: The reducer to use.</span>
+<span class="sd">        scale: The scale in meters at which to perform the analysis.</span>
+<span class="sd">        x_property: The name of the property to use as the x-axis values.</span>
+<span class="sd">        chart_type: The type of chart to create. Supported types are</span>
 <span class="sd">            &#39;ScatterChart&#39;, &#39;LineChart&#39;, &#39;ColumnChart&#39;, &#39;BarChart&#39;,</span>
 <span class="sd">            &#39;PieChart&#39;, &#39;AreaChart&#39;, and &#39;Table&#39;.</span>
-<span class="sd">        x_cols (Optional[List[str]]): The columns to use for the x-axis.</span>
+<span class="sd">        x_cols: The columns to use for the x-axis.</span>
 <span class="sd">            Defaults to the first column.</span>
-<span class="sd">        y_cols (Optional[List[str]]): The columns to use for the y-axis.</span>
+<span class="sd">        y_cols: The columns to use for the y-axis.</span>
 <span class="sd">            Defaults to the second column.</span>
-<span class="sd">        colors (Optional[List[str]]): The colors to use for the chart.</span>
+<span class="sd">        colors: The colors to use for the chart.</span>
 <span class="sd">            Defaults to a predefined list of colors.</span>
-<span class="sd">        title (Optional[str]): The title of the chart. Defaults to the</span>
-<span class="sd">            chart type.</span>
-<span class="sd">        x_label (Optional[str]): The label for the x-axis. Defaults to an</span>
-<span class="sd">            empty string.</span>
-<span class="sd">        y_label (Optional[str]): The label for the y-axis. Defaults to an</span>
-<span class="sd">            empty string.</span>
+<span class="sd">        title: The title of the chart. Defaults to the chart type.</span>
+<span class="sd">        x_label: The label for the x-axis. Defaults to an empty string.</span>
+<span class="sd">        y_label: The label for the y-axis. Defaults to an empty string.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to pass to the bqplot Figure</span>
 <span class="sd">            or mark objects. For axes_options, see</span>
 <span class="sd">            https://bqplot.github.io/bqplot/api/axes</span>
@@ -17814,7 +17757,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
                 <code>reducer</code>
             </td>
             <td>
-                  <code><span title="str">str</span> | <span title="ee.Reducer">Reducer</span></code>
+                  <code><span title="str">str</span> | <span title="ee.Reducer">Reducer</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17830,7 +17773,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
                 <code>band</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17846,7 +17789,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
                 <code>scale</code>
             </td>
             <td>
-                  <code><span title="int">int</span></code>
+                  <code><span title="int">int</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17912,7 +17855,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
                 <code>x_cols</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17929,7 +17872,7 @@ Defaults to the first column.</p>
                 <code>y_cols</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17946,7 +17889,7 @@ Defaults to the second column.</p>
                 <code>colors</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.List">List</span>[<span title="str">str</span>]]</code>
+                  <code><span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -17963,12 +17906,11 @@ Defaults to a predefined list of colors.</p>
                 <code>title</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The title of the chart. Defaults to the
-chart type.</p>
+                <p>The title of the chart. Defaults to the chart type.</p>
               </div>
             </td>
             <td>
@@ -17980,12 +17922,11 @@ chart type.</p>
                 <code>x_label</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The label for the x-axis. Defaults to an
-empty string.</p>
+                <p>The label for the x-axis. Defaults to an empty string.</p>
               </div>
             </td>
             <td>
@@ -17997,12 +17938,11 @@ empty string.</p>
                 <code>y_label</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="str">str</span>]</code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The label for the y-axis. Defaults to an
-empty string.</p>
+                <p>The label for the y-axis. Defaults to an empty string.</p>
               </div>
             </td>
             <td>
@@ -18056,7 +17996,18 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1798</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1787</span>
+<span class="normal">1788</span>
+<span class="normal">1789</span>
+<span class="normal">1790</span>
+<span class="normal">1791</span>
+<span class="normal">1792</span>
+<span class="normal">1793</span>
+<span class="normal">1794</span>
+<span class="normal">1795</span>
+<span class="normal">1796</span>
+<span class="normal">1797</span>
+<span class="normal">1798</span>
 <span class="normal">1799</span>
 <span class="normal">1800</span>
 <span class="normal">1801</span>
@@ -18128,22 +18079,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1867</span>
 <span class="normal">1868</span>
 <span class="normal">1869</span>
-<span class="normal">1870</span>
-<span class="normal">1871</span>
-<span class="normal">1872</span>
-<span class="normal">1873</span>
-<span class="normal">1874</span>
-<span class="normal">1875</span>
-<span class="normal">1876</span>
-<span class="normal">1877</span>
-<span class="normal">1878</span>
-<span class="normal">1879</span>
-<span class="normal">1880</span>
-<span class="normal">1881</span>
-<span class="normal">1882</span>
-<span class="normal">1883</span>
-<span class="normal">1884</span>
-<span class="normal">1885</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
+<span class="normal">1870</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -18160,32 +18096,28 @@ https://bqplot.github.io/bqplot/api/axes</p>
     <span class="n">y_label</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Chart</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a time series chart of an image collection for multiple regions.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a time series chart of an image collection for multiple regions.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        image_collection (ee.ImageCollection): The image collection to analyze.</span>
-<span class="sd">        regions (ee.FeatureCollection | ee.Geometry): The regions to reduce.</span>
-<span class="sd">        reducer (str | ee.Reducer): The reducer type for zonal statistics.</span>
-<span class="sd">        band (str): The name of the band to analyze.</span>
-<span class="sd">        scale (int): The scale in meters at which to perform the analysis.</span>
-<span class="sd">        x_property (str): The name of the property to use as the x-axis values.</span>
-<span class="sd">        series_property (str): The property to use for labeling the series.</span>
-<span class="sd">        chart_type (str): The type of chart to create. Supported types are</span>
+<span class="sd">        image_collection: The image collection to analyze.</span>
+<span class="sd">        regions: The regions to reduce.</span>
+<span class="sd">        reducer: The reducer type for zonal statistics.</span>
+<span class="sd">        band: The name of the band to analyze.</span>
+<span class="sd">        scale: The scale in meters at which to perform the analysis.</span>
+<span class="sd">        x_property: The name of the property to use as the x-axis values.</span>
+<span class="sd">        series_property: The property to use for labeling the series.</span>
+<span class="sd">        chart_type: The type of chart to create. Supported types are</span>
 <span class="sd">            &#39;ScatterChart&#39;, &#39;LineChart&#39;, &#39;ColumnChart&#39;, &#39;BarChart&#39;,</span>
 <span class="sd">            &#39;PieChart&#39;, &#39;AreaChart&#39;, and &#39;Table&#39;.</span>
-<span class="sd">        x_cols (Optional[List[str]]): The columns to use for the x-axis.</span>
+<span class="sd">        x_cols: The columns to use for the x-axis.</span>
 <span class="sd">            Defaults to the first column.</span>
-<span class="sd">        y_cols (Optional[List[str]]): The columns to use for the y-axis.</span>
+<span class="sd">        y_cols: The columns to use for the y-axis.</span>
 <span class="sd">            Defaults to the second column.</span>
-<span class="sd">        colors (Optional[List[str]]): The colors to use for the chart.</span>
+<span class="sd">        colors: The colors to use for the chart.</span>
 <span class="sd">            Defaults to a predefined list of colors.</span>
-<span class="sd">        title (Optional[str]): The title of the chart. Defaults to the</span>
-<span class="sd">            chart type.</span>
-<span class="sd">        x_label (Optional[str]): The label for the x-axis. Defaults to an</span>
-<span class="sd">            empty string.</span>
-<span class="sd">        y_label (Optional[str]): The label for the y-axis. Defaults to an</span>
-<span class="sd">            empty string.</span>
+<span class="sd">        title: The title of the chart. Defaults to the chart type.</span>
+<span class="sd">        x_label: The label for the x-axis. Defaults to an empty string.</span>
+<span class="sd">        y_label: The label for the y-axis. Defaults to an empty string.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to pass to the bqplot Figure</span>
 <span class="sd">            or mark objects. For axes_options, see</span>
 <span class="sd">            https://bqplot.github.io/bqplot/api/axes</span>
