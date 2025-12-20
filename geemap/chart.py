@@ -1576,7 +1576,7 @@ def image_histogram(
     """Creates a histogram for each band of the specified image within the given region.
 
     Args:
-        image: The Earth Engine image for which to create histograms.
+        image: The EE image for which to create histograms.
         region: The region over which to calculate the histograms.
         scale: The scale in meters of the calculation.
         max_buckets: The maximum number of buckets in the histogram.
