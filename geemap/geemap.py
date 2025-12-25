@@ -51,76 +51,48 @@ basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(core.Map):
-    """The Map class inherits the core Map class. The arguments you can pass to the Map initialization
-        can be found at https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
-        By default, the Map will use OpenStreetMap as the basemap.
+    """The Map class inherits the core Map class.
 
-    Returns:
-        object: ipyleaflet map object.
+    The arguments you can pass to the Map initialization can be found at
+    https://ipyleaflet.readthedocs.io/en/latest/map_and_basemaps/map.html.
+
+    By default, the Map will use OpenStreetMap as the basemap.
     """
 
     # Map attributes for drawing features
     @property
-    def draw_control(self) -> Any:
-        """Gets the draw control.
-
-        Returns:
-            Any: The draw control.
-        """
+    def draw_control(self) -> core.MapDrawControl | None:
+        """Returns the draw control."""
         return self.get_draw_control()
 
     @property
-    def draw_control_lite(self) -> Any:
-        """Gets the lite version of the draw control.
-
-        Returns:
-            Any: The lite draw control.
-        """
+    def draw_control_lite(self) -> core.MapDrawControl | None:
+        """Returns the lite version of the draw control."""
         return self.get_draw_control()
 
     @property
     def draw_features(self) -> list[Any]:
-        """Gets the drawn features.
-
-        Returns:
-            List[Any]: The list of drawn features.
-        """
+        """Returns the drawn features."""
         return self._draw_control.features if self._draw_control else []
 
     @property
     def draw_last_feature(self) -> Any | None:
-        """Gets the last drawn feature.
-
-        Returns:
-            Optional[Any]: The last drawn feature.
-        """
+        """Returns the last drawn feature."""
         return self._draw_control.last_feature if self._draw_control else None
 
     @property
     def draw_layer(self) -> Any | None:
-        """Gets the draw layer.
-
-        Returns:
-            Optional[Any]: The draw layer.
-        """
+        """Returns the draw layer."""
         return self._draw_control.layer if self._draw_control else None
 
     @property
     def user_roi(self) -> Any | None:
-        """Gets the user region of interest.
-
-        Returns:
-            Optional[Any]: The user region of interest.
-        """
+        """Returns the user region of interest."""
         return self._draw_control.last_geometry if self._draw_control else None
 
     @property
     def user_rois(self) -> Any | None:
-        """Gets the user regions of interest.
-
-        Returns:
-            Optional[Any]: The user regions of interest.
-        """
+        """Returns the user regions of interest."""
         return self._draw_control.collection if self._draw_control else None
 
     def __init__(self, **kwargs):
@@ -172,7 +144,7 @@ class Map(core.Map):
         if kwargs.get("height"):
             self.layout.height = kwargs.get("height")
 
-        # sandbox path for Voila app to restrict access to system directories.
+        # Sandbox path for Voila app to restrict access to system directories.
         if "sandbox_path" not in kwargs:
             self.sandbox_path = None
         else:
@@ -182,27 +154,23 @@ class Map(core.Map):
                 print("The sandbox path is invalid.")
                 self.sandbox_path = None
 
-        # Add Google Maps as the default basemap
+        # Add Google Maps as the default basemap.
         if kwargs.get("add_google_map", False):
             self.add_basemap("ROADMAP")
 
-        # ipyleaflet built-in layer control
+        # ipyleaflet built-in layer control.
         self.layer_control = None
 
         if "ee_initialize" not in kwargs:
             kwargs["ee_initialize"] = True
 
-        # Default reducer to use
+        # Default reducer to use.
         if kwargs["ee_initialize"]:
             self.roi_reducer = ee.Reducer.mean()
         self.roi_reducer_scale = None
 
     def _control_config(self) -> dict[str, list[str]]:
-        """Configures the map controls based on the provided arguments.
-
-        Returns:
-            Dict[str, List[str]]: The configuration of map controls.
-        """
+        """Returns the configured map controls based on the provided arguments."""
         if self.kwargs.get("lite_mode"):
             return {"topleft": ["zoom_control"]}
 
@@ -237,11 +205,7 @@ class Map(core.Map):
 
     @property
     def ee_layer_names(self) -> list[str]:
-        """Gets the names of the EE layers.
-
-        Returns:
-            List[str]: The names of the EE layers.
-        """
+        """Returns a list of the names of the EE layers."""
         warnings.warn(
             "ee_layer_names is deprecated. Use ee_layers.keys() instead.",
             DeprecationWarning,
@@ -250,11 +214,7 @@ class Map(core.Map):
 
     @property
     def ee_layer_dict(self) -> dict[str, Any]:
-        """Gets the dictionary of EE layers.
-
-        Returns:
-            Dict[str, Any]: The dictionary of EE layers.
-        """
+        """Returns the dictionary of EE layers."""
         warnings.warn(
             "ee_layer_dict is deprecated. Use ee_layers instead.", DeprecationWarning
         )
@@ -262,56 +222,40 @@ class Map(core.Map):
 
     @property
     def ee_raster_layer_names(self) -> list[str]:
-        """Gets the names of the EE raster layers.
-
-        Returns:
-            List[str]: The names of the EE raster layers.
-        """
+        """Returns the names of the EE raster layers."""
         warnings.warn(
-            "ee_raster_layer_names is deprecated. Use self.ee_raster_layers.keys() instead.",
+            "ee_raster_layer_names is deprecated. Use self.ee_raster_layers.keys().",
             DeprecationWarning,
         )
         return list(self.ee_raster_layers.keys())
 
     @property
     def ee_vector_layer_names(self) -> list[str]:
-        """Gets the names of the EE vector layers.
-
-        Returns:
-            List[str]: The names of the EE vector layers.
-        """
+        """Returns the names of the EE vector layers."""
         warnings.warn(
-            "ee_vector_layer_names is deprecated. Use self.ee_vector_layers.keys() instead.",
+            "ee_vector_layer_names is deprecated. Use self.ee_vector_layers.keys().",
             DeprecationWarning,
         )
         return list(self.ee_vector_layers.keys())
 
     @property
     def ee_raster_layers(self) -> dict[str, Any]:
-        """Gets the dictionary of EE raster layers.
-
-        Returns:
-            Dict[str, Any]: The dictionary of EE raster layers.
-        """
+        """Returns the dictionary of EE raster layers."""
         return dict(filter(self._raster_filter, self.ee_layers.items()))
 
     @property
     def ee_vector_layers(self) -> dict[str, Any]:
-        """Gets the dictionary of EE vector layers.
-
-        Returns:
-            Dict[str, Any]: The dictionary of EE vector layers.
-        """
+        """Returns the dictionary of EE vector layers."""
         return dict(filter(self._vector_filter, self.ee_layers.items()))
 
     def _raster_filter(self, pair: tuple[str, dict[str, Any]]) -> bool:
         """Filters the raster layers.
 
         Args:
-            pair (tuple[str, Dict[str, Any]]): The layer pair to filter.
+            pair: The layer pair to filter.
 
         Returns:
-            bool: True if the layer is a raster layer, False otherwise.
+            True if the layer is a raster layer, False otherwise.
         """
         return isinstance(pair[1]["ee_object"], (ee.Image, ee.ImageCollection))
 
@@ -319,10 +263,10 @@ class Map(core.Map):
         """Filters the vector layers.
 
         Args:
-            pair (tuple[str, Dict[str, Any]]): The layer pair to filter.
+            pair: The layer pair to filter.
 
         Returns:
-            bool: True if the layer is a vector layer, False otherwise.
+            True if the layer is a vector layer, False otherwise.
         """
         return isinstance(
             pair[1]["ee_object"], (ee.Geometry, ee.Feature, ee.FeatureCollection)
@@ -332,8 +276,8 @@ class Map(core.Map):
         """Adds a layer or control to the map.
 
         Args:
-            obj (Union[str, Any]): The layer or control to add to the map.
-            position (str, optional): The position of the control on the map. Defaults to "topright".
+            obj: The layer or control to add to the map.
+            position: The position of the control on the map. Defaults to "topright".
             **kwargs: Additional keyword arguments.
         """
         if isinstance(obj, str):
