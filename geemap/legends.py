@@ -489,8 +489,8 @@ def ee_table_to_legend(in_table: str, out_file: str) -> None:
     """Converts an Earth Engine color table to a dictionary
 
     Args:
-        in_table (str): The input file path (*.txt) to the Earth Engine color table.
-        out_file (str): The output file path (*.txt) to the legend dictionary.
+        in_table: The input file path (*.txt) to the Earth Engine color table.
+        out_file: The output file path (*.txt) to the legend dictionary.
     """
 
     if not os.path.exists(in_table):
