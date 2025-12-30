@@ -1,4 +1,4 @@
-"""The maplibregl module provides the Map class for creating interactive maps using the maplibre.ipywidget module."""
+"""Map class for creating interactive maps using the maplibre.ipywidget module."""
 
 import base64
 import glob
@@ -6,6 +6,7 @@ import importlib.resources
 import os
 import re
 from typing import Any
+import webbrowser
 
 import box
 import geopandas as gpd
@@ -43,7 +44,7 @@ basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 
 
 class Map(MapWidget):
-    """The Map class inherits from the MapWidget class of the maplibre.ipywidget module."""
+    """Map from the MapWidget class of the maplibre.ipywidget module."""
 
     _BASEMAP_ALIASES: dict[str, list[str]] = {
         "DEFAULT": ["Google.Roadmap", "OpenStreetMap.Mapnik"],
@@ -67,35 +68,31 @@ class Map(MapWidget):
             "scale": "bottom-left",
         },
         **kwargs: Any,
-    ) -> None:
-        """
-        Create a Map object.
+    ):
+        """Create a Map object.
 
         Args:
-            center (tuple, optional): The center of the map (lon, lat). Defaults
-                to (0, 20).
-            zoom (float, optional): The zoom level of the map. Defaults to 1.
-            pitch (float, optional): The pitch of the map. Measured in degrees
-                away from the plane of the screen (0-85) Defaults to 0.
-            bearing (float, optional): The bearing of the map. Measured in degrees
-                counter-clockwise from north. Defaults to 0.
-            style (str, optional): The style of the map. It can be a string or a URL.
-                If it is a string, it must be one of the following: "dark-matter",
-                "positron", "voyager", "positron-nolabels", "dark-matter-nolabels",
-                "voyager-nolabels", or "demotiles". If a MapTiler API key is set,
-                you can also use any of the MapTiler styles, such as aquarelle,
-                backdrop, basic, bright, dataviz, landscape, ocean, openstreetmap, outdoor,
-                satellite, streets, toner, topo, winter, etc. If it is a URL, it must point to
-                a MapLibre style JSON. Defaults to "dark-matter".
-            height (str, optional): The height of the map. Defaults to "600px".
-            controls (dict, optional): The controls and their positions on the
-                map. Defaults to {"fullscreen": "top-right", "scale": "bottom-left"}.
-            **kwargs: Additional keyword arguments that are passed to the MapOptions class.
-                See https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
+            center: The center of the map (lon, lat). Defaults to (0, 20).
+            zoom: The zoom level of the map. Defaults to 1.
+            pitch: The pitch of the map. Measured in degrees away from the plane of the
+                screen (0-85) Defaults to 0.
+            bearing: The bearing of the map. Measured in degrees counter-clockwise from
+                north. Defaults to 0.
+            style: The style of the map. It can be a string or a URL.  If it is a
+                string, it must be one of the following: "dark-matter", "positron",
+                "voyager", "positron-nolabels", "dark-matter-nolabels",
+                "voyager-nolabels", or "demotiles". If a MapTiler API key is set, you
+                can also use any of the MapTiler styles, such as aquarelle, backdrop,
+                basic, bright, dataviz, landscape, ocean, openstreetmap, outdoor,
+                satellite, streets, toner, topo, winter, etc. If it is a URL, it must
+                point to a MapLibre style JSON. Defaults to "dark-matter".
+            height: The height of the map. Defaults to "600px".
+            controls: The controls and their positions on the map. Defaults to
+                {"fullscreen": "top-right", "scale": "bottom-left"}.
+            **kwargs: Additional keyword arguments that are passed to the MapOptions
+                class.  See
+                https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
                 for more information.
-
-        Returns:
-            None
         """
         carto_basemaps = [
             "dark-matter",
@@ -215,8 +212,7 @@ class Map(MapWidget):
         before_id: str | None = None,
         name: str | None = None,
     ) -> None:
-        """
-        Adds a layer to the map.
+        """Adds a layer to the map.
 
         This method adds a layer to the map. If a name is provided, it is used
             as the key to store the layer in the layer dictionary. Otherwise,
@@ -224,11 +220,11 @@ class Map(MapWidget):
             layer is inserted before the layer with that ID.
 
         Args:
-            layer (Layer): The layer object to add to the map.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
-            name (str, optional): The name to use as the key to store the layer
-                in the layer dictionary. If None, the layer's ID is used as the key.
+            layer: The layer object to add to the map.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
+            name: The name to use as the key to store the layer in the layer
+                dictionary. If None, the layer's ID is used as the key.
 
         Returns:
             None
@@ -263,13 +259,12 @@ class Map(MapWidget):
         super().add_layer(layer, before_id=before_id)
 
     def remove_layer(self, name: str) -> None:
-        """
-        Removes a layer from the map.
+        """Removes a layer from the map.
 
         This method removes a layer from the map using the layer's name.
 
         Args:
-            name (str): The name of the layer to remove.
+            name: The name of the layer to remove.
 
         Returns:
             None
@@ -282,8 +277,7 @@ class Map(MapWidget):
     def add_control(
         self, control: str | Any, position: str = "top-right", **kwargs: Any
     ) -> None:
-        """
-        Adds a control to the map.
+        """Adds a control to the map.
 
         This method adds a control to the map. The control can be one of the
             following: 'scale', 'fullscreen', 'geolocate', 'navigation', "attribution",
@@ -292,10 +286,10 @@ class Map(MapWidget):
             assumed to be a control object.
 
         Args:
-            control (str or object): The control to add to the map. Can be one
-                of the following: 'scale', 'fullscreen', 'geolocate', 'navigation',
-                 "attribution", and "draw".
-            position (str, optional): The position of the control. Defaults to "top-right".
+            control: The control to add to the map. Can be one of the following:
+                'scale', 'fullscreen', 'geolocate', 'navigation', "attribution", and
+                "draw".
+            position: The position of the control. Defaults to "top-right".
             **kwargs: Additional keyword arguments that are passed to the control object.
 
         Returns:
@@ -325,7 +319,8 @@ class Map(MapWidget):
                 return
             else:
                 print(
-                    "Control can only be one of the following: 'scale', 'fullscreen', 'geolocate', 'navigation', and 'draw'."
+                    "Control can only be one of the following: "
+                    "'scale', 'fullscreen', 'geolocate', 'navigation', and 'draw'."
                 )
                 return
 
@@ -338,8 +333,7 @@ class Map(MapWidget):
         geojson: dict[str, Any] | None = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a drawing control to the map.
+        """Adds a drawing control to the map.
 
         This method enables users to add interactive drawing controls to the map,
         allowing for the creation, editing, and deletion of geometric shapes on
@@ -363,18 +357,18 @@ class Map(MapWidget):
             options=options, position=position, geojson=geojson, **kwargs
         )
 
-    def save_draw_features(self, filepath: str, indent=4, **kwargs) -> None:
-        """
-        Saves the drawn features to a file.
+    def save_draw_features(self, filepath: str, indent: int = 4, **kwargs) -> None:
+        """Saves the drawn features to a file.
 
         This method saves all features created with the drawing control to a
         specified file in GeoJSON format. If there are no features to save, the
         file will not be created.
 
         Args:
-            filepath (str): The path to the file where the GeoJSON data will be saved.
-            **kwargs (Any): Additional keyword arguments to be passed to
-            json.dump for custom serialization.
+            filepath: The path to the file where the GeoJSON data will be saved.
+            indent: How many spaces to indent in the GeoJSON.
+            **kwargs: Additional keyword arguments to be passed to json.dump for custom
+                serialization.
 
         Returns:
             None
@@ -390,12 +384,11 @@ class Map(MapWidget):
             print("There are no features to save.")
 
     def add_source(self, id: str, source: str | dict) -> None:
-        """
-        Adds a source to the map.
+        """Adds a source to the map.
 
         Args:
-            id (str): The ID of the source.
-            source (str or dict): The source data. .
+            id: The ID of the source.
+            source: The source data. .
 
         Returns:
             None
@@ -404,17 +397,15 @@ class Map(MapWidget):
         self.source_dict[id] = source
 
     def set_center(self, lon: float, lat: float, zoom: int | None = None) -> None:
-        """
-        Sets the center of the map.
+        """Sets the center of the map.
 
         This method sets the center of the map to the specified longitude and latitude.
         If a zoom level is provided, it also sets the zoom level of the map.
 
         Args:
-            lon (float): The longitude of the center of the map.
-            lat (float): The latitude of the center of the map.
-            zoom (int, optional): The zoom level of the map. If None, the zoom
-                level is not changed.
+            lon: The longitude of the center of the map.
+            lat: The latitude of the center of the map.
+            zoom: The zoom level of the map. If None, the zoom level is not changed.
 
         Returns:
             None
@@ -426,13 +417,12 @@ class Map(MapWidget):
             self.add_call("setZoom", zoom)
 
     def set_zoom(self, zoom: int | None = None) -> None:
-        """
-        Sets the zoom level of the map.
+        """Sets the zoom level of the map.
 
         This method sets the zoom level of the map to the specified value.
 
         Args:
-            zoom (int): The zoom level of the map.
+            zoom: The zoom level of the map.
 
         Returns:
             None
@@ -440,20 +430,21 @@ class Map(MapWidget):
         self.add_call("setZoom", zoom)
 
     def fit_bounds(self, bounds: list[tuple[float, float]]) -> None:
-        """
-        Adjusts the viewport of the map to fit the specified geographical bounds
-            in the format of [[lon_min, lat_min], [lon_max, lat_max]] or
-            [lon_min, lat_min, lon_max, lat_max].
+        """Adjusts the viewport of the map.
 
-        This method adjusts the viewport of the map so that the specified geographical bounds
-        are visible in the viewport. The bounds are specified as a list of two points,
-        where each point is a list of two numbers representing the longitude and latitude.
+        Fit the specified geographical bounds in the format of [[lon_min, lat_min],
+        [lon_max, lat_max]] or [lon_min, lat_min, lon_max, lat_max].
+
+        This method adjusts the viewport of the map so that the specified geographical
+        bounds are visible in the viewport. The bounds are specified as a list of two
+        points, where each point is a list of two numbers representing the longitude and
+        latitude.
 
         Args:
-            bounds (list): A list of two points representing the geographical bounds that
-                        should be visible in the viewport. Each point is a list of two
-                        numbers representing the longitude and latitude. For example,
-                        [[32.958984, -5.353521],[43.50585, 5.615985]]
+            bounds: A list of two points representing the geographical bounds that
+                should be visible in the viewport. Each point is a list of two numbers
+                representing the longitude and latitude. For example, [[32.958984,
+                -5.353521],[43.50585, 5.615985]]
 
         Returns:
             None
@@ -471,26 +462,23 @@ class Map(MapWidget):
         opacity: float = 1.0,
         visible: bool = True,
         attribution: str | None = None,
-        **kwargs: Any,
+        **kwargs,
     ) -> None:
-        """
-        Adds a basemap to the map.
+        """Adds a basemap to the map.
 
         This method adds a basemap to the map. The basemap can be a string from
         predefined basemaps, an instance of xyzservices.TileProvider, or a key
         from the basemaps dictionary.
 
         Args:
-            basemap (str or TileProvider, optional): The basemap to add. Can be
-                one of the predefined strings, an instance of xyzservices.TileProvider,
-                or a key from the basemaps dictionary. Defaults to None, which adds
-                the basemap widget.
-            opacity (float, optional): The opacity of the basemap. Defaults to 1.0.
-            visible (bool, optional): Whether the basemap is visible or not.
-                Defaults to True.
+            basemap: The basemap to add. Can be one of the predefined strings, an
+                instance of xyzservices.TileProvider, or a key from the basemaps
+                dictionary. Defaults to None, which adds the basemap widget.
+            opacity: The opacity of the basemap. Defaults to 1.0.
+            visible: Whether the basemap is visible or not. Defaults to True.
             attribution (str, optional): The attribution text to display for the
-                basemap. If None, the attribution text is taken from the basemap
-                or the TileProvider. Defaults to None.
+                basemap. If None, the attribution text is taken from the basemap or the
+                TileProvider. Defaults to None.
             **kwargs: Additional keyword arguments that are passed to the
                 RasterTileSource class. See https://bit.ly/4erD2MQ for more information.
 
@@ -501,8 +489,6 @@ class Map(MapWidget):
             ValueError: If the basemap is not one of the predefined strings,
                 not an instance of TileProvider, and not a key from the basemaps dictionary.
         """
-        import xyzservices
-
         if basemap is None:
             return self._basemap_widget()
 
@@ -1314,8 +1300,6 @@ class Map(MapWidget):
             with open(output, "w") as f:
                 f.write(html)
             if preview:
-                import webbrowser
-
                 webbrowser.open(output)
         else:
             return html
