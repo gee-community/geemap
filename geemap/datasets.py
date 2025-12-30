@@ -142,8 +142,8 @@ def get_data_dict() -> dict[str, Any]:
     return data_dict
 
 
-def get_metadata(asset_id: str, source: str = "ee") -> dict[str, Any]:
-    """Returns metadata about an Earth Engine asset.
+def get_metadata(asset_id: str, source: str = "ee") -> None:
+    """Displays metadata about an Earth Engine asset.
 
     Args:
         asset_id: The Earth Engine asset id.
