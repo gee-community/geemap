@@ -25,7 +25,8 @@ try:
     import plotly.graph_objects as go
 except ImportError:
     raise ImportError(
-        "This module requires the plotly package. Please install it using 'pip install plotly'."
+        "This module requires the plotly package. "
+        "Please install it using 'pip install plotly'."
     )
 
 basemaps = xyz_to_plotly()
@@ -46,9 +47,12 @@ class Canvas:
 
         Args:
             map (go.FigureWidget): The map to display.
-            map_min_width (str, optional): The minimum width of the map. Defaults to '90%'.
-            map_max_width (str, optional): The maximum width of the map. Defaults to '98%'.
-            map_refresh (bool, optional): Whether to refresh the map when the map is resized. Defaults to False.
+            map_min_width (str, optional): The minimum width of the map. Defaults to
+                '90%'.
+            map_max_width (str, optional): The maximum width of the map. Defaults to
+                '98%'.
+            map_refresh (bool, optional): Whether to refresh the map when the map is
+              resized. Defaults to False.
         """
         from .toolbar import plotly_toolbar
 
@@ -81,20 +85,32 @@ class Canvas:
 
 
 class Map(go.FigureWidget):
-    """The Map class inherits the Plotly FigureWidget class. More info at https://plotly.com/python/figurewidget."""
+    """The Map class inherits the Plotly FigureWidget class.
+
+    More info at https://plotly.com/python/figurewidget.
+    """
 
     def __init__(
-        self, center=(20, 0), zoom=1, basemap="open-street-map", height=600, **kwargs
+        self,
+        center: tuple[int, int] = (20, 0),
+        zoom: int = 1,
+        basemap: str = "open-street-map",
+        height: int = 600,
+        **kwargs,
     ):
-        """Initializes a map. More info at https://plotly.com/python/mapbox-layers/
+        """Initializes a map.
+
+        More info at https://plotly.com/python/mapbox-layers/.
 
         Args:
-            center (tuple, optional): Center of the map. Defaults to (20, 0).
-            zoom (int, optional): Zoom level of the map. Defaults to 1.
-            basemap (str, optional): Can be one of string from "open-street-map", "carto-positron", "carto-darkmatter", "stamen-terrain", "stamen-toner" or "stamen-watercolor" . Defaults to 'open-street-map'.
-            height (int, optional): Height of the map. Defaults to 600.
+            center: Center of the map. Defaults to (20, 0).
+            zoom: Zoom level of the map. Defaults to 1.
+            basemap: Can be one of string from "open-street-map", "carto-positron",
+                "carto-darkmatter", "stamen-terrain", "stamen-toner" or
+                "stamen-watercolor". Defaults to 'open-street-map'.
+            height: Height of the map. Defaults to 600.
         """
-        # Authenticates Earth Engine and initializes an Earth Engine session
+        # Authenticates Earth Engine and initializes an Earth Engine session.
         if "ee_initialize" not in kwargs.keys():
             kwargs["ee_initialize"] = True
 
@@ -119,19 +135,20 @@ class Map(go.FigureWidget):
 
     def show(
         self,
-        toolbar=True,
-        map_min_width="91%",
-        map_max_width="98%",
-        refresh=False,
+        toolbar: bool = True,
+        map_min_width: str = "91%",
+        map_max_width: str = "98%",
+        refresh: bool = False,
         **kwargs,
     ):
         """Shows the map.
 
         Args:
-            toolbar (bool, optional): Whether to show the toolbar. Defaults to True.
-            map_min_width (str, optional): The minimum width of the map. Defaults to '91%'.
-            map_max_width (str, optional): The maximum width of the map. Defaults to '98%'.
-            refresh (bool, optional): Whether to refresh the map when the map is resized. Defaults to False.
+            toolbar: Whether to show the toolbar. Defaults to True.
+            map_min_width: The minimum width of the map. Defaults to '91%'.
+            map_max_width: The maximum width of the map. Defaults to '98%'.
+            refresh: Whether to refresh the map when the map is resized. Defaults to
+                False.
 
         Returns:
             Canvas: [description]
@@ -162,7 +179,9 @@ class Map(go.FigureWidget):
         """Adds controls to the map.
 
         Args:
-            controls (list): List of controls to add, e.g., ['drawline', 'drawopenpath', 'drawclosedpath', 'drawcircle', 'drawrect', 'eraseshape'] See https://bit.ly/33Tmqxr
+            controls (list): List of controls to add, e.g., ['drawline', 'drawopenpath',
+                'drawclosedpath', 'drawcircle', 'drawrect', 'eraseshape'] See
+                https://bit.ly/33Tmqxr
         """
         if isinstance(controls, str):
             controls = [controls]
@@ -177,24 +196,26 @@ class Map(go.FigureWidget):
         """Removes controls to the map.
 
         Args:
-            controls (list): List of controls to remove, e.g., ["zoomin", "zoomout", "toimage", "pan", "resetview"]. See https://bit.ly/3Jk7wkb
+            controls (list): List of controls to remove, e.g., ["zoomin", "zoomout",
+                "toimage", "pan", "resetview"]. See https://bit.ly/3Jk7wkb
         """
         if isinstance(controls, str):
             controls = [controls]
         elif not isinstance(controls, list):
             raise ValueError(
-                "Controls must be a string or a list of strings. See https://bit.ly/3Jk7wkb"
+                "Controls must be a string or a list of strings. "
+                "See https://bit.ly/3Jk7wkb"
             )
 
         self.update_layout(modebar_remove=controls)
 
-    def set_center(self, lat, lon, zoom=None):
+    def set_center(self, lat: float, lon: float, zoom: int = None) -> None:
         """Sets the center of the map.
 
         Args:
-            lat (float): Latitude.
-            lon (float): Longitude.
-            zoom (int, optional): Zoom level of the map. Defaults to None.
+            lat: Latitude.
+            lon: Longitude.
+            zoom: Zoom level of the map. Defaults to None.
         """
         self.update_layout(
             mapbox=dict(
@@ -203,11 +224,11 @@ class Map(go.FigureWidget):
             )
         )
 
-    def add_basemap(self, basemap="ROADMAP"):
+    def add_basemap(self, basemap: str = "ROADMAP"):
         """Adds a basemap to the map.
 
         Args:
-            basemap (str, optional): Can be one of string from basemaps. Defaults to 'ROADMAP'.
+            basemap: Can be one of string from basemaps. Defaults to 'ROADMAP'.
         """
         if basemap not in basemaps:
             raise ValueError(
@@ -219,11 +240,11 @@ class Map(go.FigureWidget):
         layers = list(self.layout.mapbox.layers) + [basemaps[basemap]]
         self.update_layout(mapbox_layers=layers)
 
-    def remove_basemap(self, name):
+    def remove_basemap(self, name: str) -> None:
         """Removes a basemap from the map.
 
         Args:
-            name (str): Name of the basemap to remove.
+            name: Name of the basemap to remove.
         """
         layers = list(self.layout.mapbox.layers)
         layers = [layer for layer in layers if layer["name"] != name]
@@ -233,8 +254,12 @@ class Map(go.FigureWidget):
         """Adds a mapbox layer to the map.
 
         Args:
-            layer (str | dict): Layer to add. Can be "basic", "streets", "outdoors", "light", "dark", "satellite", or "satellite-streets". See https://plotly.com/python/mapbox-layers/ and https://docs.mapbox.com/mapbox-gl-js/style-spec/
-            access_token (str, optional): The Mapbox Access token. It can be set as an environment variable "MAPBOX_TOKEN". Defaults to None.
+            layer (str | dict): Layer to add. Can be "basic", "streets", "outdoors",
+                "light", "dark", "satellite", or "satellite-streets". See
+                https://plotly.com/python/mapbox-layers/ and
+                https://docs.mapbox.com/mapbox-gl-js/style-spec/
+            access_token (str, optional): The Mapbox Access token. It can be set as an
+                environment variable "MAPBOX_TOKEN". Defaults to None.
         """
 
         if access_token is None:
@@ -255,11 +280,11 @@ class Map(go.FigureWidget):
             layer.name = name
         self.add_trace(layer, **kwargs)
 
-    def remove_layer(self, name):
+    def remove_layer(self, name: str) -> None:
         """Removes a layer from the map.
 
         Args:
-            name (str): Name of the layer to remove.
+            name: Name of the layer to remove.
         """
         if name in self.get_data_layers():
             self.data = [layer for layer in self.data if layer.name != name]
@@ -268,11 +293,11 @@ class Map(go.FigureWidget):
                 layer for layer in self.layout.mapbox.layers if layer["name"] != name
             ]
 
-    def clear_layers(self, clear_basemap=False):
+    def clear_layers(self, clear_basemap: bool = False) -> None:
         """Clears all layers from the map.
 
         Args:
-            clear_basemap (bool, optional): If True, clears the basemap. Defaults to False.
+            clear_basemap: If True, clears the basemap. Defaults to False.
         """
         if clear_basemap:
             self.data = []
@@ -281,10 +306,7 @@ class Map(go.FigureWidget):
                 self.data = self.data[:1]
 
     def get_layers(self):
-        """Returns a dictionary of all layers in the map.
-        Returns:
-            dict: A dictionary of all layers in the map.
-        """
+        """Returns a dictionary of all layers in the map."""
         layers = {}
 
         for layer in self.layout.mapbox.layers:
@@ -298,12 +320,7 @@ class Map(go.FigureWidget):
         return layers
 
     def get_tile_layers(self):
-        """Returns a dictionary of tile layers in the map.
-
-        Returns:
-            dict: A dictionary of tile layers in the map.
-        """
-
+        """Returns a dictionary of tile layers in the map."""
         layers = {}
 
         for layer in self.layout.mapbox.layers:
@@ -313,11 +330,7 @@ class Map(go.FigureWidget):
         return layers
 
     def get_data_layers(self):
-        """Returns a dictionary of data layers in the map.
-
-        Returns:
-            dict: A dictionary of data layers in the map.
-        """
+        """Returns a dictionary of data layers in the map."""
 
         layers = {}
 
@@ -327,14 +340,14 @@ class Map(go.FigureWidget):
 
         return layers
 
-    def find_layer_index(self, name):
+    def find_layer_index(self, name: str) -> int | None:
         """Finds the index of a layer.
 
         Args:
-            name (str): Name of the layer to find.
+            name: Name of the layer to find.
 
         Returns:
-            int: Index of the layer.
+            Index of the layer.
         """
         for i, layer in enumerate(self.data):
             if layer.name == name:
@@ -346,12 +359,12 @@ class Map(go.FigureWidget):
 
         return None
 
-    def set_layer_visibility(self, name, show=True):
+    def set_layer_visibility(self, name: str, show: bool = True) -> None:
         """Sets the visibility of a layer.
 
         Args:
-            name (str): Name of the layer to set.
-            show (bool, optional): If True, shows the layer. Defaults to True.
+            name: Name of the layer to set.
+            show: If True, shows the layer. Defaults to True.
         """
 
         if name in self.get_tile_layers():
@@ -363,12 +376,12 @@ class Map(go.FigureWidget):
         else:
             print(f"Layer {name} not found.")
 
-    def set_layer_opacity(self, name, opacity=1):
+    def set_layer_opacity(self, name: str, opacity: float = 1.0) -> None:
         """Sets the visibility of a layer.
 
         Args:
-            name (str): Name of the layer to set.
-            opacity (float, optional): Opacity of the layer. Defaults to 1.
+            name: Name of the layer to set.
+            opacity: Opacity of the layer. Defaults to 1.0.
         """
 
         if name in self.get_tile_layers():
@@ -386,21 +399,20 @@ class Map(go.FigureWidget):
 
     def add_tile_layer(
         self,
-        url,
-        name="TileLayer",
-        attribution="",
-        opacity=1.0,
+        url: str,
+        name: str = "TileLayer",
+        attribution: str = "",
+        opacity: float = 1.0,
         **kwargs,
-    ):
+    ) -> None:
         """Adds a TileLayer to the map.
 
         Args:
-            url (str): The URL of the tile layer.
-            name (str, optional): Name of the layer. Defaults to 'TileLayer'.
-            attribution (str): The attribution to use. Defaults to "".
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            url: The URL of the tile layer.
+            name: Name of the layer. Defaults to 'TileLayer'.
+            attribution: The attribution to use. Defaults to "".
+            opacity: The opacity of the layer. Defaults to 1.
         """
-
         layer = {
             "below": "traces",
             "sourcetype": "raster",
@@ -440,7 +452,10 @@ class Map(go.FigureWidget):
             and not isinstance(ee_object, ee.Feature)
             and not isinstance(ee_object, ee.Geometry)
         ):
-            err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
+            err_str = (
+                "The image argument in 'addLayer' function must be an instance of "
+                "one of ee.Image, ee.Geometry, ee.Feature, or ee.FeatureCollection."
+            )
             raise AttributeError(err_str)
 
         if (
