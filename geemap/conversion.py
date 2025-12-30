@@ -917,7 +917,9 @@ def get_js_examples(out_dir: str | None = None) -> str:
     return out_dir
 
 
-def get_nb_template(download_latest: bool = False, out_file: str = None) -> str:
+def get_nb_template(
+    download_latest: bool = False, out_file: str | None = None
+) -> pathlib.Path:
     """Get the Earth Engine Jupyter notebook template.
 
     Args:
@@ -999,7 +1001,7 @@ def template_footer(in_template: str) -> list[str]:
 
 def py_to_ipynb(
     in_file: str,
-    template_file: str = None,
+    template_file: str | None = None,
     out_file: str | None = None,
     github_username: str | None = None,
     github_repo: str | None = None,
@@ -1298,7 +1300,7 @@ if __name__ == "__main__":
     # Convert all EE Python scripts in a folder recursively to Jupyter notebooks.
     # Get the notebook template from the package folder.
     nb_template = get_nb_template()
-    py_to_ipynb_dir(js_dir, nb_template)
+    py_to_ipynb_dir(js_dir, str(nb_template))
 
     # Execute all Jupyter notebooks in a folder recursively and save the output cells.
     execute_notebook_dir(in_dir=js_dir)
