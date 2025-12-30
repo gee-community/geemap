@@ -58,14 +58,14 @@ class ToolbarItem(anywidget.AnyWidget):
         """A togglable, toolbar item.
 
         Args:
-            icon (str): The icon name to use, from https://fonts.google.com/icons.
+            icon: The icon name to use, from https://fonts.google.com/icons.
             tooltip: The tooltip text to show a user on hover.
-            callback: A callback function to execute when the item icon is clicked.
-                Its signature should be `callback(map, selected, item)`, where
-                `map` is the host map, `selected` is a boolean indicating if the
-                user selected or unselected the tool, and `item` is this object.
-            control: The control widget associated with this item. Used to
-                cleanup state when toggled off.
+            callback: A callback function to execute when the item icon is clicked.  Its
+                signature should be `callback(map, selected, item)`, where `map` is the
+                host map, `selected` is a boolean indicating if the user selected or
+                unselected the tool, and `item` is this object.
+            control: The control widget associated with this item. Used to cleanup state
+                when toggled off.
             reset: Whether to reset the selection after the callback has finished.
             active: Whether the tool is currently active.
         """
@@ -118,8 +118,8 @@ class Toolbar(anywidget.AnyWidget):
     def __init__(
         self,
         host_map: "geemap.Map",
-        main_tools: List[ToolbarItem],
-        extra_tools: List[ToolbarItem],
+        main_tools: list[ToolbarItem],
+        extra_tools: list[ToolbarItem],
     ):
         """Adds a toolbar with `main_tools` and `extra_tools` to the `host_map`."""
         super().__init__()
@@ -353,7 +353,8 @@ def inspector_gui(m=None):
                 output.outputs = ()
                 if len(m.pixel_values) == 0:
                     print(
-                        "No pixel values available. Click on the map to start collection data."
+                        "No pixel values available. "
+                        "Click on the map to start collection data."
                     )
                 else:
                     print("Downloading pixel values...")
@@ -890,21 +891,6 @@ def tool_template(m=None, opened=True):
         output,
     ]
 
-    # toolbar_event = ipyevents.Event(
-    #     source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
-    # )
-
-    # def handle_toolbar_event(event):
-    #     if event["type"] == "mouseenter":
-    #         toolbar_widget.children = [toolbar_header, toolbar_footer]
-    #     elif event["type"] == "mouseleave":
-    #         if not toolbar_button.value:
-    #             toolbar_widget.children = [toolbar_button]
-    #             toolbar_button.value = False
-    #             close_button.value = False
-
-    # toolbar_event.on_dom_event(handle_toolbar_event)
-
     def toolbar_btn_click(change):
         if change["new"]:
             close_button.value = False
@@ -966,7 +952,8 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
     Args:
         m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
         opened (bool, optional): Whether to open the toolbar. Defaults to True.
-        show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+        show_close_button (bool, optional): Whether to show the close button. Defaults
+            to True.
     """
 
     widget_width = "250px"
@@ -1293,7 +1280,7 @@ def open_data_widget(m):
             convert_hbox.children = []
             http_widget.children = [filepath]
 
-    def cleanup():
+    def cleanup() -> None:
         if (
             hasattr(m, "_tool_output_ctrl")
             and m._tool_output_ctrl is not None
@@ -1403,9 +1390,11 @@ def convert_js2py(m):
     """
 
     full_widget = widgets.VBox(layout=widgets.Layout(width="465px", height="350px"))
-
     text_widget = widgets.Textarea(
-        placeholder="Paste your Earth Engine JavaScript into this textbox and click the Convert button below to convert the Javascript to Python",
+        placeholder=(
+            "Paste your Earth Engine JavaScript into this textbox and click the "
+            "Convert button below to convert the Javascript to Python"
+        ),
         layout=widgets.Layout(width="455px", height="310px"),
     )
 
@@ -1438,7 +1427,10 @@ def convert_js2py(m):
                 if len(out_lines) > 0 and len(out_lines[0].strip()) == 0:
                     out_lines = out_lines[1:]
 
-                prefix = "# The code has been copied to the clipboard. \n# Press Ctrl+V to in a code cell to paste it.\n"
+                prefix = (
+                    "# The code has been copied to the clipboard.\n"
+                    "# Press Ctrl+V to in a code cell to paste it.\n"
+                )
                 text_widget.value = "".join([prefix] + out_lines)
                 coreutils.create_code_cell("".join(out_lines))
 
@@ -1994,7 +1986,8 @@ def timelapse_gui(m=None, basemap="HYBRID"):
         layout=widgets.Layout(width="180px", padding=padding),
     )
 
-    # Normalized Satellite Indices: https://www.usna.edu/Users/oceano/pguth/md_help/html/norm_sat.htm
+    # Normalized Satellite Indices:
+    # https://www.usna.edu/Users/oceano/pguth/md_help/html/norm_sat.htm
 
     nd_options = [
         "Vegetation Index (NDVI)",
@@ -2240,7 +2233,7 @@ def timelapse_gui(m=None, basemap="HYBRID"):
 
     toolbar_button.observe(toolbar_btn_click, "value")
 
-    def cleanup():
+    def cleanup() -> None:
         if m is not None:
             if m.tool_control is not None and m.tool_control in m.controls:
                 m.remove_control(m.tool_control)
@@ -2922,7 +2915,7 @@ def time_slider(m=None):
         layout=widgets.Layout(padding="0px", width=button_width),
     )
 
-    def cleanup():
+    def cleanup() -> None:
         toolbar_button.value = False
         if m is not None:
             if m.tool_control is not None and m.tool_control in m.controls:
@@ -3725,7 +3718,7 @@ def sankee_gui(m=None):
 
     toolbar_button.observe(toolbar_btn_click, "value")
 
-    def cleanup():
+    def cleanup() -> None:
         toolbar_button.value = False
         if m is not None:
             if m.tool_control is not None and m.tool_control in m.controls:
@@ -4097,11 +4090,11 @@ def _cog_stac_inspector_callback(map, selected, item):
     return map.tool_control
 
 
-_main_tools_cache: List[ToolbarItem] | None = None
-_extra_tools_cache: List[ToolbarItem] | None = None
+_main_tools_cache: list[ToolbarItem] | None = None
+_extra_tools_cache: list[ToolbarItem] | None = None
 
 
-def get_main_tools() -> List[ToolbarItem]:
+def get_main_tools() -> list[ToolbarItem]:
     """Lazily create and return the main_tools list."""
     global _main_tools_cache
     if _main_tools_cache is None:
@@ -4135,7 +4128,7 @@ def get_main_tools() -> List[ToolbarItem]:
     return _main_tools_cache
 
 
-def get_extra_tools() -> List[ToolbarItem]:
+def get_extra_tools() -> list[ToolbarItem]:
     """Lazily create and return the extra_tools list."""
     global _extra_tools_cache
     if _extra_tools_cache is None:
