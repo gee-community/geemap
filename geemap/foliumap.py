@@ -12,6 +12,7 @@ import logging
 import os
 import random
 import re
+from typing import Any
 import warnings
 
 import ee
@@ -610,7 +611,7 @@ class Map(folium.Map):
 
     def add_stac_layer(
         self,
-        url: str = None,
+        url: str | None = None,
         collection: str | None = None,
         item: str | None = None,
         assets: str | list[str] | None = None,
@@ -619,7 +620,7 @@ class Map(folium.Map):
         name: str = "STAC Layer",
         # TODO: Why `.`? This does not match the doc string.
         attribution: str = ".",
-        opacity: str = 1.0,
+        opacity: float = 1.0,
         shown: bool = True,
         **kwargs,
     ) -> None:
@@ -736,27 +737,33 @@ class Map(folium.Map):
 
     def add_remote_tile(
         self,
-        source,
-        band=None,
-        palette=None,
-        vmin=None,
-        vmax=None,
-        nodata=None,
-        attribution=None,
-        layer_name=None,
+        source: str,
+        band: int | None = None,
+        palette: str | None = None,
+        vmin: float | None = None,
+        vmax: float | None = None,
+        nodata: float | None = None,
+        attribution: str | None = None,
+        layer_name: str | None = None,
         **kwargs,
     ):
         """Add a remote Cloud Optimized GeoTIFF (COG) to the map.
 
         Args:
-            source (str): The path to the remote Cloud Optimized GeoTIFF.
-            band (int, optional): The band to use. Band indexing starts at 1. Defaults to None.
-            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
-            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
-            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
-            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
-            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to None.
+            source: The path to the remote Cloud Optimized GeoTIFF.
+            band: The band to use. Band indexing starts at 1. Defaults to None.
+            palette: The name of the color palette from `palettable` to use when
+                plotting a single band. See
+                https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin: The minimum value to use when colormapping the palette when plotting a
+                single band. Defaults to None.
+            vmax: The maximum value to use when colormapping the palette when plotting a
+                single band. Defaults to None.
+            nodata: The value from the band to use to interpret as not valid
+                data. Defaults to None.
+            attribution: Attribution for the source raster. This defaults to a message
+                about it being a local file. Defaults to None.
+            layer_name: The layer name to use. Defaults to None.
         """
         if isinstance(source, str) and source.startswith("http"):
             self.add_raster(
@@ -775,43 +782,44 @@ class Map(folium.Map):
 
     def add_heatmap(
         self,
-        data,
-        latitude="latitude",
-        longitude="longitude",
-        value="value",
-        name="Heat map",
-        radius=25,
+        data: str | list[Any] | pd.DataFrame,
+        latitude: str = "latitude",
+        longitude: str = "longitude",
+        value: str = "value",
+        name: str = "Heat map",
+        radius: int = 25,
         **kwargs,
     ):
-        """Adds a heat map to the map. Reference: https://stackoverflow.com/a/54756617
+        """Adds a heat map to the map.
+
+        Reference: https://stackoverflow.com/a/54756617
 
         Args:
-            data (str | list | pd.DataFrame): File path or HTTP URL to the input file or a list of data points in the format of [[x1, y1, z1], [x2, y2, z2]]. For example, https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/world_cities.csv
-            latitude (str, optional): The column name of latitude. Defaults to "latitude".
-            longitude (str, optional): The column name of longitude. Defaults to "longitude".
-            value (str, optional): The column name of values. Defaults to "value".
-            name (str, optional): Layer name to use. Defaults to "Heat map".
-            radius (int, optional): Radius of each “point” of the heatmap. Defaults to 25.
+            data: File path or HTTP URL to the input file or a list of data points in
+                the format of [[x1, y1, z1], [x2, y2, z2]]. For example,
+                https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/world_cities.csv
+            latitude: The column name of latitude. Defaults to "latitude".
+            longitude: The column name of longitude. Defaults to "longitude".
+            value: The column name of values. Defaults to "value".
+            name: Layer name to use. Defaults to "Heat map".
+            radius: Radius of each “point” of the heatmap. Defaults to 25.
 
         Raises:
             ValueError: If data is not a list.
         """
-        try:
-            if isinstance(data, str):
-                df = pd.read_csv(data)
-                data = df[[latitude, longitude, value]].values.tolist()
-            elif isinstance(data, pd.DataFrame):
-                data = data[[latitude, longitude, value]].values.tolist()
-            elif isinstance(data, list):
-                pass
-            else:
-                raise ValueError("data must be a list, a DataFrame, or a file path.")
+        if isinstance(data, str):
+            df = pd.read_csv(data)
+            data = df[[latitude, longitude, value]].values.tolist()
+        elif isinstance(data, pd.DataFrame):
+            data = data[[latitude, longitude, value]].values.tolist()
+        elif isinstance(data, list):
+            pass
+        else:
+            raise ValueError("data must be a list, a DataFrame, or a file path.")
 
-            plugins.HeatMap(data, name=name, radius=radius, **kwargs).add_to(
-                folium.FeatureGroup(name=name).add_to(self)
-            )
-        except Exception as e:
-            raise Exception(e)
+        plugins.HeatMap(data, name=name, radius=radius, **kwargs).add_to(
+            folium.FeatureGroup(name=name).add_to(self)
+        )
 
     def add_legend(
         self,
@@ -3195,28 +3203,21 @@ def ee_tile_layer(
 
 
 def st_map_center(lat, lon):
-    """Returns the map center coordinates for a given latitude and longitude. If the system variable 'map_center' exists, it is used. Otherwise, the default is returned.
+    """Returns the map center coordinates for a given latitude and longitude.
+
+    If the system variable 'map_center' exists, it is used. Otherwise, the default is
+    returned.
 
     Args:
         lat (float): Latitude.
         lon (float): Longitude.
-
-    Raises:
-        Exception: If streamlit is not installed.
-
-    Returns:
-        list: The map center coordinates.
     """
-    try:
-        import streamlit as st
+    import streamlit as st
 
-        if "map_center" in st.session_state:
-            return st.session_state["map_center"]
-        else:
-            return [lat, lon]
-
-    except Exception as e:
-        raise Exception(e)
+    if "map_center" in st.session_state:
+        return st.session_state["map_center"]
+    else:
+        return [lat, lon]
 
 
 def st_save_bounds(st_component):
@@ -3225,23 +3226,20 @@ def st_save_bounds(st_component):
     Args:
         map (folium.folium.Map): The map to save the bounds from.
     """
-    try:
-        import streamlit as st
+    import streamlit as st
 
-        if st_component is not None:
-            bounds = st_component["bounds"]
-            south = bounds["_southWest"]["lat"]
-            west = bounds["_southWest"]["lng"]
-            north = bounds["_northEast"]["lat"]
-            east = bounds["_northEast"]["lng"]
+    if st_component is not None:
+        bounds = st_component["bounds"]
+        south = bounds["_southWest"]["lat"]
+        west = bounds["_southWest"]["lng"]
+        north = bounds["_northEast"]["lat"]
+        east = bounds["_northEast"]["lng"]
 
-            bounds = [[south, west], [north, east]]
-            center = [south + (north - south) / 2, west + (east - west) / 2]
+        bounds = [[south, west], [north, east]]
+        center = [south + (north - south) / 2, west + (east - west) / 2]
 
-            st.session_state["map_bounds"] = bounds
-            st.session_state["map_center"] = center
-    except Exception as e:
-        raise Exception(e)
+        st.session_state["map_bounds"] = bounds
+        st.session_state["map_center"] = center
 
 
 def linked_maps(
