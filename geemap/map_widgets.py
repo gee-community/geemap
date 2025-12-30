@@ -38,11 +38,12 @@ def _set_css_in_cell_output(info: Any) -> None:
     """Sets CSS styles in the cell output for different themes.
 
     Args:
-        info (Any): Information passed to the function (unused).
+        info: Information passed to the function (unused).
 
     Returns:
         None
     """
+    del info  # Unused.
     display(
         HTML(
             """
@@ -88,10 +89,10 @@ class Theme:
         """Applies the theme to the given class.
 
         Args:
-            cls (Any): The class to which the theme will be applied.
+            cls: The class to which the theme will be applied.
 
         Returns:
-            Any: The class with the applied theme.
+            The class with the applied theme.
         """
         original_init = cls.__init__
 
@@ -119,30 +120,26 @@ class Colorbar(ipywidgets.Output):
         font_size: int = 9,
         axis_off: bool = False,
         max_width: str | None = None,
-        **kwargs: Any,
+        **kwargs,
     ):
         """Add a matplotlib colorbar to the map.
 
         Args:
-            vis_params (dict): Visualization parameters as a dictionary. See
+            vis_params: Visualization parameters as a dictionary. See
                 https://developers.google.com/earth-engine/guides/image_visualization # noqa
                 for options.
-            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See
+            cmap: Matplotlib colormap. Defaults to "gray". See
                 https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py # noqa
                 for options.
-            discrete (bool, optional): Whether to create a discrete colorbar.
+            discrete: Whether to create a discrete colorbar.
                 Defaults to False.
-            label (str, optional): Label for the colorbar. Defaults to None.
-            orientation (str, optional): Orientation of the colorbar, such as
-                "vertical" and "horizontal". Defaults to "horizontal".
-            transparent_bg (bool, optional): Whether to use transparent
-                background. Defaults to False.
-            font_size (int, optional): Font size for the colorbar. Defaults
-                to 9.
-            axis_off (bool, optional): Whether to turn off the axis. Defaults
-                to False.
-            max_width (str, optional): Maximum width of the colorbar in pixels.
-                Defaults to None.
+            label: Label for the colorbar. Defaults to None.
+            orientation: Orientation of the colorbar, such as "vertical" and
+                "horizontal". Defaults to "horizontal".
+            transparent_bg: Whether to use transparent background. Defaults to False.
+            font_size: Font size for the colorbar. Defaults to 9.
+            axis_off: Whether to turn off the axis. Defaults to False.
+            max_width: Maximum width of the colorbar in pixels.  Defaults to None.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -243,11 +240,11 @@ class Colorbar(ipywidgets.Output):
         """Get the dimensions of the colorbar based on orientation.
 
         Args:
-            orientation (str): Orientation of the colorbar.
-            kwargs (Dict[str, Any]): Additional keyword arguments.
+            orientation: Orientation of the colorbar.
+            kwargs: Additional keyword arguments.
 
         Returns:
-            tuple[float, float]: Width and height of the colorbar.
+            Width and height of the colorbar.
 
         Raises:
             ValueError: If the orientation is not either horizontal or vertical.
@@ -298,20 +295,16 @@ class Legend(anywidget.AnyWidget):
         """Adds a customized legend to the map.
 
          Args:
-            title (str, optional): Title of the legend. Defaults to 'Legend'.
-            legend_dict (dict, optional): A dictionary containing legend items
-                as keys and color as values. If provided, keys and colors will
-                be ignored. Defaults to None.
-            keys (list, optional): A list of legend keys. Defaults to None.
-            colors (list, optional): A list of legend colors. Defaults to None.
-            position (str, optional): Position of the legend. Defaults to
-                'bottomright'.
-            builtin_legend (str, optional): Name of the builtin legend to add
-                to the map. Defaults to None.
-            add_header (bool, optional): Whether the legend can be closed or
-                not. Defaults to True.
-            widget_args (dict, optional): Additional arguments. Only
-                "show_close_button" is supported.
+            title: Title of the legend. Defaults to 'Legend'.
+            legend_dict: A dictionary containing legend items as keys and color as
+                values. If provided, keys and colors will be ignored. Defaults to None.
+            keys: A list of legend keys. Defaults to None.
+            colors: A list of legend colors. Defaults to None.
+            position: Position of the legend. Defaults to 'bottomright'.
+            builtin_legend: Name of the builtin legend to add to the map. Defaults to
+                None.
+            add_header: Whether the legend can be closed or not. Defaults to True.
+            widget_args: Additional arguments. Only "show_close_button" is supported.
 
         Raises:
             TypeError: If the keys are not a list.
@@ -321,7 +314,6 @@ class Legend(anywidget.AnyWidget):
             ValueError: If the keys and colors are not the same length.
             ValueError: If the builtin_legend is not allowed.
             ValueError: If the position is not allowed.
-
         """
         super().__init__()
 
@@ -401,12 +393,12 @@ class Legend(anywidget.AnyWidget):
         """Checks if a value is allowed.
 
         Args:
-            value (str): The value to check.
-            value_name (str): The name of the value.
-            allowed_list (List[str]): The list of allowed values.
+            value: The value to check.
+            value_name: The name of the value.
+            allowed_list: The list of allowed values.
 
         Returns:
-            bool: True if the value is allowed, otherwise raises a ValueError.
+            True if the value is allowed, otherwise raises a ValueError.
 
         Raises:
             ValueError: If the value is not allowed.
@@ -461,17 +453,12 @@ class Inspector(anywidget.AnyWidget):
         """Creates an Inspector widget for Earth Engine data.
 
         Args:
-            host_map (geemap.Map): The map to add the inspector widget to.
-            names (list, optional): The list of layer names to be inspected.
-                Defaults to None.
-            visible (bool, optional): Whether to inspect visible layers only.
-                Defaults to True.
-            decimals (int, optional): The number of decimal places to round the
-                values. Defaults to 2.
-            opened (bool, optional): Whether the inspector is opened. Defaults
-                to True.
-            show_close_button (bool, optional): Whether to show the close
-                button. Defaults to True.
+            host_map: The map to add the inspector widget to.
+            names: The list of layer names to be inspected.  Defaults to None.
+            visible: Whether to inspect visible layers only.  Defaults to True.
+            decimals: The number of decimal places to round the values. Defaults to 2.
+            opened: Whether the inspector is opened. Defaults to True.
+            show_close_button: Whether to show the close button. Defaults to True.
         """
         super().__init__()
 
@@ -506,11 +493,11 @@ class Inspector(anywidget.AnyWidget):
         if content.get("type") == "click" and content.get("id") == "close":
             self._on_close_btn_click()
 
-    def _on_map_interaction(self, **kwargs: Any) -> None:
+    def _on_map_interaction(self, **kwargs) -> None:
         """Handles map interaction events.
 
         Args:
-            **kwargs (Any): The interaction event arguments.
+            **kwargs: The interaction event arguments.
         """
         latlon = kwargs.get("coordinates", [])
         if kwargs.get("type") == "click":
@@ -520,7 +507,7 @@ class Inspector(anywidget.AnyWidget):
         """Handles map click events.
 
         Args:
-            latlon (List[float]): The latitude and longitude of the click event.
+            latlon: The latitude and longitude of the click event.
         """
         if not latlon or len(latlon) < 2:
             return
@@ -548,7 +535,7 @@ class Inspector(anywidget.AnyWidget):
         """Gets the visible map layers.
 
         Returns:
-            Dict[str, Any]: A dictionary of visible map layers.
+            A dictionary of visible map layers.
         """
         layers = {}
         if self._names is not None:
@@ -564,10 +551,10 @@ class Inspector(anywidget.AnyWidget):
         """Gets information about a point.
 
         Args:
-            latlon (List[float]): The latitude and longitude of the point.
+            latlon: The latitude and longitude of the point.
 
         Returns:
-            Dict[str, Any]: The node containing the point information.
+            The node containing the point information.
         """
         scale = self._host_map.get_scale()
         label = (
@@ -592,11 +579,11 @@ class Inspector(anywidget.AnyWidget):
         """Queries a point on the map.
 
         Args:
-            latlon (List[float]): The latitude and longitude of the point.
-            ee_object (ee.ComputedObject): The Earth Engine object to query.
+            latlon: The latitude and longitude of the point.
+            ee_object: The Earth Engine object to query.
 
         Returns:
-            Optional[Dict[str, Any]]: The query result.
+            The query result.
         """
         point = ee.Geometry.Point(latlon[::-1])
         scale = self._host_map.get_scale()
@@ -610,10 +597,10 @@ class Inspector(anywidget.AnyWidget):
         """Gets information about pixels at a point.
 
         Args:
-            latlon (List[float]): The latitude and longitude of the point.
+            latlon: The latitude and longitude of the point.
 
         Returns:
-            Dict[str, Any]: The node containing the pixels information.
+            The node containing the pixels information.
         """
 
         root = coreutils.new_tree_node("Pixels", expanded=True, top_level=True)
@@ -646,10 +633,10 @@ class Inspector(anywidget.AnyWidget):
         """Gets a bounding box around a point.
 
         Args:
-            latlon (List[float]): The latitude and longitude of the point.
+            latlon: The latitude and longitude of the point.
 
         Returns:
-            ee.Geometry.BBox: The bounding box around the point.
+            The bounding box around the point.
         """
         lat, lon = latlon
         delta = 0.005
@@ -659,7 +646,7 @@ class Inspector(anywidget.AnyWidget):
         """Gets information about objects at a point.
 
         Args:
-            latlon (List[float]): The latitude and longitude of the point.
+            latlon: The latitude and longitude of the point.
 
         Returns:
             ipytree.Node: The node containing the objects information.
@@ -839,8 +826,8 @@ class BasemapSelector(anywidget.AnyWidget):
         """Creates a widget for selecting a basemap.
 
         Args:
-            basemaps (list): The list of basemap names to make available for selection.
-            value (str): The default value from basemaps to select.
+            basemaps: The list of basemap names to make available for selection.
+            value: The default value from basemaps to select.
         """
         super().__init__()
         self.on_close = None
@@ -924,8 +911,8 @@ class LayerEditor(anywidget.AnyWidget):
         """Initializes a layer editor widget.
 
         Args:
-            host_map (geemap.Map): The geemap.Map object.
-            layer_dict (Optional[Dict[str, Any]]): The layer object to edit.
+            host_map: The geemap.Map object.
+            layer_dict: The layer object to edit.
         """
         super().__init__()
 
