@@ -7009,7 +7009,8 @@
 
     <div class="doc doc-contents ">
 
-        <p>Convert a CSV file containing a list of strings (an ensemble of decision trees) to an ee.Classifier.</p>
+        <p>Returns an ee.Classifier from a CSV file.</p>
+<p>The file must contain a list of strings (an ensemble of decision trees).</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7041,24 +7042,34 @@
           </tr>
       </tbody>
     </table>
-        
+
+
+    <p><span class="doc-section-title">Returns:</span></p>
+    <table>
+      <thead>
+        <tr>
+<th>Name</th>          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+<td><code>object</code></td>            <td>
+                  <code><span title="ee.Classifier">Classifier</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>ee.Classifier.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">399</span>
-<span class="normal">400</span>
-<span class="normal">401</span>
-<span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span>
-<span class="normal">406</span>
-<span class="normal">407</span>
-<span class="normal">408</span>
-<span class="normal">409</span>
-<span class="normal">410</span>
-<span class="normal">411</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">411</span>
 <span class="normal">412</span>
 <span class="normal">413</span>
 <span class="normal">414</span>
@@ -7069,15 +7080,31 @@
 <span class="normal">419</span>
 <span class="normal">420</span>
 <span class="normal">421</span>
-<span class="normal">422</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">csv_to_classifier</span><span class="p">(</span><span class="n">in_csv</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a CSV file containing a list of strings (an ensemble of decision trees) to an ee.Classifier.</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
+<span class="normal">425</span>
+<span class="normal">426</span>
+<span class="normal">427</span>
+<span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">csv_to_classifier</span><span class="p">(</span><span class="n">in_csv</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an ee.Classifier from a CSV file.</span>
+
+<span class="sd">    The file must contain a list of strings (an ensemble of decision trees).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        in_csv (str): File path to the input CSV.</span>
+<span class="sd">        in_csv: File path to the input CSV.</span>
+
 <span class="sd">    Returns:</span>
 <span class="sd">        object: ee.Classifier.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">in_csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">in_csv</span><span class="p">)</span>
 
     <span class="k">try</span><span class="p">:</span>
@@ -7110,7 +7137,9 @@
 
     <div class="doc doc-contents ">
 
-        <p>Function that creates a feature collection with a property tree which contains the string representation of decision trees and exports to ee asset for later use</p>
+        <p>Starts an export task to create a feature collection of a decision tree.</p>
+<p>Creates a feature collection with a property tree which contains the string
+representation of decision trees and exports to ee asset for later use.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7133,7 +7162,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>list of string representation of the decision trees</p>
+                <p>List of string representation of the decision trees.</p>
               </div>
             </td>
             <td>
@@ -7149,7 +7178,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>ee asset id path to export the feature collection to</p>
+                <p>ee asset id path to export the feature collection to.</p>
               </div>
             </td>
             <td>
@@ -7162,20 +7191,13 @@
 
 <details class="kwargs" open>
   <summary>kwargs</summary>
-  <p>description (str): optional description to provide export information. default = "geemap_rf_export"</p>
+  <p>description (str): optional description to provide export information. default =
+    "geemap_rf_export"</p>
 </details>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">357</span>
-<span class="normal">358</span>
-<span class="normal">359</span>
-<span class="normal">360</span>
-<span class="normal">361</span>
-<span class="normal">362</span>
-<span class="normal">363</span>
-<span class="normal">364</span>
-<span class="normal">365</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">365</span>
 <span class="normal">366</span>
 <span class="normal">367</span>
 <span class="normal">368</span>
@@ -7194,30 +7216,46 @@
 <span class="normal">381</span>
 <span class="normal">382</span>
 <span class="normal">383</span>
-<span class="normal">384</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">export_trees_to_fc</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;geemap_rf_export&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function that creates a feature collection with a property tree which contains the string representation of decision trees and exports to ee asset for later use</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
+<span class="normal">394</span>
+<span class="normal">395</span>
+<span class="normal">396</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">export_trees_to_fc</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;geemap_rf_export&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Starts an export task to create a feature collection of a decision tree.</span>
 
-<span class="sd">    args:</span>
-<span class="sd">        trees (list[str]): list of string representation of the decision trees</span>
-<span class="sd">        asset_id (str): ee asset id path to export the feature collection to</span>
+<span class="sd">    Creates a feature collection with a property tree which contains the string</span>
+<span class="sd">    representation of decision trees and exports to ee asset for later use.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        trees (list[str]): List of string representation of the decision trees.</span>
+<span class="sd">        asset_id (str): ee asset id path to export the feature collection to.</span>
 
 <span class="sd">    kwargs:</span>
-<span class="sd">        description (str): optional description to provide export information. default = &quot;geemap_rf_export&quot;</span>
-
+<span class="sd">        description (str): optional description to provide export information. default =</span>
+<span class="sd">            &quot;geemap_rf_export&quot;</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># create a null geometry point. This is needed to properly export the feature collection</span>
+    <span class="c1"># Create a null geometry point.</span>
+    <span class="c1"># This is needed to properly export the feature collection.</span>
     <span class="n">null_island</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
 
-    <span class="c1"># create a list of feature over null island</span>
-    <span class="c1"># set the tree property as the tree string</span>
-    <span class="c1"># encode return values (\n) as #, use to parse later</span>
+    <span class="c1"># Create a list of feature over null island.</span>
+    <span class="c1"># Set the tree property as the tree string.</span>
+    <span class="c1"># Encode return values (\n) as #, use to parse later.</span>
     <span class="n">features</span> <span class="o">=</span> <span class="p">[</span>
         <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="n">null_island</span><span class="p">,</span> <span class="p">{</span><span class="s2">&quot;tree&quot;</span><span class="p">:</span> <span class="n">tree</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">)})</span> <span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">trees</span>
     <span class="p">]</span>
-    <span class="c1"># cast as feature collection</span>
+    <span class="c1"># Cast as feature collection.</span>
     <span class="n">fc</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
 
-    <span class="c1"># get export task and start</span>
+    <span class="c1"># Get export task and start.</span>
     <span class="n">task</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">batch</span><span class="o">.</span><span class="n">Export</span><span class="o">.</span><span class="n">table</span><span class="o">.</span><span class="n">toAsset</span><span class="p">(</span>
         <span class="n">collection</span><span class="o">=</span><span class="n">fc</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="n">description</span><span class="p">,</span> <span class="n">assetId</span><span class="o">=</span><span class="n">asset_id</span>
     <span class="p">)</span>
@@ -7239,7 +7277,8 @@
 
     <div class="doc doc-contents ">
 
-        <p>Function that takes a feature collection resulting from <code>export_trees_to_fc</code> and creates a ee.Classifier that can be used with ee objects</p>
+        <p>Returns an ee.Classifier from a feature collection.</p>
+<p>The feature collection must be from  from <code>export_trees_to_fc</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7262,7 +7301,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>feature collection that has trees property for each feature that represents the decision tree</p>
+                <p>feature collection that has trees property for each
+feature that represents the decision tree</p>
               </div>
             </td>
             <td>
@@ -7298,12 +7338,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
-<span class="normal">338</span>
-<span class="normal">339</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">339</span>
 <span class="normal">340</span>
 <span class="normal">341</span>
 <span class="normal">342</span>
@@ -7318,24 +7353,35 @@
 <span class="normal">351</span>
 <span class="normal">352</span>
 <span class="normal">353</span>
-<span class="normal">354</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fc_to_classifier</span><span class="p">(</span><span class="n">fc</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function that takes a feature collection resulting from `export_trees_to_fc` and creates a ee.Classifier that can be used with ee objects</span>
+<span class="normal">354</span>
+<span class="normal">355</span>
+<span class="normal">356</span>
+<span class="normal">357</span>
+<span class="normal">358</span>
+<span class="normal">359</span>
+<span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fc_to_classifier</span><span class="p">(</span><span class="n">fc</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an ee.Classifier from a feature collection.</span>
 
-<span class="sd">    args:</span>
-<span class="sd">        fc (ee.FeatureCollection): feature collection that has trees property for each feature that represents the decision tree</span>
+<span class="sd">    The feature collection must be from  from `export_trees_to_fc`.</span>
 
-<span class="sd">    returns:</span>
+<span class="sd">    Args:</span>
+<span class="sd">        fc (ee.FeatureCollection): feature collection that has trees property for each</span>
+<span class="sd">            feature that represents the decision tree</span>
+
+<span class="sd">    Returns:</span>
 <span class="sd">        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># get a list of tree strings from feature collection</span>
+    <span class="c1"># Get a list of tree strings from feature collection.</span>
     <span class="n">tree_strings</span> <span class="o">=</span> <span class="n">fc</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s2">&quot;tree&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
         <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span>
             <span class="s2">&quot;#&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;g&quot;</span>
-        <span class="p">)</span>  <span class="c1"># expects that # is ecoded to be a return</span>
+        <span class="p">)</span>  <span class="c1"># Expects that # is ecoded to be a return.</span>
     <span class="p">)</span>
-    <span class="c1"># pass list of ee.Strings to an ensemble decision tree classifier (i.e. RandomForest)</span>
+    <span class="c1"># Pass list of ee.Strings to an ensemble decision tree classifier</span>
+    <span class="c1"># (i.e., RandomForest).</span>
     <span class="n">classifier</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="o">.</span><span class="n">decisionTreeEnsemble</span><span class="p">(</span><span class="n">tree_strings</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">classifier</span>
@@ -7356,7 +7402,8 @@
 
     <div class="doc doc-contents ">
 
-        <p>Function to convert a ensemble of decision trees into a list of strings. Wraps <code>tree_to_string</code></p>
+        <p>Convert a ensemble of decision trees into a list of strings.</p>
+<p>Wraps <code>tree_to_string</code>.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7379,7 +7426,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A decision tree classifier or regressor object created using sklearn</p>
+                <p>A decision tree classifier or regressor
+object created using sklearn.</p>
               </div>
             </td>
             <td>
@@ -7395,7 +7443,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of strings that define the name of features (i.e. bands) used to create the model</p>
+                <p>List of strings that define the name of features
+(i.e., bands) used to create the model.</p>
               </div>
             </td>
             <td>
@@ -7411,7 +7460,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2</p>
+                <p>Number of cpu processes to spawn. Increasing processes will
+improve speed for large models. default = 2</p>
               </div>
             </td>
             <td>
@@ -7427,7 +7477,9 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>the output mode of the estimator. Options are "INFER", "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default = "INFER"</p>
+                <p>Output mode of the estimator. Options are "INFER",
+"CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default =
+"INFER"</p>
               </div>
             </td>
             <td>
@@ -7453,7 +7505,9 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>list of strings where each string represents a decision tree estimator and collectively represent an ensemble decision tree estimator (i.e. RandomForest)</p>
+                <p>list of strings where each string represents a decision tree
+estimator and collectively represent an ensemble decision tree estimator
+(i.e., RandomForest)</p>
               </div>
             </td>
           </tr>
@@ -7463,9 +7517,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
 <span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
@@ -7524,31 +7576,52 @@
 <span class="normal">308</span>
 <span class="normal">309</span>
 <span class="normal">310</span>
-<span class="normal">311</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rf_to_strings</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">output_mode</span><span class="o">=</span><span class="s2">&quot;INFER&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to convert a ensemble of decision trees into a list of strings. Wraps `tree_to_string`</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
+<span class="normal">313</span>
+<span class="normal">314</span>
+<span class="normal">315</span>
+<span class="normal">316</span>
+<span class="normal">317</span>
+<span class="normal">318</span>
+<span class="normal">319</span>
+<span class="normal">320</span>
+<span class="normal">321</span>
+<span class="normal">322</span>
+<span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rf_to_strings</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">output_mode</span><span class="o">=</span><span class="s2">&quot;INFER&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a ensemble of decision trees into a list of strings.</span>
 
-<span class="sd">    args:</span>
-<span class="sd">        estimator (sklearn.ensemble.estimator): A decision tree classifier or regressor object created using sklearn</span>
-<span class="sd">        feature_names (list[str]): List of strings that define the name of features (i.e. bands) used to create the model</span>
-<span class="sd">        processes (int): number of cpu processes to spawn. Increasing processes will improve speed for large models. default = 2</span>
-<span class="sd">        output_mode (str): the output mode of the estimator. Options are &quot;INFER&quot;, &quot;CLASSIFIATION&quot;, or &quot;REGRESSION&quot; (capitalization does not matter). default = &quot;INFER&quot;</span>
+<span class="sd">    Wraps `tree_to_string`.</span>
 
-<span class="sd">    returns:</span>
-<span class="sd">        trees (list[str]): list of strings where each string represents a decision tree estimator and collectively represent an ensemble decision tree estimator (i.e. RandomForest)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        estimator (sklearn.ensemble.estimator): A decision tree classifier or regressor</span>
+<span class="sd">            object created using sklearn.</span>
+<span class="sd">        feature_names (list[str]): List of strings that define the name of features</span>
+<span class="sd">            (i.e., bands) used to create the model.</span>
+<span class="sd">        processes (int): Number of cpu processes to spawn. Increasing processes will</span>
+<span class="sd">            improve speed for large models. default = 2</span>
+<span class="sd">        output_mode (str): Output mode of the estimator. Options are &quot;INFER&quot;,</span>
+<span class="sd">            &quot;CLASSIFIATION&quot;, or &quot;REGRESSION&quot; (capitalization does not matter). default =</span>
+<span class="sd">            &quot;INFER&quot;</span>
 
+<span class="sd">    Returns:</span>
+<span class="sd">        trees (list[str]): list of strings where each string represents a decision tree</span>
+<span class="sd">            estimator and collectively represent an ensemble decision tree estimator</span>
+<span class="sd">            (i.e., RandomForest)</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># force output mode to be capital</span>
+    <span class="c1"># Force output mode to be capital.</span>
     <span class="n">output_mode</span> <span class="o">=</span> <span class="n">output_mode</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
 
     <span class="n">available_modes</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;INFER&quot;</span><span class="p">,</span> <span class="s2">&quot;CLASSIFICATION&quot;</span><span class="p">,</span> <span class="s2">&quot;REGRESSION&quot;</span><span class="p">,</span> <span class="s2">&quot;PROBABILITY&quot;</span><span class="p">]</span>
 
     <span class="k">if</span> <span class="n">output_mode</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">available_modes</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-            <span class="sa">f</span><span class="s2">&quot;The provided output_mode is not available, please provide one from the following list: </span><span class="si">{</span><span class="n">available_modes</span><span class="si">}</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;The provided output_mode is not available. &quot;</span>
+            <span class="sa">f</span><span class="s2">&quot;Please provide one from the following list: </span><span class="si">{</span><span class="n">available_modes</span><span class="si">}</span><span class="s2">&quot;</span>
         <span class="p">)</span>
 
-    <span class="c1"># extract out the estimator trees</span>
+    <span class="c1"># Extract out the estimator trees.</span>
     <span class="n">estimators</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">estimators_</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;INFER&quot;</span><span class="p">:</span>
@@ -7558,7 +7631,8 @@
             <span class="n">class_labels</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Could not infer the output type from the estimator, please explicitly provide the output_mode &quot;</span>
+                <span class="s2">&quot;Could not infer the output type from the estimator. &quot;</span>
+                <span class="s2">&quot;Please explicitly provide the output_mode.&quot;</span>
             <span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;CLASSIFICATION&quot;</span><span class="p">:</span>
@@ -7567,12 +7641,12 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">class_labels</span> <span class="o">=</span> <span class="kc">None</span>
 
-    <span class="c1"># check that number of processors set to use is not more than available</span>
+    <span class="c1"># Check that number of processors set to use is not more than available.</span>
     <span class="k">if</span> <span class="n">processes</span> <span class="o">&gt;=</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">():</span>
-        <span class="c1"># if so, force to use only cpu count - 1</span>
+        <span class="c1"># If so, force to use only cpu count - 1.</span>
         <span class="n">processes</span> <span class="o">=</span> <span class="n">mp</span><span class="o">.</span><span class="n">cpu_count</span><span class="p">()</span> <span class="o">-</span> <span class="mi">1</span>
 
-    <span class="c1"># run the tree extraction process in parallel</span>
+    <span class="c1"># Run the tree extraction process in parallel.</span>
     <span class="k">with</span> <span class="n">mp</span><span class="o">.</span><span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="p">)</span> <span class="k">as</span> <span class="n">pool</span><span class="p">:</span>
         <span class="n">proc</span> <span class="o">=</span> <span class="n">pool</span><span class="o">.</span><span class="n">map_async</span><span class="p">(</span>
             <span class="n">partial</span><span class="p">(</span>
@@ -7603,97 +7677,29 @@
 
     <div class="doc doc-contents ">
 
-        <p>Function that takes string representation of decision trees and creates a ee.Classifier that can be used with ee objects</p>
-
-
-<p><span class="doc-section-title">Parameters:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Type</th>
-          <th>Description</th>
-          <th>Default</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                <code>trees</code>
-            </td>
-            <td>
-                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>list of string representation of the decision trees</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-<th>Name</th>          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-<td><code>classifier</code></td>            <td>
-                  <code><span title="ee.Classifier">Classifier</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>ee classifier object representing an ensemble decision tree</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+        <p>Returns an ee.Classifier from a string representation of decision trees.</p>
 
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">314</span>
-<span class="normal">315</span>
-<span class="normal">316</span>
-<span class="normal">317</span>
-<span class="normal">318</span>
-<span class="normal">319</span>
-<span class="normal">320</span>
-<span class="normal">321</span>
-<span class="normal">322</span>
-<span class="normal">323</span>
-<span class="normal">324</span>
-<span class="normal">325</span>
-<span class="normal">326</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">326</span>
 <span class="normal">327</span>
 <span class="normal">328</span>
 <span class="normal">329</span>
 <span class="normal">330</span>
-<span class="normal">331</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">strings_to_classifier</span><span class="p">(</span><span class="n">trees</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function that takes string representation of decision trees and creates a ee.Classifier that can be used with ee objects</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
+<span class="normal">335</span>
+<span class="normal">336</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">strings_to_classifier</span><span class="p">(</span><span class="n">trees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an ee.Classifier from a string representation of decision trees.&quot;&quot;&quot;</span>
 
-<span class="sd">    args:</span>
-<span class="sd">        trees (list[str]): list of string representation of the decision trees</span>
-
-<span class="sd">    returns:</span>
-<span class="sd">        classifier (ee.Classifier): ee classifier object representing an ensemble decision tree</span>
-
-<span class="sd">    &quot;&quot;&quot;</span>
-
-    <span class="c1"># convert strings to ee.String objects</span>
+    <span class="c1"># Convert strings to ee.String objects.</span>
     <span class="n">ee_strings</span> <span class="o">=</span> <span class="p">[</span><span class="n">ee</span><span class="o">.</span><span class="n">String</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span> <span class="k">for</span> <span class="n">tree</span> <span class="ow">in</span> <span class="n">trees</span><span class="p">]</span>
 
-    <span class="c1"># pass list of ee.Strings to an ensemble decision tree classifier (i.e. RandomForest)</span>
+    <span class="c1"># Pass list of ee.Strings to an ensemble decision tree classifier (i.e.,</span>
+    <span class="c1"># RandomForest).</span>
     <span class="n">classifier</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="o">.</span><span class="n">decisionTreeEnsemble</span><span class="p">(</span><span class="n">ee_strings</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">classifier</span>
@@ -7714,7 +7720,7 @@
 
     <div class="doc doc-contents ">
 
-        <p>Function to convert a sklearn decision tree object to a string format that EE can interpret</p>
+        <p>Convert a sklearn decision tree object to a string format that EE can interpret</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7737,7 +7743,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An estimator consisting of multiple decision tree classifiers. Expects object to contain estimators_ attribute</p>
+                <p>An estimator consisting of multiple decision
+tree classifiers. Expects object to contain estimators_ attribute</p>
               </div>
             </td>
             <td>
@@ -7753,7 +7760,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of strings that define the name of features (i.e. bands) used to create the model</p>
+                <p>List of strings that define the name of features
+(i.e., bands) used to create the model</p>
               </div>
             </td>
             <td>
@@ -7769,7 +7777,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>List of class labels to map outputs to, must be numeric values. If None, then raw outputs will be used. default = None</p>
+                <p>List of class labels to map outputs to, must be
+numeric values. If None, then raw outputs will be used. default = None</p>
               </div>
             </td>
             <td>
@@ -7785,7 +7794,9 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>the output mode of the estimator. Options are "INFER", "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default = "INFER"</p>
+                <p>the output mode of the estimator. Options are "INFER",
+"CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default =
+"INFER"</p>
               </div>
             </td>
             <td>
@@ -7817,29 +7828,10 @@
           </tr>
       </tbody>
     </table>
-
-
-<p><span class="doc-section-title">Raises:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code><span title="RuntimeError">RuntimeError</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>raises run time error when function cannot determine if the estimator is for regression or classification problem</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
+        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
+<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>RuntimeError: raises run time error when function cannot determine if the
+    estimator is for regression or classification problem.
+</code></pre></div></td></tr></table></div>
 
 
             <details class="mkdocstrings-source">
@@ -8074,23 +8066,32 @@
 <span class="normal">244</span>
 <span class="normal">245</span>
 <span class="normal">246</span>
-<span class="normal">247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">tree_to_string</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_mode</span><span class="o">=</span><span class="s2">&quot;INFER&quot;</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to convert a sklearn decision tree object to a string format that EE can interpret</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">tree_to_string</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_mode</span><span class="o">=</span><span class="s2">&quot;INFER&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a sklearn decision tree object to a string format that EE can interpret</span>
 
-<span class="sd">    args:</span>
-<span class="sd">        estimator (sklearn.tree.estimator): An estimator consisting of multiple decision tree classifiers. Expects object to contain estimators_ attribute</span>
-<span class="sd">        feature_names (Iterable[str]): List of strings that define the name of features (i.e. bands) used to create the model</span>
-<span class="sd">        labels (Iterable[numeric]): List of class labels to map outputs to, must be numeric values. If None, then raw outputs will be used. default = None</span>
-<span class="sd">        output_mode (str): the output mode of the estimator. Options are &quot;INFER&quot;, &quot;CLASSIFIATION&quot;, or &quot;REGRESSION&quot; (capitalization does not matter). default = &quot;INFER&quot;</span>
+<span class="sd">    Args:</span>
+<span class="sd">        estimator (sklearn.tree.estimator): An estimator consisting of multiple decision</span>
+<span class="sd">            tree classifiers. Expects object to contain estimators_ attribute</span>
+<span class="sd">        feature_names (Iterable[str]): List of strings that define the name of features</span>
+<span class="sd">            (i.e., bands) used to create the model</span>
+<span class="sd">        labels (Iterable[numeric]): List of class labels to map outputs to, must be</span>
+<span class="sd">            numeric values. If None, then raw outputs will be used. default = None</span>
+<span class="sd">        output_mode (str): the output mode of the estimator. Options are &quot;INFER&quot;,</span>
+<span class="sd">            &quot;CLASSIFIATION&quot;, or &quot;REGRESSION&quot; (capitalization does not matter). default =</span>
+<span class="sd">            &quot;INFER&quot;</span>
 
-<span class="sd">    returns:</span>
+<span class="sd">    Returns:</span>
 <span class="sd">        tree_str (str): string representation of decision tree estimator</span>
 
-<span class="sd">    raises:</span>
-<span class="sd">        RuntimeError: raises run time error when function cannot determine if the estimator is for regression or classification problem</span>
+<span class="sd">    Raises:</span>
+
+<span class="sd">        RuntimeError: raises run time error when function cannot determine if the</span>
+<span class="sd">            estimator is for regression or classification problem.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="c1"># extract out the information need to build the tree string</span>
+    <span class="c1"># Extract out the information need to build the tree string.</span>
     <span class="n">n_nodes</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">node_count</span>
     <span class="n">children_left</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">children_left</span>
     <span class="n">children_right</span> <span class="o">=</span> <span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">children_right</span>
@@ -8102,8 +8103,8 @@
 
     <span class="n">raw_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">squeeze</span><span class="p">(</span><span class="n">estimator</span><span class="o">.</span><span class="n">tree_</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="c1"># first check if user wants to infer output mode</span>
-    <span class="c1"># if so, reset the output_mode variable to a valid mode</span>
+    <span class="c1"># First check if user wants to infer output mode.</span>
+    <span class="c1"># If so, reset the output_mode variable to a valid mode.</span>
     <span class="k">if</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;INFER&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">raw_vals</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
             <span class="n">output_mode</span> <span class="o">=</span> <span class="s2">&quot;CLASSIFICATION&quot;</span>
@@ -8113,12 +8114,13 @@
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-                <span class="s2">&quot;Could not infer the output type from the estimator, please explicitly provide the output_mode &quot;</span>
+                <span class="s2">&quot;Could not infer the output type from the estimator. &quot;</span>
+                <span class="s2">&quot;Please explicitly provide the output_mode.&quot;</span>
             <span class="p">)</span>
 
-    <span class="c1"># second check on the output mode after the inference</span>
+    <span class="c1"># Second check on the output mode after the inference.</span>
     <span class="k">if</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;CLASSIFICATION&quot;</span><span class="p">:</span>
-        <span class="c1"># take argmax along class axis from values</span>
+        <span class="c1"># Take argmax along class axis from values.</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">raw_vals</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">labels</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">index_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
@@ -8128,17 +8130,18 @@
         <span class="n">out_type</span> <span class="o">=</span> <span class="nb">int</span>
 
     <span class="k">elif</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;REGRESSION&quot;</span><span class="p">:</span>
-        <span class="c1"># take values and drop un needed axis</span>
+        <span class="c1"># Take values and drop un needed axis.</span>
         <span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span><span class="n">raw_vals</span><span class="p">,</span> <span class="n">decimals</span><span class="o">=</span><span class="mi">6</span><span class="p">)</span>
         <span class="n">out_type</span> <span class="o">=</span> <span class="nb">float</span>
 
     <span class="k">elif</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;PROBABILITY&quot;</span><span class="p">:</span>
-        <span class="c1"># calculate fraction of samples of the same class in a leaf</span>
-        <span class="c1"># currently only supporting binary classifications</span>
-        <span class="c1"># check if n classes == 2 (i.e. binary classes)</span>
+        <span class="c1"># Calculate fraction of samples of the same class in a leaf.</span>
+        <span class="c1"># Currently only supporting binary classifications.</span>
+        <span class="c1"># Check if n classes == 2 (i.e., binary classes).</span>
         <span class="k">if</span> <span class="n">raw_vals</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                <span class="s2">&quot;shape mismatch: outputs from trees = </span><span class="si">{raw_vals.shape[-1]}</span><span class="s2"> classes, currently probability outputs is support for binary classifications&quot;</span>
+                <span class="s2">&quot;shape mismatch: outputs from trees = </span><span class="si">{raw_vals.shape[-1]}</span><span class="s2"> classes. &quot;</span>
+                <span class="s2">&quot;Currently probability outputs is support for binary classifications.&quot;</span>
             <span class="p">)</span>
 
         <span class="n">probas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">around</span><span class="p">(</span>
@@ -8149,44 +8152,37 @@
         <span class="n">out_type</span> <span class="o">=</span> <span class="nb">float</span>
 
     <span class="k">elif</span> <span class="n">output_mode</span> <span class="o">==</span> <span class="s2">&quot;MULTIPROBABILITY&quot;</span><span class="p">:</span>
-        <span class="c1"># calculate fraction of samples of the same class in a leaf</span>
-        <span class="c1"># this is a 2-d array making the output multidimensional</span>
+        <span class="c1"># Calculate fraction of samples of the same class in a leaf.</span>
+        <span class="c1"># This is a 2-d array making the output multidimensional.</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
-            <span class="s2">&quot;Currently multiprobability output is not support, please choose one of the following output modes: [&#39;CLASSIFIATION&#39;, &#39;REGRESSION&#39;, &#39;PROBABILITY&#39; or &#39;INFER&#39;]&quot;</span>
+            <span class="s2">&quot;Currently multiprobability output is not support. &quot;</span>
+            <span class="s2">&quot;Please choose one of the following output modes: &quot;</span>
+            <span class="s2">&quot;[&#39;CLASSIFIATION&#39;, &#39;REGRESSION&#39;, &#39;PROBABILITY&#39; or &#39;INFER&#39;]&quot;</span>
         <span class="p">)</span>
-
-        <span class="c1"># probas = np.around(</span>
-        <span class="c1">#     (raw_vals / np.sum(raw_vals,axis=1)[:,np.newaxis]),</span>
-        <span class="c1">#     decimals=6</span>
-        <span class="c1"># )</span>
-
-        <span class="c1"># values = probas.tolist()</span>
-        <span class="c1"># out_type = list</span>
-
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span>
-            <span class="s2">&quot;could not understand estimator type and parse out the values&quot;</span>
+            <span class="s2">&quot;Could not understand estimator type and parse out the values.&quot;</span>
         <span class="p">)</span>
 
-    <span class="c1"># use iterative pre-order search to extract node depth and leaf information</span>
+    <span class="c1"># Use iterative pre-order search to extract node depth and leaf information.</span>
     <span class="n">node_ids</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
     <span class="n">node_depth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int64</span><span class="p">)</span>
     <span class="n">is_leaves</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="n">n_nodes</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-    <span class="n">stack</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># seed is the root node id and its parent depth</span>
+    <span class="n">stack</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span>  <span class="c1"># Seed is the root node id and its parent depth.</span>
     <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">stack</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">node_id</span><span class="p">,</span> <span class="n">parent_depth</span> <span class="o">=</span> <span class="n">stack</span><span class="o">.</span><span class="n">pop</span><span class="p">()</span>
         <span class="n">node_depth</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">parent_depth</span> <span class="o">+</span> <span class="mi">1</span>
         <span class="n">node_ids</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">node_id</span>
 
-        <span class="c1"># If we have a test node</span>
+        <span class="c1"># If we have a test node.</span>
         <span class="k">if</span> <span class="n">children_left</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">!=</span> <span class="n">children_right</span><span class="p">[</span><span class="n">node_id</span><span class="p">]:</span>
             <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">children_left</span><span class="p">[</span><span class="n">node_id</span><span class="p">],</span> <span class="n">parent_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
             <span class="n">stack</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">children_right</span><span class="p">[</span><span class="n">node_id</span><span class="p">],</span> <span class="n">parent_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">is_leaves</span><span class="p">[</span><span class="n">node_id</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
 
-    <span class="c1"># create a table of the initial structure</span>
-    <span class="c1"># each row is a node or leaf</span>
+    <span class="c1"># Create a table of the initial structure.</span>
+    <span class="c1"># Each row is a node or leaf.</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
         <span class="p">{</span>
             <span class="s2">&quot;node_id&quot;</span><span class="p">:</span> <span class="n">node_ids</span><span class="p">,</span>
@@ -8204,35 +8200,36 @@
         <span class="n">dtype</span><span class="o">=</span><span class="s2">&quot;object&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># the table representation does not have lef vs right node structure</span>
-    <span class="c1"># so we need to add in right nodes in the correct location</span>
-    <span class="c1"># we do this by first calculating which nodes are right and then insert them at the correct index</span>
+    <span class="c1"># The table representation does not have lef vs right node structure.</span>
+    <span class="c1"># So we need to add in right nodes in the correct location.</span>
+    <span class="c1"># We do this by first calculating which nodes are right and</span>
+    <span class="c1"># then insert them at the correct index.</span>
 
-    <span class="c1"># get a dict of right node rows and assign key based on index where to insert</span>
+    <span class="c1"># Get a dict of right node rows and assign key based on index where to insert.</span>
     <span class="n">inserts</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
         <span class="n">child_r</span> <span class="o">=</span> <span class="n">row</span><span class="o">.</span><span class="n">children_right</span>
         <span class="k">if</span> <span class="n">child_r</span> <span class="o">&gt;</span> <span class="n">row</span><span class="o">.</span><span class="n">Index</span><span class="p">:</span>
             <span class="n">ordered_row</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
             <span class="n">ordered_row</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;&gt;&quot;</span>
-            <span class="n">inserts</span><span class="p">[</span><span class="n">child_r</span><span class="p">]</span> <span class="o">=</span> <span class="n">ordered_row</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># drop index value</span>
-    <span class="c1"># sort the inserts as to keep track of the additive indexing</span>
+            <span class="n">inserts</span><span class="p">[</span><span class="n">child_r</span><span class="p">]</span> <span class="o">=</span> <span class="n">ordered_row</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># Drop index value.</span>
+    <span class="c1"># Sort the inserts as to keep track of the additive indexing.</span>
     <span class="n">inserts_sorted</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">inserts</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">inserts</span><span class="o">.</span><span class="n">keys</span><span class="p">())}</span>
 
-    <span class="c1"># loop through the row inserts and add to table (array)</span>
+    <span class="c1"># Loop through the row inserts and add to table (array).</span>
     <span class="n">table_values</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">values</span>
     <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">inserts_sorted</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
         <span class="n">table_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="n">table_values</span><span class="p">,</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="n">i</span><span class="p">),</span> <span class="n">inserts_sorted</span><span class="p">[</span><span class="n">k</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="c1"># make the ordered table array into a dataframe</span>
-    <span class="c1"># note: df is dtype &quot;object&quot;, need to cast later on</span>
+    <span class="c1"># Make the ordered table array into a dataframe.</span>
+    <span class="c1"># Note: df is dtype &quot;object&quot;. Need to cast later on.</span>
     <span class="n">ordered_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">table_values</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span>
 
     <span class="n">max_depth</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">ordered_df</span><span class="o">.</span><span class="n">node_depth</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">))</span>
     <span class="n">tree_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;1) root </span><span class="si">{</span><span class="n">n_samples</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> 9999 9999 (</span><span class="si">{</span><span class="n">impurities</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span>
     <span class="n">previous_depth</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
     <span class="n">cnts</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="c1"># loop through the nodes and calculate the node number and values per node</span>
+    <span class="c1"># Loop through the nodes and calculate the node number and values per node.</span>
     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">ordered_df</span><span class="o">.</span><span class="n">itertuples</span><span class="p">():</span>
         <span class="n">node_depth</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">node_depth</span><span class="p">)</span>
         <span class="n">left</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">children_left</span><span class="p">)</span>
@@ -8243,7 +8240,6 @@
             <span class="k">elif</span> <span class="n">previous_depth</span> <span class="o">&gt;</span> <span class="n">node_depth</span><span class="p">:</span>
                 <span class="n">depths</span> <span class="o">=</span> <span class="n">ordered_df</span><span class="o">.</span><span class="n">node_depth</span><span class="o">.</span><span class="n">values</span><span class="p">[:</span> <span class="n">row</span><span class="o">.</span><span class="n">Index</span><span class="p">]</span>
                 <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">depths</span> <span class="o">==</span> <span class="n">node_depth</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="c1"># cnt = (cnts[row.Index-1] // 2) + 1</span>
                 <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnts</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="n">previous_depth</span> <span class="o">&lt;</span> <span class="n">node_depth</span><span class="p">:</span>
                 <span class="n">cnt</span> <span class="o">=</span> <span class="n">cnts</span><span class="p">[</span><span class="n">row</span><span class="o">.</span><span class="n">Index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span>
@@ -8294,10 +8290,10 @@
                     <span class="n">criterion</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">criterion</span><span class="p">)</span>
                     <span class="n">tail</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
-            <span class="c1"># extract out the information needed in each line</span>
-            <span class="n">spacing</span> <span class="o">=</span> <span class="p">(</span><span class="n">node_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="s2">&quot;  &quot;</span>  <span class="c1"># for pretty printing</span>
-            <span class="n">fname</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">feature_name</span><span class="p">)</span>  <span class="c1"># name of the feature (i.e. band name)</span>
-            <span class="n">tresh</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span>  <span class="c1"># threshold</span>
+            <span class="c1"># Extract out the information needed in each line.</span>
+            <span class="n">spacing</span> <span class="o">=</span> <span class="p">(</span><span class="n">node_depth</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="s2">&quot;  &quot;</span>  <span class="c1"># For pretty printing.</span>
+            <span class="n">fname</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">feature_name</span><span class="p">)</span>  <span class="c1"># Name of the feature (i.e., band name).</span>
+            <span class="n">tresh</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">threshold</span><span class="p">)</span>  <span class="c1"># Threshold.</span>
             <span class="n">sign</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">sign</span><span class="p">)</span>
 
             <span class="n">tree_str</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">spacing</span><span class="si">}{</span><span class="n">cnt</span><span class="si">}</span><span class="s2">) </span><span class="si">{</span><span class="n">fname</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">sign</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">tresh</span><span class="si">:</span><span class="s2">.6f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">samps</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">criterion</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="n">value</span><span class="si">}{</span><span class="n">tail</span><span class="si">}</span><span class="s2">&quot;</span>
@@ -8341,7 +8337,7 @@
                 <code>trees</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8361,7 +8357,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>File path to the output csv</p>
+                <p>File path to the output csv.</p>
               </div>
             </td>
             <td>
@@ -8374,21 +8370,21 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span>
-<span class="normal">391</span>
-<span class="normal">392</span>
-<span class="normal">393</span>
-<span class="normal">394</span>
-<span class="normal">395</span>
-<span class="normal">396</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">trees_to_csv</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="n">out_csv</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">399</span>
+<span class="normal">400</span>
+<span class="normal">401</span>
+<span class="normal">402</span>
+<span class="normal">403</span>
+<span class="normal">404</span>
+<span class="normal">405</span>
+<span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">trees_to_csv</span><span class="p">(</span><span class="n">trees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">out_csv</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save a list of strings (an ensemble of decision trees) to a CSV file.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        trees (list): A list of strings (an ensemble of decision trees).</span>
-<span class="sd">        out_csv (str): File path to the output csv</span>
+<span class="sd">        trees: A list of strings (an ensemble of decision trees).</span>
+<span class="sd">        out_csv: File path to the output csv.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">out_csv</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">out_csv</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_csv</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>

@@ -7429,7 +7429,20 @@
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">825</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">812</span>
+<span class="normal">813</span>
+<span class="normal">814</span>
+<span class="normal">815</span>
+<span class="normal">816</span>
+<span class="normal">817</span>
+<span class="normal">818</span>
+<span class="normal">819</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
+<span class="normal">822</span>
+<span class="normal">823</span>
+<span class="normal">824</span>
+<span class="normal">825</span>
 <span class="normal">826</span>
 <span class="normal">827</span>
 <span class="normal">828</span>
@@ -7483,20 +7496,7 @@
 <span class="normal">876</span>
 <span class="normal">877</span>
 <span class="normal">878</span>
-<span class="normal">879</span>
-<span class="normal">880</span>
-<span class="normal">881</span>
-<span class="normal">882</span>
-<span class="normal">883</span>
-<span class="normal">884</span>
-<span class="normal">885</span>
-<span class="normal">886</span>
-<span class="normal">887</span>
-<span class="normal">888</span>
-<span class="normal">889</span>
-<span class="normal">890</span>
-<span class="normal">891</span>
-<span class="normal">892</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="normal">879</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">BasemapSelector</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for selecting a basemap.&quot;&quot;&quot;</span>
 
@@ -7513,8 +7513,8 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            basemaps (list): The list of basemap names to make available for selection.</span>
-<span class="sd">            value (str): The default value from basemaps to select.</span>
+<span class="sd">            basemaps: The list of basemap names to make available for selection.</span>
+<span class="sd">            value: The default value from basemaps to select.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
@@ -7610,7 +7610,7 @@
                 <code>basemaps</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="list">list</span>[<span title="str">str</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7643,26 +7643,26 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">838</span>
-<span class="normal">839</span>
-<span class="normal">840</span>
-<span class="normal">841</span>
-<span class="normal">842</span>
-<span class="normal">843</span>
-<span class="normal">844</span>
-<span class="normal">845</span>
-<span class="normal">846</span>
-<span class="normal">847</span>
-<span class="normal">848</span>
-<span class="normal">849</span>
-<span class="normal">850</span>
-<span class="normal">851</span>
-<span class="normal">852</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">825</span>
+<span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span>
+<span class="normal">832</span>
+<span class="normal">833</span>
+<span class="normal">834</span>
+<span class="normal">835</span>
+<span class="normal">836</span>
+<span class="normal">837</span>
+<span class="normal">838</span>
+<span class="normal">839</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemaps</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a widget for selecting a basemap.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        basemaps (list): The list of basemap names to make available for selection.</span>
-<span class="sd">        value (str): The default value from basemaps to select.</span>
+<span class="sd">        basemaps: The list of basemap names to make available for selection.</span>
+<span class="sd">        value: The default value from basemaps to select.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="o">=</span> <span class="kc">None</span>
@@ -7694,10 +7694,10 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">889</span>
-<span class="normal">890</span>
-<span class="normal">891</span>
-<span class="normal">892</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">876</span>
+<span class="normal">877</span>
+<span class="normal">878</span>
+<span class="normal">879</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Cleans up the widget by calling the on_close callback if set.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
@@ -7743,8 +7743,7 @@
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">107</span>
-<span class="normal">108</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">108</span>
 <span class="normal">109</span>
 <span class="normal">110</span>
 <span class="normal">111</span>
@@ -7897,10 +7896,7 @@
 <span class="normal">258</span>
 <span class="normal">259</span>
 <span class="normal">260</span>
-<span class="normal">261</span>
-<span class="normal">262</span>
-<span class="normal">263</span>
-<span class="normal">264</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="normal">261</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Colorbar</span><span class="p">(</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A matplotlib colorbar widget that can be added to the map.&quot;&quot;&quot;</span>
 
@@ -7915,30 +7911,26 @@
         <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
         <span class="n">axis_off</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
         <span class="n">max_width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a matplotlib colorbar to the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            vis_params (dict): Visualization parameters as a dictionary. See</span>
+<span class="sd">            vis_params: Visualization parameters as a dictionary. See</span>
 <span class="sd">                https://developers.google.com/earth-engine/guides/image_visualization # noqa</span>
 <span class="sd">                for options.</span>
-<span class="sd">            cmap (str, optional): Matplotlib colormap. Defaults to &quot;gray&quot;. See</span>
+<span class="sd">            cmap: Matplotlib colormap. Defaults to &quot;gray&quot;. See</span>
 <span class="sd">                https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py # noqa</span>
 <span class="sd">                for options.</span>
-<span class="sd">            discrete (bool, optional): Whether to create a discrete colorbar.</span>
+<span class="sd">            discrete: Whether to create a discrete colorbar.</span>
 <span class="sd">                Defaults to False.</span>
-<span class="sd">            label (str, optional): Label for the colorbar. Defaults to None.</span>
-<span class="sd">            orientation (str, optional): Orientation of the colorbar, such as</span>
-<span class="sd">                &quot;vertical&quot; and &quot;horizontal&quot;. Defaults to &quot;horizontal&quot;.</span>
-<span class="sd">            transparent_bg (bool, optional): Whether to use transparent</span>
-<span class="sd">                background. Defaults to False.</span>
-<span class="sd">            font_size (int, optional): Font size for the colorbar. Defaults</span>
-<span class="sd">                to 9.</span>
-<span class="sd">            axis_off (bool, optional): Whether to turn off the axis. Defaults</span>
-<span class="sd">                to False.</span>
-<span class="sd">            max_width (str, optional): Maximum width of the colorbar in pixels.</span>
-<span class="sd">                Defaults to None.</span>
+<span class="sd">            label: Label for the colorbar. Defaults to None.</span>
+<span class="sd">            orientation: Orientation of the colorbar, such as &quot;vertical&quot; and</span>
+<span class="sd">                &quot;horizontal&quot;. Defaults to &quot;horizontal&quot;.</span>
+<span class="sd">            transparent_bg: Whether to use transparent background. Defaults to False.</span>
+<span class="sd">            font_size: Font size for the colorbar. Defaults to 9.</span>
+<span class="sd">            axis_off: Whether to turn off the axis. Defaults to False.</span>
+<span class="sd">            max_width: Maximum width of the colorbar in pixels.  Defaults to None.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: If the vis_params is not a dictionary.</span>
@@ -8039,11 +8031,11 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the dimensions of the colorbar based on orientation.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            orientation (str): Orientation of the colorbar.</span>
-<span class="sd">            kwargs (Dict[str, Any]): Additional keyword arguments.</span>
+<span class="sd">            orientation: Orientation of the colorbar.</span>
+<span class="sd">            kwargs: Additional keyword arguments.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            tuple[float, float]: Width and height of the colorbar.</span>
+<span class="sd">            Width and height of the colorbar.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If the orientation is not either horizontal or vertical.</span>
@@ -8104,7 +8096,7 @@
                 <code>vis_params</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | <span title="list">list</span> | <span title="tuple">tuple</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8157,7 +8149,7 @@ Defaults to False.</p>
                 <code>label</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8177,8 +8169,8 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Orientation of the colorbar, such as
-"vertical" and "horizontal". Defaults to "horizontal".</p>
+                <p>Orientation of the colorbar, such as "vertical" and
+"horizontal". Defaults to "horizontal".</p>
               </div>
             </td>
             <td>
@@ -8194,8 +8186,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to use transparent
-background. Defaults to False.</p>
+                <p>Whether to use transparent background. Defaults to False.</p>
               </div>
             </td>
             <td>
@@ -8211,8 +8202,7 @@ background. Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Font size for the colorbar. Defaults
-to 9.</p>
+                <p>Font size for the colorbar. Defaults to 9.</p>
               </div>
             </td>
             <td>
@@ -8228,8 +8218,7 @@ to 9.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to turn off the axis. Defaults
-to False.</p>
+                <p>Whether to turn off the axis. Defaults to False.</p>
               </div>
             </td>
             <td>
@@ -8241,12 +8230,11 @@ to False.</p>
                 <code>max_width</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Maximum width of the colorbar in pixels.
-Defaults to None.</p>
+                <p>Maximum width of the colorbar in pixels.  Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -8332,8 +8320,7 @@ Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">111</span>
-<span class="normal">112</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">112</span>
 <span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
@@ -8456,10 +8443,7 @@ Defaults to None.</p>
 <span class="normal">232</span>
 <span class="normal">233</span>
 <span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">235</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">vis_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">tuple</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span>
@@ -8470,30 +8454,26 @@ Defaults to None.</p>
     <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">9</span><span class="p">,</span>
     <span class="n">axis_off</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">max_width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a matplotlib colorbar to the map.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        vis_params (dict): Visualization parameters as a dictionary. See</span>
+<span class="sd">        vis_params: Visualization parameters as a dictionary. See</span>
 <span class="sd">            https://developers.google.com/earth-engine/guides/image_visualization # noqa</span>
 <span class="sd">            for options.</span>
-<span class="sd">        cmap (str, optional): Matplotlib colormap. Defaults to &quot;gray&quot;. See</span>
+<span class="sd">        cmap: Matplotlib colormap. Defaults to &quot;gray&quot;. See</span>
 <span class="sd">            https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py # noqa</span>
 <span class="sd">            for options.</span>
-<span class="sd">        discrete (bool, optional): Whether to create a discrete colorbar.</span>
+<span class="sd">        discrete: Whether to create a discrete colorbar.</span>
 <span class="sd">            Defaults to False.</span>
-<span class="sd">        label (str, optional): Label for the colorbar. Defaults to None.</span>
-<span class="sd">        orientation (str, optional): Orientation of the colorbar, such as</span>
-<span class="sd">            &quot;vertical&quot; and &quot;horizontal&quot;. Defaults to &quot;horizontal&quot;.</span>
-<span class="sd">        transparent_bg (bool, optional): Whether to use transparent</span>
-<span class="sd">            background. Defaults to False.</span>
-<span class="sd">        font_size (int, optional): Font size for the colorbar. Defaults</span>
-<span class="sd">            to 9.</span>
-<span class="sd">        axis_off (bool, optional): Whether to turn off the axis. Defaults</span>
-<span class="sd">            to False.</span>
-<span class="sd">        max_width (str, optional): Maximum width of the colorbar in pixels.</span>
-<span class="sd">            Defaults to None.</span>
+<span class="sd">        label: Label for the colorbar. Defaults to None.</span>
+<span class="sd">        orientation: Orientation of the colorbar, such as &quot;vertical&quot; and</span>
+<span class="sd">            &quot;horizontal&quot;. Defaults to &quot;horizontal&quot;.</span>
+<span class="sd">        transparent_bg: Whether to use transparent background. Defaults to False.</span>
+<span class="sd">        font_size: Font size for the colorbar. Defaults to 9.</span>
+<span class="sd">        axis_off: Whether to turn off the axis. Defaults to False.</span>
+<span class="sd">        max_width: Maximum width of the colorbar in pixels.  Defaults to None.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        TypeError: If the vis_params is not a dictionary.</span>
@@ -8629,7 +8609,15 @@ Defaults to None.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">436</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">428</span>
+<span class="normal">429</span>
+<span class="normal">430</span>
+<span class="normal">431</span>
+<span class="normal">432</span>
+<span class="normal">433</span>
+<span class="normal">434</span>
+<span class="normal">435</span>
+<span class="normal">436</span>
 <span class="normal">437</span>
 <span class="normal">438</span>
 <span class="normal">439</span>
@@ -8868,20 +8856,7 @@ Defaults to None.</p>
 <span class="normal">672</span>
 <span class="normal">673</span>
 <span class="normal">674</span>
-<span class="normal">675</span>
-<span class="normal">676</span>
-<span class="normal">677</span>
-<span class="normal">678</span>
-<span class="normal">679</span>
-<span class="normal">680</span>
-<span class="normal">681</span>
-<span class="normal">682</span>
-<span class="normal">683</span>
-<span class="normal">684</span>
-<span class="normal">685</span>
-<span class="normal">686</span>
-<span class="normal">687</span>
-<span class="normal">688</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="normal">675</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Inspector</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Inspector widget for Earth Engine data.&quot;&quot;&quot;</span>
 
@@ -8909,17 +8884,12 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Creates an Inspector widget for Earth Engine data.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            host_map (geemap.Map): The map to add the inspector widget to.</span>
-<span class="sd">            names (list, optional): The list of layer names to be inspected.</span>
-<span class="sd">                Defaults to None.</span>
-<span class="sd">            visible (bool, optional): Whether to inspect visible layers only.</span>
-<span class="sd">                Defaults to True.</span>
-<span class="sd">            decimals (int, optional): The number of decimal places to round the</span>
-<span class="sd">                values. Defaults to 2.</span>
-<span class="sd">            opened (bool, optional): Whether the inspector is opened. Defaults</span>
-<span class="sd">                to True.</span>
-<span class="sd">            show_close_button (bool, optional): Whether to show the close</span>
-<span class="sd">                button. Defaults to True.</span>
+<span class="sd">            host_map: The map to add the inspector widget to.</span>
+<span class="sd">            names: The list of layer names to be inspected.  Defaults to None.</span>
+<span class="sd">            visible: Whether to inspect visible layers only.  Defaults to True.</span>
+<span class="sd">            decimals: The number of decimal places to round the values. Defaults to 2.</span>
+<span class="sd">            opened: Whether the inspector is opened. Defaults to True.</span>
+<span class="sd">            show_close_button: Whether to show the close button. Defaults to True.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -8954,11 +8924,11 @@ Defaults to None.</p>
         <span class="k">if</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span> <span class="ow">and</span> <span class="n">content</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;id&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;close&quot;</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_on_close_btn_click</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_on_map_interaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_on_map_interaction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles map interaction events.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            **kwargs (Any): The interaction event arguments.</span>
+<span class="sd">            **kwargs: The interaction event arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">,</span> <span class="p">[])</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
@@ -8968,7 +8938,7 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Handles map click events.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            latlon (List[float]): The latitude and longitude of the click event.</span>
+<span class="sd">            latlon: The latitude and longitude of the click event.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">latlon</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">latlon</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
             <span class="k">return</span>
@@ -8996,7 +8966,7 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the visible map layers.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]: A dictionary of visible map layers.</span>
+<span class="sd">            A dictionary of visible map layers.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">layers</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -9012,10 +8982,10 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets information about a point.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+<span class="sd">            latlon: The latitude and longitude of the point.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]: The node containing the point information.</span>
+<span class="sd">            The node containing the point information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span>
         <span class="n">label</span> <span class="o">=</span> <span class="p">(</span>
@@ -9040,11 +9010,11 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Queries a point on the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
-<span class="sd">            ee_object (ee.ComputedObject): The Earth Engine object to query.</span>
+<span class="sd">            latlon: The latitude and longitude of the point.</span>
+<span class="sd">            ee_object: The Earth Engine object to query.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Optional[Dict[str, Any]]: The query result.</span>
+<span class="sd">            The query result.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">point</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">scale</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">get_scale</span><span class="p">()</span>
@@ -9058,10 +9028,10 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets information about pixels at a point.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+<span class="sd">            latlon: The latitude and longitude of the point.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Dict[str, Any]: The node containing the pixels information.</span>
+<span class="sd">            The node containing the pixels information.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
 
         <span class="n">root</span> <span class="o">=</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">new_tree_node</span><span class="p">(</span><span class="s2">&quot;Pixels&quot;</span><span class="p">,</span> <span class="n">expanded</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">top_level</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -9094,10 +9064,10 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets a bounding box around a point.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+<span class="sd">            latlon: The latitude and longitude of the point.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            ee.Geometry.BBox: The bounding box around the point.</span>
+<span class="sd">            The bounding box around the point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">lat</span><span class="p">,</span> <span class="n">lon</span> <span class="o">=</span> <span class="n">latlon</span>
         <span class="n">delta</span> <span class="o">=</span> <span class="mf">0.005</span>
@@ -9107,7 +9077,7 @@ Defaults to None.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets information about objects at a point.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            latlon (List[float]): The latitude and longitude of the point.</span>
+<span class="sd">            latlon: The latitude and longitude of the point.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            ipytree.Node: The node containing the objects information.</span>
@@ -9196,12 +9166,11 @@ Defaults to None.</p>
                 <code>names</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="str">str</span> | <span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The list of layer names to be inspected.
-Defaults to None.</p>
+                <p>The list of layer names to be inspected.  Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -9217,8 +9186,7 @@ Defaults to None.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to inspect visible layers only.
-Defaults to True.</p>
+                <p>Whether to inspect visible layers only.  Defaults to True.</p>
               </div>
             </td>
             <td>
@@ -9234,8 +9202,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The number of decimal places to round the
-values. Defaults to 2.</p>
+                <p>The number of decimal places to round the values. Defaults to 2.</p>
               </div>
             </td>
             <td>
@@ -9251,8 +9218,7 @@ values. Defaults to 2.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether the inspector is opened. Defaults
-to True.</p>
+                <p>Whether the inspector is opened. Defaults to True.</p>
               </div>
             </td>
             <td>
@@ -9268,8 +9234,7 @@ to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to show the close
-button. Defaults to True.</p>
+                <p>Whether to show the close button. Defaults to True.</p>
               </div>
             </td>
             <td>
@@ -9282,7 +9247,15 @@ button. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">452</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">444</span>
+<span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
 <span class="normal">453</span>
 <span class="normal">454</span>
 <span class="normal">455</span>
@@ -9309,20 +9282,7 @@ button. Defaults to True.</p>
 <span class="normal">476</span>
 <span class="normal">477</span>
 <span class="normal">478</span>
-<span class="normal">479</span>
-<span class="normal">480</span>
-<span class="normal">481</span>
-<span class="normal">482</span>
-<span class="normal">483</span>
-<span class="normal">484</span>
-<span class="normal">485</span>
-<span class="normal">486</span>
-<span class="normal">487</span>
-<span class="normal">488</span>
-<span class="normal">489</span>
-<span class="normal">490</span>
-<span class="normal">491</span>
-<span class="normal">492</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">479</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span>
     <span class="n">names</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -9334,17 +9294,12 @@ button. Defaults to True.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates an Inspector widget for Earth Engine data.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        host_map (geemap.Map): The map to add the inspector widget to.</span>
-<span class="sd">        names (list, optional): The list of layer names to be inspected.</span>
-<span class="sd">            Defaults to None.</span>
-<span class="sd">        visible (bool, optional): Whether to inspect visible layers only.</span>
-<span class="sd">            Defaults to True.</span>
-<span class="sd">        decimals (int, optional): The number of decimal places to round the</span>
-<span class="sd">            values. Defaults to 2.</span>
-<span class="sd">        opened (bool, optional): Whether the inspector is opened. Defaults</span>
-<span class="sd">            to True.</span>
-<span class="sd">        show_close_button (bool, optional): Whether to show the close</span>
-<span class="sd">            button. Defaults to True.</span>
+<span class="sd">        host_map: The map to add the inspector widget to.</span>
+<span class="sd">        names: The list of layer names to be inspected.  Defaults to None.</span>
+<span class="sd">        visible: Whether to inspect visible layers only.  Defaults to True.</span>
+<span class="sd">        decimals: The number of decimal places to round the values. Defaults to 2.</span>
+<span class="sd">        opened: Whether the inspector is opened. Defaults to True.</span>
+<span class="sd">        show_close_button: Whether to show the close button. Defaults to True.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -9385,13 +9340,13 @@ button. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">494</span>
-<span class="normal">495</span>
-<span class="normal">496</span>
-<span class="normal">497</span>
-<span class="normal">498</span>
-<span class="normal">499</span>
-<span class="normal">500</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">481</span>
+<span class="normal">482</span>
+<span class="normal">483</span>
+<span class="normal">484</span>
+<span class="normal">485</span>
+<span class="normal">486</span>
+<span class="normal">487</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes the widget from the map and performs cleanup.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_host_map</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;default&quot;</span><span class="p">}</span>
@@ -9440,7 +9395,20 @@ button. Defaults to True.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 899</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 886</span>
+<span class="normal"> 887</span>
+<span class="normal"> 888</span>
+<span class="normal"> 889</span>
+<span class="normal"> 890</span>
+<span class="normal"> 891</span>
+<span class="normal"> 892</span>
+<span class="normal"> 893</span>
+<span class="normal"> 894</span>
+<span class="normal"> 895</span>
+<span class="normal"> 896</span>
+<span class="normal"> 897</span>
+<span class="normal"> 898</span>
+<span class="normal"> 899</span>
 <span class="normal"> 900</span>
 <span class="normal"> 901</span>
 <span class="normal"> 902</span>
@@ -9734,20 +9702,7 @@ button. Defaults to True.</p>
 <span class="normal">1190</span>
 <span class="normal">1191</span>
 <span class="normal">1192</span>
-<span class="normal">1193</span>
-<span class="normal">1194</span>
-<span class="normal">1195</span>
-<span class="normal">1196</span>
-<span class="normal">1197</span>
-<span class="normal">1198</span>
-<span class="normal">1199</span>
-<span class="normal">1200</span>
-<span class="normal">1201</span>
-<span class="normal">1202</span>
-<span class="normal">1203</span>
-<span class="normal">1204</span>
-<span class="normal">1205</span>
-<span class="normal">1206</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="normal">1193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LayerEditor</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for displaying and editing layer visualization properties.&quot;&quot;&quot;</span>
 
@@ -9775,8 +9730,8 @@ button. Defaults to True.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Initializes a layer editor widget.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            host_map (geemap.Map): The geemap.Map object.</span>
-<span class="sd">            layer_dict (Optional[Dict[str, Any]]): The layer object to edit.</span>
+<span class="sd">            host_map: The geemap.Map object.</span>
+<span class="sd">            layer_dict: The layer object to edit.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -10098,11 +10053,11 @@ button. Defaults to True.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">903</span>
-<span class="normal">904</span>
-<span class="normal">905</span>
-<span class="normal">906</span>
-<span class="normal">907</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LayerType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">890</span>
+<span class="normal">891</span>
+<span class="normal">892</span>
+<span class="normal">893</span>
+<span class="normal">894</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LayerType</span><span class="p">(</span><span class="n">enum</span><span class="o">.</span><span class="n">Enum</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Layer types.&quot;&quot;&quot;</span>
 
     <span class="n">RASTER</span> <span class="o">=</span> <span class="s2">&quot;raster&quot;</span>
@@ -10178,7 +10133,7 @@ button. Defaults to True.</p>
                 <code>layer_dict</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.Optional">Optional</span>[<span title="geemap.geemap.Dict">Dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]]</code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -10195,7 +10150,20 @@ button. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">923</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">910</span>
+<span class="normal">911</span>
+<span class="normal">912</span>
+<span class="normal">913</span>
+<span class="normal">914</span>
+<span class="normal">915</span>
+<span class="normal">916</span>
+<span class="normal">917</span>
+<span class="normal">918</span>
+<span class="normal">919</span>
+<span class="normal">920</span>
+<span class="normal">921</span>
+<span class="normal">922</span>
+<span class="normal">923</span>
 <span class="normal">924</span>
 <span class="normal">925</span>
 <span class="normal">926</span>
@@ -10214,25 +10182,12 @@ button. Defaults to True.</p>
 <span class="normal">939</span>
 <span class="normal">940</span>
 <span class="normal">941</span>
-<span class="normal">942</span>
-<span class="normal">943</span>
-<span class="normal">944</span>
-<span class="normal">945</span>
-<span class="normal">946</span>
-<span class="normal">947</span>
-<span class="normal">948</span>
-<span class="normal">949</span>
-<span class="normal">950</span>
-<span class="normal">951</span>
-<span class="normal">952</span>
-<span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">942</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">host_map</span><span class="p">:</span> <span class="s2">&quot;geemap.Map&quot;</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Initializes a layer editor widget.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        host_map (geemap.Map): The geemap.Map object.</span>
-<span class="sd">        layer_dict (Optional[Dict[str, Any]]): The layer object to edit.</span>
+<span class="sd">        host_map: The geemap.Map object.</span>
+<span class="sd">        layer_dict: The layer object to edit.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -10302,7 +10257,20 @@ button. Defaults to True.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">785</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">772</span>
+<span class="normal">773</span>
+<span class="normal">774</span>
+<span class="normal">775</span>
+<span class="normal">776</span>
+<span class="normal">777</span>
+<span class="normal">778</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
+<span class="normal">782</span>
+<span class="normal">783</span>
+<span class="normal">784</span>
+<span class="normal">785</span>
 <span class="normal">786</span>
 <span class="normal">787</span>
 <span class="normal">788</span>
@@ -10326,20 +10294,7 @@ button. Defaults to True.</p>
 <span class="normal">806</span>
 <span class="normal">807</span>
 <span class="normal">808</span>
-<span class="normal">809</span>
-<span class="normal">810</span>
-<span class="normal">811</span>
-<span class="normal">812</span>
-<span class="normal">813</span>
-<span class="normal">814</span>
-<span class="normal">815</span>
-<span class="normal">816</span>
-<span class="normal">817</span>
-<span class="normal">818</span>
-<span class="normal">819</span>
-<span class="normal">820</span>
-<span class="normal">821</span>
-<span class="normal">822</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LayerManager</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
+<span class="normal">809</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LayerManager</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A layer manager widget for geemap.&quot;&quot;&quot;</span>
 
     <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;layer_manager.js&quot;</span>
@@ -10411,13 +10366,13 @@ whenever a layer is added or removed on the map.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">806</span>
-<span class="normal">807</span>
-<span class="normal">808</span>
-<span class="normal">809</span>
-<span class="normal">810</span>
-<span class="normal">811</span>
-<span class="normal">812</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">793</span>
+<span class="normal">794</span>
+<span class="normal">795</span>
+<span class="normal">796</span>
+<span class="normal">797</span>
+<span class="normal">798</span>
+<span class="normal">799</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">refresh_layers</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Refresh the layers in the layer manager.</span>
 
 <span class="sd">    Uses the map interface to pull active layers. This function must be called</span>
@@ -10466,7 +10421,20 @@ whenever a layer is added or removed on the map.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">691</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">678</span>
+<span class="normal">679</span>
+<span class="normal">680</span>
+<span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
+<span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
+<span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span>
+<span class="normal">690</span>
+<span class="normal">691</span>
 <span class="normal">692</span>
 <span class="normal">693</span>
 <span class="normal">694</span>
@@ -10544,20 +10512,7 @@ whenever a layer is added or removed on the map.</p>
 <span class="normal">766</span>
 <span class="normal">767</span>
 <span class="normal">768</span>
-<span class="normal">769</span>
-<span class="normal">770</span>
-<span class="normal">771</span>
-<span class="normal">772</span>
-<span class="normal">773</span>
-<span class="normal">774</span>
-<span class="normal">775</span>
-<span class="normal">776</span>
-<span class="normal">777</span>
-<span class="normal">778</span>
-<span class="normal">779</span>
-<span class="normal">780</span>
-<span class="normal">781</span>
-<span class="normal">782</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="normal">769</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">LayerManagerRow</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A layer manager row widget for geemap.&quot;&quot;&quot;</span>
 
@@ -10701,7 +10656,10 @@ whenever a layer is added or removed on the map.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">267</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">264</span>
+<span class="normal">265</span>
+<span class="normal">266</span>
+<span class="normal">267</span>
 <span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
@@ -10859,15 +10817,7 @@ whenever a layer is added or removed on the map.</p>
 <span class="normal">422</span>
 <span class="normal">423</span>
 <span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span>
-<span class="normal">429</span>
-<span class="normal">430</span>
-<span class="normal">431</span>
-<span class="normal">432</span>
-<span class="normal">433</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="normal">425</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">Legend</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A legend widget that can be added to the map.&quot;&quot;&quot;</span>
 
@@ -10901,20 +10851,16 @@ whenever a layer is added or removed on the map.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
 
 <span class="sd">         Args:</span>
-<span class="sd">            title (str, optional): Title of the legend. Defaults to &#39;Legend&#39;.</span>
-<span class="sd">            legend_dict (dict, optional): A dictionary containing legend items</span>
-<span class="sd">                as keys and color as values. If provided, keys and colors will</span>
-<span class="sd">                be ignored. Defaults to None.</span>
-<span class="sd">            keys (list, optional): A list of legend keys. Defaults to None.</span>
-<span class="sd">            colors (list, optional): A list of legend colors. Defaults to None.</span>
-<span class="sd">            position (str, optional): Position of the legend. Defaults to</span>
-<span class="sd">                &#39;bottomright&#39;.</span>
-<span class="sd">            builtin_legend (str, optional): Name of the builtin legend to add</span>
-<span class="sd">                to the map. Defaults to None.</span>
-<span class="sd">            add_header (bool, optional): Whether the legend can be closed or</span>
-<span class="sd">                not. Defaults to True.</span>
-<span class="sd">            widget_args (dict, optional): Additional arguments. Only</span>
-<span class="sd">                &quot;show_close_button&quot; is supported.</span>
+<span class="sd">            title: Title of the legend. Defaults to &#39;Legend&#39;.</span>
+<span class="sd">            legend_dict: A dictionary containing legend items as keys and color as</span>
+<span class="sd">                values. If provided, keys and colors will be ignored. Defaults to None.</span>
+<span class="sd">            keys: A list of legend keys. Defaults to None.</span>
+<span class="sd">            colors: A list of legend colors. Defaults to None.</span>
+<span class="sd">            position: Position of the legend. Defaults to &#39;bottomright&#39;.</span>
+<span class="sd">            builtin_legend: Name of the builtin legend to add to the map. Defaults to</span>
+<span class="sd">                None.</span>
+<span class="sd">            add_header: Whether the legend can be closed or not. Defaults to True.</span>
+<span class="sd">            widget_args: Additional arguments. Only &quot;show_close_button&quot; is supported.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: If the keys are not a list.</span>
@@ -10924,7 +10870,6 @@ whenever a layer is added or removed on the map.</p>
 <span class="sd">            ValueError: If the keys and colors are not the same length.</span>
 <span class="sd">            ValueError: If the builtin_legend is not allowed.</span>
 <span class="sd">            ValueError: If the position is not allowed.</span>
-
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -11004,12 +10949,12 @@ whenever a layer is added or removed on the map.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Checks if a value is allowed.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            value (str): The value to check.</span>
-<span class="sd">            value_name (str): The name of the value.</span>
-<span class="sd">            allowed_list (List[str]): The list of allowed values.</span>
+<span class="sd">            value: The value to check.</span>
+<span class="sd">            value_name: The name of the value.</span>
+<span class="sd">            allowed_list: The list of allowed values.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            bool: True if the value is allowed, otherwise raises a ValueError.</span>
+<span class="sd">            True if the value is allowed, otherwise raises a ValueError.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            ValueError: If the value is not allowed.</span>
@@ -11063,20 +11008,16 @@ whenever a layer is added or removed on the map.</p>
 
         <p>Adds a customized legend to the map.</p>
 <p>Args:
-    title (str, optional): Title of the legend. Defaults to 'Legend'.
-    legend_dict (dict, optional): A dictionary containing legend items
-        as keys and color as values. If provided, keys and colors will
-        be ignored. Defaults to None.
-    keys (list, optional): A list of legend keys. Defaults to None.
-    colors (list, optional): A list of legend colors. Defaults to None.
-    position (str, optional): Position of the legend. Defaults to
-        'bottomright'.
-    builtin_legend (str, optional): Name of the builtin legend to add
-        to the map. Defaults to None.
-    add_header (bool, optional): Whether the legend can be closed or
-        not. Defaults to True.
-    widget_args (dict, optional): Additional arguments. Only
-        "show_close_button" is supported.</p>
+    title: Title of the legend. Defaults to 'Legend'.
+    legend_dict: A dictionary containing legend items as keys and color as
+        values. If provided, keys and colors will be ignored. Defaults to None.
+    keys: A list of legend keys. Defaults to None.
+    colors: A list of legend colors. Defaults to None.
+    position: Position of the legend. Defaults to 'bottomright'.
+    builtin_legend: Name of the builtin legend to add to the map. Defaults to
+        None.
+    add_header: Whether the legend can be closed or not. Defaults to True.
+    widget_args: Additional arguments. Only "show_close_button" is supported.</p>
 
 
 <p><span class="doc-section-title">Raises:</span></p>
@@ -11164,7 +11105,10 @@ whenever a layer is added or removed on the map.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">286</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">283</span>
+<span class="normal">284</span>
+<span class="normal">285</span>
+<span class="normal">286</span>
 <span class="normal">287</span>
 <span class="normal">288</span>
 <span class="normal">289</span>
@@ -11253,15 +11197,7 @@ whenever a layer is added or removed on the map.</p>
 <span class="normal">372</span>
 <span class="normal">373</span>
 <span class="normal">374</span>
-<span class="normal">375</span>
-<span class="normal">376</span>
-<span class="normal">377</span>
-<span class="normal">378</span>
-<span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">375</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Legend&quot;</span><span class="p">,</span>
     <span class="n">legend_dict</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11276,20 +11212,16 @@ whenever a layer is added or removed on the map.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
 
 <span class="sd">     Args:</span>
-<span class="sd">        title (str, optional): Title of the legend. Defaults to &#39;Legend&#39;.</span>
-<span class="sd">        legend_dict (dict, optional): A dictionary containing legend items</span>
-<span class="sd">            as keys and color as values. If provided, keys and colors will</span>
-<span class="sd">            be ignored. Defaults to None.</span>
-<span class="sd">        keys (list, optional): A list of legend keys. Defaults to None.</span>
-<span class="sd">        colors (list, optional): A list of legend colors. Defaults to None.</span>
-<span class="sd">        position (str, optional): Position of the legend. Defaults to</span>
-<span class="sd">            &#39;bottomright&#39;.</span>
-<span class="sd">        builtin_legend (str, optional): Name of the builtin legend to add</span>
-<span class="sd">            to the map. Defaults to None.</span>
-<span class="sd">        add_header (bool, optional): Whether the legend can be closed or</span>
-<span class="sd">            not. Defaults to True.</span>
-<span class="sd">        widget_args (dict, optional): Additional arguments. Only</span>
-<span class="sd">            &quot;show_close_button&quot; is supported.</span>
+<span class="sd">        title: Title of the legend. Defaults to &#39;Legend&#39;.</span>
+<span class="sd">        legend_dict: A dictionary containing legend items as keys and color as</span>
+<span class="sd">            values. If provided, keys and colors will be ignored. Defaults to None.</span>
+<span class="sd">        keys: A list of legend keys. Defaults to None.</span>
+<span class="sd">        colors: A list of legend colors. Defaults to None.</span>
+<span class="sd">        position: Position of the legend. Defaults to &#39;bottomright&#39;.</span>
+<span class="sd">        builtin_legend: Name of the builtin legend to add to the map. Defaults to</span>
+<span class="sd">            None.</span>
+<span class="sd">        add_header: Whether the legend can be closed or not. Defaults to True.</span>
+<span class="sd">        widget_args: Additional arguments. Only &quot;show_close_button&quot; is supported.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        TypeError: If the keys are not a list.</span>
@@ -11299,7 +11231,6 @@ whenever a layer is added or removed on the map.</p>
 <span class="sd">        ValueError: If the keys and colors are not the same length.</span>
 <span class="sd">        ValueError: If the builtin_legend is not allowed.</span>
 <span class="sd">        ValueError: If the position is not allowed.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
@@ -11399,7 +11330,20 @@ whenever a layer is added or removed on the map.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1209</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1196</span>
+<span class="normal">1197</span>
+<span class="normal">1198</span>
+<span class="normal">1199</span>
+<span class="normal">1200</span>
+<span class="normal">1201</span>
+<span class="normal">1202</span>
+<span class="normal">1203</span>
+<span class="normal">1204</span>
+<span class="normal">1205</span>
+<span class="normal">1206</span>
+<span class="normal">1207</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span>
 <span class="normal">1210</span>
 <span class="normal">1211</span>
 <span class="normal">1212</span>
@@ -11685,20 +11629,7 @@ whenever a layer is added or removed on the map.</p>
 <span class="normal">1492</span>
 <span class="normal">1493</span>
 <span class="normal">1494</span>
-<span class="normal">1495</span>
-<span class="normal">1496</span>
-<span class="normal">1497</span>
-<span class="normal">1498</span>
-<span class="normal">1499</span>
-<span class="normal">1500</span>
-<span class="normal">1501</span>
-<span class="normal">1502</span>
-<span class="normal">1503</span>
-<span class="normal">1504</span>
-<span class="normal">1505</span>
-<span class="normal">1506</span>
-<span class="normal">1507</span>
-<span class="normal">1508</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
+<span class="normal">1495</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@Theme</span><span class="o">.</span><span class="n">apply</span>
 <span class="k">class</span><span class="w"> </span><span class="nc">SearchBar</span><span class="p">(</span><span class="n">anywidget</span><span class="o">.</span><span class="n">AnyWidget</span><span class="p">):</span>
     <span class="n">_esm</span> <span class="o">=</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s2">&quot;static&quot;</span> <span class="o">/</span> <span class="s2">&quot;search_bar.js&quot;</span>
 
@@ -12030,10 +11961,10 @@ whenever a layer is added or removed on the map.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1265</span>
-<span class="normal">1266</span>
-<span class="normal">1267</span>
-<span class="normal">1268</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1252</span>
+<span class="normal">1253</span>
+<span class="normal">1254</span>
+<span class="normal">1255</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">cleanup</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes the widget from the map and performs cleanup.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">on_close</span><span class="p">()</span>
@@ -12077,8 +12008,7 @@ whenever a layer is added or removed on the map.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 81</span>
-<span class="normal"> 82</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 82</span>
 <span class="normal"> 83</span>
 <span class="normal"> 84</span>
 <span class="normal"> 85</span>
@@ -12100,7 +12030,8 @@ whenever a layer is added or removed on the map.</p>
 <span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Theme</span><span class="p">:</span>
+<span class="normal">104</span>
+<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Theme</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies dynamic theme in Colab, otherwise light.&quot;&quot;&quot;</span>
 
     <span class="n">current_theme</span> <span class="o">=</span> <span class="s2">&quot;colab&quot;</span> <span class="k">if</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">in_colab_shell</span><span class="p">()</span> <span class="k">else</span> <span class="s2">&quot;light&quot;</span>
@@ -12110,10 +12041,10 @@ whenever a layer is added or removed on the map.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies the theme to the given class.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            cls (Any): The class to which the theme will be applied.</span>
+<span class="sd">            cls: The class to which the theme will be applied.</span>
 
 <span class="sd">        Returns:</span>
-<span class="sd">            Any: The class with the applied theme.</span>
+<span class="sd">            The class with the applied theme.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">original_init</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span>
 
@@ -12193,13 +12124,13 @@ whenever a layer is added or removed on the map.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>Any</code></td>            <td>
+            <td>
                   <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
@@ -12214,8 +12145,7 @@ whenever a layer is added or removed on the map.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/map_widgets.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 86</span>
-<span class="normal"> 87</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 87</span>
 <span class="normal"> 88</span>
 <span class="normal"> 89</span>
 <span class="normal"> 90</span>
@@ -12232,15 +12162,16 @@ whenever a layer is added or removed on the map.</p>
 <span class="normal">101</span>
 <span class="normal">102</span>
 <span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
+<span class="normal">104</span>
+<span class="normal">105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@staticmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">apply</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Applies the theme to the given class.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cls (Any): The class to which the theme will be applied.</span>
+<span class="sd">        cls: The class to which the theme will be applied.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        Any: The class with the applied theme.</span>
+<span class="sd">        The class with the applied theme.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">original_init</span> <span class="o">=</span> <span class="bp">cls</span><span class="o">.</span><span class="fm">__init__</span>
 
