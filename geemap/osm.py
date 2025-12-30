@@ -12,6 +12,8 @@ found at https://wiki.openstreetmap.org/wiki/Map_features
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
+from typing import Any
+
 from . import common
 
 
