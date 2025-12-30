@@ -1727,7 +1727,7 @@ def credentials_in_colab() -> bool:
         return False
 
 
-def copy_credentials_to_drive() -> bool:
+def copy_credentials_to_drive() -> None:
     """Copies ee credentials from Google Colab to Google Drive."""
     src = "/root/.config/earthengine/credentials"
     dst = "/content/drive/My Drive/.config/earthengine/credentials"
@@ -1739,7 +1739,7 @@ def copy_credentials_to_drive() -> bool:
     shutil.copyfile(src, dst)
 
 
-def copy_credentials_to_colab() -> bool:
+def copy_credentials_to_colab() -> None:
     """Copies ee credentials from Google Drive to Google Colab."""
     src = "/content/drive/My Drive/.config/earthengine/credentials"
     dst = "/root/.config/earthengine/credentials"
@@ -1946,7 +1946,7 @@ def clone_github_repo(url: str, out_dir: str) -> None:
     os.remove(out_file_path)
 
 
-def clone_google_repo(url: str, out_dir: str = None):
+def clone_google_repo(url: str, out_dir: str | None = None):
     """Clones an Earth Engine user repository.
 
     From https://earthengine.googlesource.com, such as
