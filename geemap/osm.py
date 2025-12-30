@@ -474,7 +474,7 @@ def osm_gdf_from_geocode(
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        which_result (INT, optional): Which geocoding result to use. if None,
+        which_result (int, optional): Which geocoding result to use. if None,
             auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
             one. to get the top match regardless of geometry type, set
             which_result=1. Defaults to None.
@@ -483,7 +483,6 @@ def osm_gdf_from_geocode(
 
     Returns:
         GeoDataFrame: A GeoPandas GeoDataFrame.
-
     """
     common.check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/")
 
