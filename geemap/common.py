@@ -54,6 +54,7 @@ import pandas as pd
 import plotly.express as px
 import requests
 
+from . import colormaps
 from .coreutils import *
 from . import coreutils
 
@@ -15016,7 +15017,7 @@ def create_grid(
 
 
 def jslink_slider_label(
-    slider: ipywidgets.IntSlider | ipywidgets.FloatSlider, label: ipywidgets.Label
+    slider: widgets.IntSlider | widgets.FloatSlider, label: widgets.Label
 ) -> None:
     """Link a slider and a label."""
 
