@@ -24,6 +24,7 @@ import itertools
 import json
 import math
 import os
+import pathlib
 import re
 import shutil
 import subprocess
@@ -1886,7 +1887,7 @@ def check_git_install() -> bool:
     """Checks if Git is installed.
 
     Returns:
-        bool: Returns True if Git is installed, otherwise returns False.
+        Returns True if Git is installed, otherwise returns False.
     """
     cmd = "git --version"
     output = os.popen(cmd).read()
@@ -2342,7 +2343,7 @@ def edit_download_html(
 
     basename = os.path.basename(filename)
 
-    # Create and assign html to widget
+    # Create and assign html to widget.
     html = '<a download="{filename}" href="data:text/csv;base64,{payload}" target="_blank">{title}</a>'
     htmlWidget.value = html.format(
         payload=payload, title=title + basename, filename=basename
@@ -9234,7 +9235,7 @@ def extract_pixel_values(
 
 
 def list_vars(var_type=None):
-    """Lists all defined avariables.
+    """Lists all defined variables.
 
     Args:
         var_type (object, optional): The object type of variables to list. Defaults to None.
@@ -11020,21 +11021,20 @@ def bbox_to_gdf(bbox, crs="EPSG:4326"):
     return gdf
 
 
-def check_dir(dir_path, make_dirs=True):
+def check_dir(dir_path: str, make_dirs: bool = True) -> str:
     """Checks if a directory exists and creates it if it does not.
 
     Args:
-        dir_path ([str): The path to the directory.
-        make_dirs (bool, optional): Whether to create the directory if it does not exist. Defaults to True.
+        dir_path: The path to the directory.
+        make_dirs: Whether to create the directory if it does not exist. Defaults to True.
 
     Raises:
         FileNotFoundError: If the directory could not be found.
         TypeError: If the input directory path is not a string.
 
     Returns:
-        str: The path to the directory.
+        The path to the directory.
     """
-
     if isinstance(dir_path, str):
         if dir_path.startswith("~"):
             dir_path = os.path.expanduser(dir_path)
@@ -11052,19 +11052,19 @@ def check_dir(dir_path, make_dirs=True):
         raise TypeError("The provided directory path must be a string.")
 
 
-def check_file_path(file_path, make_dirs=True):
+def check_file_path(file_path: str, make_dirs: bool = True) -> str:
     """Gets the absolute file path.
 
     Args:
-        file_path ([str): The path to the file.
-        make_dirs (bool, optional): Whether to create the directory if it does not exist. Defaults to True.
+        file_path: The path to the file.
+        make_dirs: Whether to create the directory if it does not exist. Defaults to True.
 
     Raises:
         FileNotFoundError: If the directory could not be found.
         TypeError: If the input directory path is not a string.
 
     Returns:
-        str: The absolute path to the file.
+        The absolute path to the file.
     """
     if isinstance(file_path, str):
         if file_path.startswith("~"):
@@ -14054,14 +14054,14 @@ def arc_add_layer(url, name=None, shown=True, opacity=1.0):
                     layer.transparency = 100 - (opacity * 100)
 
 
-def arc_zoom_to_extent(xmin, ymin, xmax, ymax):
+def arc_zoom_to_extent(xmin: float, ymin: float, xmax: float, ymax: float) -> None:
     """Zoom to an extent in ArcGIS Pro.
 
     Args:
-        xmin (float): The minimum x value of the extent.
-        ymin (float): The minimum y value of the extent.
-        xmax (float): The maximum x value of the extent.
-        ymax (float): The maximum y value of the extent.
+        xmin: The minimum x value of the extent.
+        ymin: The minimum y value of the extent.
+        xmax: The maximum x value of the extent.
+        ymax: The maximum y value of the extent.
     """
     if is_arcpy():
         import arcpy
@@ -14078,32 +14078,27 @@ def arc_zoom_to_extent(xmin, ymin, xmax, ymax):
                 )
             )
 
-        # if isinstance(zoom, int):
-        #     scale = 156543.04 * math.cos(0) / math.pow(2, zoom)
-        #     view.camera.scale = scale  # Not working properly
+
+def get_current_year() -> int:
+    """Returns the current year."""
+    return datetime.date.today().year
 
 
-def get_current_year():
-    """Get the current year.
-
-    Returns:
-        int: The current year.
-    """
-    today = datetime.date.today()
-    return today.year
-
-
-def html_to_gradio(html, width="100%", height="500px", **kwargs):
+def html_to_gradio(
+    html: str | list[str], width: str = "100%", height: str = "500px", **kwargs
+) -> str:
     """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
         attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
 
     Args:
-        width (str, optional): The width of the map. Defaults to '100%'.
-        height (str, optional): The height of the map. Defaults to '500px'.
+        html: The HTML string or list of strings to convert.
+        width: The width of the map. Defaults to '100%'.
+        height: The height of the map. Defaults to '500px'.
 
     Returns:
-        str: The HTML string to use in Gradio.
+        The HTML string to use in Gradio.
     """
+    del kwargs  # Unused.
 
     if isinstance(width, int):
         width = f"{width}px"
@@ -14175,11 +14170,11 @@ def image_client(image, **kwargs):
     return client
 
 
-def image_center(image, **kwargs):
+def image_center(image: str, **kwargs):
     """Get the center of an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
         tuple: A tuple of (latitude, longitude).
@@ -14193,17 +14188,17 @@ def image_center(image, **kwargs):
     return client.center()
 
 
-def image_bounds(image, **kwargs):
+def image_bounds(image: str, **kwargs) -> list[tuple[float, float]]:
     """Get the bounds of an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
-        list: A list of bounds in the form of [(south, west), (north, east)].
+        A list of bounds in the form of [(south, west), (north, east)].
     """
-
     image_check(image)
+
     if isinstance(image, str):
         _, client = get_local_tile_layer(image, return_client=True, **kwargs)
     else:
@@ -14212,14 +14207,14 @@ def image_bounds(image, **kwargs):
     return [(bounds[0], bounds[2]), (bounds[1], bounds[3])]
 
 
-def image_metadata(image, **kwargs):
+def image_metadata(image: str, **kwargs) -> dict[str, Any]:
     """Get the metadata of an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
-        dict: A dictionary of image metadata.
+        A dictionary of image metadata.
     """
     image_check(image)
 
@@ -14230,16 +14225,15 @@ def image_metadata(image, **kwargs):
     return client.metadata()
 
 
-def image_bandcount(image, **kwargs):
+def image_bandcount(image: str, **kwargs) -> int:
     """Get the number of bands in an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
-        int: The number of bands in the image.
+        The number of bands in the image.
     """
-
     image_check(image)
 
     if isinstance(image, str):
@@ -14249,14 +14243,14 @@ def image_bandcount(image, **kwargs):
     return len(client.metadata()["bands"])
 
 
-def image_size(image, **kwargs):
+def image_size(image: str, **kwargs) -> tuple[int, int]:
     """Get the size (width, height) of an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
-        tuple: A tuple of (width, height).
+        A tuple of (width, height).
     """
     image_check(image)
 
@@ -14269,14 +14263,14 @@ def image_size(image, **kwargs):
     return metadata["sourceSizeX"], metadata["sourceSizeY"]
 
 
-def image_projection(image, **kwargs):
+def image_projection(image: str, **kwargs) -> str:
     """Get the projection of an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
-        str: The projection of the image.
+        The projection of the image.
     """
     image_check(image)
 
@@ -14287,14 +14281,13 @@ def image_projection(image, **kwargs):
     return client.metadata()["Projection"]
 
 
-def image_set_crs(image, epsg):
+def image_set_crs(image: str, epsg: int) -> None:
     """Define the CRS of an image.
 
     Args:
-        image (str): The input image filepath
-        epsg (int): The EPSG code of the CRS to set.
+        image: The input image filepath
+        epsg: The EPSG code of the CRS to set.
     """
-
     from rasterio.crs import CRS
     import rasterio
 
@@ -14302,14 +14295,14 @@ def image_set_crs(image, epsg):
         rds.crs = CRS.from_epsg(epsg)
 
 
-def image_geotransform(image, **kwargs):
+def image_geotransform(image: str, **kwargs) -> list[float]:
     """Get the geotransform of an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
-        list: A list of geotransform values.
+        A list of geotransform values.
     """
     image_check(image)
 
@@ -14320,14 +14313,14 @@ def image_geotransform(image, **kwargs):
     return client.metadata()["GeoTransform"]
 
 
-def image_resolution(image, **kwargs):
+def image_resolution(image: str, **kwargs) -> float:
     """Get the resolution of an image.
 
     Args:
-        image (str): The input image filepath or URL.
+        image: The input image filepath or URL.
 
     Returns:
-        float: The resolution of the image.
+        The resolution of the image.
     """
     image_check(image)
 
@@ -14338,23 +14331,20 @@ def image_resolution(image, **kwargs):
     return client.metadata()["GeoTransform"][1]
 
 
-def find_files(input_dir, ext=None, fullpath=True, recursive=True):
-    """Find files in a directory.
+def find_files(
+    input_dir: str,
+    ext: str | None = None,
+    fullpath: bool = True,
+    recursive: bool = True,
+) -> list[str]:
+    """Return a list of matching files in a directory.
 
     Args:
-        input_dir (str): The input directory.
-        ext (str, optional): The file extension to match. Defaults to None.
-        fullpath (bool, optional): Whether to return the full path. Defaults to True.
-        recursive (bool, optional): Whether to search recursively. Defaults to True.
-
-    Returns:
-        list: A list of matching files.
+        input_dir: The input directory.
+        ext: The file extension to match. Defaults to None.
+        fullpath: Whether to return the full path. Defaults to True.
+        recursive: Whether to search recursively. Defaults to True.
     """
-
-    from pathlib import Path
-
-    files = []
-
     if ext is None:
         ext = "*"
     else:
@@ -14362,44 +14352,48 @@ def find_files(input_dir, ext=None, fullpath=True, recursive=True):
 
     ext = f"*.{ext}"
 
+    files: list[str]
+
+    path = pathlib.Path(input_dir)
     if recursive:
         if fullpath:
-            files = [str(path.joinpath()) for path in Path(input_dir).rglob(ext)]
+            files = [str(path.joinpath()) for path in path.rglob(ext)]
         else:
-            files = [str(path.name) for path in Path(input_dir).rglob(ext)]
+            files = [str(path.name) for path in path.rglob(ext)]
     else:
         if fullpath:
-            files = [str(path.joinpath()) for path in Path(input_dir).glob(ext)]
+            files = [str(path.joinpath()) for path in path.glob(ext)]
         else:
-            files = [path.name for path in Path(input_dir).glob(ext)]
+            files = [path.name for path in path.glob(ext)]
 
     return files
 
 
-def zoom_level_resolution(zoom, latitude=0):
+def zoom_level_resolution(zoom: int, latitude: float = 0.0) -> float:
     """Returns the approximate pixel scale based on zoom level and latutude.
-        See https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
+
+    See https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
 
     Args:
-        zoom (int): The zoom level.
-        latitude (float, optional): The latitude. Defaults to 0.
+        zoom: The zoom level.
+        latitude: The latitude. Defaults to 0.0.
 
     Returns:
-        float: Map resolution in meters.
+        Map resolution in meters.
     """
     resolution = 156543.04 * math.cos(latitude) / math.pow(2, zoom)
     return abs(resolution)
 
 
-def lnglat_to_meters(longitude, latitude):
+def lnglat_to_meters(longitude: float, latitude: float) -> tuple[float, float]:
     """coordinate conversion between lat/lon in decimal degrees to web mercator
 
     Args:
-        longitude (float): The longitude.
-        latitude (float): The latitude.
+        longitude: The longitude.
+        latitude: The latitude.
 
     Returns:
-        tuple: A tuple of (x, y) in meters.
+        A tuple of (x, y) in meters.
     """
     origin_shift = np.pi * 6378137
     easting = longitude * origin_shift / 180.0
@@ -14417,18 +14411,18 @@ def lnglat_to_meters(longitude, latitude):
         else:
             northing = -20048966
 
-    return (easting, northing)
+    return easting, northing
 
 
-def meters_to_lnglat(x, y):
+def meters_to_lnglat(x: float, y: float) -> tuple[float, float]:
     """coordinate conversion between web mercator to lat/lon in decimal degrees
 
     Args:
-        x (float): The x coordinate.
-        y (float): The y coordinate.
+        x: The x coordinate.
+        y: The y coordinate.
 
     Returns:
-        tuple: A tuple of (longitude, latitude) in decimal degrees.
+        A tuple of (longitude, latitude) in decimal degrees.
     """
     origin_shift = np.pi * 6378137
     longitude = (x / origin_shift) * 180.0
@@ -14436,19 +14430,18 @@ def meters_to_lnglat(x, y):
     latitude = (
         180 / np.pi * (2 * np.arctan(np.exp(latitude * np.pi / 180.0)) - np.pi / 2.0)
     )
-    return (longitude, latitude)
+    return longitude, latitude
 
 
-def bounds_to_xy_range(bounds):
+def bounds_to_xy_range(bounds) -> tuple[tuple[float, float], tuple[float, float]]:
     """Convert bounds to x and y range to be used as input to bokeh map.
 
     Args:
         bounds (list): A list of bounds in the form [(south, west), (north, east)] or [xmin, ymin, xmax, ymax].
 
     Returns:
-        tuple: A tuple of (x_range, y_range).
+        A tuple of (x_range, y_range).
     """
-
     if isinstance(bounds, tuple):
         bounds = list(bounds)
     elif not isinstance(bounds, list):
@@ -14459,25 +14452,28 @@ def bounds_to_xy_range(bounds):
     elif len(bounds) == 2:
         south, west = bounds[0]
         north, east = bounds[1]
+    else:
+        raise ValueError("bounds must be a list of length 4 or 2")
 
     xmin, ymin = lnglat_to_meters(west, south)
     xmax, ymax = lnglat_to_meters(east, north)
-    x_range = (xmin, xmax)
-    y_range = (ymin, ymax)
+    x_range = xmin, xmax
+    y_range = ymin, ymax
     return x_range, y_range
 
 
-def center_zoom_to_xy_range(center, zoom):
+def center_zoom_to_xy_range(
+    center: tuple[float, float], zoom: int
+) -> tuple[tuple[float, float], tuple[float, float]]:
     """Convert center and zoom to x and y range to be used as input to bokeh map.
 
     Args:
-        center (tuple): A tuple of (latitude, longitude).
-        zoom (int): The zoom level.
+        center: A tuple of (latitude, longitude).
+        zoom: The zoom level.
 
     Returns:
-        tuple: A tuple of (x_range, y_range).
+        A tuple of (x_range, y_range).
     """
-
     if isinstance(center, tuple) or isinstance(center, list):
         pass
     else:
@@ -14509,16 +14505,17 @@ def center_zoom_to_xy_range(center, zoom):
     return x_range, y_range
 
 
-def get_geometry_coords(row, geom, coord_type, shape_type, mercator=False):
-    """
-    Returns the coordinates ('x' or 'y') of edges of a Polygon exterior.
+def get_geometry_coords(
+    row, geom: str, coord_type: str, shape_type: str, mercator: bool = False
+) -> float | list[float]:
+    """Returns the coordinates ('x' or 'y') of edges of a Polygon exterior.
 
-    :param: (GeoPandas Series) row : The row of each of the GeoPandas DataFrame.
-    :param: (str) geom : The column name.
-    :param: (str) coord_type : Whether it's 'x' or 'y' coordinate.
-    :param: (str) shape_type
+    row (GeoPandas Series): The row of each of the GeoPandas DataFrame.
+    geom: The column name.
+    coord_type: Whether it's 'x' or 'y' coordinate.
+    shape_type: The shape type of the geometry.
+    mercator: Whether to convert to Web Mercator coordinates.
     """
-
     # Parse the exterior of the coordinate
     if shape_type.lower() in ["polygon", "multipolygon"]:
         exterior = row[geom].geoms[0].exterior
@@ -14566,19 +14563,22 @@ def get_geometry_coords(row, geom, coord_type, shape_type, mercator=False):
             return coords
 
 
-def landsat_scaling(image, thermal_bands=True, apply_fmask=False):
-    """Apply scaling factors to a Landsat image. See an example at
+def landsat_scaling(
+    image, thermal_bands: bool = True, apply_fmask: bool = False
+) -> ee.Image:
+    """Apply scaling factors to a Landsat image.
+
+    Example
         https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2
 
     Args:
         image (ee.Image): The input Landsat image.
-        thermal_bands (bool, optional): Whether to apply scaling to thermal bands. Defaults to True.
-        apply_fmask (bool, optional): Whether to apply Fmask cloud mask. Defaults to False.
+        thermal_bands: Whether to apply scaling to thermal bands. Defaults to True.
+        apply_fmask: Whether to apply Fmask cloud mask. Defaults to False.
 
     Returns:
-        ee.Image: The scaled Landsat image.
+        The scaled Landsat image.
     """
-
     # Apply the scaling factors to the appropriate bands.
     opticalBands = image.select("SR_B.").multiply(0.0000275).add(-0.2)
     if thermal_bands:
@@ -14638,7 +14638,6 @@ def tms_to_geotiff(
 
     """
     from PIL import Image
-
     from osgeo import gdal, osr
 
     gdal.UseExceptions()
@@ -14915,7 +14914,6 @@ def ee_to_geotiff(
         crs (str, optional): The CRS of the output image. Defaults to "EPSG:3857".
         to_cog (bool, optional): Whether to convert the image to Cloud Optimized GeoTIFF. Defaults to False.
         quiet (bool, optional): Whether to hide the download progress bar. Defaults to False.
-
     """
     image = None
 
@@ -14985,19 +14983,21 @@ def ee_to_geotiff(
     tms_to_geotiff(output, bbox, zoom, resolution, url, crs, to_cog, quiet, **kwargs)
 
 
-def create_grid(ee_object, scale, proj=None):
+def create_grid(
+    ee_object: ee.Image | ee.Geometry | ee.FeatureCollection,
+    scale: float | Any,
+    proj: str | Any | None = None,
+) -> ee.FeatureCollection:
     """Create a grid covering an Earth Engine object.
 
     Args:
-        ee_object (ee.Image | ee.Geometry | ee.FeatureCollection): The Earth Engine object.
-        scale (float): The grid cell size.
-        proj (str, optional): The projection. Defaults to None.
-
+        ee_object: The Earth Engine object.
+        scale: The grid cell size.
+        proj: The projection. Defaults to None.
 
     Returns:
-        ee.FeatureCollection: The grid as a feature collection.
+        The grid as a feature collection.
     """
-
     if isinstance(ee_object, ee.FeatureCollection) or isinstance(ee_object, ee.Image):
         geometry = ee_object.geometry()
     elif isinstance(ee_object, ee.Geometry):
@@ -15015,13 +15015,10 @@ def create_grid(ee_object, scale, proj=None):
     return grid
 
 
-def jslink_slider_label(slider, label):
-    """Link a slider and a label.
-
-    Args:
-        slider (ipywidgets.IntSlider | ipywidgets.FloatSlider): The slider.
-        label (ipywidgets.Label): The label.
-    """
+def jslink_slider_label(
+    slider: ipywidgets.IntSlider | ipywidgets.FloatSlider, label: ipywidgets.Label
+) -> None:
+    """Link a slider and a label."""
 
     def update_label(change):
         if change["name"]:
@@ -15030,14 +15027,14 @@ def jslink_slider_label(slider, label):
     slider.observe(update_label, "value")
 
 
-def check_basemap(basemap):
+def check_basemap(basemap: str) -> str:
     """Check Google basemaps
 
     Args:
-        basemap (str): The basemap name.
+        basemap: The basemap name.
 
     Returns:
-        str: The basemap name.
+        The basemap name.
     """
     if isinstance(basemap, str):
         map_dict = {
@@ -15073,39 +15070,33 @@ def get_ee_token():
 
 
 def geotiff_to_image(image: str, output: str) -> None:
-    """
-    Converts a GeoTIFF file to a JPEG/PNG image.
+    """Converts a GeoTIFF file to a JPEG/PNG image.
 
     Args:
-        image (str): The path to the input GeoTIFF file.
-        output (str): The path to save the output JPEG/PNG file.
+        image: The path to the input GeoTIFF file.
+        output: The path to save the output JPEG/PNG file.
 
     Returns:
         None
     """
-
     import rasterio
     from PIL import Image
 
-    # Open the GeoTIFF file
     with rasterio.open(image) as dataset:
-        # Read the image data
         data = dataset.read()
 
-        # Convert the image data to 8-bit format (assuming it's not already)
+        # Convert the image data to 8-bit format (assuming it's not already).
         if dataset.dtypes[0] != "uint8":
             data = (data / data.max() * 255).astype("uint8")
 
-        # Convert the image data to RGB format if it's a single band image
+        # Convert the image data to RGB format if it's a single band image.
         if dataset.count == 1:
             data = data.squeeze()
             data = data.reshape((1, data.shape[0], data.shape[1]))
             data = data.repeat(3, axis=0)
 
-        # Create a PIL Image object from the image data
         image = Image.fromarray(data.transpose(1, 2, 0))
 
-        # Save the image as a JPEG file
         image.save(output)
 
 
@@ -15120,8 +15111,7 @@ def xee_to_image(
     quiet: bool = False,
     **kwargs,
 ) -> None:
-    """
-    Convert xarray Dataset to georeferenced images.
+    """Convert xarray Dataset to georeferenced images.
 
     Args:
         xds (xr.Dataset): The xarray Dataset to convert to images.
@@ -15142,7 +15132,6 @@ def xee_to_image(
 
     Raises:
         ValueError: If the number of filenames doesn't match the number of time steps in the Dataset.
-
     """
     try:
         import rioxarray
@@ -15466,49 +15455,41 @@ def array_to_image(
                 dst.write(array[:, :, i], i + 1)
 
 
-def is_studio_lab():
-    """Check if the current notebook is running on Studio Lab.
-
-    Returns:
-        bool: True if the notebook is running on Studio Lab.
-    """
-
+def is_studio_lab() -> bool:
+    """Returns True if the notebook is running on Studio Lab."""
     import psutil
 
-    output = psutil.Process().parent().cmdline()
+    parent = psutil.Process().parent()
+    assert parent  #  For pytype.
+    output = parent.cmdline()
 
-    on_studio_lab = False
     for item in output:
         if "studiolab/bin" in item:
-            on_studio_lab = True
-    return on_studio_lab
+            return True
+    return False
 
 
-def is_on_aws():
-    """Check if the current notebook is running on AWS.
-
-    Returns:
-        bool: True if the notebook is running on AWS.
-    """
-
+def is_on_aws() -> bool:
+    """Returns True if the notebook is running on AWS."""
     import psutil
 
-    output = psutil.Process().parent().cmdline()
+    parent = psutil.Process().parent()
+    assert parent  # For pytype.
+    output = parent.cmdline()
 
-    on_aws = False
     for item in output:
         if item.endswith(".aws") or "ec2-user" in item:
-            on_aws = True
-    return on_aws
+            return True
+    return False
 
 
-def xarray_to_raster(dataset, filename: str, **kwargs: dict[str, Any]) -> None:
+def xarray_to_raster(dataset, filename: str, **kwargs) -> None:
     """Convert an xarray Dataset to a raster file.
 
     Args:
         dataset (xr.Dataset): The input xarray Dataset to be converted.
-        filename (str): The output filename for the raster file.
-        **kwargs (dict[str, Any]): Additional keyword arguments passed to the `rio.to_raster()` method.
+        filename: The output filename for the raster file.
+        **kwargs: Additional keyword arguments passed to the `rio.to_raster()` method.
             See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.
 
     Returns:
@@ -15541,17 +15522,16 @@ def xarray_to_raster(dataset, filename: str, **kwargs: dict[str, Any]) -> None:
 
 
 def hex_to_rgba(hex_color: str, opacity: float) -> str:
-    """
-    Converts a hex color code to an RGBA color string.
+    """Converts a hex color code to an RGBA color string.
 
     Args:
-        hex_color (str): The hex color code to convert. It can be in the format
-            '#RRGGBB' or 'RRGGBB'.
-        opacity (float): The opacity value for the RGBA color. It should be a
+        hex_color: The hex color code to convert. It can be in the format
+            '#RRGGBB' or 'RRGGBB'. Does not support alpha or 'RGB'.
+        opacity: The opacity value for the RGBA color. It should be a
             float between 0.0 (completely transparent) and 1.0 (completely opaque).
 
     Returns:
-        str: The RGBA color string in the format 'rgba(R, G, B, A)'.
+        The RGBA color string in the format 'rgba(R, G, B, A)'.
     """
     hex_color = hex_color.lstrip("#")
     h_len = len(hex_color)
@@ -15578,11 +15558,10 @@ def replace_top_level_hyphens(d: dict | Any) -> dict | Any:
 
 
 def replace_hyphens_in_keys(d: dict | list | Any) -> dict | list | Any:
-    """
-    Recursively replaces hyphens with underscores in dictionary keys.
+    """Recursively replaces hyphens with underscores in dictionary keys.
 
     Args:
-        d (dict | list | Any): The input dictionary, list or any other data type.
+        d: The input dictionary, list, or any other data type.
 
     Returns:
         The modified dictionary or list with keys having hyphens replaced with underscores,
@@ -15597,26 +15576,22 @@ def replace_hyphens_in_keys(d: dict | list | Any) -> dict | list | Any:
 
 
 def remove_port_from_string(data: str) -> str:
-    """
-    Removes the port number from all URLs in the given string.
+    """Removes the port number from all URLs in the given string.
 
     Args::
-        data (str): The input string containing URLs.
+        data: The input string containing URLs.
 
     Returns:
-        str: The string with port numbers removed from all URLs.
+        The string with port numbers removed from all URLs.
     """
-    # Regular expression to match URLs with port numbers
+    # Match URLs with port numbers.
     url_with_port_pattern = re.compile(r"(http://[\d\w.]+):\d+")
 
-    # Function to remove the port from the matched URLs
+    # Function to remove the port from the matched URLs.
     def remove_port(match):
         return match.group(1)
 
-    # Substitute the URLs with ports removed
-    result = url_with_port_pattern.sub(remove_port, data)
-
-    return result
+    return url_with_port_pattern.sub(remove_port, data)
 
 
 def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
@@ -15655,7 +15630,7 @@ def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
         return
 
     # ignore uri parameters when checking file suffix
-    if not urlparse(input_file).path.endswith(".pmtiles"):
+    if not urllib.parse.urlparse(input_file).path.endswith(".pmtiles"):
         raise ValueError("Input file must be a .pmtiles file.")
 
     header = pmtiles_header(input_file)
@@ -15698,7 +15673,6 @@ def pmtiles_style(
     circle_radius: int = 5,
     line_width: int = 1,
     attribution: str = "PMTiles",
-    **kwargs,
 ):
     """
     Generates a Mapbox style JSON for rendering PMTiles data.
@@ -15741,9 +15715,7 @@ def pmtiles_style(
     elif isinstance(cmap, list):
         palette = cmap
     else:
-        from .colormaps import get_palette
-
-        palette = ["#" + c for c in get_palette(cmap, n_class)]
+        palette = ["#" + c for c in colormaps.get_palette(cmap, n_class)]
 
     n_class = len(palette)
 
@@ -15815,7 +15787,7 @@ def pmtiles_style(
     return style
 
 
-def check_html_string(html_string):
+def check_html_string(html_string: str) -> str:
     """Check if an HTML string contains local images and convert them to base64.
 
     Args:
@@ -15828,12 +15800,11 @@ def check_html_string(html_string):
     img_regex = r'<img[^>]+src\s*=\s*["\']([^"\':]+)["\'][^>]*>'
 
     for match in re.findall(img_regex, html_string):
-        with open(match, "rb") as img_file:
-            img_data = img_file.read()
-            base64_data = base64.b64encode(img_data).decode("utf-8")
-            html_string = html_string.replace(
-                f'src="{match}"',
-                'src="data:image/png;base64,' + base64_data + '"',
-            )
+        img_data = pathlib.Path(match).read_bytes()
+        base64_data = base64.b64encode(img_data).decode("utf-8")
+        html_string = html_string.replace(
+            'src="{}"'.format(match),
+            'src="data:image/png;base64,' + base64_data + '"',
+        )
 
     return html_string
