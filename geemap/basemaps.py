@@ -267,28 +267,26 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
         language: str = "en-Us",
         region: str = "US",
         api_key: str | None = None,
-        **kwargs: Any,
+        **kwargs,
     ):
-        """
-        Generates Google Map tiles using the provided parameters. To get an API key
-            and enable Map Tiles API, visit
-            https://developers.google.com/maps/get-started#create-project.
-            You can set the API key using the environment variable
-            `GOOGLE_MAPS_API_KEY` or by passing it as an argument.
+        """Generates Google Map tiles using the provided parameters.
+
+        To get an API key and enable Map Tiles API, visit
+        https://developers.google.com/maps/get-started#create-project.  You can set the
+        API key using the environment variable `GOOGLE_MAPS_API_KEY` or by passing it as
+        an argument.
 
         Args:
-            map_type (str, optional): The type of map to generate. Options are
-                'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'.
-                Defaults to 'roadmap'.
-            language (str, optional): An IETF language tag that specifies the
-                language used to display information on the tiles, such as 'zh-Cn'.
-                Defaults to 'en-Us'.
-            region (str, optional): A Common Locale Data Repository region
-                identifier (two uppercase letters) that represents the physical
-                location of the user. Defaults to 'US'.
-            api_key (str, optional): The API key to use for the Google Maps API.
-                If not provided, it will try to get it from the environment or
-                Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.
+            map_type: The type of map to generate. Options are 'roadmap', 'satellite',
+                'terrain', 'hybrid', 'traffic', 'streetview'.  Defaults to 'roadmap'.
+            language: An IETF language tag that specifies the language used to display
+                information on the tiles, such as 'zh-Cn'.  Defaults to 'en-Us'.
+            region: A Common Locale Data Repository region identifier (two uppercase
+                letters) that represents the physical location of the user. Defaults to
+                'US'.
+            api_key: The API key to use for the Google Maps API.  If not provided, it
+                will try to get it from the environment or Colab user data with the key
+                'GOOGLE_MAPS_API_KEY'. Defaults to None.
             **kwargs: Additional parameters to pass to the map generation. For more
                 info, visit https://bit.ly/3UhbZKU
 
@@ -303,11 +301,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
             >>> basemap = GoogleMapsTileProvider(map_type='roadmap',
                 language="en-Us", region="US", scale="scaleFactor2x", highDpi=True)
             >>> m.add_basemap(basemap)
-
-        Returns:
-            TileProvider object: A TileProvider object with the Google Maps tile.
         """
-
         key = api_key or coreutils.get_google_maps_api_key()
         if key is None:
             raise ValueError(
@@ -355,28 +349,26 @@ def get_google_map_tile_providers(
     language: str = "en-Us",
     region: str = "US",
     api_key: str | None = None,
-    **kwargs: Any,
-):
-    """
-    Generates a dictionary of Google Map tile providers for different map types.
+    **kwargs,
+) -> dict[str, Any]:
+    """Generates a dictionary of Google Map tile providers for different map types.
 
     Args:
-        language (str, optional): An IETF language tag that specifies the
-            language used to display information on the tiles, such as 'zh-Cn'.
-            Defaults to 'en-Us'.
-        region (str, optional): A Common Locale Data Repository region
-            identifier (two uppercase letters) that represents the physical
-            location of the user. Defaults to 'US'.
-        api_key (str, optional): The API key to use for the Google Maps API.
-            If not provided, it will try to get it from the environment or
-            Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.
-        **kwargs: Additional parameters to pass to the map generation. For more
-            info, visit https://bit.ly/3UhbZKU
+        language: An IETF language tag that specifies the language used to display
+            information on the tiles, such as 'zh-Cn'.  Defaults to 'en-Us'.
+        region: A Common Locale Data Repository region identifier (two uppercase
+            letters) that represents the physical location of the user. Defaults to
+            'US'.
+        api_key: The API key to use for the Google Maps API.  If not provided, it will
+            try to get it from the environment or Colab user data with the key
+            'GOOGLE_MAPS_API_KEY'. Defaults to None.
+        **kwargs: Additional parameters to pass to the map generation. For more info,
+            visit https://bit.ly/3UhbZKU
 
     Returns:
-        dict: A dictionary where the keys are the map types
-        ('roadmap', 'satellite', 'terrain', 'hybrid')
-        and the values are the corresponding GoogleMapsTileProvider objects.
+        A dictionary where the keys are the map types ('roadmap', 'satellite',
+        'terrain', 'hybrid') and the values are the corresponding GoogleMapsTileProvider
+        objects.
     """
     gmap_providers = {}
 
@@ -388,17 +380,18 @@ def get_google_map_tile_providers(
     return gmap_providers
 
 
-def get_xyz_dict(free_only=True, france=False):
+def get_xyz_dict(free_only: bool = True, france: bool = False) -> dict[str, Any]:
     """Returns a dictionary of xyz services.
 
     Args:
-        free_only (bool, optional): Whether to return only free xyz tile
-            services that do not require an access token. Defaults to True.
-        france (bool, optional): Whether to include Geoportail France basemaps.
-            Defaults to False.
+        free_only: Whether to return only free xyz tile services that do not require an
+            access token. Defaults to True.
+
+        france: Whether to include Geoportail France basemaps.  Defaults to False.
 
     Returns:
         dict: A dictionary of xyz services.
+
     """
     xyz_bunch = xyzservices.providers
 
@@ -421,11 +414,11 @@ def get_xyz_dict(free_only=True, france=False):
     return xyz_dict
 
 
-def xyz_to_leaflet():
+def xyz_to_leaflet() -> dict[str, Any]:
     """Convert xyz tile services to ipyleaflet tile layers.
 
     Returns:
-        dict: A dictionary of ipyleaflet tile layers.
+        A dictionary of ipyleaflet tile layers.
     """
     leaflet_dict = {}
     # Ignore Esri basemaps if they are already in the custom XYZ_TILES.
@@ -449,7 +442,7 @@ def xyz_to_leaflet():
     return leaflet_dict
 
 
-def xyz_to_folium():
+def xyz_to_folium() -> dict[str, Any]:
     """Convert xyz tile services to folium tile layers.
 
     Returns:
@@ -512,13 +505,12 @@ def xyz_to_folium():
 # ******************************************************************************#
 
 
-def xyz_to_pydeck():
+def xyz_to_pydeck() -> dict[str, Any]:
     """Convert xyz tile services to pydeck custom tile layers.
 
     Returns:
-        dict: A dictionary of pydeck tile layers.
+        A dictionary of pydeck tile layers.
     """
-
     common.check_package(
         "pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html"
     )
@@ -556,11 +548,11 @@ def xyz_to_pydeck():
     return pydeck_dict
 
 
-def xyz_to_plotly():
+def xyz_to_plotly() -> dict[str, Any]:
     """Convert xyz tile services to plotly tile layers.
 
     Returns:
-        dict: A dictionary of plotly tile layers.
+        A dictionary of plotly tile layers.
     """
     plotly_dict = {}
     # Ignore Esri basemaps if they are already in the custom XYZ_TILES.
@@ -589,12 +581,12 @@ def xyz_to_plotly():
     return plotly_dict
 
 
-def search_qms(keywords, limit=10):
+def search_qms(keywords: str, limit: int = 10) -> list[Any]:
     """Search qms files for keywords. Reference: https://github.com/geopandas/xyzservices/issues/65
 
     Args:
-        keywords (str): Keywords to search for.
-        limit (int): Number of results to return.
+        keywords: Keywords to search for.
+        limit: Number of results to return.
     """
     QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
 
@@ -610,20 +602,20 @@ def search_qms(keywords, limit=10):
         return services["results"][:limit]
 
 
-def get_qms(service_id):
+def get_qms(service_id: str):
     QMS_API = "https://qms.nextgis.com/api/v1/geoservices"
     service_details = requests.get(f"{QMS_API}/{service_id}")
     return service_details.json()
 
 
-def qms_to_geemap(service_id):
+def qms_to_geemap(service_id: str) -> ipyleaflet.TileLayer:
     """Convert a qms service to an ipyleaflet tile layer.
 
     Args:
-        service_id (str): Service ID.
+        service_id: Service ID.
 
     Returns:
-        ipyleaflet.TileLayer: An ipyleaflet tile layer.
+        An ipyleaflet tile layer.
     """
     service_details = get_qms(service_id)
     name = service_details["name"]
