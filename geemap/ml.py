@@ -14,7 +14,9 @@ import numpy as np
 import pandas as pd
 
 
-def tree_to_string(estimator, feature_names, labels=None, output_mode="INFER"):
+def tree_to_string(
+    estimator, feature_names, labels=None, output_mode: str = "INFER"
+) -> str:
     """Convert a sklearn decision tree object to a string format that EE can interpret
 
     Args:
@@ -24,7 +26,7 @@ def tree_to_string(estimator, feature_names, labels=None, output_mode="INFER"):
             (i.e., bands) used to create the model
         labels (Iterable[numeric]): List of class labels to map outputs to, must be
             numeric values. If None, then raw outputs will be used. default = None
-        output_mode (str): the output mode of the estimator. Options are "INFER",
+        output_mode: the output mode of the estimator. Options are "INFER",
             "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default =
             "INFER"
 
@@ -32,7 +34,6 @@ def tree_to_string(estimator, feature_names, labels=None, output_mode="INFER"):
         tree_str (str): string representation of decision tree estimator
 
     Raises:
-
         RuntimeError: raises run time error when function cannot determine if the
             estimator is for regression or classification problem.
     """
@@ -396,7 +397,7 @@ def export_trees_to_fc(trees, asset_id, description="geemap_rf_export"):
     task.start()
 
 
-def trees_to_csv(trees: list[str], out_csv: str):
+def trees_to_csv(trees: list[str], out_csv: str) -> None:
     """Save a list of strings (an ensemble of decision trees) to a CSV file.
 
     Args:
@@ -408,7 +409,7 @@ def trees_to_csv(trees: list[str], out_csv: str):
         f.writelines([tree.replace("\n", "#") + "\n" for tree in trees])
 
 
-def csv_to_classifier(in_csv: str) -> ee.Classifier:
+def csv_to_classifier(in_csv: str) -> ee.Classifier | None:
     """Returns an ee.Classifier from a CSV file.
 
     The file must contain a list of strings (an ensemble of decision trees).
