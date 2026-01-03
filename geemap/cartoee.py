@@ -18,11 +18,11 @@ import ee
 import matplotlib as mpl
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-import numpy as np
-import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
 from matplotlib.lines import Line2D
+import numpy as np
+import requests
 
 from . import basemaps
 
@@ -121,7 +121,9 @@ def check_dependencies() -> None:
 # check_dependencies()
 
 
-def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
+def get_map(
+    ee_object, proj=None, basemap: str | None = None, zoom_level: int = 2, **kwargs
+):
     """Returns a new cartopy plot with project and adds Earth Engine image results.
 
     Args:
@@ -130,11 +132,11 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
         proj (cartopy.crs, optional): Cartopy projection that determines the projection
             of the resulting plot. By default uses an equirectangular projection,
             PlateCarree.
-        basemap (str, optional): Basemap to use. It can be one of ["ROADMAP",
-            "SATELLITE", "TERRAIN", "HYBRID"] or cartopy.io.img_tiles, such as
-            cimgt.StamenTerrain(). Defaults to None. See
+        basemap: Basemap to use. It can be one of ["ROADMAP", "SATELLITE", "TERRAIN",
+            "HYBRID"] or cartopy.io.img_tiles, such as cimgt.StamenTerrain(). Defaults
+            to None. See
             https://scitools.org.uk/cartopy/docs/v0.19/cartopy/io/img_tiles.html.
-        zoom_level (int, optional): Zoom level of the basemap. Defaults to 2.
+        zoom_level: Zoom level of the basemap. Defaults to 2.
         **kwargs: remaining keyword arguments are passed to addLayer()
 
     Returns:
@@ -187,7 +189,13 @@ def get_map(ee_object, proj=None, basemap=None, zoom_level=2, **kwargs):
 
 
 def add_layer(
-    ax, ee_object, dims=1000, region=None, cmap=None, vis_params=None, **kwargs
+    ax,
+    ee_object,
+    dims=1000,
+    region=None,
+    cmap: str | None = None,
+    vis_params=None,
+    **kwargs,
 ):
     """Add an Earth Engine image to a cartopy plot.
 
@@ -201,8 +209,8 @@ def add_layer(
             and infers dimensions.
         region (list | tuple, optional): Geospatial region of the image to render in
             format [E,S,W,N]. By default, the whole image.
-        cmap (str, optional): String specifying matplotlib colormap to colorize
-            image. If cmap is specified visParams cannot contain 'palette' key.
+        cmap: String specifying matplotlib colormap to colorize image. If cmap is
+            specified visParams cannot contain 'palette' key.
         vis_params (dict, optional): visualization parameters as a dictionary. See
             https://developers.google.com/earth-engine/image_visualization for options.
 
@@ -325,7 +333,13 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
 
 
 def add_colorbar(
-    ax, vis_params, loc=None, cmap="gray", discrete=False, label=None, **kwargs
+    ax,
+    vis_params,
+    loc: str | None = None,
+    cmap: str = "gray",
+    discrete: bool = False,
+    label=None,
+    **kwargs,
 ):
     """Add a colorbar to the map based on visualization parameters provided.
 
@@ -333,6 +347,7 @@ def add_colorbar(
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required
             cartopy GeoAxesSubplot object to add image overlay to.
         loc (str, optional): String specifying the position.
+        TODO: Fix the args documentation.
         vis_params (dict, optional): visualization parameters as a dictionary. See
             https://developers.google.com/earth-engine/guides/image_visualization for
             options.
@@ -347,7 +362,6 @@ def add_colorbar(
         ValueError: If 'loc' or 'cax' keywords are not provided.
         ValueError: If 'loc' is not of type str or does not equal available options.
     """
-
     if type(ax) not in [GeoAxes, GeoAxesSubplot]:
         raise ValueError(
             "provided axes not of type cartopy.mpl.geoaxes.GeoAxes "
@@ -492,7 +506,7 @@ def add_colorbar(
 
 
 def _buffer_box(
-    bbox: list[float], interval: float
+    bbox: list[float] | tuple[float, float, float, float], interval: float
 ) -> tuple[float, float, float, float]:
     """Buffer a bounding box to the nearest multiple of interval.
 
@@ -542,13 +556,13 @@ def bbox_to_extent(
 
 def add_gridlines(
     ax,
-    interval=None,
-    n_ticks=None,
-    xs=None,
-    ys=None,
-    buffer_out=True,
-    xtick_rotation="horizontal",
-    ytick_rotation="horizontal",
+    interval: float | list[float] | None = None,
+    n_ticks: int | list[int] | None = None,
+    xs: list[float] | None = None,
+    ys: list[float] | None = None,
+    buffer_out: bool = True,
+    xtick_rotation: float | str = "horizontal",
+    ytick_rotation: float | str = "horizontal",
     **kwargs,
 ):
     """Add gridlines and format ticks to map.
@@ -556,17 +570,17 @@ def add_gridlines(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object to add the gridlines to.
-        interval (float | list[float], optional): Interval at which to
-            create gridlines, Units are decimal degrees. Lists will be
-            interpreted as [x_interval, y_interval]. Default = None.
-        n_ticks (int | list[int], optional): Number of gridlines to create within map
-            extent. Lists will be interpreted as [nx, ny]. Default = None.
-        xs (list, optional): x coordinates to create gridlines. Default = None.
-        ys (list, optional): y coordinates to create gridlines. Default = None.
-        buffer_out (boolean, optional): Buffer out the extent to insure coordinates
-          created cover map extent. Default = true.
-        xtick_rotation (str | float, optional):
-        ytick_rotation (str | float, optional):
+        interval: Interval at which to create gridlines, Units are decimal
+            degrees. Lists will be interpreted as [x_interval, y_interval]. Default =
+            None.
+        n_ticks: Number of gridlines to create within map extent. Lists will be
+            interpreted as [nx, ny]. Default = None.
+        xs: x coordinates to create gridlines. Default = None.
+        ys: y coordinates to create gridlines. Default = None.
+        buffer_out: Buffer out the extent to insure coordinates created cover map
+            extent. Default = true.
+        xtick_rotation: TODO
+        ytick_rotation: TODO
         **kwargs: remaining keyword arguments are passed to gridlines()
 
     Raises:
@@ -646,16 +660,15 @@ def add_gridlines(
     ax.yaxis.set_major_formatter(LATITUDE_FORMATTER)
 
 
-def pad_view(ax, factor=0.05):
+def pad_view(ax, factor: float | list[float] = 0.05) -> None:
     """Pad area around the view extent of a map, used for visual appeal.
 
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object to pad view extent.
-        factor (float | list[float], optional): Pad view extent accepts float [0-1] or a
-            list of floats that will be interpreted at [xfactor, yfactor].
+        factor: Pad view extent accepts float [0-1] or a list of floats that will be
+            interpreted at [xfactor, yfactor].
     """
-
     view_extent = ax.get_extent()
 
     if isinstance(factor, Iterable):
@@ -677,36 +690,35 @@ def pad_view(ax, factor=0.05):
 
 def add_north_arrow(
     ax,
-    text="N",
+    text: str = "N",
     xy=(0.1, 0.1),
-    arrow_length=0.1,
-    text_color="black",
-    arrow_color="black",
-    fontsize=20,
-    width=5,
-    headwidth=15,
-    ha="center",
-    va="center",
+    arrow_length: float = 0.1,
+    text_color: str = "black",
+    arrow_color: str = "black",
+    fontsize: int = 20,
+    width: int = 5,
+    headwidth: int = 15,
+    ha: str = "center",
+    va: str = "center",
 ):
     """Add a north arrow to the map.
 
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object.
-        text (str, optional): Text for north arrow. Defaults to "N".
-
+        text: Text for north arrow. Defaults to "N".
         xy (tuple, optional): Location of the north arrow. Each number representing the
             percentage length of the map from the lower-left corner. Defaults to (0.1,
             0.1).
-        arrow_length (float, optional): Length of the north arrow. Defaults to 0.1 (10%
-            length of the map).
-        text_color (str, optional): Text color. Defaults to "black".
-        arrow_color (str, optional): North arrow color. Defaults to "black".
-        fontsize (int, optional): Text font size. Defaults to 20.
-        width (int, optional): Width of the north arrow. Defaults to 5.
-        headwidth (int, optional): head width of the north arrow. Defaults to 15.
-        ha (str, optional): Horizontal alignment. Defaults to "center".
-        va (str, optional): Vertical alignment. Defaults to "center".
+        arrow_length: Length of the north arrow. Defaults to 0.1 (10% length of the
+            map).
+        text_color: Text color. Defaults to "black".
+        arrow_color: North arrow color. Defaults to "black".
+        fontsize: Text font size. Defaults to 20.
+        width: Width of the north arrow. Defaults to 5.
+        headwidth: head width of the north arrow. Defaults to 15.
+        ha: Horizontal alignment. Defaults to "center".
+        va: Vertical alignment. Defaults to "center".
     """
     ax.annotate(
         text,
@@ -721,13 +733,13 @@ def add_north_arrow(
     )
 
 
-def convert_SI(val, unit_in, unit_out):
+def convert_SI(val: float, unit_in: str, unit_out: str) -> float:
     """Unit converter.
 
     Args:
-        val (float): The value to convert.
-        unit_in (str): The input unit.
-        unit_out (str): The output unit.
+        val: The value to convert.
+        unit_in: The input unit.
+        unit_out: The output unit.
 
     Returns:
         Value after unit conversion.
