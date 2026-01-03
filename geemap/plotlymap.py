@@ -10,9 +10,9 @@ import os
 import shutil
 
 import box
+import ipywidgets as widgets
 import numpy as np
 import pandas as pd
-import ipywidgets as widgets
 
 from .basemaps import xyz_to_plotly
 from .common import *
@@ -38,21 +38,19 @@ class Canvas:
     def __init__(
         self,
         map,
-        map_min_width="90%",
-        map_max_width="98%",
-        map_refresh=False,
+        map_min_width: str = "90%",
+        map_max_width: str = "98%",
+        map_refresh: bool = False,
         **kwargs,
     ):
         """Initialize the Canvas.
 
         Args:
             map (go.FigureWidget): The map to display.
-            map_min_width (str, optional): The minimum width of the map. Defaults to
-                '90%'.
-            map_max_width (str, optional): The maximum width of the map. Defaults to
-                '98%'.
-            map_refresh (bool, optional): Whether to refresh the map when the map is
-              resized. Defaults to False.
+            map_min_width: The minimum width of the map. Defaults to '90%'.
+            map_max_width: The maximum width of the map. Defaults to '98%'.
+            map_refresh: Whether to refresh the map when the map is resized. Defaults to
+              False.
         """
         from .toolbar import plotly_toolbar
 
@@ -164,7 +162,7 @@ class Map(go.FigureWidget):
             )
             return canvas.canvas
 
-    def clear_controls(self):
+    def clear_controls(self) -> None:
         """Removes all controls from the map."""
         config = {
             "scrollZoom": True,
@@ -175,7 +173,7 @@ class Map(go.FigureWidget):
         }
         self.show(toolbar=False, config=config)
 
-    def add_controls(self, controls):
+    def add_controls(self, controls) -> None:
         """Adds controls to the map.
 
         Args:
@@ -192,7 +190,7 @@ class Map(go.FigureWidget):
 
         self.update_layout(modebar_add=controls)
 
-    def remove_controls(self, controls):
+    def remove_controls(self, controls) -> None:
         """Removes controls to the map.
 
         Args:
@@ -209,7 +207,7 @@ class Map(go.FigureWidget):
 
         self.update_layout(modebar_remove=controls)
 
-    def set_center(self, lat: float, lon: float, zoom: int = None) -> None:
+    def set_center(self, lat: float, lon: float, zoom: int | None = None) -> None:
         """Sets the center of the map.
 
         Args:
@@ -224,7 +222,7 @@ class Map(go.FigureWidget):
             )
         )
 
-    def add_basemap(self, basemap: str = "ROADMAP"):
+    def add_basemap(self, basemap: str = "ROADMAP") -> None:
         """Adds a basemap to the map.
 
         Args:
@@ -269,12 +267,12 @@ class Map(go.FigureWidget):
             mapbox_style=style, mapbox_layers=[], mapbox_accesstoken=access_token
         )
 
-    def add_layer(self, layer, name=None, **kwargs):
+    def add_layer(self, layer, name: str = None, **kwargs) -> None:
         """Adds a layer to the map.
 
         Args:
             layer (plotly.graph_objects): Layer to add.
-            name (str, optional): Name of the layer. Defaults to None.
+            name: Name of the layer. Defaults to None.
         """
         if isinstance(name, str):
             layer.name = name
@@ -425,16 +423,22 @@ class Map(go.FigureWidget):
         self.update_layout(mapbox_layers=layers)
 
     def add_ee_layer(
-        self, ee_object, vis_params={}, name=None, shown=True, opacity=1.0, **kwargs
+        self,
+        ee_object,
+        vis_params={},
+        name: str = None,
+        shown: bool = True,
+        opacity: float = 1.0,
+        **kwargs,
     ):
         """Adds a given EE object to the map as a layer.
 
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to {}.
-            name (str, optional): The name of the layer. Defaults to 'Layer N'.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+            name: The name of the layer. Defaults to 'Layer N'.
+            shown: A flag indicating whether the layer should be on by default. Defaults to True.
+            opacity: The layer's opacity represented as a number between 0 and 1. Defaults to 1.
         """
         image = None
 
@@ -515,24 +519,30 @@ class Map(go.FigureWidget):
 
     def add_cog_layer(
         self,
-        url,
-        name="Untitled",
-        attribution="",
-        opacity=1.0,
+        url: str,
+        name: str = "Untitled",
+        attribution: str = "",
+        opacity: float = 1.0,
         bands=None,
-        titiler_endpoint=None,
+        titiler_endpoint: str | None = None,
         **kwargs,
     ):
         """Adds a COG TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
-            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
-            attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            url: The URL of the COG tile layer, e.g.,
+                https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif
+            name: The layer name to use for the layer. Defaults to 'Untitled'.
+            attribution: The attribution to use. Defaults to ''.
+            opacity: The opacity of the layer. Defaults to 1.
             bands (list, optional): The bands to use. Defaults to None.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-            **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata, unscale, resampling, rescale, color_formula, colormap, colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain bands, use bidx=[1, 2, 3]
+            titiler_endpoint: Titiler endpoint. Defaults to
+                https://giswqs-titiler-endpoint.hf.space.
+            **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata,
+              unscale, resampling, rescale, color_formula, colormap, colormap_name,
+              return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and
+              https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain
+              bands, use bidx=[1, 2, 3]
         """
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
         center = cog_center(url, titiler_endpoint)  # (lon, lat)
