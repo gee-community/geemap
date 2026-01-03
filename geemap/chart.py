@@ -10,7 +10,6 @@ from typing import Any
 
 import ee
 import bqplot as bq
-from bqplot import Tooltip
 from bqplot import pyplot as plt
 import ipywidgets as widgets
 import numpy as np
@@ -80,7 +79,6 @@ def transpose_df(
         ValueError: If `label_col` is not a column in the DataFrame.
         ValueError: If the length of `indexes` does not match the number of
             rows in the transposed DataFrame.
-
     """
     # Check if the specified column exists in the DataFrame.
     if label_col not in df.columns:
@@ -446,19 +444,11 @@ class Chart:
         self._set_plt_options()
 
     def get_chart_type(self) -> str | None:
-        """Get the current chart type.
-
-        Returns:
-            The current chart type, or None if no chart type is set.
-        """
+        """Returns the current chart type, or None if no chart type is set."""
         return self.chart_type
 
     def get_data_table(self) -> DataTable:
-        """Get the DataTable used by the chart.
-
-        Returns:
-            The DataTable instance containing the chart data.
-        """
+        """Returns the DataTable instance containing the chart data."""
         return self.data_table
 
     def set_data_table(self, data: dict[str, list[Any]] | pd.DataFrame) -> None:
@@ -583,11 +573,11 @@ class BarChart(BaseChartClass):
     def generate_tooltip(self) -> None:
         """Generates a tooltip for the bar chart."""
         if (self.x_label is not None) and (self.y_label is not None):
-            self.bar_chart.tooltip = Tooltip(
+            self.bar_chart.tooltip = bqplot.Tooltip(
                 fields=["x", "y"], labels=[self.x_label, self.y_label]
             )
         else:
-            self.bar_chart.tooltip = Tooltip(fields=["x", "y"])
+            self.bar_chart.tooltip = bqplot.Tooltip(fields=["x", "y"])
 
     def get_ylim(self) -> tuple[float, float]:
         """Gets the y-axis limits for the bar chart.
@@ -1080,12 +1070,12 @@ def feature_histogram(
             histogram.stroke_width = 0
 
         if ("x_label" in kwargs) and ("y_label" in kwargs):
-            histogram.tooltip = Tooltip(
+            histogram.tooltip = bqplot.Tooltip(
                 fields=["midpoint", "count"],
                 labels=[kwargs["x_label"], kwargs["y_label"]],
             )
         else:
-            histogram.tooltip = Tooltip(fields=["midpoint", "count"])
+            histogram.tooltip = bqplot.Tooltip(fields=["midpoint", "count"])
 
         if show:
             plt.show()
