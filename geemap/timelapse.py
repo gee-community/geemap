@@ -40,17 +40,17 @@ def add_overlay(
     """Adds an overlay to an image collection.
 
     Args:
-        collection (ee.ImageCollection): The image collection to add the overlay to.
-        overlay_data (str | ee.Geometry | ee.FeatureCollection): The overlay data to add to the image collection. It can be an HTTP URL to a GeoJSON file.
-        color (str, optional): The color of the overlay. Defaults to 'black'.
-        width (int, optional): The width of the overlay. Defaults to 1.
-        opacity (float, optional): The opacity of the overlay. Defaults to 1.0.
-        region (ee.Geometry | ee.FeatureCollection, optional): The region of interest to add the overlay to. Defaults to None.
+        collection: The image collection to add the overlay to.
+        overlay_data: The overlay data to add to the image collection. It can be an HTTP
+            URL to a GeoJSON file.
+        color: The color of the overlay. Defaults to 'black'.
+        width: The width of the overlay. Defaults to 1.
+        opacity: The opacity of the overlay. Defaults to 1.0.
+        region: The region of interest to add the overlay to. Defaults to None.
 
     Returns:
-        ee.ImageCollection: An ImageCollection with the overlay added.
+        An ImageCollection with the overlay added.
     """
-
     # Some common administrative boundaries.
     public_assets = ["continents", "countries", "us_states", "china"]
 
@@ -73,7 +73,8 @@ def add_overlay(
 
             except Exception as e:
                 print(
-                    "The overlay_data must be a valid ee.FeatureCollection, a valid ee.FeatureCollection asset id, or http url to a geojson file."
+                    "The overlay_data must be a valid ee.FeatureCollection, a valid "
+                    "ee.FeatureCollection asset id, or http url to a geojson file."
                 )
                 raise Exception(e)
         elif isinstance(overlay_data, ee.Feature):
@@ -82,7 +83,8 @@ def add_overlay(
             overlay_data = ee.FeatureCollection([ee.Feature(overlay_data)])
         else:
             raise Exception(
-                "The overlay_data must be a valid ee.FeatureCollection or a valid ee.FeatureCollection asset id."
+                "The overlay_data must be a valid ee.FeatureCollection "
+                "or a valid ee.FeatureCollection asset id."
             )
 
     try:
@@ -120,13 +122,12 @@ def make_gif(
     """Creates a gif from a list of images.
 
     Args:
-        images (list | str): The list of images or input directory to create the gif from.
-        out_gif (str): File path to the output gif.
-        ext (str, optional): The extension of the images. Defaults to 'jpg'.
-        fps (int, optional): The frames per second of the gif. Defaults to 10.
-        loop (int, optional): The number of times to loop the gif. Defaults to 0.
-        mp4 (bool, optional): Whether to convert the gif to mp4. Defaults to False.
-
+        images: The list of images or input directory to create the gif from.
+        out_gif: File path to the output gif.
+        ext: The extension of the images. Defaults to 'jpg'.
+        fps: The frames per second of the gif. Defaults to 10.
+        loop: The number of times to loop the gif. Defaults to 0.
+        mp4: Whether to convert the gif to mp4. Defaults to False.
     """
     if isinstance(images, str) and os.path.isdir(images):
         images = list(glob.glob(os.path.join(images, f"*.{ext}")))
@@ -164,12 +165,12 @@ def make_gif(
             os.remove(image)
 
 
-def gif_to_mp4(in_gif, out_mp4):
+def gif_to_mp4(in_gif: str, out_mp4: str) -> None:
     """Converts a gif to mp4.
 
     Args:
-        in_gif (str): The input gif file.
-        out_mp4 (str): The output mp4 file.
+        in_gif: The input gif file.
+        out_mp4: The output mp4 file.
     """
     from PIL import Image
 
@@ -195,19 +196,22 @@ def gif_to_mp4(in_gif, out_mp4):
     else:
         width += width % 2
         height += height % 2
-        cmd = f"ffmpeg -loglevel error -i {in_gif} -vf scale={width}:{height} -vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+        cmd = (
+            f"ffmpeg -loglevel error -i {in_gif} -vf scale={width}:{height} "
+            f"-vcodec libx264 -crf 25 -pix_fmt yuv420p {out_mp4}"
+        )
         os.system(cmd)
 
     if not os.path.exists(out_mp4):
         raise Exception(f"Failed to create mp4 file.")
 
 
-def merge_gifs(in_gifs, out_gif):
+def merge_gifs(in_gifs: str | list[str], out_gif: str) -> None:
     """Merge multiple gifs into one.
 
     Args:
-        in_gifs (str | list): The input gifs as a list or a directory path.
-        out_gif (str): The output gif.
+        in_gifs: The input gifs as a list or a directory path.
+        out_gif: The output gif.
 
     Raises:
         Exception:  Raise exception when gifsicle is not installed.
@@ -225,19 +229,22 @@ def merge_gifs(in_gifs, out_gif):
 
     except Exception as e:
         print(
-            "gifsicle is not installed. Run 'sudo apt-get install -y gifsicle' to install it."
+            "gifsicle is not installed. "
+            "Run 'sudo apt-get install -y gifsicle' to install it."
         )
         print(e)
 
 
-def gif_to_png(in_gif, out_dir=None, prefix="", verbose=True):
+def gif_to_png(
+    in_gif: str, out_dir: str | None = None, prefix: str = "", verbose: bool = True
+) -> None:
     """Converts a gif to png.
 
     Args:
-        in_gif (str): The input gif file.
-        out_dir (str, optional): The output directory. Defaults to None.
-        prefix (str, optional): The prefix of the output png files. Defaults to None.
-        verbose (bool, optional): Whether to print the progress. Defaults to True.
+        in_gif: The input gif file.
+        out_dir: The output directory. Defaults to None.
+        prefix: The prefix of the output png files. Defaults to None.
+        verbose: Whether to print the progress. Defaults to True.
 
     Raises:
         FileNotFoundError: Raise exception when the input gif does not exist.
@@ -267,14 +274,17 @@ def gif_to_png(in_gif, out_dir=None, prefix="", verbose=True):
         print(f"Images are saved to {out_dir}")
 
 
-def gif_fading(in_gif, out_gif, duration=1, verbose=True):
+def gif_fading(
+    in_gif: str, out_gif: str, duration: float = 1.0, verbose: bool = True
+) -> None:
     """Fade in/out the gif.
 
     Args:
-        in_gif (str): The input gif file. Can be a directory path or http URL, e.g., "https://i.imgur.com/ZWSZC5z.gif"
-        out_gif (str): The output gif file.
-        duration (float, optional): The duration of the fading. Defaults to 1.
-        verbose (bool, optional): Whether to print the progress. Defaults to True.
+        in_gif: The input gif file. Can be a directory path or http URL, e.g.,
+            "https://i.imgur.com/ZWSZC5z.gif"
+        out_gif: The output gif file.
+        duration: The duration of the fading. Defaults to 1.
+        verbose: Whether to print the progress. Defaults to True.
 
     Raises:
         FileNotFoundError: Raise exception when the input gif does not exist.
@@ -339,35 +349,6 @@ def gif_fading(in_gif, out_gif, duration=1, verbose=True):
 
     cmd = f"ffmpeg -y -loglevel error {inputs} -filter_complex {filters} {out_gif}"
 
-    # if fade >= duration:
-    #     duration = fade + 1
-
-    # files = []
-    # for i in range(1, count + 1):
-    #     files.append(f"-framerate {framerate} -loop 1 -t {duration} -i {i}.png")
-
-    # inputs = " ".join(files)
-
-    # filters = []
-    # for i in range(count):
-    #     if i == 0:
-    #         filters.append(f'"[0:v]fade=t=out:st=4:d={fade}[v0];')
-    #     else:
-    #         filters.append(
-    #             f"[{i}:v]fade=t=in:st=0:d={fade},fade=t=out:st=4:d={fade}[v{i}];"
-    #         )
-
-    # last_filter = ""
-    # for i in range(count):
-    #     last_filter += f"[v{i}]"
-    # last_filter += f"concat=n={count}:v=1:a=0,split[v0][v1];"
-    # filters.append(last_filter)
-    # palette = f'[v0]palettegen[p];[v1][p]paletteuse[v]" -map "[v]"'
-    # filters.append(palette)
-    # filters = " ".join(filters)
-
-    # cmd = f"ffmpeg -y {inputs} -filter_complex {filters} {out_gif}"
-
     os.system(cmd)
     try:
         shutil.rmtree(temp_dir)
@@ -378,8 +359,8 @@ def gif_fading(in_gif, out_gif, duration=1, verbose=True):
 
 
 def add_text_to_gif(
-    in_gif,
-    out_gif,
+    in_gif: str,
+    out_gif: str,
     xy=None,
     text_sequence=None,
     font_type="arial.ttf",
@@ -390,12 +371,12 @@ def add_text_to_gif(
     progress_bar_height=5,
     duration=100,
     loop=0,
-):
+) -> None:
     """Adds animated text to a GIF image.
 
     Args:
-        in_gif (str): The file path to the input GIF image.
-        out_gif (str): The file path to the output GIF image.
+        in_gif: The file path to the input GIF image.
+        out_gif: The file path to the output GIF image.
         xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
         font_type (str, optional): Font type. Defaults to "arial.ttf".
@@ -438,7 +419,8 @@ def add_text_to_gif(
                 font = ImageFont.truetype(font_type, font_size)
             else:
                 print(
-                    "The specified font type could not be found on your system. Using the default font instead."
+                    "The specified font type could not be found on your system. "
+                    "Using the default font instead."
                 )
                 font = ImageFont.truetype(default_font, font_size)
         except Exception as e:
@@ -463,7 +445,7 @@ def add_text_to_gif(
     ]
 
     if xy is None:
-        # default text location is 5% width and 5% height of the image.
+        # Default text location is 5% width and 5% height of the image.
         xy = (int(0.05 * W), int(0.05 * H))
     elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
         print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
@@ -474,7 +456,8 @@ def add_text_to_gif(
             pass
         else:
             print(
-                f"xy is out of bounds. x must be within [0, {W}], and y must be within [0, {H}]"
+                f"xy is out of bounds. x must be within [0, {W}], "
+                f"and y must be within [0, {H}]"
             )
             return
     elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
@@ -486,11 +469,13 @@ def add_text_to_gif(
                 xy = (x, y)
             except Exception:
                 raise Exception(
-                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
+                    "The specified xy is invalid. "
+                    "It must be formatted like this ('10%', '10%')"
                 )
     else:
         print(
-            "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
+            "The specified xy is invalid. "
+            "It must be formatted like this: (10, 10) or ('10%', '10%')"
         )
         return
 
@@ -506,7 +491,8 @@ def add_text_to_gif(
             text = [text_sequence] * count
     elif isinstance(text_sequence, list) and len(text_sequence) != count:
         print(
-            f"The length of the text sequence must be equal to the number ({count}) of frames in the gif."
+            f"The length of the text sequence must be equal to the number ({count}) of "
+            "frames in the gif."
         )
         return
     else:
@@ -530,9 +516,9 @@ def add_text_to_gif(
             frame = Image.open(b)
 
             frames.append(frame)
-        # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
-        # Save the frames as a new image
 
+        # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
+        # Save the frames as a new image.
         frames[0].save(
             out_gif,
             save_all=True,
