@@ -284,36 +284,36 @@ class CommonTest(unittest.TestCase):
 
     def test_check_dir(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Test with make_dirs=True
+            # Test with make_dirs=True.
             dir_path_1 = os.path.join(tmpdir, "subdir1")
             abs_path_1 = common.check_dir(dir_path_1, make_dirs=True)
             self.assertTrue(os.path.exists(abs_path_1))
             self.assertEqual(abs_path_1, os.path.abspath(dir_path_1))
 
-            # Test with make_dirs=False and dir does not exist
+            # Test with make_dirs=False and dir does not exist.
             dir_path_2 = os.path.join(tmpdir, "subdir2")
             with self.assertRaises(FileNotFoundError):
                 common.check_dir(dir_path_2, make_dirs=False)
 
-            # Test with make_dirs=False and dir exists
+            # Test with make_dirs=False and dir exists.
             os.makedirs(dir_path_2)
             abs_path_2 = common.check_dir(dir_path_2, make_dirs=False)
             self.assertTrue(os.path.exists(abs_path_2))
             self.assertEqual(abs_path_2, os.path.abspath(dir_path_2))
 
-            # Test with invalid type
+            # Test with invalid type.
             with self.assertRaises(TypeError):
                 common.check_dir(123)  # pytype: disable=wrong-arg-types
 
     def test_check_file_path(self):
         with tempfile.TemporaryDirectory() as tmpdir:
-            # Test with make_dirs=True
+            # Test with make_dirs=True.
             file_path_1 = os.path.join(tmpdir, "subdir1", "file1.txt")
             abs_path_1 = common.check_file_path(file_path_1, make_dirs=True)
             self.assertTrue(os.path.exists(os.path.dirname(abs_path_1)))
             self.assertEqual(abs_path_1, os.path.abspath(file_path_1))
 
-            # Test with make_dirs=False
+            # Test with make_dirs=False.
             file_path_2 = os.path.join(tmpdir, "subdir2", "file2.txt")
             abs_path_2 = common.check_file_path(file_path_2, make_dirs=False)
             self.assertFalse(os.path.exists(os.path.dirname(abs_path_2)))
@@ -326,7 +326,7 @@ class CommonTest(unittest.TestCase):
                 abs_path_3, os.path.abspath(os.path.expanduser(file_path_3))
             )
 
-            # Test with invalid type
+            # Test with invalid type.
             with self.assertRaises(TypeError):
                 common.check_file_path(123)  # pytype: disable=wrong-arg-types
 
@@ -360,25 +360,25 @@ class CommonTest(unittest.TestCase):
     # TODO: test_download_ee_image_collection
 
     def test_get_palette_colors(self):
-        # Test with n_class
+        # Test with n_class.
         colors = common.get_palette_colors("viridis", n_class=5)
         self.assertEqual(len(colors), 5)
         self.assertTrue(all(isinstance(c, str) and len(c) == 6 for c in colors))
         self.assertEqual(colors, ["440154", "3b528b", "21918c", "5ec962", "fde725"])
 
-        # Test with hashtag=True
+        # Test with hashtag=True.
         colors_hashtag = common.get_palette_colors("viridis", 5, hashtag=True)
         self.assertTrue(all(c.startswith("#") for c in colors_hashtag))
         self.assertEqual(
             colors_hashtag, ["#440154", "#3b528b", "#21918c", "#5ec962", "#fde725"]
         )
 
-        # Test with no n_class (should default to a reasonable number, e.g., 256 for continuous)
+        # Test with no n_class (should default to a reasonable number, e.g., 256 for continuous).
         colors_default = common.get_palette_colors("viridis")
         self.assertGreater(len(colors_default), 1)
         self.assertTrue(all(isinstance(c, str) and len(c) == 6 for c in colors_default))
 
-        # Test invalid cmap name
+        # Test invalid cmap name.
         with self.assertRaises(ValueError):
             common.get_palette_colors("invalid_cmap_name")
 
@@ -413,7 +413,7 @@ class CommonTest(unittest.TestCase):
         mock_response.url = "https://example.com/direct_url"
         mock_head.return_value = mock_response
 
-        # Test with a URL that redirects
+        # Test with a URL that redirects.
         self.assertEqual(
             common.get_direct_url("https://example.com/redirect"),
             "https://example.com/direct_url",
@@ -422,7 +422,7 @@ class CommonTest(unittest.TestCase):
             "https://example.com/redirect", allow_redirects=True
         )
 
-        # Test with a direct URL
+        # Test with a direct URL.
         self.assertEqual(
             common.get_direct_url("https://example.com/direct_url"),
             "https://example.com/direct_url",
@@ -431,11 +431,11 @@ class CommonTest(unittest.TestCase):
             "https://example.com/direct_url", allow_redirects=True
         )
 
-        # Test with non-http URL
+        # Test with non-http URL.
         with self.assertRaisesRegex(ValueError, "url must start with http."):
             common.get_direct_url("ftp://example.com/file")
 
-        # Test with non-string URL
+        # Test with non-string URL.
         with self.assertRaisesRegex(ValueError, "url must be a string."):
             common.get_direct_url(123)  # pytype: disable=wrong-arg-types
 
@@ -481,8 +481,6 @@ class CommonTest(unittest.TestCase):
         ]
         gradio_html = common.html_to_gradio(html_list, width="800px", height="400px")
         self.assertIn('<iframe style="width: 800px; height: 400px"', gradio_html)
-        # DO NOT SUBMIT - this is failing
-        # self.assertNotIn('"attribution":', gradio_html)
         self.assertNotIn('function(e) { console.log("foo"); }', gradio_html)
         self.assertIn('"should be kept";', gradio_html)
 
@@ -512,12 +510,12 @@ class CommonTest(unittest.TestCase):
             f3.touch()
             f4.touch()
 
-            # Test recursive search, full path, no extension
+            # Test recursive search, full path, no extension.
             result = common.find_files(tmpdir, fullpath=True, recursive=True)
             expected = [str(f1), str(f2), str(f3), str(f4)]
             self.assertCountEqual(result, expected)
 
-            # Test recursive search, full path, with extension "txt"
+            # Test recursive search, full path, with extension "txt".
             result = common.find_files(
                 tmpdir, ext=".txt", fullpath=True, recursive=True
             )
@@ -528,21 +526,21 @@ class CommonTest(unittest.TestCase):
             expected = [str(f1), str(f3)]
             self.assertCountEqual(result, expected)
 
-            # Test non-recursive search, full path, with extension "txt"
+            # Test non-recursive search, full path, with extension "txt".
             result = common.find_files(
                 tmpdir, ext="txt", fullpath=True, recursive=False
             )
             expected = [str(f1)]
             self.assertCountEqual(result, expected)
 
-            # Test recursive search, no full path, with extension "txt"
+            # Test recursive search, no full path, with extension "txt".
             result = common.find_files(
                 tmpdir, ext="txt", fullpath=False, recursive=True
             )
             expected = ["file1.txt", "file3.txt"]
             self.assertCountEqual(result, expected)
 
-            # Test non-recursive search, no full path, no extension
+            # Test non-recursive search, no full path, no extension.
             result = common.find_files(tmpdir, fullpath=False, recursive=False)
             expected = ["file1.txt", "file2.csv"]
             self.assertCountEqual(result, expected)
@@ -637,10 +635,10 @@ class CommonTest(unittest.TestCase):
         qa_mask = mock.MagicMock(name="qa_mask")
         qa_pixel_mock.bitwiseAnd.return_value.eq.return_value = qa_mask
 
-        # To allow chaining addBands().addBands().updateMask()
+        # To allow chaining addBands().addBands().updateMask().
         image.addBands.return_value = image
 
-        # Test case 1: thermal_bands=True, apply_fmask=False
+        # Test case 1: thermal_bands=True, apply_fmask=False.
         image.reset_mock()
         optical_bands_mock.reset_mock()
         thermal_bands_mock.reset_mock()
@@ -660,7 +658,7 @@ class CommonTest(unittest.TestCase):
         )
         image.updateMask.assert_not_called()
 
-        # Test case 2: thermal_bands=False, apply_fmask=False
+        # Test case 2: thermal_bands=False, apply_fmask=False.
         image.reset_mock()
         optical_bands_mock.reset_mock()
         thermal_bands_mock.reset_mock()
@@ -673,7 +671,7 @@ class CommonTest(unittest.TestCase):
         image.addBands.assert_called_once_with(scaled_optical, None, True)
         image.updateMask.assert_not_called()
 
-        # Test case 3: thermal_bands=True, apply_fmask=True
+        # Test case 3: thermal_bands=True, apply_fmask=True.
         image.reset_mock()
         optical_bands_mock.reset_mock()
         thermal_bands_mock.reset_mock()
@@ -698,7 +696,7 @@ class CommonTest(unittest.TestCase):
         )
         image.updateMask.assert_called_once_with(qa_mask)
 
-        # Test case 4: thermal_bands=False, apply_fmask=True
+        # Test case 4: thermal_bands=False, apply_fmask=True.
         image.reset_mock()
         optical_bands_mock.reset_mock()
         thermal_bands_mock.reset_mock()
