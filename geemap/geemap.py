@@ -205,7 +205,7 @@ class Map(core.Map):
 
     @property
     def ee_layer_names(self) -> list[str]:
-        """Returns the names of the EE layers.."""
+        """Returns the names of the EE layers."""
         warnings.warn(
             "ee_layer_names is deprecated. Use ee_layers.keys() instead.",
             DeprecationWarning,
