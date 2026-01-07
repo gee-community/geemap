@@ -7055,7 +7055,7 @@
       <tbody>
           <tr class="doc-section-item">
 <td><code>object</code></td>            <td>
-                  <code><span title="ee.Classifier">Classifier</span></code>
+                  <code><span title="ee.Classifier">Classifier</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7069,8 +7069,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">411</span>
-<span class="normal">412</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">412</span>
 <span class="normal">413</span>
 <span class="normal">414</span>
 <span class="normal">415</span>
@@ -7094,7 +7093,8 @@
 <span class="normal">433</span>
 <span class="normal">434</span>
 <span class="normal">435</span>
-<span class="normal">436</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">csv_to_classifier</span><span class="p">(</span><span class="n">in_csv</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="p">:</span>
+<span class="normal">436</span>
+<span class="normal">437</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">csv_to_classifier</span><span class="p">(</span><span class="n">in_csv</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an ee.Classifier from a CSV file.</span>
 
 <span class="sd">    The file must contain a list of strings (an ensemble of decision trees).</span>
@@ -7197,8 +7197,7 @@ representation of decision trees and exports to ee asset for later use.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">365</span>
-<span class="normal">366</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">366</span>
 <span class="normal">367</span>
 <span class="normal">368</span>
 <span class="normal">369</span>
@@ -7228,7 +7227,8 @@ representation of decision trees and exports to ee asset for later use.</p>
 <span class="normal">393</span>
 <span class="normal">394</span>
 <span class="normal">395</span>
-<span class="normal">396</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">export_trees_to_fc</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;geemap_rf_export&quot;</span><span class="p">):</span>
+<span class="normal">396</span>
+<span class="normal">397</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">export_trees_to_fc</span><span class="p">(</span><span class="n">trees</span><span class="p">,</span> <span class="n">asset_id</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="s2">&quot;geemap_rf_export&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Starts an export task to create a feature collection of a decision tree.</span>
 
 <span class="sd">    Creates a feature collection with a property tree which contains the string</span>
@@ -7338,8 +7338,7 @@ feature that represents the decision tree</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">339</span>
-<span class="normal">340</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">340</span>
 <span class="normal">341</span>
 <span class="normal">342</span>
 <span class="normal">343</span>
@@ -7361,7 +7360,8 @@ feature that represents the decision tree</p>
 <span class="normal">359</span>
 <span class="normal">360</span>
 <span class="normal">361</span>
-<span class="normal">362</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fc_to_classifier</span><span class="p">(</span><span class="n">fc</span><span class="p">):</span>
+<span class="normal">362</span>
+<span class="normal">363</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">fc_to_classifier</span><span class="p">(</span><span class="n">fc</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an ee.Classifier from a feature collection.</span>
 
 <span class="sd">    The feature collection must be from  from `export_trees_to_fc`.</span>
@@ -7517,8 +7517,7 @@ estimator and collectively represent an ensemble decision tree estimator
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
-<span class="normal">253</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">253</span>
 <span class="normal">254</span>
 <span class="normal">255</span>
 <span class="normal">256</span>
@@ -7588,7 +7587,8 @@ estimator and collectively represent an ensemble decision tree estimator
 <span class="normal">320</span>
 <span class="normal">321</span>
 <span class="normal">322</span>
-<span class="normal">323</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rf_to_strings</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">output_mode</span><span class="o">=</span><span class="s2">&quot;INFER&quot;</span><span class="p">):</span>
+<span class="normal">323</span>
+<span class="normal">324</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">rf_to_strings</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">processes</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">output_mode</span><span class="o">=</span><span class="s2">&quot;INFER&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a ensemble of decision trees into a list of strings.</span>
 
 <span class="sd">    Wraps `tree_to_string`.</span>
@@ -7682,8 +7682,7 @@ estimator and collectively represent an ensemble decision tree estimator
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">326</span>
-<span class="normal">327</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">327</span>
 <span class="normal">328</span>
 <span class="normal">329</span>
 <span class="normal">330</span>
@@ -7692,7 +7691,8 @@ estimator and collectively represent an ensemble decision tree estimator
 <span class="normal">333</span>
 <span class="normal">334</span>
 <span class="normal">335</span>
-<span class="normal">336</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">strings_to_classifier</span><span class="p">(</span><span class="n">trees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="p">:</span>
+<span class="normal">336</span>
+<span class="normal">337</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">strings_to_classifier</span><span class="p">(</span><span class="n">trees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Classifier</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns an ee.Classifier from a string representation of decision trees.&quot;&quot;&quot;</span>
 
     <span class="c1"># Convert strings to ee.String objects.</span>
@@ -7828,10 +7828,30 @@ numeric values. If None, then raw outputs will be used. default = None</p>
           </tr>
       </tbody>
     </table>
-        <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1</span>
-<span class="normal">2</span></pre></div></td><td class="code"><div><pre><span></span><code>RuntimeError: raises run time error when function cannot determine if the
-    estimator is for regression or classification problem.
-</code></pre></div></td></tr></table></div>
+
+
+<p><span class="doc-section-title">Raises:</span></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Description</th>
+        </tr>
+      </thead>
+      <tbody>
+          <tr class="doc-section-item">
+            <td>
+                  <code><span title="RuntimeError">RuntimeError</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>raises run time error when function cannot determine if the
+estimator is for regression or classification problem.</p>
+              </div>
+            </td>
+          </tr>
+      </tbody>
+    </table>
 
 
             <details class="mkdocstrings-source">
@@ -8068,7 +8088,10 @@ numeric values. If None, then raw outputs will be used. default = None</p>
 <span class="normal">246</span>
 <span class="normal">247</span>
 <span class="normal">248</span>
-<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">tree_to_string</span><span class="p">(</span><span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_mode</span><span class="o">=</span><span class="s2">&quot;INFER&quot;</span><span class="p">):</span>
+<span class="normal">249</span>
+<span class="normal">250</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">tree_to_string</span><span class="p">(</span>
+    <span class="n">estimator</span><span class="p">,</span> <span class="n">feature_names</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">output_mode</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;INFER&quot;</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a sklearn decision tree object to a string format that EE can interpret</span>
 
 <span class="sd">    Args:</span>
@@ -8078,7 +8101,7 @@ numeric values. If None, then raw outputs will be used. default = None</p>
 <span class="sd">            (i.e., bands) used to create the model</span>
 <span class="sd">        labels (Iterable[numeric]): List of class labels to map outputs to, must be</span>
 <span class="sd">            numeric values. If None, then raw outputs will be used. default = None</span>
-<span class="sd">        output_mode (str): the output mode of the estimator. Options are &quot;INFER&quot;,</span>
+<span class="sd">        output_mode: the output mode of the estimator. Options are &quot;INFER&quot;,</span>
 <span class="sd">            &quot;CLASSIFIATION&quot;, or &quot;REGRESSION&quot; (capitalization does not matter). default =</span>
 <span class="sd">            &quot;INFER&quot;</span>
 
@@ -8086,7 +8109,6 @@ numeric values. If None, then raw outputs will be used. default = None</p>
 <span class="sd">        tree_str (str): string representation of decision tree estimator</span>
 
 <span class="sd">    Raises:</span>
-
 <span class="sd">        RuntimeError: raises run time error when function cannot determine if the</span>
 <span class="sd">            estimator is for regression or classification problem.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -8370,8 +8392,7 @@ numeric values. If None, then raw outputs will be used. default = None</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ml.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">399</span>
-<span class="normal">400</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">400</span>
 <span class="normal">401</span>
 <span class="normal">402</span>
 <span class="normal">403</span>
@@ -8379,7 +8400,8 @@ numeric values. If None, then raw outputs will be used. default = None</p>
 <span class="normal">405</span>
 <span class="normal">406</span>
 <span class="normal">407</span>
-<span class="normal">408</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">trees_to_csv</span><span class="p">(</span><span class="n">trees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">out_csv</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+<span class="normal">408</span>
+<span class="normal">409</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">trees_to_csv</span><span class="p">(</span><span class="n">trees</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">out_csv</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save a list of strings (an ensemble of decision trees) to a CSV file.</span>
 
 <span class="sd">    Args:</span>
