@@ -17,13 +17,13 @@ from typing import Any
 from . import common
 
 
-def osm_gdf_from_address(address, tags, dist=1000):
+def osm_gdf_from_address(address: str, tags: dict[str, Any], dist: int = 1000):
     """Create GeoDataFrame of OSM entities within some distance N, S, E, W of address.
 
     Args:
-        address (str): The address to geocode and use as the central point around which
-            to get the geometries.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        address: The address to geocode and use as the central point around which to get
+            the geometries.
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -33,7 +33,7 @@ def osm_gdf_from_address(address, tags, dist=1000):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        dist (int, optional): Distance in meters. Defaults to 1000.
+        dist: Distance in meters. Defaults to 1000.
 
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
@@ -55,7 +55,6 @@ def osm_shp_from_address(
     Args:
         address: The address to geocode and use as the central point around which to get
             the geometries.
-
         tags: Tags used for finding objects in the selected area. Results returned are
             the union, not intersection of each individual tag. Each result matches at
             least one given tag. The dict keys should be OSM tags, (e.g., building,
@@ -75,7 +74,7 @@ def osm_shp_from_address(
 
 def osm_geojson_from_address(
     address: str, tags: dict[str, Any], filepath: str | None = None, dist: int = 1000
-) -> dict[str, Any]:
+):
     """Download OSM entities within some distance N, S, E, W of address as a GeoJSON.
 
     Args:
@@ -104,12 +103,12 @@ def osm_geojson_from_address(
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_place(query, tags, which_result=None):
+def osm_gdf_from_place(query, tags: dict[str, Any], which_result: int | None = None):
     """Create GeoDataFrame of OSM entities within boundaries of geocodable place(s).
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -119,10 +118,9 @@ def osm_gdf_from_place(query, tags, which_result=None):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        which_result (int, optional): Which geocoding result to use. if None,
-            auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
-            one. to get the top match regardless of geometry type, set
-            which_result=1. Defaults to None.
+        which_result: Which geocoding result to use. if None, auto-select the first
+            (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
+            match regardless of geometry type, set which_result=1. Defaults to None.
 
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
