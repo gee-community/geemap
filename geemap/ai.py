@@ -77,8 +77,8 @@ class Genie(widgets.VBox):
     Credit to the original author Simon Ilyushchenko (<https://github.com/simonff>).
 
     Args:
-        project): Google Cloud project ID. Defaults to None.
-        google_api_key, optional): Google API key. Defaults to None.
+        project: Google Cloud project ID. Defaults to None.
+        google_api_key: Google API key. Defaults to None.
         gemini_model: The Gemini model to use. Defaults to "gemini-1.5-flash".
             For a list of available models, see https://bit.ly/4fKfXW7.
         target_score: The target score for the model. Defaults to 0.8.
@@ -1167,7 +1167,7 @@ class CollectionList(Sequence[Collection]):
                 False (default), sort in ascending order (lowest resolution first).
 
         Returns:
-            CollectionList: A new CollectionList instance with sorted collections.
+            A new CollectionList instance with sorted collections.
         """
 
         def sort_key(collection):
@@ -1180,14 +1180,10 @@ class CollectionList(Sequence[Collection]):
         return self.__class__(sorted_collections)
 
     def limit(self, n: int):
-        """
-        Returns a new CollectionList containing the first n entries.
+        """Returns a new CollectionList containing the first n entries.
 
         Args:
             n: The number of entries to include in the new list.
-
-        Returns:
-            CollectionList: A new CollectionList instance with at most n collections.
         """
         return self.__class__(self._collections[:n])
 
