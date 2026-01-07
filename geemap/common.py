@@ -96,17 +96,15 @@ def ee_export_image(
             which the band is cropped. Defaults to None.
         file_per_band: Whether to produce a different GeoTIFF per band. Defaults to
             False.
-        format (str, optional): One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a
-            zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary
-            format). If "GEO_TIFF" or "NPY", filePerBand and all band-level
-            transformations will be ignored. Loading a NumPy output results in a
-            structured array.
+        format: One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file,
+            default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If
+            "GEO_TIFF" or "NPY", filePerBand and all band-level transformations will be
+            ignored. Loading a NumPy output results in a structured array.
         unzip: Whether to unzip the downloaded file. Defaults to True.
-
-        unmask_value (float, optional): The value to use for pixels that are masked in
-            the input image.  If the exported image contains zero values, you should set
-            the unmask value to a non-zero value so that the zero values are not treated
-            as missing data. Defaults to None.
+        unmask_value: The value to use for pixels that are masked in the input image.
+            If the exported image contains zero values, you should set the unmask value
+            to a non-zero value so that the zero values are not treated as missing
+            data. Defaults to None.
         timeout: The timeout in seconds for the request. Defaults to 300.
         proxies: A dictionary of proxy servers to use. Defaults to None.
         verbose: Whether to print out descriptive text. Defaults to True.
@@ -246,7 +244,7 @@ def ee_export_image_collection(
         verbose: Whether to print out descriptive text.
             Defaults to True.
     """
-    # TODO(schwehr): Fix the doc string and type annotation.
+    # TODO(schwehr): Fix the doc string and type annotation for filenames.
     if not isinstance(ee_object, ee.ImageCollection):
         print("The ee_object must be an ee.ImageCollection.")
         return
@@ -1141,7 +1139,6 @@ def ee_export_vector_to_asset(
         maxVertices: Max number of uncut vertices per geometry; geometries with more
             vertices will be cut into pieces smaller than this size.
         **kwargs: Holds other keyword arguments that may have been deprecated.
-
     """
     if not isinstance(collection, ee.FeatureCollection):
         raise ValueError("The collection must be an ee.FeatureCollection.")
@@ -2101,7 +2098,7 @@ def has_transparency(img) -> bool:
     return False
 
 
-def upload_to_imgur(in_gif: str):
+def upload_to_imgur(in_gif: str) -> None:
     """Uploads an image to imgur.com
 
     Args:
@@ -2293,7 +2290,7 @@ def download_from_gdrive(
     gdd.coreutils.download_file_from_google_drive(file_id, dest_path, True, unzip)
 
 
-def create_download_link(filename: str, title: str = "Click here to download: "):
+def create_download_link(filename: str, title: str = "Click here to download: ") -> str:
     """Downloads a file from voila.
 
     Adopted from https://github.com/voila-dashboards/voila/issues/578
@@ -2303,7 +2300,7 @@ def create_download_link(filename: str, title: str = "Click here to download: ")
         title: Defaults to "Click here to download: ".
 
     Returns:
-        str: HTML download URL.
+        HTML download URL.
     """
     from IPython.display import HTML
 
