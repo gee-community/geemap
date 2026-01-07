@@ -72,7 +72,7 @@ _palette_dict = {
 
 def get_palette(
     cmap_name: str | None = None, n_class: int | None = None, hashtag: bool = False
-) -> Any:  # list[str]:
+) -> Any:
     """Returns a palette of hex colors from a matplotlib colormap.
 
     WARNING: This function is inconsistent with how it handles hashes in the
