@@ -4,6 +4,7 @@
 # This module contains extra features of the geemap package.                     #
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
+from typing import Any
 
 import box
 import matplotlib as mpl
@@ -71,7 +72,7 @@ _palette_dict = {
 
 def get_palette(
     cmap_name: str | None = None, n_class: int | None = None, hashtag: bool = False
-) -> list[str]:
+) -> Any:
     """Returns a palette of hex colors from a matplotlib colormap.
 
     WARNING: This function is inconsistent with how it handles hashes in the
@@ -85,7 +86,6 @@ def get_palette(
         n_class: The number of colors. Defaults to None.
         hashtag: Whether to return a list of hex colors. Defaults to False.
     """
-
     if cmap_name in ["ndvi", "ndwi", "dem", "dw", "esri_lulc"]:
         colors = _palette_dict[cmap_name]
     else:
