@@ -7207,13 +7207,7 @@
 <span class="normal">342</span>
 <span class="normal">343</span>
 <span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">GoogleMapsTileProvider</span><span class="p">(</span><span class="n">xyzservices</span><span class="o">.</span><span class="n">TileProvider</span><span class="p">):</span>
+<span class="normal">345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">GoogleMapsTileProvider</span><span class="p">(</span><span class="n">xyzservices</span><span class="o">.</span><span class="n">TileProvider</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Google Maps TileProvider.&quot;&quot;&quot;</span>
 
     <span class="n">MAP_TYPE_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
@@ -7235,28 +7229,26 @@
         <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
         <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
         <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
     <span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        Generates Google Map tiles using the provided parameters. To get an API key</span>
-<span class="sd">            and enable Map Tiles API, visit</span>
-<span class="sd">            https://developers.google.com/maps/get-started#create-project.</span>
-<span class="sd">            You can set the API key using the environment variable</span>
-<span class="sd">            `GOOGLE_MAPS_API_KEY` or by passing it as an argument.</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generates Google Map tiles using the provided parameters.</span>
+
+<span class="sd">        To get an API key and enable Map Tiles API, visit</span>
+<span class="sd">        https://developers.google.com/maps/get-started#create-project.  You can set the</span>
+<span class="sd">        API key using the environment variable `GOOGLE_MAPS_API_KEY` or by passing it as</span>
+<span class="sd">        an argument.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            map_type (str, optional): The type of map to generate. Options are</span>
-<span class="sd">                &#39;roadmap&#39;, &#39;satellite&#39;, &#39;terrain&#39;, &#39;hybrid&#39;, &#39;traffic&#39;, &#39;streetview&#39;.</span>
-<span class="sd">                Defaults to &#39;roadmap&#39;.</span>
-<span class="sd">            language (str, optional): An IETF language tag that specifies the</span>
-<span class="sd">                language used to display information on the tiles, such as &#39;zh-Cn&#39;.</span>
-<span class="sd">                Defaults to &#39;en-Us&#39;.</span>
-<span class="sd">            region (str, optional): A Common Locale Data Repository region</span>
-<span class="sd">                identifier (two uppercase letters) that represents the physical</span>
-<span class="sd">                location of the user. Defaults to &#39;US&#39;.</span>
-<span class="sd">            api_key (str, optional): The API key to use for the Google Maps API.</span>
-<span class="sd">                If not provided, it will try to get it from the environment or</span>
-<span class="sd">                Colab user data with the key &#39;GOOGLE_MAPS_API_KEY&#39;. Defaults to None.</span>
+<span class="sd">            map_type: The type of map to generate. Options are &#39;roadmap&#39;, &#39;satellite&#39;,</span>
+<span class="sd">                &#39;terrain&#39;, &#39;hybrid&#39;, &#39;traffic&#39;, &#39;streetview&#39;.  Defaults to &#39;roadmap&#39;.</span>
+<span class="sd">            language: An IETF language tag that specifies the language used to display</span>
+<span class="sd">                information on the tiles, such as &#39;zh-Cn&#39;.  Defaults to &#39;en-Us&#39;.</span>
+<span class="sd">            region: A Common Locale Data Repository region identifier (two uppercase</span>
+<span class="sd">                letters) that represents the physical location of the user. Defaults to</span>
+<span class="sd">                &#39;US&#39;.</span>
+<span class="sd">            api_key: The API key to use for the Google Maps API.  If not provided, it</span>
+<span class="sd">                will try to get it from the environment or Colab user data with the key</span>
+<span class="sd">                &#39;GOOGLE_MAPS_API_KEY&#39;. Defaults to None.</span>
 <span class="sd">            **kwargs: Additional parameters to pass to the map generation. For more</span>
 <span class="sd">                info, visit https://bit.ly/3UhbZKU</span>
 
@@ -7271,11 +7263,7 @@
 <span class="sd">            &gt;&gt;&gt; basemap = GoogleMapsTileProvider(map_type=&#39;roadmap&#39;,</span>
 <span class="sd">                language=&quot;en-Us&quot;, region=&quot;US&quot;, scale=&quot;scaleFactor2x&quot;, highDpi=True)</span>
 <span class="sd">            &gt;&gt;&gt; m.add_basemap(basemap)</span>
-
-<span class="sd">        Returns:</span>
-<span class="sd">            TileProvider object: A TileProvider object with the Google Maps tile.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-
         <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">()</span>
         <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -7344,11 +7332,11 @@
 
     <div class="doc doc-contents ">
 
-        <p>Generates Google Map tiles using the provided parameters. To get an API key
-    and enable Map Tiles API, visit
-    https://developers.google.com/maps/get-started#create-project.
-    You can set the API key using the environment variable
-    <code>GOOGLE_MAPS_API_KEY</code> or by passing it as an argument.</p>
+        <p>Generates Google Map tiles using the provided parameters.</p>
+<p>To get an API key and enable Map Tiles API, visit
+https://developers.google.com/maps/get-started#create-project.  You can set the
+API key using the environment variable <code>GOOGLE_MAPS_API_KEY</code> or by passing it as
+an argument.</p>
 
 
 <p><span class="doc-section-title">Parameters:</span></p>
@@ -7371,9 +7359,8 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The type of map to generate. Options are
-'roadmap', 'satellite', 'terrain', 'hybrid', 'traffic', 'streetview'.
-Defaults to 'roadmap'.</p>
+                <p>The type of map to generate. Options are 'roadmap', 'satellite',
+'terrain', 'hybrid', 'traffic', 'streetview'.  Defaults to 'roadmap'.</p>
               </div>
             </td>
             <td>
@@ -7389,9 +7376,8 @@ Defaults to 'roadmap'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An IETF language tag that specifies the
-language used to display information on the tiles, such as 'zh-Cn'.
-Defaults to 'en-Us'.</p>
+                <p>An IETF language tag that specifies the language used to display
+information on the tiles, such as 'zh-Cn'.  Defaults to 'en-Us'.</p>
               </div>
             </td>
             <td>
@@ -7407,9 +7393,9 @@ Defaults to 'en-Us'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A Common Locale Data Repository region
-identifier (two uppercase letters) that represents the physical
-location of the user. Defaults to 'US'.</p>
+                <p>A Common Locale Data Repository region identifier (two uppercase
+letters) that represents the physical location of the user. Defaults to
+'US'.</p>
               </div>
             </td>
             <td>
@@ -7421,13 +7407,13 @@ location of the user. Defaults to 'US'.</p>
                 <code>api_key</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The API key to use for the Google Maps API.
-If not provided, it will try to get it from the environment or
-Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.</p>
+                <p>The API key to use for the Google Maps API.  If not provided, it
+will try to get it from the environment or Colab user data with the key
+'GOOGLE_MAPS_API_KEY'. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -7439,7 +7425,6 @@ Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.</p>
                 <code>**kwargs</code>
             </td>
             <td>
-                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7503,28 +7488,6 @@ m.add_basemap(basemap)</p>
 </blockquote>
 </blockquote>
 </details>
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>TileProvider object: A TileProvider object with the Google Maps tile.</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
@@ -7609,40 +7572,32 @@ m.add_basemap(basemap)</p>
 <span class="normal">342</span>
 <span class="normal">343</span>
 <span class="normal">344</span>
-<span class="normal">345</span>
-<span class="normal">346</span>
-<span class="normal">347</span>
-<span class="normal">348</span>
-<span class="normal">349</span>
-<span class="normal">350</span>
-<span class="normal">351</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">345</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">map_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;roadmap&quot;</span><span class="p">,</span>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
     <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates Google Map tiles using the provided parameters. To get an API key</span>
-<span class="sd">        and enable Map Tiles API, visit</span>
-<span class="sd">        https://developers.google.com/maps/get-started#create-project.</span>
-<span class="sd">        You can set the API key using the environment variable</span>
-<span class="sd">        `GOOGLE_MAPS_API_KEY` or by passing it as an argument.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates Google Map tiles using the provided parameters.</span>
+
+<span class="sd">    To get an API key and enable Map Tiles API, visit</span>
+<span class="sd">    https://developers.google.com/maps/get-started#create-project.  You can set the</span>
+<span class="sd">    API key using the environment variable `GOOGLE_MAPS_API_KEY` or by passing it as</span>
+<span class="sd">    an argument.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        map_type (str, optional): The type of map to generate. Options are</span>
-<span class="sd">            &#39;roadmap&#39;, &#39;satellite&#39;, &#39;terrain&#39;, &#39;hybrid&#39;, &#39;traffic&#39;, &#39;streetview&#39;.</span>
-<span class="sd">            Defaults to &#39;roadmap&#39;.</span>
-<span class="sd">        language (str, optional): An IETF language tag that specifies the</span>
-<span class="sd">            language used to display information on the tiles, such as &#39;zh-Cn&#39;.</span>
-<span class="sd">            Defaults to &#39;en-Us&#39;.</span>
-<span class="sd">        region (str, optional): A Common Locale Data Repository region</span>
-<span class="sd">            identifier (two uppercase letters) that represents the physical</span>
-<span class="sd">            location of the user. Defaults to &#39;US&#39;.</span>
-<span class="sd">        api_key (str, optional): The API key to use for the Google Maps API.</span>
-<span class="sd">            If not provided, it will try to get it from the environment or</span>
-<span class="sd">            Colab user data with the key &#39;GOOGLE_MAPS_API_KEY&#39;. Defaults to None.</span>
+<span class="sd">        map_type: The type of map to generate. Options are &#39;roadmap&#39;, &#39;satellite&#39;,</span>
+<span class="sd">            &#39;terrain&#39;, &#39;hybrid&#39;, &#39;traffic&#39;, &#39;streetview&#39;.  Defaults to &#39;roadmap&#39;.</span>
+<span class="sd">        language: An IETF language tag that specifies the language used to display</span>
+<span class="sd">            information on the tiles, such as &#39;zh-Cn&#39;.  Defaults to &#39;en-Us&#39;.</span>
+<span class="sd">        region: A Common Locale Data Repository region identifier (two uppercase</span>
+<span class="sd">            letters) that represents the physical location of the user. Defaults to</span>
+<span class="sd">            &#39;US&#39;.</span>
+<span class="sd">        api_key: The API key to use for the Google Maps API.  If not provided, it</span>
+<span class="sd">            will try to get it from the environment or Colab user data with the key</span>
+<span class="sd">            &#39;GOOGLE_MAPS_API_KEY&#39;. Defaults to None.</span>
 <span class="sd">        **kwargs: Additional parameters to pass to the map generation. For more</span>
 <span class="sd">            info, visit https://bit.ly/3UhbZKU</span>
 
@@ -7657,11 +7612,7 @@ m.add_basemap(basemap)</p>
 <span class="sd">        &gt;&gt;&gt; basemap = GoogleMapsTileProvider(map_type=&#39;roadmap&#39;,</span>
 <span class="sd">            language=&quot;en-Us&quot;, region=&quot;US&quot;, scale=&quot;scaleFactor2x&quot;, highDpi=True)</span>
 <span class="sd">        &gt;&gt;&gt; m.add_basemap(basemap)</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        TileProvider object: A TileProvider object with the Google Maps tile.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">key</span> <span class="o">=</span> <span class="n">api_key</span> <span class="ow">or</span> <span class="n">coreutils</span><span class="o">.</span><span class="n">get_google_maps_api_key</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
@@ -7752,9 +7703,8 @@ m.add_basemap(basemap)</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>An IETF language tag that specifies the
-language used to display information on the tiles, such as 'zh-Cn'.
-Defaults to 'en-Us'.</p>
+                <p>An IETF language tag that specifies the language used to display
+information on the tiles, such as 'zh-Cn'.  Defaults to 'en-Us'.</p>
               </div>
             </td>
             <td>
@@ -7770,9 +7720,9 @@ Defaults to 'en-Us'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A Common Locale Data Repository region
-identifier (two uppercase letters) that represents the physical
-location of the user. Defaults to 'US'.</p>
+                <p>A Common Locale Data Repository region identifier (two uppercase
+letters) that represents the physical location of the user. Defaults to
+'US'.</p>
               </div>
             </td>
             <td>
@@ -7784,13 +7734,13 @@ location of the user. Defaults to 'US'.</p>
                 <code>api_key</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The API key to use for the Google Maps API.
-If not provided, it will try to get it from the environment or
-Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.</p>
+                <p>The API key to use for the Google Maps API.  If not provided, it will
+try to get it from the environment or Colab user data with the key
+'GOOGLE_MAPS_API_KEY'. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -7802,12 +7752,11 @@ Colab user data with the key 'GOOGLE_MAPS_API_KEY'. Defaults to None.</p>
                 <code>**kwargs</code>
             </td>
             <td>
-                  <code><span title="typing.Any">Any</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Additional parameters to pass to the map generation. For more
-info, visit https://bit.ly/3UhbZKU</p>
+                <p>Additional parameters to pass to the map generation. For more info,
+visit https://bit.ly/3UhbZKU</p>
               </div>
             </td>
             <td>
@@ -7822,35 +7771,38 @@ info, visit https://bit.ly/3UhbZKU</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>dict</code></td>            <td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A dictionary where the keys are the map types</p>
+                <p>A dictionary where the keys are the map types ('roadmap', 'satellite',</p>
               </div>
             </td>
           </tr>
           <tr class="doc-section-item">
-<td></td>            <td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>('roadmap', 'satellite', 'terrain', 'hybrid')</p>
+                <p>'terrain', 'hybrid') and the values are the corresponding GoogleMapsTileProvider</p>
               </div>
             </td>
           </tr>
           <tr class="doc-section-item">
-<td></td>            <td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>and the values are the corresponding GoogleMapsTileProvider objects.</p>
+                <p>objects.</p>
               </div>
             </td>
           </tr>
@@ -7860,7 +7812,13 @@ info, visit https://bit.ly/3UhbZKU</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">354</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">348</span>
+<span class="normal">349</span>
+<span class="normal">350</span>
+<span class="normal">351</span>
+<span class="normal">352</span>
+<span class="normal">353</span>
+<span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
 <span class="normal">357</span>
@@ -7886,40 +7844,30 @@ info, visit https://bit.ly/3UhbZKU</p>
 <span class="normal">377</span>
 <span class="normal">378</span>
 <span class="normal">379</span>
-<span class="normal">380</span>
-<span class="normal">381</span>
-<span class="normal">382</span>
-<span class="normal">383</span>
-<span class="normal">384</span>
-<span class="normal">385</span>
-<span class="normal">386</span>
-<span class="normal">387</span>
-<span class="normal">388</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_google_map_tile_providers</span><span class="p">(</span>
+<span class="normal">380</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_google_map_tile_providers</span><span class="p">(</span>
     <span class="n">language</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;en-Us&quot;</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;US&quot;</span><span class="p">,</span>
     <span class="n">api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span>
-<span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Generates a dictionary of Google Map tile providers for different map types.</span>
+    <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a dictionary of Google Map tile providers for different map types.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        language (str, optional): An IETF language tag that specifies the</span>
-<span class="sd">            language used to display information on the tiles, such as &#39;zh-Cn&#39;.</span>
-<span class="sd">            Defaults to &#39;en-Us&#39;.</span>
-<span class="sd">        region (str, optional): A Common Locale Data Repository region</span>
-<span class="sd">            identifier (two uppercase letters) that represents the physical</span>
-<span class="sd">            location of the user. Defaults to &#39;US&#39;.</span>
-<span class="sd">        api_key (str, optional): The API key to use for the Google Maps API.</span>
-<span class="sd">            If not provided, it will try to get it from the environment or</span>
-<span class="sd">            Colab user data with the key &#39;GOOGLE_MAPS_API_KEY&#39;. Defaults to None.</span>
-<span class="sd">        **kwargs: Additional parameters to pass to the map generation. For more</span>
-<span class="sd">            info, visit https://bit.ly/3UhbZKU</span>
+<span class="sd">        language: An IETF language tag that specifies the language used to display</span>
+<span class="sd">            information on the tiles, such as &#39;zh-Cn&#39;.  Defaults to &#39;en-Us&#39;.</span>
+<span class="sd">        region: A Common Locale Data Repository region identifier (two uppercase</span>
+<span class="sd">            letters) that represents the physical location of the user. Defaults to</span>
+<span class="sd">            &#39;US&#39;.</span>
+<span class="sd">        api_key: The API key to use for the Google Maps API.  If not provided, it will</span>
+<span class="sd">            try to get it from the environment or Colab user data with the key</span>
+<span class="sd">            &#39;GOOGLE_MAPS_API_KEY&#39;. Defaults to None.</span>
+<span class="sd">        **kwargs: Additional parameters to pass to the map generation. For more info,</span>
+<span class="sd">            visit https://bit.ly/3UhbZKU</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict: A dictionary where the keys are the map types</span>
-<span class="sd">        (&#39;roadmap&#39;, &#39;satellite&#39;, &#39;terrain&#39;, &#39;hybrid&#39;)</span>
-<span class="sd">        and the values are the corresponding GoogleMapsTileProvider objects.</span>
+<span class="sd">        A dictionary where the keys are the map types (&#39;roadmap&#39;, &#39;satellite&#39;,</span>
+<span class="sd">        &#39;terrain&#39;, &#39;hybrid&#39;) and the values are the corresponding GoogleMapsTileProvider</span>
+<span class="sd">        objects.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">gmap_providers</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -7969,8 +7917,8 @@ info, visit https://bit.ly/3UhbZKU</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to return only free xyz tile
-services that do not require an access token. Defaults to True.</p>
+                <p>Whether to return only free xyz tile services that do not require an
+access token. Defaults to True.</p>
               </div>
             </td>
             <td>
@@ -7986,8 +7934,7 @@ services that do not require an access token. Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to include Geoportail France basemaps.
-Defaults to False.</p>
+                <p>Whether to include Geoportail France basemaps.  Defaults to False.</p>
               </div>
             </td>
             <td>
@@ -8009,6 +7956,7 @@ Defaults to False.</p>
       <tbody>
           <tr class="doc-section-item">
 <td><code>dict</code></td>            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8022,7 +7970,15 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">391</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">383</span>
+<span class="normal">384</span>
+<span class="normal">385</span>
+<span class="normal">386</span>
+<span class="normal">387</span>
+<span class="normal">388</span>
+<span class="normal">389</span>
+<span class="normal">390</span>
+<span class="normal">391</span>
 <span class="normal">392</span>
 <span class="normal">393</span>
 <span class="normal">394</span>
@@ -8045,24 +8001,18 @@ Defaults to False.</p>
 <span class="normal">411</span>
 <span class="normal">412</span>
 <span class="normal">413</span>
-<span class="normal">414</span>
-<span class="normal">415</span>
-<span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span>
-<span class="normal">420</span>
-<span class="normal">421</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">france</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+<span class="normal">414</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_xyz_dict</span><span class="p">(</span><span class="n">free_only</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">france</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of xyz services.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        free_only (bool, optional): Whether to return only free xyz tile</span>
-<span class="sd">            services that do not require an access token. Defaults to True.</span>
-<span class="sd">        france (bool, optional): Whether to include Geoportail France basemaps.</span>
-<span class="sd">            Defaults to False.</span>
+<span class="sd">        free_only: Whether to return only free xyz tile services that do not require an</span>
+<span class="sd">            access token. Defaults to True.</span>
+
+<span class="sd">        france: Whether to include Geoportail France basemaps.  Defaults to False.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        dict: A dictionary of xyz services.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">xyz_bunch</span> <span class="o">=</span> <span class="n">xyzservices</span><span class="o">.</span><span class="n">providers</span>
 
@@ -8145,10 +8095,11 @@ Defaults to False.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
+                  <code><span title="ipyleaflet.TileLayer">TileLayer</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>ipyleaflet.TileLayer: An ipyleaflet tile layer.</p>
+                <p>An ipyleaflet tile layer.</p>
               </div>
             </td>
           </tr>
@@ -8158,29 +8109,29 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">619</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">611</span>
+<span class="normal">612</span>
+<span class="normal">613</span>
+<span class="normal">614</span>
+<span class="normal">615</span>
+<span class="normal">616</span>
+<span class="normal">617</span>
+<span class="normal">618</span>
+<span class="normal">619</span>
 <span class="normal">620</span>
 <span class="normal">621</span>
 <span class="normal">622</span>
 <span class="normal">623</span>
 <span class="normal">624</span>
 <span class="normal">625</span>
-<span class="normal">626</span>
-<span class="normal">627</span>
-<span class="normal">628</span>
-<span class="normal">629</span>
-<span class="normal">630</span>
-<span class="normal">631</span>
-<span class="normal">632</span>
-<span class="normal">633</span>
-<span class="normal">634</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">):</span>
+<span class="normal">626</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">qms_to_geemap</span><span class="p">(</span><span class="n">service_id</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert a qms service to an ipyleaflet tile layer.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        service_id (str): Service ID.</span>
+<span class="sd">        service_id: Service ID.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        ipyleaflet.TileLayer: An ipyleaflet tile layer.</span>
+<span class="sd">        An ipyleaflet tile layer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">service_details</span> <span class="o">=</span> <span class="n">get_qms</span><span class="p">(</span><span class="n">service_id</span><span class="p">)</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">service_details</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
@@ -8258,7 +8209,15 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">592</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
+<span class="normal">587</span>
+<span class="normal">588</span>
+<span class="normal">589</span>
+<span class="normal">590</span>
+<span class="normal">591</span>
+<span class="normal">592</span>
 <span class="normal">593</span>
 <span class="normal">594</span>
 <span class="normal">595</span>
@@ -8268,20 +8227,12 @@ Defaults to False.</p>
 <span class="normal">599</span>
 <span class="normal">600</span>
 <span class="normal">601</span>
-<span class="normal">602</span>
-<span class="normal">603</span>
-<span class="normal">604</span>
-<span class="normal">605</span>
-<span class="normal">606</span>
-<span class="normal">607</span>
-<span class="normal">608</span>
-<span class="normal">609</span>
-<span class="normal">610</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">search_qms</span><span class="p">(</span><span class="n">keywords</span><span class="p">,</span> <span class="n">limit</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="normal">602</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">search_qms</span><span class="p">(</span><span class="n">keywords</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Search qms files for keywords. Reference: https://github.com/geopandas/xyzservices/issues/65</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        keywords (str): Keywords to search for.</span>
-<span class="sd">        limit (int): Number of results to return.</span>
+<span class="sd">        keywords: Keywords to search for.</span>
+<span class="sd">        limit: Number of results to return.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">QMS_API</span> <span class="o">=</span> <span class="s2">&quot;https://qms.nextgis.com/api/v1/geoservices&quot;</span>
 
@@ -8326,6 +8277,7 @@ Defaults to False.</p>
       <tbody>
           <tr class="doc-section-item">
 <td><code>dict</code></td>            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8339,7 +8291,14 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">452</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">445</span>
+<span class="normal">446</span>
+<span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span>
+<span class="normal">450</span>
+<span class="normal">451</span>
+<span class="normal">452</span>
 <span class="normal">453</span>
 <span class="normal">454</span>
 <span class="normal">455</span>
@@ -8381,14 +8340,7 @@ Defaults to False.</p>
 <span class="normal">491</span>
 <span class="normal">492</span>
 <span class="normal">493</span>
-<span class="normal">494</span>
-<span class="normal">495</span>
-<span class="normal">496</span>
-<span class="normal">497</span>
-<span class="normal">498</span>
-<span class="normal">499</span>
-<span class="normal">500</span>
-<span class="normal">501</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_folium</span><span class="p">():</span>
+<span class="normal">494</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_folium</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to folium tile layers.</span>
 
 <span class="sd">    Returns:</span>
@@ -8462,13 +8414,14 @@ Defaults to False.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>dict</code></td>            <td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8482,7 +8435,14 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">424</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">417</span>
+<span class="normal">418</span>
+<span class="normal">419</span>
+<span class="normal">420</span>
+<span class="normal">421</span>
+<span class="normal">422</span>
+<span class="normal">423</span>
+<span class="normal">424</span>
 <span class="normal">425</span>
 <span class="normal">426</span>
 <span class="normal">427</span>
@@ -8500,18 +8460,11 @@ Defaults to False.</p>
 <span class="normal">439</span>
 <span class="normal">440</span>
 <span class="normal">441</span>
-<span class="normal">442</span>
-<span class="normal">443</span>
-<span class="normal">444</span>
-<span class="normal">445</span>
-<span class="normal">446</span>
-<span class="normal">447</span>
-<span class="normal">448</span>
-<span class="normal">449</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_leaflet</span><span class="p">():</span>
+<span class="normal">442</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_leaflet</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to ipyleaflet tile layers.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict: A dictionary of ipyleaflet tile layers.</span>
+<span class="sd">        A dictionary of ipyleaflet tile layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">leaflet_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># Ignore Esri basemaps if they are already in the custom XYZ_TILES.</span>
@@ -8557,13 +8510,14 @@ Defaults to False.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>dict</code></td>            <td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8577,7 +8531,15 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">559</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">551</span>
+<span class="normal">552</span>
+<span class="normal">553</span>
+<span class="normal">554</span>
+<span class="normal">555</span>
+<span class="normal">556</span>
+<span class="normal">557</span>
+<span class="normal">558</span>
+<span class="normal">559</span>
 <span class="normal">560</span>
 <span class="normal">561</span>
 <span class="normal">562</span>
@@ -8599,19 +8561,11 @@ Defaults to False.</p>
 <span class="normal">578</span>
 <span class="normal">579</span>
 <span class="normal">580</span>
-<span class="normal">581</span>
-<span class="normal">582</span>
-<span class="normal">583</span>
-<span class="normal">584</span>
-<span class="normal">585</span>
-<span class="normal">586</span>
-<span class="normal">587</span>
-<span class="normal">588</span>
-<span class="normal">589</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_plotly</span><span class="p">():</span>
+<span class="normal">581</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_plotly</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to plotly tile layers.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict: A dictionary of plotly tile layers.</span>
+<span class="sd">        A dictionary of plotly tile layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">plotly_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># Ignore Esri basemaps if they are already in the custom XYZ_TILES.</span>
@@ -8662,13 +8616,14 @@ Defaults to False.</p>
     <table>
       <thead>
         <tr>
-<th>Name</th>          <th>Type</th>
+          <th>Type</th>
           <th>Description</th>
         </tr>
       </thead>
       <tbody>
           <tr class="doc-section-item">
-<td><code>dict</code></td>            <td>
+            <td>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8682,7 +8637,14 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/basemaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">515</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">508</span>
+<span class="normal">509</span>
+<span class="normal">510</span>
+<span class="normal">511</span>
+<span class="normal">512</span>
+<span class="normal">513</span>
+<span class="normal">514</span>
+<span class="normal">515</span>
 <span class="normal">516</span>
 <span class="normal">517</span>
 <span class="normal">518</span>
@@ -8715,25 +8677,16 @@ Defaults to False.</p>
 <span class="normal">545</span>
 <span class="normal">546</span>
 <span class="normal">547</span>
-<span class="normal">548</span>
-<span class="normal">549</span>
-<span class="normal">550</span>
-<span class="normal">551</span>
-<span class="normal">552</span>
-<span class="normal">553</span>
-<span class="normal">554</span>
-<span class="normal">555</span>
-<span class="normal">556</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_pydeck</span><span class="p">():</span>
+<span class="normal">548</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xyz_to_pydeck</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert xyz tile services to pydeck custom tile layers.</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict: A dictionary of pydeck tile layers.</span>
+<span class="sd">        A dictionary of pydeck tile layers.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">common</span><span class="o">.</span><span class="n">check_package</span><span class="p">(</span>
         <span class="s2">&quot;pydeck&quot;</span><span class="p">,</span> <span class="s2">&quot;https://deckgl.readthedocs.io/en/latest/installation.html&quot;</span>
     <span class="p">)</span>
-    <span class="kn">import</span><span class="w"> </span><span class="nn">pydeck</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdk</span>
+    <span class="kn">import</span><span class="w"> </span><span class="nn">pydeck</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pdk</span>  <span class="c1"># pytype: disable=import-error</span>
 
     <span class="n">pydeck_dict</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="c1"># Ignore Esri basemaps if they are already in the custom XYZ_TILES.</span>
