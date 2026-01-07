@@ -17,7 +17,7 @@ from typing import Any
 from . import common
 
 
-def osm_gdf_from_address(address: str, tags=dict[str, Any], dist: int = 1000):
+def osm_gdf_from_address(address: str, tags: dict[str, Any], dist: int = 1000):
     """Create GeoDataFrame of OSM entities within some distance N, S, E, W of address.
 
     Args:
