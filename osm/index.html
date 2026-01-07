@@ -7323,8 +7323,8 @@ found at https://wiki.openstreetmap.org/wiki/Map_features</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The address to geocode and use as the central point around which
-to get the geometries.</p>
+                <p>The address to geocode and use as the central point around which to get
+the geometries.</p>
               </div>
             </td>
             <td>
@@ -7336,7 +7336,7 @@ to get the geometries.</p>
                 <code>tags</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7427,13 +7427,13 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">44</span>
 <span class="normal">45</span>
 <span class="normal">46</span>
-<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_address</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<span class="normal">47</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_address</span><span class="p">(</span><span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">dist</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create GeoDataFrame of OSM entities within some distance N, S, E, W of address.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        address (str): The address to geocode and use as the central point around which</span>
-<span class="sd">            to get the geometries.</span>
-<span class="sd">        tags (dict): Dict of tags used for finding objects in the selected area. Results</span>
+<span class="sd">        address: The address to geocode and use as the central point around which to get</span>
+<span class="sd">            the geometries.</span>
+<span class="sd">        tags: Dict of tags used for finding objects in the selected area. Results</span>
 <span class="sd">            returned are the union, not intersection of each individual tag. Each result</span>
 <span class="sd">            matches at least one given tag. The dict keys should be OSM tags, (e.g.,</span>
 <span class="sd">            building, landuse, highway, etc) and the dict values should be either True</span>
@@ -7443,7 +7443,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="sd">            footprints in the area. tags = {‘amenity’:True,</span>
 <span class="sd">            ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all</span>
 <span class="sd">            amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</span>
-<span class="sd">        dist (int, optional): Distance in meters. Defaults to 1000.</span>
+<span class="sd">        dist: Distance in meters. Defaults to 1000.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        GeoDataFrame: A GeoDataFrame of OSM entities.</span>
@@ -7603,7 +7603,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">362</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">360</span>
+<span class="normal">361</span>
+<span class="normal">362</span>
 <span class="normal">363</span>
 <span class="normal">364</span>
 <span class="normal">365</span>
@@ -7629,9 +7631,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">385</span>
 <span class="normal">386</span>
 <span class="normal">387</span>
-<span class="normal">388</span>
-<span class="normal">389</span>
-<span class="normal">390</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_bbox</span><span class="p">(</span><span class="n">north</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">west</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+<span class="normal">388</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_bbox</span><span class="p">(</span><span class="n">north</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">west</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a GeoDataFrame of OSM entities within a N, S, E, W bounding box.</span>
 
 <span class="sd">    Args:</span>
@@ -7771,7 +7771,9 @@ than text search. Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">468</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">466</span>
+<span class="normal">467</span>
+<span class="normal">468</span>
 <span class="normal">469</span>
 <span class="normal">470</span>
 <span class="normal">471</span>
@@ -7795,9 +7797,7 @@ than text search. Defaults to False.</p>
 <span class="normal">489</span>
 <span class="normal">490</span>
 <span class="normal">491</span>
-<span class="normal">492</span>
-<span class="normal">493</span>
-<span class="normal">494</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_geocode</span><span class="p">(</span>
+<span class="normal">492</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_geocode</span><span class="p">(</span>
     <span class="n">query</span><span class="p">,</span>
     <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">by_osmid</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
@@ -7876,7 +7876,7 @@ than text search. Defaults to False.</p>
                 <code>tags</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -7901,14 +7901,13 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
                 <code>which_result</code>
             </td>
             <td>
-                  <code><span title="int">int</span></code>
+                  <code><span title="int">int</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Which geocoding result to use. if None,
-auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
-one. to get the top match regardless of geometry type, set
-which_result=1. Defaults to None.</p>
+                <p>Which geocoding result to use. if None, auto-select the first
+(Multi)Polygon or raise an error if OSM doesn't return one. to get the top
+match regardless of geometry type, set which_result=1. Defaults to None.</p>
               </div>
             </td>
             <td>
@@ -7943,7 +7942,8 @@ which_result=1. Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">107</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">106</span>
+<span class="normal">107</span>
 <span class="normal">108</span>
 <span class="normal">109</span>
 <span class="normal">110</span>
@@ -7972,14 +7972,12 @@ which_result=1. Defaults to None.</p>
 <span class="normal">133</span>
 <span class="normal">134</span>
 <span class="normal">135</span>
-<span class="normal">136</span>
-<span class="normal">137</span>
-<span class="normal">138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_place</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_place</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">which_result</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create GeoDataFrame of OSM entities within boundaries of geocodable place(s).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        query (str | dict | list): Query string(s) or structured dict(s) to geocode.</span>
-<span class="sd">        tags (dict): Dict of tags used for finding objects in the selected area. Results</span>
+<span class="sd">        tags: Dict of tags used for finding objects in the selected area. Results</span>
 <span class="sd">            returned are the union, not intersection of each individual tag. Each result</span>
 <span class="sd">            matches at least one given tag. The dict keys should be OSM tags, (e.g.,</span>
 <span class="sd">            building, landuse, highway, etc) and the dict values should be either True</span>
@@ -7989,10 +7987,9 @@ which_result=1. Defaults to None.</p>
 <span class="sd">            footprints in the area. tags = {‘amenity’:True,</span>
 <span class="sd">            ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all</span>
 <span class="sd">            amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</span>
-<span class="sd">        which_result (int, optional): Which geocoding result to use. if None,</span>
-<span class="sd">            auto-select the first (Multi)Polygon or raise an error if OSM doesn&#39;t return</span>
-<span class="sd">            one. to get the top match regardless of geometry type, set</span>
-<span class="sd">            which_result=1. Defaults to None.</span>
+<span class="sd">        which_result: Which geocoding result to use. if None, auto-select the first</span>
+<span class="sd">            (Multi)Polygon or raise an error if OSM doesn&#39;t return one. to get the top</span>
+<span class="sd">            match regardless of geometry type, set which_result=1. Defaults to None.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        GeoDataFrame: A GeoDataFrame of OSM entities.</span>
@@ -8122,7 +8119,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">198</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">196</span>
+<span class="normal">197</span>
+<span class="normal">198</span>
 <span class="normal">199</span>
 <span class="normal">200</span>
 <span class="normal">201</span>
@@ -8146,9 +8145,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">219</span>
 <span class="normal">220</span>
 <span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_point</span><span class="p">(</span><span class="n">center_point</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<span class="normal">222</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_point</span><span class="p">(</span><span class="n">center_point</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create GeoDataFrame of OSM entities within some distance N, S, E, W of a point.</span>
 
 <span class="sd">    Args:</span>
@@ -8276,7 +8273,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">283</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">281</span>
+<span class="normal">282</span>
+<span class="normal">283</span>
 <span class="normal">284</span>
 <span class="normal">285</span>
 <span class="normal">286</span>
@@ -8300,9 +8299,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">304</span>
 <span class="normal">305</span>
 <span class="normal">306</span>
-<span class="normal">307</span>
-<span class="normal">308</span>
-<span class="normal">309</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
+<span class="normal">307</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">tags</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create GeoDataFrame of OSM entities within boundaries of a (multi)polygon.</span>
 
 <span class="sd">    Args:</span>
@@ -8446,7 +8443,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">438</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">436</span>
+<span class="normal">437</span>
+<span class="normal">438</span>
 <span class="normal">439</span>
 <span class="normal">440</span>
 <span class="normal">441</span>
@@ -8471,9 +8470,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">460</span>
 <span class="normal">461</span>
 <span class="normal">462</span>
-<span class="normal">463</span>
-<span class="normal">464</span>
-<span class="normal">465</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_xml</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">polygon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">463</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_gdf_from_xml</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">polygon</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tags</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a GeoDataFrame of OSM entities in an OSM-formatted XML file.</span>
 
 <span class="sd">    Args:</span>
@@ -8621,7 +8618,6 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="typing.Any">Any</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8635,7 +8631,8 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 76</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 75</span>
+<span class="normal"> 76</span>
 <span class="normal"> 77</span>
 <span class="normal"> 78</span>
 <span class="normal"> 79</span>
@@ -8662,10 +8659,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">100</span>
 <span class="normal">101</span>
 <span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_address</span><span class="p">(</span>
+<span class="normal">103</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_address</span><span class="p">(</span>
     <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within some distance N, S, E, W of address as a GeoJSON.</span>
 
 <span class="sd">    Args:</span>
@@ -8856,7 +8852,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">408</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">406</span>
+<span class="normal">407</span>
+<span class="normal">408</span>
 <span class="normal">409</span>
 <span class="normal">410</span>
 <span class="normal">411</span>
@@ -8881,9 +8879,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">430</span>
 <span class="normal">431</span>
 <span class="normal">432</span>
-<span class="normal">433</span>
-<span class="normal">434</span>
-<span class="normal">435</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_bbox</span><span class="p">(</span><span class="n">north</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">west</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">433</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_bbox</span><span class="p">(</span><span class="n">north</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">west</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within a N, S, E, W bounding box as a GeoJSON.</span>
 
 <span class="sd">    Args:</span>
@@ -9038,7 +9034,9 @@ than text search. Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">519</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">517</span>
+<span class="normal">518</span>
+<span class="normal">519</span>
 <span class="normal">520</span>
 <span class="normal">521</span>
 <span class="normal">522</span>
@@ -9061,9 +9059,7 @@ than text search. Defaults to False.</p>
 <span class="normal">539</span>
 <span class="normal">540</span>
 <span class="normal">541</span>
-<span class="normal">542</span>
-<span class="normal">543</span>
-<span class="normal">544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_geocode</span><span class="p">(</span>
+<span class="normal">542</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_geocode</span><span class="p">(</span>
     <span class="n">query</span><span class="p">,</span>
     <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -9224,7 +9220,9 @@ which_result=1. Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">166</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">164</span>
+<span class="normal">165</span>
+<span class="normal">166</span>
 <span class="normal">167</span>
 <span class="normal">168</span>
 <span class="normal">169</span>
@@ -9251,9 +9249,7 @@ which_result=1. Defaults to None.</p>
 <span class="normal">190</span>
 <span class="normal">191</span>
 <span class="normal">192</span>
-<span class="normal">193</span>
-<span class="normal">194</span>
-<span class="normal">195</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_place</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">193</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_place</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within boundaries of geocodable place(s) as a GeoJSON.</span>
 
 <span class="sd">    Args:</span>
@@ -9416,7 +9412,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">254</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
 <span class="normal">255</span>
 <span class="normal">256</span>
 <span class="normal">257</span>
@@ -9440,9 +9438,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">275</span>
 <span class="normal">276</span>
 <span class="normal">277</span>
-<span class="normal">278</span>
-<span class="normal">279</span>
-<span class="normal">280</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_point</span><span class="p">(</span><span class="n">center_point</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
+<span class="normal">278</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_point</span><span class="p">(</span><span class="n">center_point</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">dist</span><span class="o">=</span><span class="mi">1000</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within some distance N, S, E, W of point as a GeoJSON.</span>
 
 <span class="sd">    Args:</span>
@@ -9586,7 +9582,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">334</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span>
 <span class="normal">335</span>
 <span class="normal">336</span>
 <span class="normal">337</span>
@@ -9609,9 +9607,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">354</span>
 <span class="normal">355</span>
 <span class="normal">356</span>
-<span class="normal">357</span>
-<span class="normal">358</span>
-<span class="normal">359</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">357</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_geojson_from_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within boundaries of a (multi)polygon as a GeoJSON.</span>
 
 <span class="sd">    Args:</span>
@@ -9770,8 +9766,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">69</span>
 <span class="normal">70</span>
 <span class="normal">71</span>
-<span class="normal">72</span>
-<span class="normal">73</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_address</span><span class="p">(</span>
+<span class="normal">72</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_address</span><span class="p">(</span>
     <span class="n">address</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">tags</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dist</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1000</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within some distance N, S, E, W of address as a shapefile.</span>
@@ -9779,7 +9774,6 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        address: The address to geocode and use as the central point around which to get</span>
 <span class="sd">            the geometries.</span>
-
 <span class="sd">        tags: Tags used for finding objects in the selected area. Results returned are</span>
 <span class="sd">            the union, not intersection of each individual tag. Each result matches at</span>
 <span class="sd">            least one given tag. The dict keys should be OSM tags, (e.g., building,</span>
@@ -9928,7 +9922,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">393</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">391</span>
+<span class="normal">392</span>
+<span class="normal">393</span>
 <span class="normal">394</span>
 <span class="normal">395</span>
 <span class="normal">396</span>
@@ -9938,9 +9934,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">400</span>
 <span class="normal">401</span>
 <span class="normal">402</span>
-<span class="normal">403</span>
-<span class="normal">404</span>
-<span class="normal">405</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_bbox</span><span class="p">(</span><span class="n">north</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">west</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+<span class="normal">403</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_bbox</span><span class="p">(</span><span class="n">north</span><span class="p">,</span> <span class="n">south</span><span class="p">,</span> <span class="n">east</span><span class="p">,</span> <span class="n">west</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within a N, S, E, W bounding box as a shapefile.</span>
 
 <span class="sd">    Args:</span>
@@ -10058,7 +10052,9 @@ than text search. Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">497</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">495</span>
+<span class="normal">496</span>
+<span class="normal">497</span>
 <span class="normal">498</span>
 <span class="normal">499</span>
 <span class="normal">500</span>
@@ -10075,9 +10071,7 @@ than text search. Defaults to False.</p>
 <span class="normal">511</span>
 <span class="normal">512</span>
 <span class="normal">513</span>
-<span class="normal">514</span>
-<span class="normal">515</span>
-<span class="normal">516</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_geocode</span><span class="p">(</span>
+<span class="normal">514</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_geocode</span><span class="p">(</span>
     <span class="n">query</span><span class="p">,</span>
     <span class="n">filepath</span><span class="p">,</span>
     <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -10210,7 +10204,9 @@ which_result=1. Defaults to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">141</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">139</span>
+<span class="normal">140</span>
+<span class="normal">141</span>
 <span class="normal">142</span>
 <span class="normal">143</span>
 <span class="normal">144</span>
@@ -10230,9 +10226,7 @@ which_result=1. Defaults to None.</p>
 <span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
-<span class="normal">161</span>
-<span class="normal">162</span>
-<span class="normal">163</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_place</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">161</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_place</span><span class="p">(</span><span class="n">query</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="p">,</span> <span class="n">which_result</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within boundaries of geocodable place(s) as a shapefile.</span>
 
 <span class="sd">    Args:</span>
@@ -10365,7 +10359,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">227</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">225</span>
+<span class="normal">226</span>
+<span class="normal">227</span>
 <span class="normal">228</span>
 <span class="normal">229</span>
 <span class="normal">230</span>
@@ -10387,9 +10383,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">246</span>
 <span class="normal">247</span>
 <span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_point</span><span class="p">(</span>
+<span class="normal">249</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_point</span><span class="p">(</span>
     <span class="n">center_point</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
     <span class="n">tags</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span>
     <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -10509,7 +10503,9 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">312</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">310</span>
+<span class="normal">311</span>
+<span class="normal">312</span>
 <span class="normal">313</span>
 <span class="normal">314</span>
 <span class="normal">315</span>
@@ -10526,9 +10522,7 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 <span class="normal">326</span>
 <span class="normal">327</span>
 <span class="normal">328</span>
-<span class="normal">329</span>
-<span class="normal">330</span>
-<span class="normal">331</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
+<span class="normal">329</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_shp_from_polygon</span><span class="p">(</span><span class="n">polygon</span><span class="p">,</span> <span class="n">tags</span><span class="p">,</span> <span class="n">filepath</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download OSM entities within boundaries of a (multi)polygon as a shapefile.</span>
 
 <span class="sd">    Args:</span>
@@ -10570,11 +10564,11 @@ amenities, landuse=retail, landuse=commercial, and highway=bus_stop.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/osm.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">547</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">545</span>
+<span class="normal">546</span>
+<span class="normal">547</span>
 <span class="normal">548</span>
-<span class="normal">549</span>
-<span class="normal">550</span>
-<span class="normal">551</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_tags_list</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">549</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">osm_tags_list</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Open a browser to see all tags of OSM features.&quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">webbrowser</span>
 
