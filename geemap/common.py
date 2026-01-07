@@ -37,8 +37,10 @@ from urllib.parse import urlparse
 import urllib.request
 from urllib.request import urlopen
 import warnings
+import webbrowser
 import zipfile
 
+import box
 import ee
 import ipyleaflet
 import ipywidgets as widgets
@@ -61,53 +63,51 @@ except ImportError:
 
 
 def ee_export_image(
-    ee_object,
-    filename,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    region=None,
-    dimensions=None,
-    file_per_band=False,
-    format="ZIPPED_GEO_TIFF",
-    unzip=True,
-    unmask_value=None,
-    timeout=300,
-    proxies=None,
-    verbose=True,
-):
+    ee_object: Any,
+    filename: str,
+    scale: float | None = None,
+    crs: str | None = None,
+    crs_transform: list[float] | None = None,
+    region: Any | None = None,
+    dimensions: list[int] | None = None,
+    file_per_band: bool = False,
+    format: str = "ZIPPED_GEO_TIFF",
+    unzip: bool = True,
+    unmask_value: float | None = None,
+    timeout: int = 300,
+    proxies: dict[str, Any] | None = None,
+    verbose: bool = True,
+) -> None:
     """Exports an ee.Image as a GeoTIFF.
 
     Args:
-        ee_object (object): The ee.Image to download.
-        filename (str): Output filename for the exported image.
-        scale (float, optional): A default scale to use for any bands that do not
-            specify one; ignored if crs and crs_transform is specified. Defaults to
-            None.
-        crs (str, optional): A default CRS string to use for any bands that do not
-            explicitly specify one. Defaults to None.
-        crs_transform (list, optional): a default affine transform to use for any bands
-            that do not specify one, of the same format as the crs_transform of
-            bands. Defaults to None.
-        region (object, optional): A polygon specifying a region to download; ignored if
+        ee_object: The ee.Image to download.
+        filename: Output filename for the exported image.
+        scale: A default scale to use for any bands that do not specify one; ignored if
             crs and crs_transform is specified. Defaults to None.
-        dimensions (list, optional): An optional array of two integers defining the
-            width and height to which the band is cropped. Defaults to None.
-        file_per_band (bool, optional): Whether to produce a different GeoTIFF per
-            band. Defaults to False.
-        format (str, optional): One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a
-            zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary
-            format). If "GEO_TIFF" or "NPY", filePerBand and all band-level
-            transformations will be ignored. Loading a NumPy output results in a
-            structured array.
-        unzip (bool, optional): Whether to unzip the downloaded file. Defaults to True.
-        unmask_value (float, optional): The value to use for pixels that are masked in
-            the input image.  If the exported image contains zero values, you should set
-            the unmask value to a non-zero value so that the zero values are not treated
-            as missing data. Defaults to None.
-        timeout (int, optional): The timeout in seconds for the request. Defaults to 300.
-        proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text. Defaults to True.
+        crs: A default CRS string to use for any bands that do not explicitly specify
+            one. Defaults to None.
+        crs_transform: a default affine transform to use for any bands that do not
+            specify one, of the same format as the crs_transform of bands. Defaults to
+            None.
+        region: A polygon specifying a region to download; ignored if crs and
+            crs_transform is specified. Defaults to None.
+        dimensions: An optional array of two integers defining the width and height to
+            which the band is cropped. Defaults to None.
+        file_per_band: Whether to produce a different GeoTIFF per band. Defaults to
+            False.
+        format: One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file,
+            default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If
+            "GEO_TIFF" or "NPY", filePerBand and all band-level transformations will be
+            ignored. Loading a NumPy output results in a structured array.
+        unzip: Whether to unzip the downloaded file. Defaults to True.
+        unmask_value: The value to use for pixels that are masked in the input image.
+            If the exported image contains zero values, you should set the unmask value
+            to a non-zero value so that the zero values are not treated as missing
+            data. Defaults to None.
+        timeout: The timeout in seconds for the request. Defaults to 300.
+        proxies: A dictionary of proxy servers to use. Defaults to None.
+        verbose: Whether to print out descriptive text. Defaults to True.
     """
 
     if not isinstance(ee_object, ee.Image):
@@ -194,60 +194,57 @@ def ee_export_image(
 
 
 def ee_export_image_collection(
-    ee_object,
-    out_dir,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    region=None,
-    dimensions=None,
-    file_per_band=False,
-    format="ZIPPED_GEO_TIFF",
-    unmask_value=None,
+    ee_object: Any,
+    out_dir: str,
+    scale: float | None = None,
+    crs: str | None = None,
+    crs_transform: list[float] | None = None,
+    region: Any = None,
+    dimensions: list[float] = None,
+    file_per_band: bool = False,
+    format: str = "ZIPPED_GEO_TIFF",
+    unmask_value: float | None = None,
     filenames=None,
-    timeout=300,
-    proxies=None,
-    verbose=True,
+    timeout: int = 300,
+    proxies: dict[str, Any] = None,
+    verbose: bool = True,
 ):
     """Exports an ImageCollection as GeoTIFFs.
 
     Args:
-        ee_object (object): The ee.Image to download.
-        out_dir (str): The output directory for the exported images.
-
-        scale (float, optional): A default scale to use for any bands that do not
-            specify one; ignored if crs and crs_transform is specified. Defaults to
-            None.
-        crs (str, optional): A default CRS string to use for any bands that do not
-            explicitly specify one. Defaults to None.
-        crs_transform (list, optional): a default affine transform to use for any bands
-            that do not specify one, of the same format as the crs_transform of
-            bands. Defaults to None.
-        region (object, optional): A polygon specifying a region to download; ignored if
+        ee_object: The ee.Image to download.
+        out_dir: The output directory for the exported images.
+        scale: A default scale to use for any bands that do not specify one; ignored if
             crs and crs_transform is specified. Defaults to None.
-        dimensions (list, optional): An optional array of two integers defining the
-            width and height to which the band is cropped. Defaults to None.
-        file_per_band (bool, optional): Whether to produce a different GeoTIFF per
-            band. Defaults to False.
-        format (str, optional): One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a
-            zip file, default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary
-            format). If "GEO_TIFF" or "NPY", filePerBand and all band-level
-            transformations will be ignored. Loading a NumPy output results in a
-            structured array.
-        unmask_value (float, optional): The value to use for pixels that are masked in
-            the input image.  If the exported image contains zero values, you should set
-            the unmask value to a non-zero value so that the zero values are not treated
-            as missing data. Defaults to None.
+        crs: A default CRS string to use for any bands that do not explicitly specify
+            one. Defaults to None.
+        crs_transform: a default affine transform to use for any bands that do not
+            specify one, of the same format as the crs_transform of bands. Defaults to
+            None.
+        region: A polygon specifying a region to download; ignored if crs and
+            crs_transform is specified. Defaults to None.
+        dimensions: An optional array of two integers defining the width and height to
+            which the band is cropped. Defaults to None.
+        file_per_band: Whether to produce a different GeoTIFF per band. Defaults to
+            False.
+        format: One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file,
+            default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If
+            "GEO_TIFF" or "NPY", filePerBand and all band-level transformations will be
+            ignored. Loading a NumPy output results in a structured array.
+        unmask_value: The value to use for pixels that are masked in the input image.
+            If the exported image contains zero values, you should set the unmask value
+            to a non-zero value so that the zero values are not treated as missing
+            data. Defaults to None.
         filenames (list | int, optional): A list of filenames to use for the exported
             images. Defaults to None.
-        timeout (int, optional): The timeout in seconds for the request.
+        timeout: The timeout in seconds for the request.
             Defaults to 300.
-        proxies (dict, optional): A dictionary of proxy servers to use.
+        proxies: A dictionary of proxy servers to use.
             Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text.
+        verbose: Whether to print out descriptive text.
             Defaults to True.
     """
-
+    # TODO(schwehr): Fix the doc string and type annotation for filenames.
     if not isinstance(ee_object, ee.ImageCollection):
         print("The ee_object must be an ee.ImageCollection.")
         return
@@ -361,7 +358,6 @@ def ee_export_image_to_drive(
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform', 'driveFolder', and 'driveFileNamePrefix'.
     """
-
     if not isinstance(image, ee.Image):
         raise ValueError("Input image must be an instance of ee.Image")
 
@@ -865,18 +861,21 @@ def ee_export_image_collection_to_cloud_storage(
 
 
 def ee_export_geojson(
-    ee_object, filename=None, selectors=None, timeout=300, proxies=None
-):
+    ee_object: Any,
+    filename: str | None = None,
+    selectors: list[str] | None = None,
+    timeout: int = 300,
+    proxies: dict[str, None] = None,
+) -> None:
     """Exports Earth Engine FeatureCollection to geojson.
 
     Args:
-        ee_object (object): ee.FeatureCollection to export.
-        filename (str): Output file name. Defaults to None.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
-        proxies (dict, optional): Proxy settings. Defaults to None.
+        ee_object: ee.FeatureCollection to export.
+        filename: Output file name. Defaults to None.
+        selectors: A list of attributes to export. Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300 seconds.
+        proxies: Proxy settings. Defaults to None.
     """
-
     if not isinstance(ee_object, ee.FeatureCollection):
         print("The ee_object must be an ee.FeatureCollection.")
         return
@@ -952,28 +951,27 @@ def ee_export_geojson(
 
 
 def ee_export_vector(
-    ee_object,
-    filename,
-    selectors=None,
-    verbose=True,
-    keep_zip=False,
-    timeout=300,
-    proxies=None,
+    ee_object: Any,
+    filename: str,
+    selectors: list[str] | None = None,
+    verbose: bool = True,
+    keep_zip: bool = False,
+    timeout: int = 300,
+    proxies: dict[str, Any] = None,
 ):
     """Exports Earth Engine FeatureCollection to other formats.
 
     Includes shp, csv, json, kml, and kmz.
 
     Args:
-        ee_object (object): ee.FeatureCollection to export.
-        filename (str): Output file name.
-        selectors (list, optional): A list of attributes to export. Defaults to None.
-        verbose (bool, optional): Whether to print out descriptive text.
-        keep_zip (bool, optional): Whether to keep the shapefile as a zip file.
-        timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
-        proxies (dict, optional): A dictionary of proxies to use. Defaults to None.
+        ee_object: ee.FeatureCollection to export.
+        filename: Output file name.
+        selectors: A list of attributes to export. Defaults to None.
+        verbose: Whether to print out descriptive text.
+        keep_zip: Whether to keep the shapefile as a zip file.
+        timeout: Timeout in seconds. Defaults to 300 seconds.
+        proxies: A dictionary of proxies to use. Defaults to None.
     """
-
     if not isinstance(ee_object, ee.FeatureCollection):
         raise ValueError("ee_object must be an ee.FeatureCollection")
 
@@ -1138,8 +1136,7 @@ def ee_export_vector_to_asset(
         collection: The feature collection to be exported.
         description: Human-readable name of the task.
         assetId: The destination asset ID.
-        maxVertices:
-            Max number of uncut vertices per geometry; geometries with more
+        maxVertices: Max number of uncut vertices per geometry; geometries with more
             vertices will be cut into pieces smaller than this size.
         **kwargs: Holds other keyword arguments that may have been deprecated.
     """
@@ -1539,7 +1536,6 @@ class TitilerEndpoint:
         """Initialize the TitilerEndpoint object.
 
         Args:
-
             endpoint: The endpoint of the titiler server. Defaults to
                 "https://giswqs-titiler-endpoint.hf.space".
             name: The name to be used in the file path. Defaults to "stac".
@@ -1689,11 +1685,7 @@ def set_proxy(
 
 
 def is_drive_mounted() -> bool:
-    """Checks whether Google Drive is mounted in Google Colab.
-
-    Returns:
-        bool: Returns True if Google Drive is mounted, False otherwise.
-    """
+    """Returns True if Google Drive is mounted, False otherwise."""
     drive_path = "/content/drive/My Drive"
     if os.path.exists(drive_path):
         return True
@@ -1702,11 +1694,7 @@ def is_drive_mounted() -> bool:
 
 
 def credentials_in_drive() -> bool:
-    """Checks if the ee credentials file exists in Google Drive.
-
-    Returns:
-        bool: Returns True if Google Drive is mounted, False otherwise.
-    """
+    """Returns True if Google Drive is mounted, False otherwise."""
     credentials_path = "/content/drive/My Drive/.config/earthengine/credentials"
     if os.path.exists(credentials_path):
         return True
@@ -1762,11 +1750,10 @@ def check_install(package: str) -> None:
     If not, it will install the package.
 
     Args:
-        package (str): The name of the package to check.
+        package: The name of the package to check.
     """
     try:
         __import__(package)
-        # print('{} is already installed.'.format(package))
     except ImportError:
         print(f"{package} is not installed. Installing ...")
         try:
@@ -1782,8 +1769,8 @@ def update_package():
 
     Avoids the need to use pip or conda.
 
-    In this way, I don't have to keep updating pypi and conda-forge
-    with every minor update of the package.
+    In this way, I don't have to keep updating pypi and conda-forge with every minor
+    update of the package.
     """
     download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
     if not os.path.exists(download_dir):
@@ -1822,8 +1809,8 @@ def install_package(package: str | list[str]) -> None:
     """Install a Python package.
 
     Args:
-        package: The package name or a GitHub URL or a list of package
-            names or GitHub URLs.
+        package: The package name or a GitHub URL or a list of package names or GitHub
+            URLs.
     """
     if isinstance(package, str):
         packages = [package]
@@ -1898,8 +1885,6 @@ def check_git_install() -> bool:
     Returns:
         bool: Returns True if Git is installed, otherwise returns False.
     """
-    import webbrowser
-
     cmd = "git --version"
     output = os.popen(cmd).read()
 
@@ -1982,8 +1967,6 @@ def open_github(subdir: str | None = None) -> None:
     Args:
         subdir: Sub-directory of the repository. Defaults to None.
     """
-    import webbrowser
-
     url = "https://github.com/gee-community/geemap"
 
     if subdir == "source":
@@ -1998,8 +1981,6 @@ def open_github(subdir: str | None = None) -> None:
 
 def open_youtube() -> None:
     """Opens the YouTube tutorials for geemap."""
-    import webbrowser
-
     url = "https://www.youtube.com/playlist?list=PLAxJ4-o7ZoPccOFv1dCwvGI6TYnirRTg3"
     webbrowser.open_new_tab(url)
 
@@ -2015,13 +1996,13 @@ def is_tool(name: str) -> bool:
     return shutil.which(name) is not None
 
 
-def open_image_from_url(url, timeout=300, proxies=None):
+def open_image_from_url(url: str, timeout: int = 300, proxies: dict[str, str] = None):
     """Loads an image from the specified URL.
 
     Args:
-        url (str): URL of the image.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
-        proxies (dict, optional): Dictionary of proxies. Defaults to None.
+        url: URL of the image.
+        timeout: Timeout in seconds. Defaults to 300.
+        proxies: Dictionary of proxies. Defaults to None.
 
     Returns:
         object: Image object.
@@ -2037,13 +2018,13 @@ def open_image_from_url(url, timeout=300, proxies=None):
         print(e)
 
 
-def show_image(img_path, width=None, height=None):
+def show_image(img_path: str, width: int | None = None, height: int | None = None):
     """Shows an image within Jupyter notebook.
 
     Args:
-        img_path (str): The image file path.
-        width (int, optional): Width of the image in pixels. Defaults to None.
-        height (int, optional): Height of the image in pixels. Defaults to None.
+        img_path: The image file path.
+        width: Width of the image in pixels. Defaults to None.
+        height: Height of the image in pixels. Defaults to None.
     """
     from IPython.display import display
 
@@ -2069,17 +2050,17 @@ def show_image(img_path, width=None, height=None):
         print(e)
 
 
-def show_html(html):
+def show_html(html: str) -> widgets.HTML:
     """Shows HTML within Jupyter notebook.
 
     Args:
-        html (str): File path or HTML string.
+        html: File path or HTML string.
 
     Raises:
         FileNotFoundError: If the file does not exist.
 
     Returns:
-        ipywidgets.HTML: HTML widget.
+        HTML widget.
     """
     if os.path.exists(html):
         with open(html) as f:
@@ -2095,16 +2076,15 @@ def show_html(html):
             raise Exception(e)
 
 
-def has_transparency(img):
+def has_transparency(img) -> bool:
     """Checks whether an image has transparency.
 
     Args:
-        img (object):  a PIL Image object.
+        img: A PIL Image object.
 
     Returns:
         bool: True if it has transparency, False otherwise.
     """
-
     if img.mode == "P":
         transparent = img.info.get("transparency", -1)
         for _, index in img.getcolors():
@@ -2118,11 +2098,11 @@ def has_transparency(img):
     return False
 
 
-def upload_to_imgur(in_gif):
+def upload_to_imgur(in_gif: str) -> None:
     """Uploads an image to imgur.com
 
     Args:
-        in_gif (str): The file path to the image.
+        in_gif: The file path to the image.
     """
     pkg_name = "imgur-uploader"
     if not is_tool(pkg_name):
@@ -2142,14 +2122,11 @@ def upload_to_imgur(in_gif):
             for _ in range(0, 2):
                 line = proc.stdout.readline()
                 print(line.rstrip().decode("utf-8"))
-            # while True:
-            #     line = proc.stdout.readline()
-            #     if not line:
-            #         break
-            #     print(line.rstrip().decode("utf-8"))
         else:
             print(
-                "Imgur API credentials could not be found. Please check https://pypi.org/project/imgur-uploader/ for instructions on how to get Imgur API credentials"
+                "Imgur API credentials could not be found. "
+                "Please check https://pypi.org/project/imgur-uploader/ for "
+                "instructions on how to get Imgur API credentials."
             )
             return
 
@@ -2162,8 +2139,8 @@ def upload_to_imgur(in_gif):
 ########################################
 
 
-def system_fonts(show_full_path=False):
-    """Gets a list of system fonts
+def system_fonts(show_full_path: bool = False) -> list[str]:
+    """Returns a list of system fonts.
 
         # Common font locations:
         # Linux: /usr/share/fonts/TTF/
@@ -2171,10 +2148,8 @@ def system_fonts(show_full_path=False):
         # macOS:  System > Library > Fonts
 
     Args:
-        show_full_path (bool, optional): Whether to show the full path of each system font. Defaults to False.
-
-    Returns:
-        list: A list of system fonts.
+        show_full_path: Whether to show the full path of each system font. Defaults to
+        False.
     """
     try:
         font_list = matplotlib.font_manager.findSystemFonts(
@@ -2199,15 +2174,26 @@ def system_fonts(show_full_path=False):
 ########################################
 
 
-def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=True):
-    """Download a file from a URL (e.g., https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip)
+def download_from_url(
+    url: str,
+    out_file_name: str | None = None,
+    out_dir: str = ".",
+    unzip: bool = True,
+    verbose: bool = True,
+) -> None:
+    """Download a file from a URL.
+
+    For example:
+
+        https://github.com/giswqs/whitebox/raw/master/examples/testdata.zip
 
     Args:
-        url (str): The HTTP URL to download.
-        out_file_name (str, optional): The output file name to use. Defaults to None.
-        out_dir (str, optional): The output directory to use. Defaults to '.'.
-        unzip (bool, optional): Whether to unzip the downloaded file if it is a zip file. Defaults to True.
-        verbose (bool, optional): Whether to display or not the output of the function
+        url: The HTTP URL to download.
+        out_file_name: The output file name to use. Defaults to None.
+        out_dir: The output directory to use. Defaults to '.'.
+        unzip: Whether to unzip the downloaded file if it is a zip file. Defaults to
+            True.
+        verbose: Whether to display or not the output of the function.
     """
     in_file_name = os.path.basename(url)
 
@@ -2226,7 +2212,6 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
     final_path = out_file_path
 
     if unzip:
-        # if it is a zip file
         if ".zip" in out_file_name:
             if verbose:
                 print(f"Unzipping {out_file_name} ...")
@@ -2236,7 +2221,6 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
                 os.path.abspath(out_dir), out_file_name.replace(".zip", "")
             )
 
-        # if it is a tar file
         if ".tar" in out_file_name:
             if verbose:
                 print(f"Unzipping {out_file_name} ...")
@@ -2270,22 +2254,32 @@ def download_from_url(url, out_file_name=None, out_dir=".", unzip=True, verbose=
         print(f"Data downloaded to: {final_path}")
 
 
-def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=True):
-    """Download a file shared via Google Drive
-       (e.g., https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing)
+def download_from_gdrive(
+    gfile_url: str,
+    file_name: str,
+    out_dir: str = ".",
+    unzip: bool = True,
+    verbose: bool = True,
+) -> None:
+    """Download a file shared via Google Drive.
+
+    For example:
+
+        https://drive.google.com/file/d/18SUo_HcDGltuWYZs1s7PpOmOq_FvFn04/view?usp=sharing
 
     Args:
-        gfile_url (str): The Google Drive shared file URL
-        file_name (str): The output file name to use.
-        out_dir (str, optional): The output directory. Defaults to '.'.
-        unzip (bool, optional): Whether to unzip the output file if it is a zip file. Defaults to True.
-        verbose (bool, optional): Whether to display or not the output of the function
+        gfile_url: The Google Drive shared file URL
+        file_name: The output file name to use.
+        out_dir: The output directory. Defaults to '.'.
+        unzip: Whether to unzip the output file if it is a zip file. Defaults to True.
+        verbose: Whether to display or not the output of the function
     """
     try:
         from google_drive_downloader import GoogleDriveDownloader as gdd
     except ImportError:
         raise Exception(
-            "Please install the google_drive_downloader package using `pip install googledrivedownloader`"
+            "Please install the google_drive_downloader package using "
+            "`pip install googledrivedownloader`."
         )
 
     file_id = gfile_url.split("/")[5]
@@ -2296,15 +2290,17 @@ def download_from_gdrive(gfile_url, file_name, out_dir=".", unzip=True, verbose=
     gdd.coreutils.download_file_from_google_drive(file_id, dest_path, True, unzip)
 
 
-def create_download_link(filename, title="Click here to download: "):
-    """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578
+def create_download_link(filename: str, title: str = "Click here to download: ") -> str:
+    """Downloads a file from voila.
+
+    Adopted from https://github.com/voila-dashboards/voila/issues/578
 
     Args:
-        filename (str): The file path to the file to download
-        title (str, optional): str. Defaults to "Click here to download: ".
+        filename: The file path to the file to download
+        title: Defaults to "Click here to download: ".
 
     Returns:
-        str: HTML download URL.
+        HTML download URL.
     """
     from IPython.display import HTML
 
@@ -2317,18 +2313,26 @@ def create_download_link(filename, title="Click here to download: "):
     return HTML(html)
 
 
-def edit_download_html(htmlWidget, filename, title="Click here to download: "):
-    """Downloads a file from voila. Adopted from https://github.com/voila-dashboards/voila/issues/578#issuecomment-617668058
+def edit_download_html(
+    htmlWidget, filename: str, title: str = "Click here to download: "
+):
+    """Downloads a file from voila.
+
+    Adopted from
+    https://github.com/voila-dashboards/voila/issues/578#issuecomment-617668058
 
     Args:
         htmlWidget (object): The HTML widget to display the URL.
-        filename (str): File path to download.
-        title (str, optional): Download description. Defaults to "Click here to download: ".
+        filename: File path to download.
+        title: Download description. Defaults to "Click here to download: ".
     """
-    # Change widget html temporarily to a font-awesome spinner
-    htmlWidget.value = '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i><span class="sr-only">Loading...</span>'
+    # Change widget html temporarily to a font-awesome spinner.
+    htmlWidget.value = (
+        '<i class="fa fa-spinner fa-spin fa-2x fa-fw"></i>'
+        '<span class="sr-only">Loading...</span>'
+    )
 
-    # Process raw data
+    # Process raw data.
     data = open(filename, "rb").read()
     b64 = base64.b64encode(data)
     payload = b64.decode()
@@ -2340,9 +2344,6 @@ def edit_download_html(htmlWidget, filename, title="Click here to download: "):
     htmlWidget.value = html.format(
         payload=payload, title=title + basename, filename=basename
     )
-
-    # htmlWidget = widgets.HTML(value = '')
-    # htmlWidget
 
 
 ########################################
@@ -3482,8 +3483,6 @@ def screen_capture(filename, monitor=1):
 
 def api_docs():
     """Open a browser and navigate to the geemap API documentation."""
-    import webbrowser
-
     url = "https://geemap.org/geemap"
     webbrowser.open_new_tab(url)
 
@@ -8642,8 +8641,6 @@ def vector_styling(
     Returns:
         object: An ee.FeatureCollection containing the styling attribute.
     """
-    import box
-
     if isinstance(ee_object, ee.FeatureCollection):
         prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
         arr = ee_object.aggregate_array(column).distinct().sort()
@@ -10240,15 +10237,13 @@ def search_qms(keyword, limit=10, list_only=True, add_prefix=True, timeout=300):
         return None
 
 
-def get_wms_layers(url, return_titles=False):
+def get_wms_layers(url: str, return_titles: bool = False):
     """Returns a list of WMS layers from a WMS service.
 
     Args:
-        url (str): The URL of the WMS service.
-        return_titles (bool, optional): If True, the titles of the layers will be returned. Defaults to False.
-
-    Returns:
-        list: A list of WMS layers.
+        url: The URL of the WMS service.
+        return_titles: If True, the titles of the layers will be returned. Defaults to
+            False.
     """
     from owslib.wms import WebMapService
 
@@ -10261,19 +10256,18 @@ def get_wms_layers(url, return_titles=False):
         return layers
 
 
-def read_file_from_url(url, return_type="list", encoding="utf-8"):
-    """Reads a file from a URL.
+def read_file_from_url(
+    url: str, return_type: str = "list", encoding: str = "utf-8"
+) -> list[str] | str:
+    """Returns the contents of a file from a URL.
 
     Args:
-        url (str): The URL of the file.
-        return_type (str, optional): The return type, can either be string or list. Defaults to "list".
-        encoding (str, optional): The encoding of the file. Defaults to "utf-8".
+        url: The URL of the file.
+        return_type: The return type, can either be string or list. Defaults to "list".
+        encoding: The encoding of the file. Defaults to "utf-8".
 
     Raises:
         ValueError: The return type must be either list or string.
-
-    Returns:
-        str | list: The contents of the file.
     """
     if return_type == "list":
         return [line.decode(encoding).rstrip() for line in urlopen(url).readlines()]
@@ -11675,8 +11669,6 @@ def blend(
     Returns:
         ee.Image: The blended image.
     """
-    import box
-
     if not isinstance(top_layer, ee.Image):
         raise ValueError("top_layer must be an ee.Image.")
 
@@ -14653,8 +14645,6 @@ def tms_to_geotiff(
 
         SESSION = httpx.Client()
     except ImportError:
-        import requests
-
         SESSION = requests.Session()
 
     from .basemaps import XYZ_TILES
@@ -14924,9 +14914,6 @@ def ee_to_geotiff(
         quiet (bool, optional): Whether to hide the download progress bar. Defaults to False.
 
     """
-
-    import box
-
     image = None
 
     if (
@@ -15656,8 +15643,6 @@ def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
         If fetching a remote PMTiles file, this function may perform multiple requests to minimize
         the amount of data downloaded.
     """
-    import requests
-
     try:
         from pmtiles.reader import Reader, MmapSource, MemorySource
     except ImportError:
