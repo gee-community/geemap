@@ -133,7 +133,8 @@ class Map(pdk.Deck):
     def add_ee_layer(
         self,
         ee_object,
-        vis_params: dict[Any, And] = {},
+        # TODO(schwehr): No not use a mutable ubject as the default.
+        vis_params: dict[Any, Any] = {},
         name: str | None = None,
         **kwargs,
     ):
