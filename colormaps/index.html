@@ -7275,8 +7275,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/colormaps.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 72</span>
-<span class="normal"> 73</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 73</span>
 <span class="normal"> 74</span>
 <span class="normal"> 75</span>
 <span class="normal"> 76</span>
@@ -7314,7 +7313,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="normal">108</span>
 <span class="normal">109</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_palette</span><span class="p">(</span>
     <span class="n">cmap_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">n_class</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">hashtag</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a palette of hex colors from a matplotlib colormap.</span>
 
 <span class="sd">    WARNING: This function is inconsistent with how it handles hashes in the</span>
@@ -7328,7 +7327,6 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="sd">        n_class: The number of colors. Defaults to None.</span>
 <span class="sd">        hashtag: Whether to return a list of hex colors. Defaults to False.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="n">cmap_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ndvi&quot;</span><span class="p">,</span> <span class="s2">&quot;ndwi&quot;</span><span class="p">,</span> <span class="s2">&quot;dem&quot;</span><span class="p">,</span> <span class="s2">&quot;dw&quot;</span><span class="p">,</span> <span class="s2">&quot;esri_lulc&quot;</span><span class="p">]:</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="n">_palette_dict</span><span class="p">[</span><span class="n">cmap_name</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
