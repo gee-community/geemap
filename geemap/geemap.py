@@ -205,7 +205,7 @@ class Map(core.Map):
 
     @property
     def ee_layer_names(self) -> list[str]:
-        """Returns a list of the names of the EE layers."""
+        """Returns the names of the EE layers."""
         warnings.warn(
             "ee_layer_names is deprecated. Use ee_layers.keys() instead.",
             DeprecationWarning,
@@ -4874,25 +4874,28 @@ def ee_tile_layer(
 
 
 def linked_maps(
-    rows=2,
-    cols=2,
-    height="400px",
-    ee_objects=[],
-    vis_params=[],
-    labels=[],
-    label_position="topright",
+    rows: int = 2,
+    cols: int = 2,
+    height: str = "400px",
+    ee_objects: list[Any] = [],
+    vis_params: list[Any] = [],
+    labels: list[str] = [],
+    label_position: str = "topright",
     **kwargs,
 ):
     """Create linked maps of Earth Engine data layers.
 
     Args:
-        rows (int, optional): The number of rows of maps to create. Defaults to 2.
-        cols (int, optional): The number of columns of maps to create. Defaults to 2.
-        height (str, optional): The height of each map in pixels. Defaults to "400px".
-        ee_objects (list, optional): The list of Earth Engine objects to use for each map. Defaults to [].
-        vis_params (list, optional): The list of visualization parameters to use for each map. Defaults to [].
-        labels (list, optional): The list of labels to show on the map. Defaults to [].
-        label_position (str, optional): The position of the label, can be [topleft, topright, bottomleft, bottomright]. Defaults to "topright".
+        rows: The number of rows of maps to create. Defaults to 2.
+        cols: The number of columns of maps to create. Defaults to 2.
+        height: The height of each map in pixels. Defaults to "400px".
+        ee_objects: The list of Earth Engine objects to use for each map. Defaults to
+            [].
+        vis_params: The list of visualization parameters to use for each map. Defaults
+            to [].
+        labels: The list of labels to show on the map. Defaults to [].
+        label_position: The position of the label, can be [topleft, topright,
+            bottomleft, bottomright]. Defaults to "topright".
 
     Raises:
         ValueError: If the length of ee_objects is not equal to rows*cols.
@@ -5062,14 +5065,11 @@ def ts_inspector(
     return m
 
 
-def get_basemap(name):
-    """Gets a basemap tile layer by name.
+def get_basemap(name: str) -> ipyleaflet.TileLayer | ipyleaflet.WMSLayer:
+    """Returns a basemap tile layer by name.
 
     Args:
-        name (str): The name of the basemap.
-
-    Returns:
-        ipylealfet.TileLayer | ipyleaflet.WMSLayer: The basemap layer.
+        name: The name of the basemap.
     """
 
     if isinstance(name, str):

@@ -5,6 +5,7 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
+import importlib
 import json
 import os
 import pathlib
@@ -13,7 +14,6 @@ from typing import Any
 import urllib.request
 
 import box
-import importlib.resources
 import ipywidgets as widgets
 from IPython.display import display
 
@@ -59,7 +59,7 @@ def update_data_list(out_dir: str = ".") -> None:
     shutil.rmtree(os.path.join(out_dir, dir_name))
 
 
-def get_data_list() -> list:
+def get_data_list() -> list[str]:
     """Returns a list of Earth Engine dataset IDs."""
     datasets = get_ee_stac_list()
     extra_datasets = get_geemap_data_list()
@@ -109,15 +109,12 @@ def get_ee_stac_list() -> list[str]:
     return datasets
 
 
-def merge_dict(dict1: dict[Any, Any], dict2: dict[Any, Any]) -> dict:
-    """Merges two nested dictionaries.
+def merge_dict(dict1: dict[Any, Any], dict2: dict[Any, Any]) -> dict[Any, Any]:
+    """Returns the merge of two nested dictionaries.
 
     Args:
         dict1: The first dictionary to merge.
         dict2: The second dictionary to merge.
-
-    Returns:
-        The merged dictionary.
     """
     return {**dict1, **dict2}
 
