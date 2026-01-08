@@ -83,7 +83,7 @@ class ToolbarItem(anywidget.AnyWidget):
             self.active = False
 
     @traitlets.observe("active")
-    def _observe_value(self, change: Dict[str, Any]) -> None:
+    def _observe_value(self, change: dict[str, Any]) -> None:
         if (value := change.get("new")) is not None:
             self.callback_wrapper(self.callback, value, self)
         if self.active and self.reset:
@@ -524,12 +524,12 @@ def inspector_gui(m=None):
         return toolbar_widget
 
 
-def ee_plot_gui(m, position="topright", **kwargs):
+def ee_plot_gui(m, position: str = "topright", **kwargs):
     """Widget for plotting Earth Engine data.
 
     Args:
         m (object): geemap.Map.
-        position (str, optional): Position of the widget. Defaults to "topright".
+        position: Position of the widget. Defaults to "topright".
     """
     close_btn = widgets.Button(
         icon="times",
@@ -769,12 +769,12 @@ SearchDataGUI = map_widgets.SearchBar
 # ******************************************************************************#
 
 
-def tool_template(m=None, opened=True):
+def tool_template(m=None, opened: bool = True):
     """Create a toolbar widget.
 
     Args:
         m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
-        opened (bool, optional): Whether to open the toolbar. Defaults to True.
+        opened: Whether to open the toolbar. Defaults to True.
     """
 
     widget_width = "250px"
@@ -821,7 +821,7 @@ def tool_template(m=None, opened=True):
 
     int_slider_label = widgets.Label(str(int_slider.value))
 
-    def update_int_slider(change):
+    def update_int_slider(change) -> None:
         int_slider_label.value = str(change["new"])
 
     int_slider.observe(update_int_slider, "value")
@@ -838,7 +838,7 @@ def tool_template(m=None, opened=True):
 
     float_slider_label = widgets.Label(str(float_slider.value))
 
-    def update_float_slider(change):
+    def update_float_slider(change) -> None:
         float_slider_label.value = str(change["new"])
 
     float_slider.observe(update_float_slider, "value")
@@ -891,7 +891,7 @@ def tool_template(m=None, opened=True):
         output,
     ]
 
-    def toolbar_btn_click(change):
+    def toolbar_btn_click(change) -> None:
         if change["new"]:
             close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
@@ -901,7 +901,7 @@ def tool_template(m=None, opened=True):
 
     toolbar_button.observe(toolbar_btn_click, "value")
 
-    def close_btn_click(change):
+    def close_btn_click(change) -> None:
         if change["new"]:
             toolbar_button.value = False
             if m is not None:
@@ -913,7 +913,7 @@ def tool_template(m=None, opened=True):
 
     close_button.observe(close_btn_click, "value")
 
-    def button_clicked(change):
+    def button_clicked(change) -> None:
         if change["new"] == "Apply":
             with output:
                 output.outputs = ()
@@ -946,14 +946,13 @@ def tool_template(m=None, opened=True):
         return toolbar_widget
 
 
-def tool_header_template(m=None, opened=True, show_close_button=True):
+def tool_header_template(m=None, opened: bool = True, show_close_button: bool = True):
     """Create a toolbar widget.
 
     Args:
         m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
-        opened (bool, optional): Whether to open the toolbar. Defaults to True.
-        show_close_button (bool, optional): Whether to show the close button. Defaults
-            to True.
+        opened: Whether to open the toolbar. Defaults to True.
+        show_close_button Whether to show the close button. Defaults to True.
     """
 
     widget_width = "250px"
@@ -997,7 +996,7 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
         output,
     ]
 
-    def toolbar_btn_click(change):
+    def toolbar_btn_click(change) -> None:
         if change["new"]:
             close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
@@ -1007,7 +1006,7 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
 
     toolbar_button.observe(toolbar_btn_click, "value")
 
-    def close_btn_click(change):
+    def close_btn_click(change) -> None:
         if change["new"]:
             toolbar_button.value = False
             if m is not None:
@@ -1019,7 +1018,7 @@ def tool_header_template(m=None, opened=True, show_close_button=True):
 
     close_button.observe(close_btn_click, "value")
 
-    def button_clicked(change):
+    def button_clicked(change) -> None:
         if change["new"] == "Apply":
             with output:
                 output.outputs = ()
@@ -1147,7 +1146,6 @@ def open_data_widget(m):
         tooltips=["Apply", "Reset", "Close"],
         button_style="primary",
     )
-    # ok_cancel.style.button_width = "133px"
 
     bands = widgets.Text(
         value=None,
@@ -1208,7 +1206,7 @@ def open_data_widget(m):
     with tool_output:
         display(main_widget)
 
-    def bands_changed(change):
+    def bands_changed(change) -> None:
         if change["new"] and "," in change["owner"].value:
             palette.value = None
             palette.disabled = True
@@ -1217,7 +1215,7 @@ def open_data_widget(m):
 
     bands.observe(bands_changed, "value")
 
-    def chooser_callback(chooser):
+    def chooser_callback(chooser) -> None:
         filepath.value = file_chooser.selected
 
         if file_type.value == "CSV":
@@ -1236,7 +1234,7 @@ def open_data_widget(m):
 
     file_chooser.register_callback(chooser_callback)
 
-    def file_type_changed(change):
+    def file_type_changed(change) -> None:
         ok_cancel.value = None
         file_chooser.default_path = os.getcwd()
         file_chooser.reset()
@@ -1291,7 +1289,7 @@ def open_data_widget(m):
 
     tool_output_ctrl.cleanup = cleanup
 
-    def ok_cancel_clicked(change):
+    def ok_cancel_clicked(change) -> None:
         if change["new"] == "Apply":
             m.default_style = {"cursor": "wait"}
             file_path = filepath.value
@@ -1406,12 +1404,12 @@ def convert_js2py(m):
     )
     buttons.style.button_width = "128px"
 
-    def cleanup():
+    def cleanup() -> None:
         if m._convert_ctrl is not None and m._convert_ctrl in m.controls:
             m.remove_control(m._convert_ctrl)
         full_widget.close()
 
-    def button_clicked(change):
+    def button_clicked(change) -> None:
         if change["new"] == "Convert":
             from .conversion import create_new_cell, js_snippet_to_py
 
@@ -1487,7 +1485,7 @@ def collect_samples(m):
 
     old_draw_control = m.get_draw_control()
 
-    def cleanup():
+    def cleanup() -> None:
         if m.training_ctrl is not None and m.training_ctrl in m.controls:
             m.remove_control(m.training_ctrl)
         full_widget.close()
@@ -1498,7 +1496,7 @@ def collect_samples(m):
         else:
             m.remove_draw_control()
 
-    def button_clicked(change):
+    def button_clicked(change) -> None:
         if change["new"] == "Apply":
             if len(color.value) != 7:
                 color.value = "#3388ff"
@@ -1531,8 +1529,8 @@ def collect_samples(m):
             if color.value != "":
                 train_props["color"] = color.value
 
-            # Handles draw events
-            def set_properties(_, geometry):
+            # Handles draw events.
+            def set_properties(_, geometry) -> None:
                 if len(train_props) > 0:
                     draw_control.set_geometry_properties(geometry, train_props)
 
@@ -1573,13 +1571,13 @@ def get_tools_dict():
     return tools_dict
 
 
-def tool_gui(tool_dict, max_width="420px", max_height="600px"):
+def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
     """Create a GUI for a tool based on the tool dictionary.
 
     Args:
         tool_dict (dict): The dictionary containing the tool info.
-        max_width (str, optional): The max width of the tool dialog.
-        max_height (str, optional): The max height of the tool dialog.
+        max_width: The max width of the tool dialog.
+        max_height: The max height of the tool dialog.
 
     Returns:
         object: An ipywidget object representing the tool interface.
@@ -1627,7 +1625,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
     children.append(tool_output)
     tool_widget.children = children
 
-    def run_button_clicked(b):
+    def run_button_clicked(b) -> None:
         tool_output.outputs = ()
 
         required_params = required_inputs.copy()
@@ -1663,7 +1661,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
                 # wbt.run_tool(tool_dict["name"], args2)
                 pass
 
-    def help_button_clicked(b):
+    def help_button_clicked(b) -> None:
         import webbrowser
 
         tool_output.outputs = ()
@@ -1674,7 +1672,7 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
             display(html)
         webbrowser.open_new_tab(tool_dict["link"])
 
-    def code_button_clicked(b):
+    def code_button_clicked(b) -> None:
         import webbrowser
 
         with tool_output:
@@ -1684,10 +1682,10 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
             display(html)
         webbrowser.open_new_tab(tool_dict["link"])
 
-    def cancel_btn_clicked(b):
+    def cancel_btn_clicked(b) -> None:
         tool_output.outputs = ()
 
-    def import_button_clicked(b):
+    def import_button_clicked(b) -> None:
         tool_output.outputs = ()
 
         content = []
@@ -1703,13 +1701,13 @@ def tool_gui(tool_dict, max_width="420px", max_height="600px"):
     return tool_widget
 
 
-def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
+def build_toolbox(tools_dict, max_width: str = "1080px", max_height: str = "600px"):
     """Build the GEE toolbox.
 
     Args:
         tools_dict (dict): A dictionary containing information for all tools.
-        max_width (str, optional): The maximum width of the widget.
-        max_height (str, optional): The maximum height of the widget.
+        max_width: The maximum width of the widget.
+        max_height: The maximum height of the widget.
 
     Returns:
         object: An ipywidget representing the toolbox.
@@ -1754,7 +1752,7 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
         options=[], layout=widgets.Layout(width="195px", height="400px")
     )
 
-    def category_selected(change):
+    def category_selected(change) -> None:
         if change["new"]:
             selected = change["owner"].value
             options = categories[selected]
@@ -1764,7 +1762,7 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
 
     category_widget.observe(category_selected, "value")
 
-    def tool_selected(change):
+    def tool_selected(change) -> None:
         if change["new"]:
             selected = change["owner"].value
             tool_dict = tools_dict[selected]
@@ -1774,7 +1772,7 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
 
     tools_widget.observe(tool_selected, "value")
 
-    def search_changed(change):
+    def search_changed(change) -> None:
         if change["new"]:
             keyword = change["owner"].value
             if len(keyword) > 0:
@@ -1791,12 +1789,12 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
 
     search_widget.observe(search_changed, "value")
 
-    def cleanup():
+    def cleanup() -> None:
         full_widget.close()
 
     full_widget.cleanup = cleanup
 
-    def close_btn_clicked(b):
+    def close_btn_clicked(b) -> None:
         full_widget.cleanup()
 
     close_btn.on_click(close_btn_clicked)
@@ -1809,12 +1807,12 @@ def build_toolbox(tools_dict, max_width="1080px", max_height="600px"):
     return full_widget
 
 
-def timelapse_gui(m=None, basemap="HYBRID"):
+def timelapse_gui(m=None, basemap: str = "HYBRID"):
     """Creates timelapse animations.
 
     Args:
         m (geemap.Map, optional): A geemap Map instance. Defaults to None.
-        basemap (str, optional): The basemap to use. Defaults to "HYBRID".
+        basemap: The basemap to use. Defaults to "HYBRID".
 
     Returns:
         ipywidgets: The interactive GUI.
@@ -2048,7 +2046,7 @@ def timelapse_gui(m=None, basemap="HYBRID"):
         layout=widgets.Layout(width="145px", padding=padding),
     )
 
-    def nd_index_change(change):
+    def nd_index_change(change) -> None:
         if nd_indices.value == "Vegetation Index (NDVI)":
             first_band.value = "NIR"
             second_band.value = "Red"
@@ -2082,7 +2080,7 @@ def timelapse_gui(m=None, basemap="HYBRID"):
         layout=widgets.Layout(padding="0px", width=button_width),
     )
 
-    def submit_clicked(b):
+    def submit_clicked(b) -> None:
         if start_year.value > end_year.value:
             print("The end year must be great than the start year.")
             return
@@ -2174,7 +2172,7 @@ def timelapse_gui(m=None, basemap="HYBRID"):
         layout=widgets.Layout(padding="0px", width=button_width),
     )
 
-    def reset_btn_click(change):
+    def reset_btn_click(change) -> None:
         output.outputs = ()
 
     reset_btn.on_click(reset_btn_click)
@@ -2212,7 +2210,7 @@ def timelapse_gui(m=None, basemap="HYBRID"):
         source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
     )
 
-    def handle_toolbar_event(event):
+    def handle_toolbar_event(event) -> None:
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -2223,7 +2221,7 @@ def timelapse_gui(m=None, basemap="HYBRID"):
 
     toolbar_event.on_dom_event(handle_toolbar_event)
 
-    def toolbar_btn_click(change):
+    def toolbar_btn_click(change) -> None:
         if change["new"]:
             close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
@@ -2240,7 +2238,7 @@ def timelapse_gui(m=None, basemap="HYBRID"):
                 m.tool_control = None
         toolbar_widget.close()
 
-    def close_btn_click(change):
+    def close_btn_click(change) -> None:
         if change["new"]:
             m.tool_control.cleanup()
 
@@ -2559,21 +2557,21 @@ def time_slider(m=None):
         style={"description_width": "initial"},
     )
 
-    def add_color_clicked(b):
+    def add_color_clicked(b) -> None:
         if color_picker.value is not None:
             if len(palette.value) == 0:
                 palette.value = color_picker.value[1:]
             else:
                 palette.value += ", " + color_picker.value[1:]
 
-    def del_color_clicked(b):
+    def del_color_clicked(b) -> None:
         if "," in palette.value:
             items = [item.strip() for item in palette.value.split(",")]
             palette.value = ", ".join(items[:-1])
         else:
             palette.value = ""
 
-    def reset_color_clicked(b):
+    def reset_color_clicked(b) -> None:
         palette.value = ""
 
     add_color.on_click(add_color_clicked)
@@ -2679,7 +2677,7 @@ def time_slider(m=None):
         layout=widgets.Layout(width="138px", padding=padding),
     )
 
-    def year_change(change):
+    def year_change(change) -> None:
         if change["new"]:
             if collection.value != "MOD13A2.006 Terra Vegetation Indices":
                 labels.value = ", ".join(
@@ -2894,7 +2892,7 @@ def time_slider(m=None):
         layout=widgets.Layout(padding="0px", width=button_width),
     )
 
-    def reset_btn_click(change):
+    def reset_btn_click(change) -> None:
         output.outputs = ()
         collection.value = col_options[0]
         region.value = "User-drawn ROI"
@@ -2927,7 +2925,7 @@ def time_slider(m=None):
             m.remove_control(m._colorbar_ctrl)
             m._colorbar_ctrl = None
 
-    def close_btn_click(change):
+    def close_btn_click(change) -> None:
         if change["new"]:
             m.tool_control.cleanup()
 
@@ -3110,7 +3108,7 @@ def time_slider(m=None):
         source=toolbar_widget, watched_events=["mouseenter", "mouseleave"]
     )
 
-    def handle_toolbar_event(event):
+    def handle_toolbar_event(event) -> None:
         if event["type"] == "mouseenter":
             toolbar_widget.children = [toolbar_header, toolbar_footer]
         elif event["type"] == "mouseleave":
@@ -3121,7 +3119,7 @@ def time_slider(m=None):
 
     toolbar_event.on_dom_event(handle_toolbar_event)
 
-    def toolbar_btn_click(change):
+    def toolbar_btn_click(change) -> None:
         if change["new"]:
             close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]

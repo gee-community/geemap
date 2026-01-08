@@ -198,9 +198,7 @@ class Map(folium.Map):
 
     set_options = setOptions
 
-    def add_basemap(
-        self, basemap: Optional[str] = "HYBRID", show: Optional[bool] = True, **kwargs
-    ):
+    def add_basemap(self, basemap: str = "HYBRID", show: bool = True, **kwargs):
         """Adds a basemap to the map.
 
         Args:
@@ -1560,44 +1558,49 @@ class Map(folium.Map):
 
     def add_points_from_xy(
         self,
-        data: Union[str, pd.DataFrame],
-        x: Optional[str] = "longitude",
-        y: Optional[str] = "latitude",
-        popup: Optional[List] = None,
-        min_width: Optional[int] = 100,
-        max_width: Optional[int] = 200,
-        layer_name: Optional[str] = "Marker Cluster",
-        color_column: Optional[str] = None,
-        marker_colors: Optional[List] = None,
-        icon_colors: Optional[List] = ["white"],
-        icon_names: Optional[List] = ["info"],
-        angle: Optional[int] = 0,
-        prefix: Optional[str] = "fa",
-        add_legend: Optional[bool] = True,
-        max_cluster_radius: Optional[int] = 80,
+        data: str | pd.DataFrame,
+        x: str = "longitude",
+        y: str = "latitude",
+        popup: list[str] | None = None,
+        min_width: int = 100,
+        max_width: int = 200,
+        layer_name: str = "Marker Cluster",
+        color_column: str | None = None,
+        marker_colors: list | None = None,
+        icon_colors: list[str] = ["white"],
+        icon_names: list[str] = ["info"],
+        angle: int = 0,
+        prefix: str = "fa",
+        add_legend: bool = True,
+        max_cluster_radius: int = 80,
         **kwargs,
     ):
         """Adds a marker cluster to the map.
 
         Args:
-            data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
-            x (str, optional): The column name for the x values. Defaults to "longitude".
-            y (str, optional): The column name for the y values. Defaults to "latitude".
-            popup (list, optional): A list of column names to be used as the popup. Defaults to None.
-            min_width (int, optional): The minimum width of the popup. Defaults to 100.
-            max_width (int, optional): The maximum width of the popup. Defaults to 200.
-            layer_name (str, optional): The name of the layer. Defaults to "Marker Cluster".
-            color_column (str, optional): The column name for the color values. Defaults to None.
-            marker_colors (list, optional): A list of colors to be used for the markers. Defaults to None.
-            icon_colors (list, optional): A list of colors to be used for the icons. Defaults to ['white'].
-            icon_names (list, optional): A list of names to be used for the icons. More icons can be found
-                at https://fontawesome.com/v4/icons or https://getbootstrap.com/docs/3.3/components/?utm_source=pocket_mylist. Defaults to ['info'].
-            angle (int, optional): The angle of the icon. Defaults to 0.
-            prefix (str, optional): The prefix states the source of the icon. 'fa' for font-awesome or 'glyphicon' for bootstrap 3. Defaults to 'fa'.
-            add_legend (bool, optional): If True, a legend will be added to the map. Defaults to True.
-            max_cluster_radius (int, optional): The maximum radius that a cluster will cover from the central marker (in pixels).
-            **kwargs: Other keyword arguments to pass to folium.MarkerCluster(). For a list of available options,
-                see https://github.com/Leaflet/Leaflet.markercluster. For example, to change the cluster radius, use options={"maxClusterRadius": 50}.
+            data: A csv or Pandas DataFrame containing x, y, z values.
+            x: The column name for the x values. Defaults to "longitude".
+            y: The column name for the y values. Defaults to "latitude".
+            popup: A list of column names to be used as the popup. Defaults to None.
+            min_width: The minimum width of the popup. Defaults to 100.
+            max_width: The maximum width of the popup. Defaults to 200.
+            layer_name: The name of the layer. Defaults to "Marker Cluster".
+            color_column: The column name for the color values. Defaults to None.
+            marker_colors: List of colors to be used for the markers. Defaults to None.
+            icon_colors: List of colors to be used for the icons. Defaults to ['white'].
+            icon_names: A list of names to be used for the icons. More icons can be
+                found at https://fontawesome.com/v4/icons or
+                https://getbootstrap.com/docs/3.3/components/?utm_source=pocket_mylist. Defaults
+                to ['info'].  angle: The angle of the icon. Defaults to 0.
+            prefix: The prefix states the source of the icon. 'fa' for font-awesome or
+                'glyphicon' for bootstrap 3. Defaults to 'fa'.
+            add_legend: If True, a legend will be added to the map. Defaults to True.
+            max_cluster_radius: The maximum radius that a cluster will cover from the
+                central marker (in pixels).
+            **kwargs: Other keyword arguments to pass to folium.MarkerCluster(). For a
+                list of available options, see
+                https://github.com/Leaflet/Leaflet.markercluster. For example, to change
+                the cluster radius, use options={"maxClusterRadius": 50}.
         """
         if "maxClusterRadius" not in kwargs:
             kwargs["maxClusterRadius"] = max_cluster_radius
