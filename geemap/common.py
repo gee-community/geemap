@@ -1141,7 +1141,6 @@ def ee_export_vector_to_asset(
         maxVertices: Max number of uncut vertices per geometry; geometries with more
             vertices will be cut into pieces smaller than this size.
         **kwargs: Holds other keyword arguments that may have been deprecated.
-
     """
     if not isinstance(collection, ee.FeatureCollection):
         raise ValueError("The collection must be an ee.FeatureCollection.")
@@ -15462,7 +15461,7 @@ def is_studio_lab() -> bool:
     import psutil
 
     parent = psutil.Process().parent()
-    assert parent  #  For pytype.
+    assert parent  # For pytype.
     output = parent.cmdline()
 
     for item in output:
