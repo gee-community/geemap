@@ -514,7 +514,7 @@ def xyz_to_pydeck() -> dict[str, Any]:
     common.check_package(
         "pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html"
     )
-    import pydeck as pdk  # pytype: disable=import-error
+    import pydeck as pdk
 
     pydeck_dict = {}
     # Ignore Esri basemaps if they are already in the custom XYZ_TILES.
