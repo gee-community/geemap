@@ -532,17 +532,24 @@ def add_text_to_gif(
 
 
 def add_image_to_gif(
-    in_gif, out_gif, in_image, xy=None, image_size=(80, 80), circle_mask=False
-):
+    in_gif: str,
+    out_gif: str,
+    in_image: str,
+    xy=None,
+    image_size: tuple[int, int] = (80, 80),
+    circle_mask: bool = False,
+) -> None:
     """Adds an image logo to a GIF image.
 
     Args:
-        in_gif (str): Input file path to the GIF image.
-        out_gif (str): Output file path to the GIF image.
-        in_image (str): Input file path to the image.
-        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        image_size (tuple, optional): Resize image. Defaults to (80, 80).
-        circle_mask (bool, optional): Whether to apply a circle mask to the image. This only works with non-png images. Defaults to False.
+        in_gif: Input file path to the GIF image.
+        out_gif: Output file path to the GIF image.
+        in_image: Input file path to the image.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like
+            this: (10, 10) or ('15%', '25%'). Defaults to None.
+        image_size: Resize image. Defaults to (80, 80).
+        circle_mask: Whether to apply a circle mask to the image. This only works with
+            non-png images. Defaults to False.
     """
     from PIL import Image, ImageDraw, ImageSequence
 
@@ -609,10 +616,9 @@ def add_image_to_gif(
         mask_im = logo_image.copy()
 
     if xy is None:
-        # default logo location is 5% width and 5% height of the image.
+        # Default logo location is 5% width and 5% height of the image.
         delta = 10
         xy = (gif_width - image_resize[0] - delta, gif_height - image_resize[1] - delta)
-        # xy = (int(0.05 * gif_width), int(0.05 * gif_height))
     elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
         print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
         return
@@ -622,9 +628,8 @@ def add_image_to_gif(
             pass
         else:
             print(
-                "xy is out of bounds. x must be within [0, {}], and y must be within [0, {}]".format(
-                    gif_width, gif_height
-                )
+                f"xy is out of bounds. x must be within [0, {gif_width}], and "
+                f"y must be within [0, {gif_height}]"
             )
             return
     elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
@@ -636,12 +641,14 @@ def add_image_to_gif(
                 xy = (x, y)
             except Exception:
                 raise Exception(
-                    "The specified xy is invalid. It must be formatted like this ('10%', '10%')"
+                    "The specified xy is invalid. "
+                    "It must be formatted like this ('10%', '10%')"
                 )
 
     else:
         raise Exception(
-            "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
+            "The specified xy is invalid. "
+            "It must be formatted like this: (10, 10) or ('10%', '10%')"
         )
 
     try:
@@ -660,12 +667,12 @@ def add_image_to_gif(
         print(e)
 
 
-def reduce_gif_size(in_gif, out_gif=None):
+def reduce_gif_size(in_gif: str, out_gif: str | None = None) -> None:
     """Reduces a GIF image using ffmpeg.
 
     Args:
-        in_gif (str): The input file path to the GIF image.
-        out_gif (str, optional): The output file path to the GIF image. Defaults to None.
+        in_gif: The input file path to the GIF image.
+        out_gif: The output file path to the GIF image. Defaults to None.
     """
     import ffmpeg
 
@@ -1136,57 +1143,59 @@ def create_timelapse(
     return out_gif
 
 
-def naip_timeseries(roi=None, start_year=2003, end_year=None, RGBN=False, step=1):
+def naip_timeseries(
+    roi=None,
+    start_year: int = 2003,
+    end_year: int | None = None,
+    RGBN: bool = False,
+    step: int = 1,
+):
     """Creates NAIP annual timeseries
 
     Args:
-        roi (object, optional): An ee.Geometry representing the region of interest. Defaults to None.
-        start_year (int, optional): Starting year for the timeseries. Defaults to 2003.
-        end_year (int, optional): Ending year for the timeseries. Defaults to None, which will use the current year.
-        RGBN (bool, optional): Whether to retrieve 4-band NAIP imagery only.
-        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
+        roi (object, optional): An ee.Geometry representing the region of
+            interest. Defaults to None.
+        start_year: Starting year for the timeseries. Defaults to 2003.
+        end_year: Ending year for the timeseries. Defaults to None, which will use the
+            current year.
+        RGBN: Whether to retrieve 4-band NAIP imagery only.
+        step: The step size to use when creating the date sequence. Defaults to 1.
+
     Returns:
         object: An ee.ImageCollection representing annual NAIP imagery.
     """
-    try:
-        if end_year is None:
-            end_year = datetime.datetime.now().year
+    if end_year is None:
+        end_year = datetime.datetime.now().year
 
-        def get_annual_NAIP(year):
-            try:
-                collection = ee.ImageCollection("USDA/NAIP/DOQQ")
-                if roi is not None:
-                    collection = collection.filterBounds(roi)
-                start_date = ee.Date.fromYMD(year, 1, 1)
-                end_date = ee.Date.fromYMD(year, 12, 31)
-                naip = collection.filterDate(start_date, end_date)
-                if RGBN:
-                    naip = naip.filter(ee.Filter.listContains("system:band_names", "N"))
-                if roi is not None:
-                    if isinstance(roi, ee.Geometry):
-                        image = ee.Image(ee.ImageCollection(naip).mosaic().clip(roi))
-                    elif isinstance(roi, ee.FeatureCollection):
-                        image = ee.Image(
-                            ee.ImageCollection(naip).mosaic().clipToCollection(roi)
-                        )
-                else:
-                    image = ee.Image(ee.ImageCollection(naip).mosaic())
-                return image.set(
-                    {
-                        "system:time_start": ee.Date(start_date).millis(),
-                        "system:time_end": ee.Date(end_date).millis(),
-                        "empty": naip.size().eq(0),
-                    }
+    def get_annual_NAIP(year: int) -> ee.Image:
+        collection = ee.ImageCollection("USDA/NAIP/DOQQ")
+        if roi is not None:
+            collection = collection.filterBounds(roi)
+        start_date = ee.Date.fromYMD(year, 1, 1)
+        end_date = ee.Date.fromYMD(year, 12, 31)
+        naip = collection.filterDate(start_date, end_date)
+        if RGBN:
+            naip = naip.filter(ee.Filter.listContains("system:band_names", "N"))
+        if roi is not None:
+            if isinstance(roi, ee.Geometry):
+                image = ee.Image(ee.ImageCollection(naip).mosaic().clip(roi))
+            elif isinstance(roi, ee.FeatureCollection):
+                image = ee.Image(
+                    ee.ImageCollection(naip).mosaic().clipToCollection(roi)
                 )
-            except Exception as e:
-                raise Exception(e)
+        else:
+            image = ee.Image(ee.ImageCollection(naip).mosaic())
+        return image.set(
+            {
+                "system:time_start": ee.Date(start_date).millis(),
+                "system:time_end": ee.Date(end_date).millis(),
+                "empty": naip.size().eq(0),
+            }
+        )
 
-        years = ee.List.sequence(start_year, end_year, step)
-        collection = ee.ImageCollection(years.map(get_annual_NAIP))
-        return collection.filterMetadata("empty", "equals", 0)
-
-    except Exception as e:
-        raise Exception(e)
+    years = ee.List.sequence(start_year, end_year, step)
+    collection = ee.ImageCollection(years.map(get_annual_NAIP))
+    return collection.filterMetadata("empty", "equals", 0)
 
 
 def naip_timelapse(
@@ -1256,61 +1265,54 @@ def naip_timelapse(
     Returns:
         str: File path to the timelapse gif.
     """
+    if end_year is None:
+        end_year = datetime.datetime.now().year
 
-    try:
-        if end_year is None:
-            end_year = datetime.datetime.now().year
+    collection = ee.ImageCollection("USDA/NAIP/DOQQ")
+    start_date = str(start_year) + "-01-01"
+    end_date = str(end_year) + "-12-31"
+    frequency = "year"
+    reducer = "median"
+    date_format = "YYYY"
 
-        collection = ee.ImageCollection("USDA/NAIP/DOQQ")
-        start_date = str(start_year) + "-01-01"
-        end_date = str(end_year) + "-12-31"
-        frequency = "year"
-        reducer = "median"
-        date_format = "YYYY"
+    if bands is not None and isinstance(bands, list) and "N" in bands:
+        collection = collection.filter(ee.Filter.listContains("system:band_names", "N"))
 
-        if bands is not None and isinstance(bands, list) and "N" in bands:
-            collection = collection.filter(
-                ee.Filter.listContains("system:band_names", "N")
-            )
-
-        return create_timelapse(
-            collection,
-            start_date,
-            end_date,
-            roi,
-            bands,
-            frequency,
-            reducer,
-            date_format,
-            out_gif,
-            palette,
-            vis_params,
-            dimensions,
-            frames_per_second,
-            crs,
-            overlay_data,
-            overlay_color,
-            overlay_width,
-            overlay_opacity,
-            title,
-            title_xy,
-            add_text,
-            text_xy,
-            text_sequence,
-            font_type,
-            font_size,
-            font_color,
-            add_progress_bar,
-            progress_bar_color,
-            progress_bar_height,
-            loop=loop,
-            mp4=mp4,
-            fading=fading,
-            step=step,
-        )
-
-    except Exception as e:
-        raise Exception(e)
+    return create_timelapse(
+        collection,
+        start_date,
+        end_date,
+        roi,
+        bands,
+        frequency,
+        reducer,
+        date_format,
+        out_gif,
+        palette,
+        vis_params,
+        dimensions,
+        frames_per_second,
+        crs,
+        overlay_data,
+        overlay_color,
+        overlay_width,
+        overlay_opacity,
+        title,
+        title_xy,
+        add_text,
+        text_xy,
+        text_sequence,
+        font_type,
+        font_size,
+        font_color,
+        add_progress_bar,
+        progress_bar_color,
+        progress_bar_height,
+        loop=loop,
+        mp4=mp4,
+        fading=fading,
+        step=step,
+    )
 
 
 def valid_roi(roi):
