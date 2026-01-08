@@ -5,15 +5,18 @@ import random
 import string
 import sys
 import tempfile
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Union
 import uuid
 import webbrowser
 import zipfile
 
+import box
 import ee
 import ipyleaflet
 import ipywidgets as widgets
 from matplotlib import colors
+
+from . import colormaps
 
 try:
     from IPython.display import display, Javascript
@@ -22,15 +25,12 @@ except ImportError:
 
 
 def get_env_var(key: str) -> str | None:
-    """Retrieves an environment variable or Colab secret for the given key.
+    """Returns an environment variable or Colab secret for the given key.
 
     Colab secrets have precedence over environment variables.
 
     Args:
         key: The key that's used to fetch the environment variable.
-
-    Returns:
-        The retrieved key, or None if no environment variable was found.
     """
     if not key:
         return None
@@ -266,26 +266,28 @@ def get_info(
     Returns:
         The tree or node representing the Earth Engine object information.
     """
-    from ipytree import Node, Tree
+    import ipytree
 
     tree_json = build_computed_object_tree(ee_object, layer_name, opened)
 
     def _create_node(data):
         """Create a widget for the computed object tree."""
-        node = Node(data.get("label", "Node"), opened=data.get("expanded", False))
+        node = ipytree.Node(
+            data.get("label", "Node"), opened=data.get("expanded", False)
+        )
         if children := data.get("children"):
             for child in children:
                 node.add_node(_create_node(child))
         else:
             node.icon = "file"
-            node.value = str(data)  # Store the entire data as a string
+            node.value = str(data)  # Store the entire data as a string.
         return node
 
     root_node = _create_node(tree_json)
     if return_node:
         return root_node
     else:
-        tree = Tree()
+        tree = ipytree.Tree()
         tree.add_node(root_node)
         return tree
 
@@ -308,12 +310,10 @@ def create_code_cell(code: str = "", where: str = "below") -> None:
     encoded_code = (base64.b64encode(str.encode(code))).decode()
     display(
         Javascript(
-            """
-        var code = IPython.notebook.insert_cell_{}('code');
-        code.set_text(atob("{}"));
-    """.format(
-                where, encoded_code
-            )
+            f"""
+        var code = IPython.notebook.insert_cell_{where}('code');
+        code.set_text(atob("{encoded_code}"));
+    """
         )
     )
 
@@ -331,7 +331,6 @@ def geometry_type(ee_object: Any) -> str:
     Raises:
         TypeError: If the ee_object is not one of ee.Geometry, ee.Feature,
             ee.FeatureCollection.
-
     """
     if isinstance(ee_object, ee.Geometry):
         return ee_object.type().getInfo()
@@ -349,9 +348,8 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> str | None:
     """Returns the Google Maps API key from the environment or Colab user data.
 
     Args:
-        key (str, optional): The name of the environment variable or Colab user
-            data key where the API key is stored. Defaults to
-            'GOOGLE_MAPS_API_KEY'.
+        key: The name of the environment variable or Colab user data key where the API
+            key is stored. Defaults to 'GOOGLE_MAPS_API_KEY'.
     """
     if api_key := get_env_var(key):
         return api_key
@@ -359,11 +357,7 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> str | None:
 
 
 def in_colab_shell() -> bool:
-    """Checks if the code is running in a Google Colab environment.
-
-    Returns:
-        True if running in Google Colab, False otherwise.
-    """
+    """Returns True if the code is running in a Google Colab environment."""
     return "google.colab" in sys.modules
 
 
@@ -377,12 +371,12 @@ def check_color(in_color: str | tuple | list) -> str:
     Returns:
         A hex color code.
     """
-    out_color = "#000000"  # default black color
+    out_color = "#000000"  # Default black color.
     # Handle RGB tuple or list.
     if isinstance(in_color, (tuple, list)) and len(in_color) == 3:
-        # rescale color if necessary
+        # Rescale color if necessary.
         if all(isinstance(item, int) for item in in_color):
-            # Ensure values are floats between 0 and 1 for to_hex
+            # Ensure values are floats between 0 and 1 for to_hex.
             in_color = [c / 255.0 for c in in_color]
         try:
             return colors.to_hex(in_color)
@@ -425,12 +419,9 @@ def check_cmap(cmap: str | list[str]) -> list[str]:
     Returns:
         A list of colors.
     """
-    import box
-    from .colormaps import get_palette
-
     if isinstance(cmap, str):
         try:
-            palette = get_palette(cmap)
+            palette = colormaps.get_palette(cmap)
             if isinstance(palette, dict):
                 palette = palette["default"]
             return palette
@@ -511,7 +502,7 @@ def widget_template(
     widget_args: dict[str, Any] | None = None,
     close_button_args: dict[str, Any] | None = None,
     display_widget: widgets.Widget | None = None,
-    m: Optional["ipyleaflet.Map"] = None,
+    m: ipyleaflet.Map | None = None,
     position: str = "topright",
 ) -> widgets.Widget | None:
     """Create a widget template.
@@ -718,7 +709,6 @@ def download_file(
     Returns:
         The output file path.
     """
-
     import gdown
 
     if output is None:
@@ -788,7 +778,6 @@ def geojson_to_ee(
                 with open(os.path.abspath(geo_json), encoding=encoding) as f:
                     geo_json = json.load(f)
 
-        # geo_json["geodesic"] = geodesic
         if geo_json["type"] == "FeatureCollection":
             for feature in geo_json["features"]:
                 if feature["geometry"]["type"] != "Point":
@@ -799,7 +788,7 @@ def geojson_to_ee(
             geom = None
             if "style" in geo_json["properties"]:
                 keys = geo_json["properties"]["style"].keys()
-                if "radius" in keys:  # Checks whether it is a circle
+                if "radius" in keys:  # Checks whether it is a circle.
                     geom = ee.Geometry(geo_json["geometry"])
                     radius = geo_json["properties"]["style"]["radius"]
                     geom = geom.buffer(radius)
@@ -809,7 +798,7 @@ def geojson_to_ee(
                     geom = ee.Geometry(geo_json["geometry"], "", geodesic)
             elif (
                 geo_json["geometry"]["type"] == "Point"
-            ):  # Checks whether it is a point
+            ):  # Checks whether it is a point.
                 coordinates = geo_json["geometry"]["coordinates"]
                 longitude = coordinates[0]
                 latitude = coordinates[1]
