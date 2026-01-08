@@ -57,7 +57,7 @@ from .coreutils import *
 from . import coreutils
 
 try:
-    from IPython.display import display, IFrame, Javascript
+    from IPython.display import display, HTML, IFrame, Javascript
 except ImportError:
     pass
 
@@ -2290,7 +2290,9 @@ def download_from_gdrive(
     gdd.coreutils.download_file_from_google_drive(file_id, dest_path, True, unzip)
 
 
-def create_download_link(filename: str, title: str = "Click here to download: ") -> str:
+def create_download_link(
+    filename: str, title: str = "Click here to download: "
+) -> HTML:
     """Downloads a file from voila.
 
     Adopted from https://github.com/voila-dashboards/voila/issues/578
@@ -2302,8 +2304,6 @@ def create_download_link(filename: str, title: str = "Click here to download: ")
     Returns:
         HTML download URL.
     """
-    from IPython.display import HTML
-
     data = open(filename, "rb").read()
     b64 = base64.b64encode(data)
     payload = b64.decode()
@@ -2399,8 +2399,11 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
     with open(in_csv, encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file)
         fields = reader.fieldnames
+        # pytype: disable=attribute-error
+        # TODO(schwehr): Fix this.
         xfield = fields.index(longitude)
         yfield = fields.index(latitude)
+        # pytype: enable=attribute-error
 
     wbt.csv_points_to_vector(in_csv, out_shp, xfield=xfield, yfield=yfield, epsg=4326)
 
