@@ -34,9 +34,6 @@ import tempfile
 import time
 from typing import Any
 import urllib
-from urllib.parse import urlparse
-import urllib.request
-from urllib.request import urlopen
 import warnings
 import webbrowser
 import zipfile
@@ -10275,9 +10272,12 @@ def read_file_from_url(
         ValueError: The return type must be either list or string.
     """
     if return_type == "list":
-        return [line.decode(encoding).rstrip() for line in urlopen(url).readlines()]
+        return [
+            line.decode(encoding).rstrip()
+            for line in urllib.request.urlopen(url).readlines()
+        ]
     elif return_type == "string":
-        return urlopen(url).read().decode(encoding)
+        return urllib.request.urlopen(url).read().decode(encoding)
     else:
         raise ValueError("The return type must be either list or string.")
 
@@ -11190,7 +11190,7 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     if isinstance(in_geojson, str):
         if in_geojson.startswith("http"):
             in_geojson = coreutils.github_raw_url(in_geojson)
-            with urlopen(in_geojson) as f:
+            with urllib.request.urlopen(in_geojson) as f:
                 data = json.load(f)
         else:
             in_geojson = os.path.abspath(in_geojson)
