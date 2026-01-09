@@ -581,8 +581,10 @@ def xyz_to_plotly() -> dict[str, Any]:
     return plotly_dict
 
 
-def search_qms(keywords: str, limit: int = 10) -> list[Any]:
-    """Search qms files for keywords. Reference: https://github.com/geopandas/xyzservices/issues/65
+def search_qms(keywords: str, limit: int = 10) -> list[Any] | None:
+    """Search qms files for keywords.
+
+    Reference: https://github.com/geopandas/xyzservices/issues/65
 
     Args:
         keywords: Keywords to search for.
