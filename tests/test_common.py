@@ -78,17 +78,17 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(os.environ["HTTPS_PROXY"], "http://192.168.1.1:8080")
         mock_get.assert_called_with("https://earthengine.google.com/", timeout=300)
 
-        # test ip without http prefix
+        # Test ip without http prefix.
         common.set_proxy(port=8080, ip="192.168.1.2")
         self.assertEqual(os.environ["HTTP_PROXY"], "http://192.168.1.2:8080")
         self.assertEqual(os.environ["HTTPS_PROXY"], "http://192.168.1.2:8080")
 
-        # test default values
+        # Test default values.
         common.set_proxy()
         self.assertEqual(os.environ["HTTP_PROXY"], "http://127.0.0.1:1080")
         self.assertEqual(os.environ["HTTPS_PROXY"], "http://127.0.0.1:1080")
 
-        # test connection failure
+        # Test connection failure.
         mock_response.status_code = 404
         mock_get.return_value = mock_response
         with mock.patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
@@ -144,7 +144,7 @@ class CommonTest(unittest.TestCase):
         dst = "/content/drive/My Drive/.config/earthengine/credentials"
         dst_dir = "/content/drive/My Drive/.config/earthengine"
 
-        # Case 1: Destination directory exists
+        # Case 1: Destination directory exists.
         mock_exists.return_value = True
         common.copy_credentials_to_drive()
         mock_exists.assert_called_with(dst_dir)
@@ -153,7 +153,7 @@ class CommonTest(unittest.TestCase):
         mock_copyfile.reset_mock()
         mock_makedirs.reset_mock()
 
-        # Case 2: Destination directory does not exist
+        # Case 2: Destination directory does not exist.
         mock_exists.return_value = False
         common.copy_credentials_to_drive()
         mock_exists.assert_called_with(dst_dir)
@@ -169,7 +169,7 @@ class CommonTest(unittest.TestCase):
         dst = "/root/.config/earthengine/credentials"
         dst_dir = "/root/.config/earthengine"
 
-        # Case 1: Destination directory exists
+        # Case 1: Destination directory exists.
         mock_exists.return_value = True
         common.copy_credentials_to_colab()
         mock_exists.assert_called_with(dst_dir)
@@ -178,7 +178,7 @@ class CommonTest(unittest.TestCase):
         mock_copyfile.reset_mock()
         mock_makedirs.reset_mock()
 
-        # Case 2: Destination directory does not exist
+        # Case 2: Destination directory does not exist.
         mock_exists.return_value = False
         common.copy_credentials_to_colab()
         mock_exists.assert_called_with(dst_dir)
