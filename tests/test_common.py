@@ -2,12 +2,11 @@
 
 import base64
 import builtins
-import datetime
 import io
 import math
-import json
 import os
 import pathlib
+import shutil
 import sys
 import tempfile
 import unittest
@@ -17,10 +16,9 @@ import ee
 from geemap import colormaps
 from geemap import common
 import ipywidgets
-import numpy as np
 from PIL import Image
 import psutil
-import pandas as pd
+import requests
 
 
 class CommonTest(unittest.TestCase):
@@ -44,13 +42,149 @@ class CommonTest(unittest.TestCase):
     # TODO: test_ee_export_map_to_cloud_storage
     # TODO: test_TitilerEndpoint
     # TODO: test_PlanetaryComputerEndpoint
-    # TODO: test_check_titiler_endpoint
-    # TODO: test_set_proxy
-    # TODO: test_is_drive_mounted
-    # TODO: test_credentials_in_drive
-    # TODO: test_credentials_in_colab
-    # TODO: test_copy_credentials_to_drive
-    # TODO: test_copy_credentials_to_colab
+
+    def test_check_titiler_endpoint(self):
+        """Tests check_titiler_endpoint."""
+        self.assertEqual(
+            common.check_titiler_endpoint(None),
+            "https://giswqs-titiler-endpoint.hf.space",
+        )
+        self.assertEqual(common.check_titiler_endpoint("some_url"), "some_url")
+        self.assertIsInstance(
+            common.check_titiler_endpoint("pc"),
+            common.PlanetaryComputerEndpoint,
+        )
+        self.assertIsInstance(
+            common.check_titiler_endpoint("planetary-computer"),
+            common.PlanetaryComputerEndpoint,
+        )
+        with mock.patch.dict(os.environ, {"TITILER_ENDPOINT": "planetary-computer"}):
+            self.assertIsInstance(
+                common.check_titiler_endpoint(None),
+                common.PlanetaryComputerEndpoint,
+            )
+        with mock.patch.dict(os.environ, {"TITILER_ENDPOINT": "some_other_url"}):
+            self.assertEqual(common.check_titiler_endpoint(None), "some_other_url")
+
+    @mock.patch.object(requests, "get")
+    def test_set_proxy(self, mock_get):
+        """Tests set_proxy."""
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_get.return_value = mock_response
+
+        common.set_proxy(port=8080, ip="192.168.1.1")
+        self.assertEqual(os.environ["HTTP_PROXY"], "http://192.168.1.1:8080")
+        self.assertEqual(os.environ["HTTPS_PROXY"], "http://192.168.1.1:8080")
+        mock_get.assert_called_with("https://earthengine.google.com/", timeout=300)
+
+        # test ip without http prefix
+        common.set_proxy(port=8080, ip="192.168.1.2")
+        self.assertEqual(os.environ["HTTP_PROXY"], "http://192.168.1.2:8080")
+        self.assertEqual(os.environ["HTTPS_PROXY"], "http://192.168.1.2:8080")
+
+        # test default values
+        common.set_proxy()
+        self.assertEqual(os.environ["HTTP_PROXY"], "http://127.0.0.1:1080")
+        self.assertEqual(os.environ["HTTPS_PROXY"], "http://127.0.0.1:1080")
+
+        # test connection failure
+        mock_response.status_code = 404
+        mock_get.return_value = mock_response
+        with mock.patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
+            common.set_proxy()
+            self.assertIn("Failed to connect", mock_stdout.getvalue())
+
+        del os.environ["HTTP_PROXY"]
+        del os.environ["HTTPS_PROXY"]
+
+    @mock.patch.object(os.path, "exists")
+    def test_is_drive_mounted(self, mock_exists):
+        """Tests is_drive_mounted."""
+        mock_exists.return_value = True
+        self.assertTrue(common.is_drive_mounted())
+        mock_exists.assert_called_with("/content/drive/My Drive")
+
+        mock_exists.return_value = False
+        self.assertFalse(common.is_drive_mounted())
+        mock_exists.assert_called_with("/content/drive/My Drive")
+
+    @mock.patch.object(os.path, "exists")
+    def test_credentials_in_drive(self, mock_exists):
+        """Tests credentials_in_drive."""
+        mock_exists.return_value = True
+        self.assertTrue(common.credentials_in_drive())
+        mock_exists.assert_called_with(
+            "/content/drive/My Drive/.config/earthengine/credentials"
+        )
+
+        mock_exists.return_value = False
+        self.assertFalse(common.credentials_in_drive())
+        mock_exists.assert_called_with(
+            "/content/drive/My Drive/.config/earthengine/credentials"
+        )
+
+    @mock.patch.object(os.path, "exists")
+    def test_credentials_in_colab(self, mock_exists):
+        """Tests credentials_in_colab."""
+        mock_exists.return_value = True
+        self.assertTrue(common.credentials_in_colab())
+        mock_exists.assert_called_with("/root/.config/earthengine/credentials")
+
+        mock_exists.return_value = False
+        self.assertFalse(common.credentials_in_colab())
+        mock_exists.assert_called_with("/root/.config/earthengine/credentials")
+
+    @mock.patch.object(shutil, "copyfile")
+    @mock.patch.object(os, "makedirs")
+    @mock.patch.object(os.path, "exists")
+    def test_copy_credentials_to_drive(self, mock_exists, mock_makedirs, mock_copyfile):
+        """Tests copy_credentials_to_drive."""
+        src = "/root/.config/earthengine/credentials"
+        dst = "/content/drive/My Drive/.config/earthengine/credentials"
+        dst_dir = "/content/drive/My Drive/.config/earthengine"
+
+        # Case 1: Destination directory exists
+        mock_exists.return_value = True
+        common.copy_credentials_to_drive()
+        mock_exists.assert_called_with(dst_dir)
+        mock_makedirs.assert_not_called()
+        mock_copyfile.assert_called_with(src, dst)
+        mock_copyfile.reset_mock()
+        mock_makedirs.reset_mock()
+
+        # Case 2: Destination directory does not exist
+        mock_exists.return_value = False
+        common.copy_credentials_to_drive()
+        mock_exists.assert_called_with(dst_dir)
+        mock_makedirs.assert_called_once_with(dst_dir)
+        mock_copyfile.assert_called_with(src, dst)
+
+    @mock.patch.object(shutil, "copyfile")
+    @mock.patch.object(os, "makedirs")
+    @mock.patch.object(os.path, "exists")
+    def test_copy_credentials_to_colab(self, mock_exists, mock_makedirs, mock_copyfile):
+        """Tests copy_credentials_to_colab."""
+        src = "/content/drive/My Drive/.config/earthengine/credentials"
+        dst = "/root/.config/earthengine/credentials"
+        dst_dir = "/root/.config/earthengine"
+
+        # Case 1: Destination directory exists
+        mock_exists.return_value = True
+        common.copy_credentials_to_colab()
+        mock_exists.assert_called_with(dst_dir)
+        mock_makedirs.assert_not_called()
+        mock_copyfile.assert_called_with(src, dst)
+        mock_copyfile.reset_mock()
+        mock_makedirs.reset_mock()
+
+        # Case 2: Destination directory does not exist
+        mock_exists.return_value = False
+        common.copy_credentials_to_colab()
+        mock_exists.assert_called_with(dst_dir)
+        mock_makedirs.assert_called_once_with(dst_dir)
+        mock_copyfile.assert_called_with(src, dst)
+
     # TODO: test_check_install
     # TODO: test_update_package
     # TODO: test_check_package
