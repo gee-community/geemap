@@ -7164,7 +7164,7 @@ def create_s2_time_series_chart_frames(
         xlabel_interval (str): Interval for x-axis labels
 
     Returns:
-        list: List of paths to chart frame images
+        List of paths to chart frame images.
     """
     if not sample_data:
         return []
@@ -8396,7 +8396,7 @@ def create_landsat_time_series_chart_frames(
         xlabel_interval: Interval for x-axis labels.
 
     Returns:
-        List of paths to chart frame images
+        List of paths to chart frame images.
     """
     if not sample_data:
         return []
