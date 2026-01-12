@@ -138,7 +138,9 @@ class CommonTest(unittest.TestCase):
     @mock.patch.object(shutil, "copyfile")
     @mock.patch.object(os, "makedirs")
     @mock.patch.object(os.path, "exists")
-    def test_copy_credentials_to_drive(self, mock_exists, mock_makedirs, mock_copyfile):
+    def test_copy_credentials_to_drive_exists(
+        self, mock_exists, mock_makedirs, mock_copyfile
+    ):
         """Tests copy_credentials_to_drive."""
         src = "/root/.config/earthengine/credentials"
         dst = "/content/drive/My Drive/.config/earthengine/credentials"
@@ -150,8 +152,17 @@ class CommonTest(unittest.TestCase):
         mock_exists.assert_called_with(dst_dir)
         mock_makedirs.assert_not_called()
         mock_copyfile.assert_called_with(src, dst)
-        mock_copyfile.reset_mock()
-        mock_makedirs.reset_mock()
+
+    @mock.patch.object(shutil, "copyfile")
+    @mock.patch.object(os, "makedirs")
+    @mock.patch.object(os.path, "exists")
+    def test_copy_credentials_to_drive_does_not_exist(
+        self, mock_exists, mock_makedirs, mock_copyfile
+    ):
+        """Tests copy_credentials_to_drive."""
+        src = "/root/.config/earthengine/credentials"
+        dst = "/content/drive/My Drive/.config/earthengine/credentials"
+        dst_dir = "/content/drive/My Drive/.config/earthengine"
 
         # Case 2: Destination directory does not exist.
         mock_exists.return_value = False
@@ -163,7 +174,9 @@ class CommonTest(unittest.TestCase):
     @mock.patch.object(shutil, "copyfile")
     @mock.patch.object(os, "makedirs")
     @mock.patch.object(os.path, "exists")
-    def test_copy_credentials_to_colab(self, mock_exists, mock_makedirs, mock_copyfile):
+    def test_copy_credentials_to_colab_exists(
+        self, mock_exists, mock_makedirs, mock_copyfile
+    ):
         """Tests copy_credentials_to_colab."""
         src = "/content/drive/My Drive/.config/earthengine/credentials"
         dst = "/root/.config/earthengine/credentials"
@@ -175,8 +188,17 @@ class CommonTest(unittest.TestCase):
         mock_exists.assert_called_with(dst_dir)
         mock_makedirs.assert_not_called()
         mock_copyfile.assert_called_with(src, dst)
-        mock_copyfile.reset_mock()
-        mock_makedirs.reset_mock()
+
+    @mock.patch.object(shutil, "copyfile")
+    @mock.patch.object(os, "makedirs")
+    @mock.patch.object(os.path, "exists")
+    def test_copy_credentials_to_colab_does_not_exist(
+        self, mock_exists, mock_makedirs, mock_copyfile
+    ):
+        """Tests copy_credentials_to_colab."""
+        src = "/content/drive/My Drive/.config/earthengine/credentials"
+        dst = "/root/.config/earthengine/credentials"
+        dst_dir = "/root/.config/earthengine"
 
         # Case 2: Destination directory does not exist.
         mock_exists.return_value = False
