@@ -446,7 +446,7 @@ def add_text_to_gif(
 
     if xy is None:
         # Default text location is 5% width and 5% height of the image.
-        xy = (int(0.05 * W), int(0.05 * H))
+        xy = int(0.05 * W), int(0.05 * H)
     elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
         print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
         return
@@ -638,7 +638,7 @@ def add_image_to_gif(
             try:
                 x = int(float(x.replace("%", "")) / 100.0 * gif_width)
                 y = int(float(y.replace("%", "")) / 100.0 * gif_height)
-                xy = (x, y)
+                xy = x, y
             except Exception:
                 raise Exception(
                     "The specified xy is invalid. "
@@ -5240,22 +5240,22 @@ def vector_to_gif(
 
     if xy is None:
         # default text location is 5% width and 5% height of the image.
-        xy = (int(0.05 * W), int(0.05 * H))
-    elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
+        xy = int(0.05 * W), int(0.05 * H)
+    elif xy is not None and (not isinstance(xy, tuple)) and len(xy) == 2:
         raise Exception("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
 
-    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
+    elif all(isinstance(item, int) for item in xy) and len(xy) == 2:
         x, y = xy
-        if (x > 0) and (x < W) and (y > 0) and (y < H):
+        if x > 0 and x < W and y > 0 and y < H:
             pass
         else:
             print(
                 f"xy is out of bounds. x must be within [0, {W}], and y must be within [0, {H}]"
             )
             return
-    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
+    elif all(isinstance(item, str) for item in xy) and len(xy) == 2:
         x, y = xy
-        if ("%" in x) and ("%" in y):
+        if "%" in x and "%" in y:
             try:
                 x = float(x.replace("%", "")) / 100.0 * W
                 y = float(y.replace("%", "")) / 100.0 * H
@@ -7164,7 +7164,7 @@ def create_s2_time_series_chart_frames(
         xlabel_interval (str): Interval for x-axis labels
 
     Returns:
-        list: List of paths to chart frame images
+        List of paths to chart frame images.
     """
     if not sample_data:
         return []
@@ -8219,7 +8219,7 @@ def get_default_landsat_index_vis_params():
     }
 
 
-def get_default_landsat_band_labels():
+def get_default_landsat_band_labels() -> dict[str, str]:
     """Get default chart labels for Landsat bands."""
     return {
         "Blue": "Blue",
@@ -8231,7 +8231,7 @@ def get_default_landsat_band_labels():
     }
 
 
-def get_landsat_index_chart_labels():
+def get_landsat_index_chart_labels() -> dict[str, str]:
     """Get chart labels for different Landsat indices."""
     return {
         "NDVI": "NDVI",
@@ -8305,7 +8305,7 @@ def create_landsat_index_timelapse(
     if end_year is None:
         end_year = get_current_year()
 
-    # Create time series with indices
+    # Create time series with indices.
     base_ts_collection = landsat_timeseries(
         roi,
         start_year,
@@ -8318,10 +8318,10 @@ def create_landsat_index_timelapse(
         step,
     )
 
-    # Add indices to each image
+    # Add indices to each image.
     ts_collection = base_ts_collection.map(calculate_landsat_indices)
 
-    # Use create_timelapse with the index collection
+    # Use create_timelapse with the index collection.
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
 
@@ -8377,31 +8377,31 @@ def create_landsat_index_timelapse(
 
 def create_landsat_time_series_chart_frames(
     sample_data,
-    chart_title,
-    chart_ylabel,
+    chart_title: str,
+    chart_ylabel: str,
     dimensions,
-    fps,
-    xlabel_format="auto",
-    xlabel_interval="auto",
+    fps: int,
+    xlabel_format: str = "auto",
+    xlabel_interval: str = "auto",
 ):
     """Create frames for the Landsat time series chart with current time indicator.
 
     Args:
-        sample_data (dict): Dictionary containing sample data for each point/band combination
-        chart_title (str): Title for the chart
-        chart_ylabel (str): Y-axis label
-        dimensions (int/str): Dimensions for the chart
-        fps (int): Frames per second
-        xlabel_format (str): Format for x-axis labels
-        xlabel_interval (str): Interval for x-axis labels
+        sample_data (dict): Sample data for each point/band combination.
+        chart_title: Title for the chart.
+        chart_ylabel: Y-axis label.
+        dimensions (int/str): Dimensions for the chart.
+        fps: Frames per second.
+        xlabel_format: Format for x-axis labels.
+        xlabel_interval: Interval for x-axis labels.
 
     Returns:
-        list: List of paths to chart frame images
+        List of paths to chart frame images.
     """
     if not sample_data:
         return []
 
-    # Get all unique dates across all points/bands
+    # Get all unique dates across all points/bands.
     all_dates = set()
     for point_data in sample_data.values():
         all_dates.update(point_data["dates"])
@@ -8411,17 +8411,17 @@ def create_landsat_time_series_chart_frames(
 
     sorted_dates = sorted(list(all_dates))
 
-    # Create chart frames
+    # Create chart frames.
     chart_frames = []
     temp_dir = tempfile.mkdtemp()
 
-    # Calculate chart dimensions
+    # Calculate chart dimensions.
     if isinstance(dimensions, str) and "x" in dimensions:
         width, height = map(int, dimensions.split("x"))
     else:
         width = height = int(dimensions) if isinstance(dimensions, int) else 768
 
-    chart_width = int(width * 0.8)  # 80% of gif width
+    chart_width = int(width * 0.8)  # 80% of gif width.
     chart_height = height
 
     try:
@@ -8430,10 +8430,10 @@ def create_landsat_time_series_chart_frames(
                 figsize=(chart_width / 100, chart_height / 100), dpi=100
             )
 
-            # Plot all time series
+            # Plot all time series.
             for point_key, point_data in sample_data.items():
                 if point_data["dates"] and point_data["values"]:
-                    # Use custom label if available, otherwise use point_key
+                    # Use custom label if available, otherwise use point_key.
                     label = point_data.get("label", point_key)
 
                     ax.plot(
@@ -8446,40 +8446,39 @@ def create_landsat_time_series_chart_frames(
                         markersize=4,
                     )
 
-            # Add vertical line for current time
+            # Add vertical line for current time.
             ax.axvline(
                 x=current_date, color="red", linestyle="--", linewidth=2, alpha=0.8
             )
 
-            # Formatting
             ax.set_xlabel("Date", fontsize=10)
             ax.set_ylabel(chart_ylabel, fontsize=10)
             ax.set_title(chart_title, fontsize=12)
             ax.legend(fontsize=8, loc="upper left")
             ax.grid(True, alpha=0.3)
 
-            # Format x-axis based on parameters or auto-detect
+            # Format x-axis based on parameters or auto-detect.
             date_range = (max(sorted_dates) - min(sorted_dates)).days
 
             if xlabel_format == "auto" or xlabel_interval == "auto":
-                # Auto-detect based on data characteristics
-                # Landsat typically has longer time series (annual data)
+                # Auto-detect based on data characteristics.
+                # Landsat typically has longer time series (annual data).
                 if (
                     date_range <= 365
-                ):  # Less than 1 year - likely monthly/quarterly data
+                ):  # Less than 1 year - likely monthly/quarterly data.
                     format_str = "%Y-%m"
                     locator = mdates.MonthLocator(
                         interval=max(1, len(sorted_dates) // 8)
                     )
-                elif date_range <= 1825:  # Less than 5 years - yearly data
+                elif date_range <= 1825:  # Less than 5 years - yearly data.
                     format_str = "%Y"
                     locator = mdates.YearLocator()
-                else:  # Long time series - multi-year intervals
+                else:  # Long time series - multi-year intervals.
                     format_str = "%Y"
                     year_interval = max(1, len(sorted_dates) // 15)
                     locator = mdates.YearLocator(interval=year_interval)
             else:
-                # Use manual settings
+                # Use manual settings.
                 format_str = xlabel_format if xlabel_format != "auto" else "%Y"
 
                 if xlabel_interval == "day":
@@ -8504,7 +8503,7 @@ def create_landsat_time_series_chart_frames(
 
             plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, fontsize=8)
 
-            # Set consistent y-axis limits
+            # Set consistent y-axis limits.
             all_values = []
             for point_data in sample_data.values():
                 all_values.extend([v for v in point_data["values"] if v is not None])
@@ -8519,7 +8518,7 @@ def create_landsat_time_series_chart_frames(
 
             plt.tight_layout()
 
-            # Save frame
+            # Save frame.
             frame_path = os.path.join(temp_dir, f"chart_frame_{frame_idx:04d}.png")
             plt.savefig(frame_path, dpi=100, bbox_inches="tight", facecolor="white")
             plt.close()
@@ -8528,7 +8527,7 @@ def create_landsat_time_series_chart_frames(
 
     except Exception as e:
         print(f"Error creating chart frames: {str(e)}")
-        # Clean up any created frames
+        # Clean up any created frames.
         for frame_path in chart_frames:
             if os.path.exists(frame_path):
                 os.remove(frame_path)
