@@ -13342,7 +13342,14 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1863</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1856</span>
+<span class="normal">1857</span>
+<span class="normal">1858</span>
+<span class="normal">1859</span>
+<span class="normal">1860</span>
+<span class="normal">1861</span>
+<span class="normal">1862</span>
+<span class="normal">1863</span>
 <span class="normal">1864</span>
 <span class="normal">1865</span>
 <span class="normal">1866</span>
@@ -13377,14 +13384,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">1895</span>
 <span class="normal">1896</span>
 <span class="normal">1897</span>
-<span class="normal">1898</span>
-<span class="normal">1899</span>
-<span class="normal">1900</span>
-<span class="normal">1901</span>
-<span class="normal">1902</span>
-<span class="normal">1903</span>
-<span class="normal">1904</span>
-<span class="normal">1905</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
+<span class="normal">1898</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
     <span class="n">x_labels</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -13723,7 +13723,14 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1427</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1420</span>
+<span class="normal">1421</span>
+<span class="normal">1422</span>
+<span class="normal">1423</span>
+<span class="normal">1424</span>
+<span class="normal">1425</span>
+<span class="normal">1426</span>
+<span class="normal">1427</span>
 <span class="normal">1428</span>
 <span class="normal">1429</span>
 <span class="normal">1430</span>
@@ -13841,14 +13848,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1542</span>
 <span class="normal">1543</span>
 <span class="normal">1544</span>
-<span class="normal">1545</span>
-<span class="normal">1546</span>
-<span class="normal">1547</span>
-<span class="normal">1548</span>
-<span class="normal">1549</span>
-<span class="normal">1550</span>
-<span class="normal">1551</span>
-<span class="normal">1552</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doy_series_by_year</span><span class="p">(</span>
+<span class="normal">1545</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doy_series_by_year</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">band_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14809,13 +14809,7 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 <span class="normal">1077</span>
 <span class="normal">1078</span>
 <span class="normal">1079</span>
-<span class="normal">1080</span>
-<span class="normal">1081</span>
-<span class="normal">1082</span>
-<span class="normal">1083</span>
-<span class="normal">1084</span>
-<span class="normal">1085</span>
-<span class="normal">1086</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_histogram</span><span class="p">(</span>
+<span class="normal">1080</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_histogram</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="nb">property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">max_buckets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14867,108 +14861,102 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
             <span class="n">bin_size</span> <span class="o">*=</span> <span class="mi">2</span>
         <span class="k">return</span> <span class="n">bin_size</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span>
-            <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="nb">property</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
-        <span class="p">)</span>
-        <span class="n">y_data</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
+    <span class="n">raw_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_numeric</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="n">features</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="nb">property</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()))</span>
+    <span class="n">y_data</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
 
-        <span class="k">if</span> <span class="s2">&quot;ylim&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">min_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ylim&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
-            <span class="n">max_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ylim&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">min_value</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
-            <span class="n">max_value</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+    <span class="k">if</span> <span class="s2">&quot;ylim&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">min_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ylim&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">max_value</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;ylim&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">min_value</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+        <span class="n">max_value</span> <span class="o">=</span> <span class="n">raw_data</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
-        <span class="n">data_range</span> <span class="o">=</span> <span class="n">max_value</span> <span class="o">-</span> <span class="n">min_value</span>
+    <span class="n">data_range</span> <span class="o">=</span> <span class="n">max_value</span> <span class="o">-</span> <span class="n">min_value</span>
 
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">max_buckets</span><span class="p">:</span>
-            <span class="n">initial_bin_size</span> <span class="o">=</span> <span class="n">nextPowerOf2</span><span class="p">(</span><span class="n">data_range</span> <span class="o">/</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">min_bucket_width</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">min_bucket_width</span> <span class="o">&lt;</span> <span class="n">initial_bin_size</span><span class="p">:</span>
-                    <span class="n">bin_size</span> <span class="o">=</span> <span class="n">grow_bin</span><span class="p">(</span><span class="n">min_bucket_width</span><span class="p">,</span> <span class="n">initial_bin_size</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">bin_size</span> <span class="o">=</span> <span class="n">min_bucket_width</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">max_buckets</span><span class="p">:</span>
+        <span class="n">initial_bin_size</span> <span class="o">=</span> <span class="n">nextPowerOf2</span><span class="p">(</span><span class="n">data_range</span> <span class="o">/</span> <span class="nb">pow</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">min_bucket_width</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_bucket_width</span> <span class="o">&lt;</span> <span class="n">initial_bin_size</span><span class="p">:</span>
+                <span class="n">bin_size</span> <span class="o">=</span> <span class="n">grow_bin</span><span class="p">(</span><span class="n">min_bucket_width</span><span class="p">,</span> <span class="n">initial_bin_size</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">bin_size</span> <span class="o">=</span> <span class="n">initial_bin_size</span>
+                <span class="n">bin_size</span> <span class="o">=</span> <span class="n">min_bucket_width</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">initial_bin_size</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">data_range</span> <span class="o">/</span> <span class="n">nextPowerOf2</span><span class="p">(</span><span class="n">max_buckets</span><span class="p">))</span>
-            <span class="k">if</span> <span class="n">min_bucket_width</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">min_bucket_width</span> <span class="o">&lt;</span> <span class="n">initial_bin_size</span><span class="p">:</span>
-                    <span class="n">bin_size</span> <span class="o">=</span> <span class="n">grow_bin</span><span class="p">(</span><span class="n">min_bucket_width</span><span class="p">,</span> <span class="n">initial_bin_size</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">bin_size</span> <span class="o">=</span> <span class="n">min_bucket_width</span>
+            <span class="n">bin_size</span> <span class="o">=</span> <span class="n">initial_bin_size</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">initial_bin_size</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">data_range</span> <span class="o">/</span> <span class="n">nextPowerOf2</span><span class="p">(</span><span class="n">max_buckets</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">min_bucket_width</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">min_bucket_width</span> <span class="o">&lt;</span> <span class="n">initial_bin_size</span><span class="p">:</span>
+                <span class="n">bin_size</span> <span class="o">=</span> <span class="n">grow_bin</span><span class="p">(</span><span class="n">min_bucket_width</span><span class="p">,</span> <span class="n">initial_bin_size</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">bin_size</span> <span class="o">=</span> <span class="n">initial_bin_size</span>
-
-        <span class="n">start_bins</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">min_value</span> <span class="o">/</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">bin_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">end_bins</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">max_value</span> <span class="o">/</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">bin_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="n">start_bins</span> <span class="o">&lt;</span> <span class="n">min_value</span><span class="p">:</span>
-            <span class="n">y_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start_bins</span><span class="p">)</span>
+                <span class="n">bin_size</span> <span class="o">=</span> <span class="n">min_bucket_width</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">y_data</span><span class="p">[</span><span class="n">y_data</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">min_value</span><span class="p">)]</span> <span class="o">=</span> <span class="n">start_bins</span>
-        <span class="k">if</span> <span class="n">end_bins</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
-            <span class="n">y_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_bins</span><span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">y_data</span><span class="p">[</span><span class="n">y_data</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">max_value</span><span class="p">)]</span> <span class="o">=</span> <span class="n">end_bins</span>
+            <span class="n">bin_size</span> <span class="o">=</span> <span class="n">initial_bin_size</span>
 
-        <span class="n">num_bins</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">end_bins</span> <span class="o">-</span> <span class="n">start_bins</span><span class="p">)</span> <span class="o">/</span> <span class="n">bin_size</span><span class="p">)</span>
+    <span class="n">start_bins</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">(</span><span class="n">min_value</span> <span class="o">/</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="n">bin_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
+    <span class="n">end_bins</span> <span class="o">=</span> <span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">max_value</span> <span class="o">/</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">*</span> <span class="n">bin_size</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">bin_size</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;title&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">start_bins</span> <span class="o">&lt;</span> <span class="n">min_value</span><span class="p">:</span>
+        <span class="n">y_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">start_bins</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y_data</span><span class="p">[</span><span class="n">y_data</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">min_value</span><span class="p">)]</span> <span class="o">=</span> <span class="n">start_bins</span>
+    <span class="k">if</span> <span class="n">end_bins</span> <span class="o">&gt;</span> <span class="n">max_value</span><span class="p">:</span>
+        <span class="n">y_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">end_bins</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y_data</span><span class="p">[</span><span class="n">y_data</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">max_value</span><span class="p">)]</span> <span class="o">=</span> <span class="n">end_bins</span>
 
-        <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">num_bins</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">floor</span><span class="p">((</span><span class="n">end_bins</span> <span class="o">-</span> <span class="n">start_bins</span><span class="p">)</span> <span class="o">/</span> <span class="n">bin_size</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;width&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">fig</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;height&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">fig</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;title&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">title</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;title&quot;</span><span class="p">]</span>
 
-        <span class="k">if</span> <span class="s2">&quot;x_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">x_label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">x_label</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;x_label&quot;</span><span class="p">]</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="s2">&quot;y_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">y_label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">y_label</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;y_label&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;width&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;width&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;height&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">fig</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;height&quot;</span><span class="p">]</span>
 
-        <span class="n">histogram</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
-            <span class="n">sample</span><span class="o">=</span><span class="n">y_data</span><span class="p">,</span>
-            <span class="n">bins</span><span class="o">=</span><span class="n">num_bins</span><span class="p">,</span>
-            <span class="n">axes_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">y_label</span><span class="p">},</span> <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">x_label</span><span class="p">}},</span>
+    <span class="k">if</span> <span class="s2">&quot;x_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">x_label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">x_label</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;x_label&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="s2">&quot;y_label&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">y_label</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">y_label</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;y_label&quot;</span><span class="p">]</span>
+
+    <span class="n">histogram</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hist</span><span class="p">(</span>
+        <span class="n">sample</span><span class="o">=</span><span class="n">y_data</span><span class="p">,</span>
+        <span class="n">bins</span><span class="o">=</span><span class="n">num_bins</span><span class="p">,</span>
+        <span class="n">axes_options</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">y_label</span><span class="p">},</span> <span class="s2">&quot;sample&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;label&quot;</span><span class="p">:</span> <span class="n">x_label</span><span class="p">}},</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="s2">&quot;colors&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">histogram</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="s2">&quot;stroke&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">histogram</span><span class="o">.</span><span class="n">stroke</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;stroke&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">histogram</span><span class="o">.</span><span class="n">stroke</span> <span class="o">=</span> <span class="s2">&quot;#ffffff00&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;stroke_width&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+        <span class="n">histogram</span><span class="o">.</span><span class="n">stroke_width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;stroke_width&quot;</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">histogram</span><span class="o">.</span><span class="n">stroke_width</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;x_label&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;y_label&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
+        <span class="n">histogram</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">bqplot</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span>
+            <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;midpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">],</span>
+            <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;x_label&quot;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;y_label&quot;</span><span class="p">]],</span>
         <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">histogram</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">bqplot</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;midpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">])</span>
 
-        <span class="k">if</span> <span class="s2">&quot;colors&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">histogram</span><span class="o">.</span><span class="n">colors</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;colors&quot;</span><span class="p">]</span>
-        <span class="k">if</span> <span class="s2">&quot;stroke&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">histogram</span><span class="o">.</span><span class="n">stroke</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;stroke&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">histogram</span><span class="o">.</span><span class="n">stroke</span> <span class="o">=</span> <span class="s2">&quot;#ffffff00&quot;</span>
-        <span class="k">if</span> <span class="s2">&quot;stroke_width&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
-            <span class="n">histogram</span><span class="o">.</span><span class="n">stroke_width</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;stroke_width&quot;</span><span class="p">]</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">histogram</span><span class="o">.</span><span class="n">stroke_width</span> <span class="o">=</span> <span class="mi">0</span>
-
-        <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;x_label&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;y_label&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">):</span>
-            <span class="n">histogram</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">bqplot</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span>
-                <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;midpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">],</span>
-                <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;x_label&quot;</span><span class="p">],</span> <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;y_label&quot;</span><span class="p">]],</span>
-            <span class="p">)</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">histogram</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">bqplot</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span><span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;midpoint&quot;</span><span class="p">,</span> <span class="s2">&quot;count&quot;</span><span class="p">])</span>
-
-        <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
-            <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">histogram</span>
-
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">show</span><span class="p">:</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">histogram</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -15154,7 +15142,13 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1089</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1083</span>
+<span class="normal">1084</span>
+<span class="normal">1085</span>
+<span class="normal">1086</span>
+<span class="normal">1087</span>
+<span class="normal">1088</span>
+<span class="normal">1089</span>
 <span class="normal">1090</span>
 <span class="normal">1091</span>
 <span class="normal">1092</span>
@@ -15199,13 +15193,7 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 <span class="normal">1131</span>
 <span class="normal">1132</span>
 <span class="normal">1133</span>
-<span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
-<span class="normal">1137</span>
-<span class="normal">1138</span>
-<span class="normal">1139</span>
-<span class="normal">1140</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_class</span><span class="p">(</span>
+<span class="normal">1134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_class</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">class_band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
@@ -15396,7 +15384,13 @@ function.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1143</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1137</span>
+<span class="normal">1138</span>
+<span class="normal">1139</span>
+<span class="normal">1140</span>
+<span class="normal">1141</span>
+<span class="normal">1142</span>
+<span class="normal">1143</span>
 <span class="normal">1144</span>
 <span class="normal">1145</span>
 <span class="normal">1146</span>
@@ -15420,14 +15414,7 @@ function.</p>
 <span class="normal">1164</span>
 <span class="normal">1165</span>
 <span class="normal">1166</span>
-<span class="normal">1167</span>
-<span class="normal">1168</span>
-<span class="normal">1169</span>
-<span class="normal">1170</span>
-<span class="normal">1171</span>
-<span class="normal">1172</span>
-<span class="normal">1173</span>
-<span class="normal">1174</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_region</span><span class="p">(</span>
+<span class="normal">1167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_region</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="p">,</span>
@@ -15452,7 +15439,6 @@ function.</p>
 <span class="sd">        **kwargs: Additional keyword arguments to be passed to the `feature_by_feature`</span>
 <span class="sd">            function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="n">fc</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">zonal_stats</span><span class="p">(</span>
         <span class="n">image</span><span class="p">,</span> <span class="n">regions</span><span class="p">,</span> <span class="n">stat_type</span><span class="o">=</span><span class="n">reducer</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">return_fc</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span>
@@ -15709,7 +15695,14 @@ objects. For axes_options, see https://bqplot.github.io/bqplot/api/axes.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1177</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1170</span>
+<span class="normal">1171</span>
+<span class="normal">1172</span>
+<span class="normal">1173</span>
+<span class="normal">1174</span>
+<span class="normal">1175</span>
+<span class="normal">1176</span>
+<span class="normal">1177</span>
 <span class="normal">1178</span>
 <span class="normal">1179</span>
 <span class="normal">1180</span>
@@ -15819,14 +15812,7 @@ objects. For axes_options, see https://bqplot.github.io/bqplot/api/axes.</p>
 <span class="normal">1284</span>
 <span class="normal">1285</span>
 <span class="normal">1286</span>
-<span class="normal">1287</span>
-<span class="normal">1288</span>
-<span class="normal">1289</span>
-<span class="normal">1290</span>
-<span class="normal">1291</span>
-<span class="normal">1292</span>
-<span class="normal">1293</span>
-<span class="normal">1294</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series</span><span class="p">(</span>
+<span class="normal">1287</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">region_reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -16255,7 +16241,14 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1297</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1290</span>
+<span class="normal">1291</span>
+<span class="normal">1292</span>
+<span class="normal">1293</span>
+<span class="normal">1294</span>
+<span class="normal">1295</span>
+<span class="normal">1296</span>
+<span class="normal">1297</span>
 <span class="normal">1298</span>
 <span class="normal">1299</span>
 <span class="normal">1300</span>
@@ -16375,14 +16368,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1414</span>
 <span class="normal">1415</span>
 <span class="normal">1416</span>
-<span class="normal">1417</span>
-<span class="normal">1418</span>
-<span class="normal">1419</span>
-<span class="normal">1420</span>
-<span class="normal">1421</span>
-<span class="normal">1422</span>
-<span class="normal">1423</span>
-<span class="normal">1424</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series_by_region</span><span class="p">(</span>
+<span class="normal">1417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series_by_region</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">band_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
@@ -16756,7 +16742,14 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1555</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1548</span>
+<span class="normal">1549</span>
+<span class="normal">1550</span>
+<span class="normal">1551</span>
+<span class="normal">1552</span>
+<span class="normal">1553</span>
+<span class="normal">1554</span>
+<span class="normal">1555</span>
 <span class="normal">1556</span>
 <span class="normal">1557</span>
 <span class="normal">1558</span>
@@ -16852,14 +16845,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1648</span>
 <span class="normal">1649</span>
 <span class="normal">1650</span>
-<span class="normal">1651</span>
-<span class="normal">1652</span>
-<span class="normal">1653</span>
-<span class="normal">1654</span>
-<span class="normal">1655</span>
-<span class="normal">1656</span>
-<span class="normal">1657</span>
-<span class="normal">1658</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
+<span class="normal">1651</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -17114,7 +17100,14 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1661</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1654</span>
+<span class="normal">1655</span>
+<span class="normal">1656</span>
+<span class="normal">1657</span>
+<span class="normal">1658</span>
+<span class="normal">1659</span>
+<span class="normal">1660</span>
+<span class="normal">1661</span>
 <span class="normal">1662</span>
 <span class="normal">1663</span>
 <span class="normal">1664</span>
@@ -17135,14 +17128,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
 <span class="normal">1679</span>
 <span class="normal">1680</span>
 <span class="normal">1681</span>
-<span class="normal">1682</span>
-<span class="normal">1683</span>
-<span class="normal">1684</span>
-<span class="normal">1685</span>
-<span class="normal">1686</span>
-<span class="normal">1687</span>
-<span class="normal">1688</span>
-<span class="normal">1689</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
+<span class="normal">1682</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="p">,</span>
@@ -17446,7 +17432,14 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1692</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1685</span>
+<span class="normal">1686</span>
+<span class="normal">1687</span>
+<span class="normal">1688</span>
+<span class="normal">1689</span>
+<span class="normal">1690</span>
+<span class="normal">1691</span>
+<span class="normal">1692</span>
 <span class="normal">1693</span>
 <span class="normal">1694</span>
 <span class="normal">1695</span>
@@ -17521,14 +17514,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1764</span>
 <span class="normal">1765</span>
 <span class="normal">1766</span>
-<span class="normal">1767</span>
-<span class="normal">1768</span>
-<span class="normal">1769</span>
-<span class="normal">1770</span>
-<span class="normal">1771</span>
-<span class="normal">1772</span>
-<span class="normal">1773</span>
-<span class="normal">1774</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
+<span class="normal">1767</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -17918,7 +17904,14 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1777</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1770</span>
+<span class="normal">1771</span>
+<span class="normal">1772</span>
+<span class="normal">1773</span>
+<span class="normal">1774</span>
+<span class="normal">1775</span>
+<span class="normal">1776</span>
+<span class="normal">1777</span>
 <span class="normal">1778</span>
 <span class="normal">1779</span>
 <span class="normal">1780</span>
@@ -17994,14 +17987,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1850</span>
 <span class="normal">1851</span>
 <span class="normal">1852</span>
-<span class="normal">1853</span>
-<span class="normal">1854</span>
-<span class="normal">1855</span>
-<span class="normal">1856</span>
-<span class="normal">1857</span>
-<span class="normal">1858</span>
-<span class="normal">1859</span>
-<span class="normal">1860</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
+<span class="normal">1853</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
