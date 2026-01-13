@@ -14,8 +14,6 @@ found at https://wiki.openstreetmap.org/wiki/Map_features
 
 from typing import Any
 
-from . import common
-
 
 def osm_gdf_from_address(address: str, tags: dict[str, Any], dist: int = 1000):
     """Create GeoDataFrame of OSM entities within some distance N, S, E, W of address.
@@ -38,9 +36,6 @@ def osm_gdf_from_address(address: str, tags: dict[str, Any], dist: int = 1000):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    common.check_package(
-        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
-    )
     import osmnx as ox
 
     gdf = ox.features.features_from_address(address, tags, dist)
@@ -125,9 +120,6 @@ def osm_gdf_from_place(query, tags: dict[str, Any], which_result: int | None = N
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    common.check_package(
-        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
-    )
     import osmnx as ox
 
     ox.config(use_cache=True, log_console=True)
@@ -213,9 +205,6 @@ def osm_gdf_from_point(center_point, tags, dist=1000):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    common.check_package(
-        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
-    )
     import osmnx as ox
 
     gdf = ox.features.features_from_point(center_point, tags, dist)
@@ -298,9 +287,6 @@ def osm_gdf_from_polygon(polygon, tags):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    common.check_package(
-        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
-    )
     import osmnx as ox
 
     gdf = ox.features.features_from_polygon(polygon, tags)
@@ -379,9 +365,6 @@ def osm_gdf_from_bbox(north, south, east, west, tags):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    common.check_package(
-        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
-    )
     import osmnx as ox
 
     gdf = ox.features.features_from_bbox(north, south, east, west, tags)
@@ -454,9 +437,6 @@ def osm_gdf_from_xml(filepath, polygon=None, tags=None):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    common.check_package(
-        "osmnx", "https://osmnx.readthedocs.io/en/stable/#installation"
-    )
     import osmnx as ox
 
     gdf = ox.features.features_from_xml(filepath, polygon, tags)
@@ -482,8 +462,6 @@ def osm_gdf_from_geocode(
     Returns:
         GeoDataFrame: A GeoPandas GeoDataFrame.
     """
-    common.check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/")
-
     import osmnx as ox
 
     gdf = ox.geocoder.geocode_to_gdf(
