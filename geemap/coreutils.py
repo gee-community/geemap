@@ -410,7 +410,7 @@ def check_color(in_color: str | tuple | list) -> str:
         return out_color
 
 
-def check_cmap(cmap: str | list[str]) -> list[str]:
+def check_cmap(cmap: str | list[str]) -> list[str] | str:
     """Check the colormap and return a list of colors.
 
     Args:
@@ -431,7 +431,7 @@ def check_cmap(cmap: str | list[str]) -> list[str]:
             except Exception as e:
                 raise Exception(f"{cmap} is not a valid colormap.")
     elif isinstance(cmap, box.Box):
-        return list(cmap["default"])
+        return list(cmap["default"])  # pytype: disable=unsupported-operands
     elif isinstance(cmap, list) or isinstance(cmap, tuple):
         return cmap
     else:
