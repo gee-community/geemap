@@ -26,8 +26,10 @@ from jinja2 import Template
 from matplotlib import figure
 import numpy as np
 import pandas as pd
+import requests
 
 from . import basemaps
+from . import common
 from .common import *
 from .conversion import *
 from . import coreutils
@@ -173,13 +175,13 @@ class Map(folium.Map):
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
 
-    def setOptions(self, mapTypeId="HYBRID", styles={}, types=[]):
+    def setOptions(self, mapTypeId: str = "HYBRID", styles={}, types=[]):
         """Adds Google basemap to the map.
 
         Args:
-            mapTypeId (str, optional): A mapTypeId to set the basemap to. Can be one of
-                "ROADMAP", "SATELLITE", "HYBRID" or "TERRAIN" to select one of the
-                standard Google Maps API map types. Defaults to 'HYBRID'.
+            mapTypeId: A mapTypeId to set the basemap to. Can be one of "ROADMAP",
+                "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google
+                Maps API map types. Defaults to 'HYBRID'.
             styles ([type], optional): A dictionary of custom MapTypeStyle objects keyed
                 with a name that will appear in the map's Map Type Controls. Defaults to
                 None.
@@ -276,21 +278,21 @@ class Map(folium.Map):
         self,
         ee_object,
         vis_params={},
-        name="Layer untitled",
-        shown=True,
-        opacity=1.0,
+        name: str = "Layer untitled",
+        shown: bool = True,
+        opacity: float = 1.0,
         **kwargs,
-    ):
+    ) -> None:
         """Adds a given EE object to the map as a layer.
 
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to {}.
-            name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-            shown (bool, optional): A flag indicating whether the layer should be on by
-                default. Defaults to True.
-            opacity (float, optional): The layer's opacity represented as a number
-                between 0 and 1. Defaults to 1.
+            name: The name of the layer. Defaults to 'Layer untitled'.
+            shown: A flag indicating whether the layer should be on by default. Defaults
+                to True.
+            opacity: The layer's opacity represented as a number between 0 and
+                1. Defaults to 1.
         """
 
         layer = ee_tile_layers.EEFoliumTileLayer(
@@ -301,7 +303,7 @@ class Map(folium.Map):
 
     addLayer = add_layer
 
-    def _repr_mimebundle_(self, **kwargs):
+    def _repr_mimebundle_(self, **kwargs) -> None:
         """Adds Layer control to the map.
 
         Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
@@ -324,7 +326,7 @@ class Map(folium.Map):
 
     setCenter = set_center
 
-    def zoom_to_bounds(self, bounds):
+    def zoom_to_bounds(self, bounds) -> None:
         """Zooms to a bounding box in the form of [minx, miny, maxx, maxy].
 
         Args:
@@ -335,7 +337,7 @@ class Map(folium.Map):
         #     [[south, west], [north, east]]
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
-    def zoom_to_gdf(self, gdf):
+    def zoom_to_gdf(self, gdf) -> None:
         """Zooms to the bounding box of a GeoPandas GeoDataFrame.
 
         Args:
@@ -438,7 +440,13 @@ class Map(folium.Map):
     addLayerControl = add_layer_control
 
     def add_marker(
-        self, location, popup=None, tooltip=None, icon=None, draggable=False, **kwargs
+        self,
+        location,
+        popup: str | None = None,
+        tooltip: str | None = None,
+        icon: str | None = None,
+        draggable: bool = False,
+        **kwargs,
     ):
         """Adds a marker to the map.
 
@@ -448,11 +456,10 @@ class Map(folium.Map):
 
         Args:
             location (list | tuple): Location of the marker in the format of [lat, lng].
-            popup (str, optional): The popup text. Defaults to None.
-            tooltip (str, optional): The tooltip text. Defaults to None.
-            icon (str, optional): The icon to use. Defaults to None.
-            draggable (bool, optional): Whether the marker is draggable.
-                Defaults to False.
+            popup: The popup text. Defaults to None.
+            tooltip: The tooltip text. Defaults to None.
+            icon: The icon to use. Defaults to None.
+            draggable: Whether the marker is draggable.  Defaults to False.
         """
         if isinstance(location, list):
             location = tuple(location)
@@ -465,7 +472,6 @@ class Map(folium.Map):
                 draggable=draggable,
                 **kwargs,
             ).add_to(self)
-
         else:
             raise TypeError("The location must be a list or a tuple.")
 
@@ -821,30 +827,30 @@ class Map(folium.Map):
 
     def add_legend(
         self,
-        title="Legend",
+        title: str = "Legend",
         labels=None,
         colors=None,
         legend_dict=None,
-        builtin_legend=None,
-        opacity=1.0,
-        position="bottomright",
-        draggable=True,
+        builtin_legend: str | None = None,
+        opacity: float = 1.0,
+        position: str = "bottomright",
+        draggable: bool = True,
         style={},
     ):
         """Adds a customized legend to the map. Reference: https://bit.ly/3oV6vnH.
             If you want to add multiple legends to the map, you need to set the `draggable` argument to False.
 
         Args:
-            title (str, optional): Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
+            title: Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
             colors (list, optional): A list of legend colors. Defaults to None.
             labels (list, optional): A list of legend labels. Defaults to None.
             legend_dict (dict, optional): A dictionary containing legend items as keys and color as values.
                 If provided, legend_keys and legend_colors will be ignored. Defaults to None.
-            builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
-            opacity (float, optional): The opacity of the legend. Defaults to 1.0.
-            position (str, optional): The position of the legend, can be one of the following:
+            builtin_legend: Name of the builtin legend to add to the map. Defaults to None.
+            opacity: The opacity of the legend. Defaults to 1.0.
+            position: The position of the legend, can be one of the following:
                 "topleft", "topright", "bottomleft", "bottomright". Defaults to "bottomright".
-            draggable (bool, optional): If True, the legend can be dragged to a new position. Defaults to True.
+            draggable: If True, the legend can be dragged to a new position. Defaults to True.
             style: Additional keyword arguments to style the legend, such as position, bottom, right, z-index,
                 border, background-color, border-radius, padding, font-size, etc. The default style is:
                 style = {
@@ -891,12 +897,12 @@ class Map(folium.Map):
         self,
         vis_params,
         index=None,
-        label="",
-        categorical=False,
-        step=None,
+        label: str = "",
+        categorical: bool = False,
+        step: int | None = None,
         background_color=None,
         **kwargs,
-    ):
+    ) -> None:
         """Add a colorbar to the map.
 
         Args:
@@ -904,9 +910,9 @@ class Map(folium.Map):
             vmin (int, optional): The minimal value for the colormap. Values lower than vmin will be bound directly to colors[0]. Defaults to 0.
             vmax (float, optional): The maximal value for the colormap. Values higher than vmax will be bound directly to colors[-1]. Defaults to 1.0.
             index (list, optional):The values corresponding to each color. It has to be sorted, and have the same length as colors. If None, a regular grid between vmin and vmax is created. Defaults to None.
-            label (str, optional): The caption for the colormap. Defaults to "".
-            categorical (bool, optional): Whether or not to create a categorical colormap. Defaults to False.
-            step (int, optional): The step to split the LinearColormap into a StepColormap. Defaults to None.
+            label: The caption for the colormap. Defaults to "".
+            categorical: Whether or not to create a categorical colormap. Defaults to False.
+            step: The step to split the LinearColormap into a StepColormap. Defaults to None.
         """
         from branca.colormap import LinearColormap
 
@@ -921,7 +927,7 @@ class Map(folium.Map):
         if "max" not in vis_params:
             vis_params["max"] = 1
 
-        colors = to_hex_colors(coreutils.check_cmap(vis_params["palette"]))
+        colors = coreutils.to_hex_colors(coreutils.check_cmap(vis_params["palette"]))
         vmin = vis_params["min"]
         vmax = vis_params["max"]
 
@@ -960,44 +966,44 @@ class Map(folium.Map):
 
     def add_colormap(
         self,
-        width=4.0,
-        height=0.3,
-        vmin=0,
-        vmax=1.0,
+        width: float = 4.0,
+        height: float = 0.3,
+        vmin: float = 0.0,
+        vmax: float = 1.0,
         palette=None,
         vis_params=None,
-        cmap="gray",
-        discrete=False,
-        label=None,
-        label_size=10,
-        label_weight="normal",
-        tick_size=8,
-        bg_color="white",
-        orientation="horizontal",
-        dpi="figure",
-        transparent=False,
+        cmap: str = "gray",
+        discrete: bool = False,
+        label: str | None = None,
+        label_size: int = 10,
+        label_weight: str = "normal",
+        tick_size: int = 8,
+        bg_color: str = "white",
+        orientation: str = "horizontal",
+        dpi: float | str = "figure",
+        transparent: bool = False,
         position=(70, 5),
         **kwargs,
     ):
         """Add a colorbar to the map. Under the hood, it uses matplotlib to generate the colorbar, save it as a png file, and add it to the map using m.add_image().
 
         Args:
-            width (float): Width of the colorbar in inches. Default is 4.0.
-            height (float): Height of the colorbar in inches. Default is 0.3.
-            vmin (float): Minimum value of the colorbar. Default is 0.
-            vmax (float): Maximum value of the colorbar. Default is 1.0.
+            width: Width of the colorbar in inches. Default is 4.0.
+            height: Height of the colorbar in inches. Default is 0.3.
+            vmin: Minimum value of the colorbar. Default is 0.
+            vmax: Maximum value of the colorbar. Default is 1.0.
             palette (list): List of colors to use for the colorbar. It can also be a cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
             vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
-            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
-            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
-            label (str, optional): Label for the colorbar. Defaults to None.
-            label_size (int, optional): Font size for the colorbar label. Defaults to 12.
-            label_weight (str, optional): Font weight for the colorbar label, can be "normal", "bold", etc. Defaults to "normal".
-            tick_size (int, optional): Font size for the colorbar tick labels. Defaults to 10.
-            bg_color (str, optional): Background color for the colorbar. Defaults to "white".
-            orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
-            dpi (float | str, optional): The resolution in dots per inch.  If 'figure', use the figure's dpi value. Defaults to "figure".
-            transparent (bool, optional): Whether to make the background transparent. Defaults to False.
+            cmap: Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
+            discrete: Whether to create a discrete colorbar. Defaults to False.
+            label: Label for the colorbar. Defaults to None.
+            label_size: Font size for the colorbar label. Defaults to 12.
+            label_weight: Font weight for the colorbar label, can be "normal", "bold", etc. Defaults to "normal".
+            tick_size: Font size for the colorbar tick labels. Defaults to 10.
+            bg_color: Background color for the colorbar. Defaults to "white".
+            orientation: Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
+            dpi: The resolution in dots per inch.  If 'figure', use the figure's dpi value. Defaults to "figure".
+            transparent: Whether to make the background transparent. Defaults to False.
             position (tuple, optional): The position of the colormap in the format of (x, y),
                 the percentage ranging from 0 to 100, starting from the lower-left corner. Defaults to (0, 0).
             **kwargs: Other keyword arguments to pass to matplotlib.pyplot.savefig().
@@ -1033,20 +1039,20 @@ class Map(folium.Map):
     def add_styled_vector(
         self,
         ee_object,
-        column,
+        column: str,
         palette,
-        layer_name="Untitled",
-        shown=True,
-        opacity=1.0,
+        layer_name: str = "Untitled",
+        shown: bool = True,
+        opacity: float = 1.0,
         **kwargs,
     ):
         """Adds a styled vector to the map.
 
         Args:
             ee_object (object): An ee.FeatureCollection.
-            column (str): The column name to use for styling.
+            column: The column name to use for styling.
             palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
-            layer_name (str, optional): The name to be used for the new layer. Defaults to "Untitled".
+            layer_name: The name to be used for the new layer. Defaults to "Untitled".
         """
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(
@@ -1057,12 +1063,17 @@ class Map(folium.Map):
             opacity,
         )
 
-    def add_shapefile(self, in_shp, layer_name="Untitled", **kwargs):
-        """Adds a shapefile to the map. See https://python-visualization.github.io/folium/modules.html#folium.features.GeoJson for more info about setting style.
+    def add_shapefile(
+        self, in_shp: str, layer_name: str = "Untitled", **kwargs
+    ) -> None:
+        """Adds a shapefile to the map.
+
+        See https://python-visualization.github.io/folium/modules.html#folium.features.GeoJson
+        for more info about setting style.
 
         Args:
-            in_shp (str): The input file path to the shapefile.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
+            in_shp: The input file path to the shapefile.
+            layer_name: The layer name to be used. Defaults to "Untitled".
 
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
@@ -1078,27 +1089,25 @@ class Map(folium.Map):
 
     def add_geojson(
         self,
-        in_geojson,
-        layer_name="Untitled",
-        encoding="utf-8",
-        info_mode="on_hover",
+        in_geojson: str,
+        layer_name: str = "Untitled",
+        encoding: str = "utf-8",
+        info_mode: str = "on_hover",
         fields=None,
         **kwargs,
     ):
         """Adds a GeoJSON file to the map.
 
         Args:
-            in_geojson (str): The input file path to the GeoJSON.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
+            in_geojson: The input file path to the GeoJSON.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            encoding: The encoding of the GeoJSON file. Defaults to "utf-8".
+            info_mode: Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             fields (list, optional): The fields to be displayed in the popup. Defaults to None.
 
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
         """
-        import requests
-
         try:
             if isinstance(in_geojson, str):
                 if in_geojson.startswith("http"):
@@ -1120,7 +1129,7 @@ class Map(folium.Map):
         except Exception as e:
             raise Exception(e)
 
-        # interchangeable parameters between ipyleaflet and folium.
+        # Interchangeable parameters between ipyleaflet and folium.
         if "style_function" not in kwargs:
             if "style" in kwargs:
                 style_dict = kwargs["style"]
@@ -1179,14 +1188,19 @@ class Map(folium.Map):
         geojson.add_to(self)
 
     def add_kml(
-        self, in_kml, layer_name="Untitled", info_mode="on_hover", fields=None, **kwargs
-    ):
+        self,
+        in_kml: str,
+        layer_name: str = "Untitled",
+        info_mode: str = "on_hover",
+        fields=None,
+        **kwargs,
+    ) -> None:
         """Adds a KML file to the map.
 
         Args:
-            in_kml (str): The input file path to the KML.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click.
+            in_kml: The input file path to the KML.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            info_mode: Displays the attributes by either on_hover or on_click.
                 Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             fields (list, optional): The fields to be displayed in the popup. Defaults to None.
 
@@ -1216,22 +1230,21 @@ class Map(folium.Map):
     def add_gdf(
         self,
         gdf,
-        layer_name="Untitled",
-        zoom_to_layer=True,
-        info_mode="on_hover",
+        layer_name: str = "Untitled",
+        zoom_to_layer: bool = True,
+        info_mode: str = "on_hover",
         fields=None,
         **kwargs,
-    ):
+    ) -> None:
         """Adds a GeoPandas GeoDataFrame to the map.
 
         Args:
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            zoom_to_layer (bool, optional): Whether to zoom to the layer.
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            zoom_to_layer: Whether to zoom to the layer.
+            info_mode: Displays the attributes by either on_hover or on_click.
                 Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             fields (list, optional): The fields to be displayed in the popup. Defaults to None.
-
         """
 
         data = gdf_to_geojson(gdf, epsg="4326")
@@ -1249,15 +1262,20 @@ class Map(folium.Map):
             self.fit_bounds([[south, east], [north, west]])
 
     def add_gdf_from_postgis(
-        self, sql, con, layer_name="Untitled", zoom_to_layer=True, **kwargs
+        self,
+        sql: str,
+        con,
+        layer_name: str = "Untitled",
+        zoom_to_layer: bool = True,
+        **kwargs,
     ):
         """Adds a GeoPandas GeoDataFrameto the map.
 
         Args:
-            sql (str): SQL query to execute in selecting entries from database, or name of the table to read from the database.
+            sql: SQL query to execute in selecting entries from database, or name of the table to read from the database.
             con (sqlalchemy.engine.Engine): Active connection to the database to query.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            zoom_to_layer (bool, optional): Whether to zoom to the layer.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            zoom_to_layer: Whether to zoom to the layer.
 
         """
         if "fill_colors" in kwargs:
@@ -1278,27 +1296,25 @@ class Map(folium.Map):
     def add_osm(
         self,
         query,
-        layer_name="Untitled",
+        layer_name: str = "Untitled",
         which_result=None,
-        by_osmid=False,
-        to_ee=False,
-        geodesic=True,
+        by_osmid: bool = False,
+        to_ee: bool = False,
+        geodesic: bool = True,
         **kwargs,
-    ):
+    ) -> None:
         """Adds OSM data to the map.
 
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used. Defaults to "Untitled".
             style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
             which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-            by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-            to_ee (bool, optional): Whether to convert the csv to an ee.FeatureCollection.
-            geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
-
+            by_osmid: If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
+            to_ee: Whether to convert the csv to an ee.FeatureCollection.
+            geodesic: Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
         """
-
-        gdf = osm.osm_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
+        gdf = common.osm_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
         geojson = gdf.__geo_interface__
 
         if to_ee:
@@ -1879,7 +1895,7 @@ class Map(folium.Map):
             marker_icon = BeautifyIcon(
                 icon, icon_shape, border_width, border_color, **kwargs
             )
-            folium.Marker(
+            folium.Marker(  # pytype: disable=wrong-arg-types
                 location=[getattr(row, y), getattr(row, x)],
                 popup=popup_html,
                 icon=marker_icon,
@@ -2609,8 +2625,7 @@ class Map(folium.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
         """
-
-        gdf, legend_dict = classify(
+        gdf, legend_dict = classify(  # pytype: disable=attribute-error
             data=data,
             column=column,
             cmap=cmap,
