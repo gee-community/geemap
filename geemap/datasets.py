@@ -22,7 +22,9 @@ from . import common
 
 def get_data_csv() -> str:
     """Returns the path to the CSV file summarizing the Earth Engine Data Catalog."""
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    pkg_dir = str(
+        importlib.resources.files("geemap").joinpath("geemap.py").parent
+    )  # pytype: disable=attribute-error
     template_dir = os.path.join(pkg_dir, "data/template")
     data_csv = os.path.join(template_dir, "ee_data_catalog.csv")
     return data_csv
