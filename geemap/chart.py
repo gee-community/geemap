@@ -54,7 +54,7 @@ class DataTable(pd.DataFrame):
             )
 
 
-def transpose_df(
+def transpose_df(  # pytype: disable=annotation-type-mismatch
     df: pd.DataFrame,
     label_col: str,
     index_name: str | None = None,
@@ -140,10 +140,10 @@ def array_to_df(
         pd.DataFrame: The resulting DataFrame.
     """
     if isinstance(y_values, (ee.Array, ee.List)):
-        y_values = y_values.getInfo()
+        y_values = y_values.getInfo()  # pytype: disable=attribute-error
 
     if isinstance(x_values, (ee.Array, ee.List)):
-        x_values = x_values.getInfo()
+        x_values = x_values.getInfo()  # pytype: disable=attribute-error
 
     if axis == 0:
         y_values = np.transpose(y_values)
@@ -573,11 +573,13 @@ class BarChart(BaseChartClass):
     def generate_tooltip(self) -> None:
         """Generates a tooltip for the bar chart."""
         if (self.x_label is not None) and (self.y_label is not None):
-            self.bar_chart.tooltip = bqplot.Tooltip(
+            self.bar_chart.tooltip = bq.Tooltip(
                 fields=["x", "y"], labels=[self.x_label, self.y_label]
             )
         else:
-            self.bar_chart.tooltip = bqplot.Tooltip(fields=["x", "y"])
+            self.bar_chart.tooltip = bq.Tooltip(
+                fields=["x", "y"]
+            )  # pytype: disable=attribute-error
 
     def get_ylim(self) -> tuple[float, float]:
         """Gets the y-axis limits for the bar chart.
@@ -588,6 +590,7 @@ class BarChart(BaseChartClass):
         if self.ylim:
             ylim_min, ylim_max = self.ylim[0], self.ylim[1]
         else:
+            # pytype: disable=attribute-error
             if self.name in ["feature.byFeature", "feature.byProperty"]:
                 ylim_min = np.min(self.y_data)
                 ylim_max = np.max(self.y_data) + 0.2 * (
@@ -597,6 +600,7 @@ class BarChart(BaseChartClass):
                 ylim_min = np.min(self.df[self.yProperty])
                 ylim_max = np.max(self.df[self.yProperty])
                 ylim_max = ylim_max + 0.2 * (ylim_max - ylim_min)
+            # pytype: enable=attribute-error
 
         return ylim_min, ylim_max
 
@@ -612,7 +616,7 @@ class BarChart(BaseChartClass):
             self.y_data,
             labels=self.labels,
             display_legend=self.display_legend,
-        )
+        )  # pytype: disable=attribute-error
 
         self.generate_tooltip()
         plt.ylim(*self.get_ylim())
@@ -659,7 +663,7 @@ class LineChart(BarChart):
             legend_location=self.legend_location,
         )
 
-        self.line_chart = plt.plot(
+        self.line_chart = plt.plot(  # pytype: disable=attribute-error
             self.x_data,
             self.y_data,
             label=self.labels,
@@ -744,7 +748,9 @@ class Feature_ByProperty(BarChart):
             Exception: If 'labels' is in kwargs.
         """
         default_labels = None
-        super().__init__(features, default_labels, name, **kwargs)
+        super().__init__(
+            features, default_labels, name, **kwargs
+        )  # pytype: disable=wrong-arg-types
         if "labels" in kwargs:
             raise Exception("Please remove labels in kwargs and try again.")
 
@@ -1067,12 +1073,12 @@ def feature_histogram(
         histogram.stroke_width = 0
 
     if ("x_label" in kwargs) and ("y_label" in kwargs):
-        histogram.tooltip = bqplot.Tooltip(
+        histogram.tooltip = bq.Tooltip(
             fields=["midpoint", "count"],
             labels=[kwargs["x_label"], kwargs["y_label"]],
         )
     else:
-        histogram.tooltip = bqplot.Tooltip(fields=["midpoint", "count"])
+        histogram.tooltip = bq.Tooltip(fields=["midpoint", "count"])
 
     if show:
         plt.show()
@@ -1128,7 +1134,7 @@ def image_by_class(
     else:
         y_cols = class_labels
 
-    fig = Chart(
+    fig = Chart(  # pytype: disable=wrong-arg-types
         df_transposed, chart_type=chart_type, x_cols="label", y_cols=y_cols, **kwargs
     )
     return fig
@@ -1273,7 +1279,7 @@ def image_doy_series(
     y_cols = df.columns.tolist()
     y_cols.remove("doy")
 
-    fig = Chart(
+    fig = Chart(  # pytype: disable=wrong-arg-types
         df,
         chart_type,
         x_cols,
@@ -1403,7 +1409,7 @@ def image_doy_series_by_region(
     y_cols = df.columns.tolist()
     y_cols.remove("doy")
 
-    fig = Chart(
+    fig = Chart(  # pytype: disable=wrong-arg-types
         df,
         chart_type,
         "doy",
@@ -1531,7 +1537,7 @@ def doy_series_by_year(
     y_cols = df.columns.tolist()[1:]
     x_cols = "doy"
 
-    fig = Chart(
+    fig = Chart(  # pytype: disable=wrong-arg-types
         df,
         chart_type,
         x_cols,
