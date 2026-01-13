@@ -19,12 +19,8 @@ from . import toolbar
 _DRAWN_FEATURES_LAYER = "Drawn Features"
 
 
-class DrawActions(enum.Enum):
-    """Action types for the draw control.
-
-    Args:
-        enum (str): Action type.
-    """
+class DrawActions(str, enum.Enum):
+    """Action types for the draw control."""
 
     CREATED = "created"
     EDITED = "edited"
@@ -203,7 +199,7 @@ class AbstractDrawControl:
         """Set up draw control event handling like create, edit, and delete."""
         raise NotImplementedError()
 
-    def _remove_geometry_at_index_on_draw_control(self):
+    def _remove_geometry_at_index_on_draw_control(self, index: int) -> None:
         """Remove the geometry at the given index on the draw control."""
         raise NotImplementedError()
 
@@ -597,12 +593,10 @@ class Map(ipyleaflet.Map, MapInterface):
 
     @property
     def _draw_control(self) -> MapDrawControl:
-        """Finds the draw control widget in the map controls.
-
-        Returns:
-            The draw control widget.
-        """
-        return self._find_widget_of_type(MapDrawControl)
+        """Returns the draw control widget in the map controls."""
+        return self._find_widget_of_type(
+            MapDrawControl
+        )  # pytype: disable=bad-return-type
 
     @property
     def _layer_manager(self) -> map_widgets.LayerManager | None:
@@ -692,7 +686,9 @@ class Map(ipyleaflet.Map, MapInterface):
         """Returns the current center of the map (lat, lon)."""
         return self.center
 
-    def get_bounds(self, as_geojson: bool = False) -> Sequence:
+    def get_bounds(
+        self, as_geojson: bool = False
+    ) -> Sequence:  # pytype: disable=signature-mismatch
         """Returns the bounds of the current map view.
 
         Args:
@@ -810,7 +806,9 @@ class Map(ipyleaflet.Map, MapInterface):
                     return child
         return None
 
-    def add(self, obj: Any, position: str = "", **kwargs: Any) -> None:
+    def add(
+        self, obj: Any, position: str = "", **kwargs: Any
+    ) -> None:  # pytype: disable=signature-mismatch
         """Adds a widget or control to the map.
 
         Args:
@@ -829,7 +827,7 @@ class Map(ipyleaflet.Map, MapInterface):
         #   - can only be added to the map once,
         #   - have a constructor that takes a position arg, and
         #   - don't need to be stored as instance vars.
-        basic_controls: dict[str, tuple[ipyleaflet.Control, dict[str, Any]]] = {
+        basic_controls = {
             "zoom_control": (ipyleaflet.ZoomControl, {}),
             "fullscreen_control": (ipyleaflet.FullScreenControl, {}),
             "scale_control": (ipyleaflet.ScaleControl, {"metric": True}),
@@ -1025,9 +1023,9 @@ class Map(ipyleaflet.Map, MapInterface):
         )
         super().add(basemap_control)
 
-    def remove(self, widget: Any) -> None:
+    def remove(self, widget: Any) -> None:  # pytype: disable=signature-mismatch
         """Removes a widget from the map."""
-        basic_controls: dict[str, ipyleaflet.Control] = {
+        basic_controls = {
             "search_control": map_widgets.SearchBar,
             "zoom_control": ipyleaflet.ZoomControl,
             "fullscreen_control": ipyleaflet.FullScreenControl,
@@ -1372,7 +1370,7 @@ class Map(ipyleaflet.Map, MapInterface):
                 if provider := ret_dict.get(map_name):
                     aliased_maps[alias] = provider
                     break
-        return {**aliased_maps, **ret_dict}
+        return {**aliased_maps, **ret_dict}  # pytype: disable=bad-return-type
 
     def _get_preferred_basemap_name(self, basemap_name: str) -> str:
         """Returns the aliased basemap name.
