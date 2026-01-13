@@ -7,12 +7,13 @@
 # The core features include classes and functions below until the line # ******* #
 # *******************************************************************************#
 
+from collections.abc import Callable
 from dataclasses import dataclass
 import importlib.resources
 import os
 import pathlib
 from typing import Any
-from collections.abc import Callable
+import webbrowser
 
 from IPython.display import display
 
@@ -1662,8 +1663,6 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
                 pass
 
     def help_button_clicked(b) -> None:
-        import webbrowser
-
         tool_output.outputs = ()
         with tool_output:
             html = widgets.HTML(
@@ -1673,8 +1672,6 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
         webbrowser.open_new_tab(tool_dict["link"])
 
     def code_button_clicked(b) -> None:
-        import webbrowser
-
         with tool_output:
             html = widgets.HTML(
                 value=f'<a href={tool_dict["link"]} target="_blank">{tool_dict["link"]}</a>'
@@ -3945,8 +3942,6 @@ def split_basemaps(
 def _open_help_page_callback(map, selected, _):
     del map
     if selected:
-        import webbrowser
-
         webbrowser.open_new_tab("https://geemap.org")
 
 
@@ -4291,8 +4286,6 @@ def plotly_toolbar(
             elif tool_name == "raster":
                 plotly_tool_template(canvas)
             elif tool_name == "help":
-                import webbrowser
-
                 webbrowser.open_new_tab("https://geemap.org")
                 tool.value = False
         else:
