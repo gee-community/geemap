@@ -611,14 +611,12 @@ class BarChart(BaseChartClass):
             legend_location=self.legend_location,
         )
 
-        # pytype: disable=attribute-error
         self.bar_chart = plt.bar(
             self.x_data,
             self.y_data,
             labels=self.labels,
             display_legend=self.display_legend,
-        )
-        # pytype: enable=attribute-error
+        )  # pytype: disable=attribute-error
 
         self.generate_tooltip()
         plt.ylim(*self.get_ylim())
