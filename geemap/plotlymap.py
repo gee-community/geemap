@@ -663,7 +663,6 @@ class Map(go.FigureWidget):
             z (str, optional): Z value of the data. Defaults to None.
             colorscale (str, optional): Color scale of the data. Defaults to "Viridis".
         """
-        check_package("geopandas")
         import geopandas as gpd
 
         gdf = gpd.read_file(data).to_crs(epsg=4326)
@@ -764,8 +763,6 @@ class Map(go.FigureWidget):
             label_col (str, optional): The column name of locations. Defaults to None.
             color_col (str, optional): The column name of color. Defaults to None.
         """
-
-        check_package("geopandas", "https://geopandas.org")
         import geopandas as gpd
 
         if isinstance(gdf, str):
