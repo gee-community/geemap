@@ -254,7 +254,10 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
             line.strip().endswith(".map(function(")
             and input_lines[index + 1].strip().replace(" ", "").endswith("{")
         ):
-            input_lines[index + 1] = line + input_lines[index + 1]
+            input_lines[index + 1] = (
+                line + input_lines[index + 1]
+            )  # pytype: disable=unsupported-operands
+
             continue
 
         if (
@@ -266,7 +269,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                 bracket_index = line.index("{")
                 matching_line_index, matching_char_index = find_matching_bracket(
                     input_lines, index, bracket_index
-                )
+                )  # pytype: disable=wrong-arg-types
 
                 func_start_index = line.index("function")
                 func_name = "func_" + coreutils.random_string()
@@ -288,7 +291,9 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                         currentNumOfNestedFuncs += 1
                     if "}" in tmp_line:
                         currentNumOfNestedFuncs -= 1
-                    input_lines[index + 1 + sub_index] = ""
+                    input_lines[index + 1 + sub_index] = (
+                        ""  # pytype: disable=unsupported-operands
+                    )
 
                 currentNumOfNestedFuncs -= 1
 
@@ -307,7 +312,9 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                     header_line = header_line + footer_line
                     footer_line = ""
 
-                input_lines[matching_line_index] = footer_line
+                input_lines[matching_line_index] = (
+                    footer_line  # pytype: disable=unsupported-operands
+                )
 
                 output_lines.append(header_line)
             except Exception as e:
@@ -852,7 +859,7 @@ def js_to_python_dir(
         print(f"Processing {index + 1}/{len(files)}: {in_file}")
         out_file = os.path.splitext(in_file)[0] + "_geemap.py"
         out_file = out_file.replace(in_dir, out_dir)
-        js_to_python(
+        js_to_python(  # pytype: disable=wrong-arg-types
             in_file,
             out_file,
             use_qgis,
