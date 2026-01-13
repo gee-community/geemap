@@ -24,7 +24,7 @@ from .common import *
 from . import coreutils
 
 try:
-    from PIL import Image
+    from PIL import Image, ImageDraw, ImageFont, ImageSequence
 except:
     pass
 
@@ -172,8 +172,6 @@ def gif_to_mp4(in_gif: str, out_mp4: str) -> None:
         in_gif: The input gif file.
         out_mp4: The output mp4 file.
     """
-    from PIL import Image
-
     if not os.path.exists(in_gif):
         raise FileNotFoundError(f"{in_gif} does not exist.")
 
@@ -387,10 +385,7 @@ def add_text_to_gif(
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation. Defaults to 100.
         loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-
     """
-    from PIL import Image, ImageDraw, ImageFont, ImageSequence
-
     warnings.simplefilter("ignore")
 
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
@@ -551,8 +546,6 @@ def add_image_to_gif(
         circle_mask: Whether to apply a circle mask to the image. This only works with
             non-png images. Defaults to False.
     """
-    from PIL import Image, ImageDraw, ImageSequence
-
     warnings.simplefilter("ignore")
 
     in_gif = os.path.abspath(in_gif)
@@ -5085,10 +5078,7 @@ def add_progress_bar_to_gif(
         progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
         duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation. Defaults to 100.
         loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-
     """
-    from PIL import Image, ImageDraw, ImageSequence
-
     warnings.simplefilter("ignore")
 
     in_gif = os.path.abspath(in_gif)
@@ -5200,7 +5190,6 @@ def vector_to_gif(
         verbose (bool, optional): Whether to print the progress. Defaults to True.
         open_args (dict, optional): The arguments for the geopandas.read_file() function. Defaults to {}.
         plot_args (dict, optional): The arguments for the geopandas.GeoDataFrame.plot() function. Defaults to {}.
-
     """
     import geopandas as gpd
 
@@ -5806,8 +5795,6 @@ def add_sample_markers_to_gif(
         roi_bounds (list): [min_lon, min_lat, max_lon, max_lat] bounds of the ROI
         gif_dimensions (int): Dimensions of the GIF
     """
-    from PIL import Image, ImageDraw, ImageSequence
-
     warnings.simplefilter("ignore")
 
     in_gif = os.path.abspath(in_gif)
@@ -6120,8 +6107,6 @@ def combine_gif_with_chart(
     base_gif, chart_frames, chart_position, chart_size_ratio, spacer_width, fps, loop
 ):
     """Combine GIF with chart frames."""
-    from PIL import Image, ImageDraw
-
     # Open the base gif
     base_image = Image.open(base_gif)
     base_frames = []
