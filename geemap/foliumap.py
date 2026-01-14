@@ -1045,14 +1045,17 @@ class Map(folium.Map):
         shown: bool = True,
         opacity: float = 1.0,
         **kwargs,
-    ):
+    ) -> None:
         """Adds a styled vector to the map.
 
         Args:
             ee_object (object): An ee.FeatureCollection.
             column: The column name to use for styling.
-            palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
+            palette (list | dict): The palette (e.g., list of colors or a dict
+                containing label and color pairs) to use for styling.
             layer_name: The name to be used for the new layer. Defaults to "Untitled".
+            shown: TODO
+            opacity: TODO
         """
         styled_vector = vector_styling(ee_object, column, palette, **kwargs)
         self.addLayer(
@@ -1308,11 +1311,20 @@ class Map(folium.Map):
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
             layer_name: The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
-            which_result (INT, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-            by_osmid: If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
+            style (dict, optional): A dictionary specifying the style to be
+                used. Defaults to {}.
+            which_result (INT, optional): Which geocoding result to use. if None,
+                auto-select the first (Multi)Polygon or raise an error if OSM doesn't
+                return one. to get the top match regardless of geometry type, set
+                which_result=1. Defaults to None.
+            by_osmid: If True, handle query as an OSM ID for lookup rather than text
+                search. Defaults to False.
             to_ee: Whether to convert the csv to an ee.FeatureCollection.
-            geodesic: Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
+            geodesic: Whether line segments should be interpreted as spherical
+                geodesics. If false, indicates that line segments should be interpreted
+                as planar lines in the specified CRS. If absent, defaults to true if the
+                CRS is geographic (including the default EPSG:4326), or to false if the
+                CRS is projected.
         """
         gdf = common.osm_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
         geojson = gdf.__geo_interface__
