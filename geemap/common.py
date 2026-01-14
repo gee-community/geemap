@@ -2522,9 +2522,6 @@ def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf
     Returns:
         object: GeoDataFrame.
     """
-
-    check_package(name="geopandas", URL="https://geopandas.org")
-
     import geopandas as gpd
 
     out_dir = os.getcwd()
@@ -6248,7 +6245,6 @@ def local_tile_vmin_vmax(
     Returns:
         tuple: A tuple of vmin and vmax.
     """
-    check_package("localtileserver", "https://github.com/banesullivan/localtileserver")
     from localtileserver import TileClient
 
     if isinstance(source, str):
@@ -6286,7 +6282,6 @@ def local_tile_bands(source):
     Returns:
         list: A list of band names.
     """
-    check_package("localtileserver", "https://github.com/banesullivan/localtileserver")
     from localtileserver import TileClient
 
     if isinstance(source, str):
@@ -8715,6 +8710,8 @@ def kml_to_shp(in_kml, out_shp, **kwargs):
         FileNotFoundError: The input KML could not be found.
         TypeError: The output must be a shapefile.
     """
+    import geopandas as gpd
+    import fiona
 
     warnings.filterwarnings("ignore")
 
@@ -8729,11 +8726,6 @@ def kml_to_shp(in_kml, out_shp, **kwargs):
     out_dir = os.path.dirname(out_shp)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
-
-    check_package(name="geopandas", URL="https://geopandas.org")
-
-    import geopandas as gpd
-    import fiona
 
     df = gpd.read_file(in_kml, driver="KML", **kwargs)
     df.to_file(out_shp, **kwargs)
@@ -8750,6 +8742,7 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
         FileNotFoundError: The input KML could not be found.
         TypeError: The output must be a GeoJSON.
     """
+    import geopandas as gpd
 
     warnings.filterwarnings("ignore")
 
@@ -8766,10 +8759,6 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
         out_dir = os.path.dirname(out_geojson)
         if not os.path.exists(out_dir):
             os.makedirs(out_dir)
-
-    check_package(name="geopandas", URL="https://geopandas.org")
-
-    import geopandas as gpd
 
     gdf = gpd.read_file(in_kml, driver="KML", **kwargs)
 
@@ -8791,7 +8780,6 @@ def kml_to_ee(in_kml, **kwargs):
     Returns:
         object: ee.FeatureCollection
     """
-
     warnings.filterwarnings("ignore")
 
     in_kml = os.path.abspath(in_kml)
@@ -8799,8 +8787,6 @@ def kml_to_ee(in_kml, **kwargs):
         raise FileNotFoundError("The input KML could not be found.")
 
     out_json = os.path.join(os.getcwd(), "tmp.geojson")
-
-    check_package(name="geopandas", URL="https://geopandas.org")
 
     kml_to_geojson(in_kml, out_json, **kwargs)
     ee_object = coreutils.geojson_to_ee(out_json)
@@ -8918,16 +8904,13 @@ def shp_to_gdf(in_shp, **kwargs):
     Returns:
         gpd.GeoDataFrame: geopandas.GeoDataFrame
     """
+    import geopandas as gpd
 
     warnings.filterwarnings("ignore")
 
     in_shp = os.path.abspath(in_shp)
     if not os.path.exists(in_shp):
         raise FileNotFoundError("The provided shp could not be found.")
-
-    check_package(name="geopandas", URL="https://geopandas.org")
-
-    import geopandas as gpd
 
     try:
         return gpd.read_file(in_shp, **kwargs)
@@ -9050,8 +9033,6 @@ def gdf_to_ee(gdf, geodesic=True, date=None, date_format="YYYY-MM-dd"):
     Returns:
         ee.FeatureCollection: The output ee.FeatureCollection converted from the input geopandas.GeoDataFrame.
     """
-    check_package(name="geopandas", URL="https://geopandas.org")
-
     import geopandas as gpd
 
     if not isinstance(gdf, gpd.GeoDataFrame):
@@ -9101,10 +9082,9 @@ def vector_to_geojson(
     Returns:
         dict: A dictionary containing the GeoJSON.
     """
+    import geopandas as gpd
 
     warnings.filterwarnings("ignore")
-    check_package(name="geopandas", URL="https://geopandas.org")
-    import geopandas as gpd
 
     if not filename.startswith("http"):
         filename = os.path.abspath(filename)
@@ -9387,14 +9367,9 @@ def osm_to_gdf(
     Returns:
         GeoDataFrame: A GeoPandas GeoDataFrame.
     """
-    check_package(
-        "geopandas", "https://geopandas.org/getting_started.html#installation"
-    )
-    check_package("osmnx", "https://osmnx.readthedocs.io/en/stable/")
+    from osmnx import geocoder
 
     try:
-        from osmnx import geocoder
-
         gdf = geocoder.geocode_to_gdf(
             query, which_result=which_result, by_osmid=by_osmid
         )
@@ -10344,8 +10319,6 @@ def gdf_to_geojson(gdf, out_geojson=None, epsg=None):
     Returns:
         dict: When the out_json is None returns a dict.
     """
-    check_package(name="geopandas", URL="https://geopandas.org")
-
     try:
         if epsg is not None:
             gdf = gdf.to_crs(epsg=epsg)
@@ -10481,10 +10454,6 @@ def get_local_tile_layer(
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
     import rasterio
-
-    check_package(
-        "localtileserver", URL="https://github.com/banesullivan/localtileserver"
-    )
 
     # Handle legacy localtileserver kwargs
     if "cmap" in kwargs:
@@ -10831,12 +10800,6 @@ def connect_postgis(
     Returns:
         [type]: [description]
     """
-    check_package(name="geopandas", URL="https://geopandas.org")
-    check_package(
-        name="sqlalchemy",
-        URL="https://docs.sqlalchemy.org/en/14/intro.html#installation",
-    )
-
     from sqlalchemy import create_engine
 
     if use_env_var:
@@ -10873,8 +10836,6 @@ def read_postgis(sql, con, geom_col="geom", crs=None, **kwargs):
     Returns:
         [type]: [description]
     """
-    check_package(name="geopandas", URL="https://geopandas.org")
-
     import geopandas as gpd
 
     gdf = gpd.read_postgis(sql, con, geom_col, crs, **kwargs)
@@ -10894,8 +10855,6 @@ def postgis_to_ee(sql, con, geom_col="geom", crs=None, geodestic=False, **kwargs
     Returns:
         [type]: [description]
     """
-    check_package(name="geopandas", URL="https://geopandas.org")
-
     gdf = read_postgis(sql, con, geom_col, crs=crs, **kwargs)
     fc = gdf_to_ee(gdf, geodesic=geodestic)
     return fc
@@ -10914,7 +10873,6 @@ def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs
     Returns:
         geopandas.GeoDataFrame: A GeoPandas GeoDataFrame containing x, y, z values.
     """
-    check_package(name="geopandas", URL="https://geopandas.org")
     import geopandas as gpd
 
     if crs is None:
@@ -10978,7 +10936,6 @@ def bbox_to_gdf(bbox, crs="EPSG:4326"):
     Returns:
         geopandas.GeoDataFrame: A GeoDataFrame containing the bounding box.
     """
-    check_package(name="geopandas", URL="https://geopandas.org")
     from shapely.geometry import box
     import geopandas as gpd
 
@@ -11918,11 +11875,6 @@ def netcdf_tile_layer(
     Returns:
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
-
-    check_package(
-        "localtileserver", URL="https://github.com/banesullivan/localtileserver"
-    )
-
     try:
         import xarray as xr
     except ImportError as e:
