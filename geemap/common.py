@@ -1763,38 +1763,6 @@ def check_install(package: str) -> None:
         print(f"{package} has been installed successfully.")
 
 
-def update_package():
-    """Updates geemap package from GitHub.
-
-    Avoids the need to use pip or conda.
-
-    In this way, I don't have to keep updating pypi and conda-forge with every minor
-    update of the package.
-    """
-    download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    if not os.path.exists(download_dir):
-        os.makedirs(download_dir)
-    clone_repo(out_dir=download_dir)
-
-    pkg_dir = os.path.join(download_dir, "geemap-master")
-    work_dir = os.getcwd()
-    os.chdir(pkg_dir)
-
-    if shutil.which("pip") is None:
-        cmd = "pip3 install ."
-    else:
-        cmd = "pip install ."
-
-    os.system(cmd)
-    os.chdir(work_dir)
-
-    print(
-        "\nPlease comment out 'geemap.update_package()' and "
-        "restart the kernel to take effect:\n"
-        "Jupyter menu -> Kernel -> Restart & Clear Output"
-    )
-
-
 def check_package(name: str, URL: str = "") -> None:
     try:
         __import__(name.lower())
