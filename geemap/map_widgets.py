@@ -355,7 +355,7 @@ class Legend(anywidget.AnyWidget):
         if builtin_legend is not None:
             builtin_legend_allowed = self._check_if_allowed(
                 builtin_legend, "builtin legend", allowed_builtin_legends
-            )
+            )  # pytype: disable=wrong-arg-types
             if builtin_legend_allowed:
                 legend_dict = builtin_legends[builtin_legend]
                 self.legend_keys = list(legend_dict.keys())
@@ -539,7 +539,9 @@ class Inspector(anywidget.AnyWidget):
         """
         layers = {}
         if self._names is not None:
-            names = [names] if isinstance(names, str) else self._names
+            names = (
+                [names] if isinstance(names, str) else self._names
+            )  # pytype: disable=name-error
             for name in names:
                 if name in self._host_map.ee_layers:
                     layers[name] = self._host_map.ee_layers[name]
@@ -629,7 +631,9 @@ class Inspector(anywidget.AnyWidget):
 
         return root
 
-    def _get_bbox(self, latlon: list[float]) -> ee.Geometry.BBox:
+    def _get_bbox(
+        self, latlon: list[float]
+    ) -> ee.Geometry.BBox:  # pytype: disable=invalid-annotation
         """Gets a bounding box around a point.
 
         Args:
@@ -698,8 +702,10 @@ class LayerManagerRow(anywidget.AnyWidget):
         self.visible = self._get_layer_visibility()
         self.opacity = self._get_layer_opacity()
 
+        # pytype: disable=invalid-annotation
         self.opacity_link: ipywidgets.widget_link.Link | None = None
         self.visibility_link: ipywidgets.widget_link.Link | None = None
+        # pytype: enable=invalid-annotation
         self._setup_event_listeners()
 
     def _can_set_up_jslink(self, obj: Any, trait: str) -> bool:
@@ -991,7 +997,9 @@ class LayerEditor(anywidget.AnyWidget):
             return None
 
         stretch_params = {}
-        stretch_value = int(re.search(r"\d+", stretch).group())
+        stretch_value = int(
+            re.search(r"\d+", stretch).group()
+        )  # pytype: disable=attribute-error
         if stretch.startswith("percent"):
             stretch_params["percent"] = stretch_value / 100.0
         elif stretch.startswith("sigma"):
@@ -1414,7 +1422,11 @@ class SearchBar(anywidget.AnyWidget):
     def get_ee_example(self, asset_id):
         try:
             pkg_dir = str(
-                importlib.resources.files("geemap").joinpath("geemap.py").parent
+                # pytype: disable=attribute-error
+                importlib.resources.files("geemap")
+                .joinpath("geemap.py")
+                .parent
+                # pytype: enable=attribute-error
             )
             with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
                 functions = json.load(f)
