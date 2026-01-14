@@ -592,8 +592,8 @@ class Map(ipyleaflet.Map, MapInterface):
         return self._find_widget_of_type(map_widgets.SearchBar)
 
     @property
-    def _draw_control(self) -> MapDrawControl:
-        """Returns the draw control widget in the map controls."""
+    def _draw_control(self) -> MapDrawControl | None:
+        """The draw control widget in the map controls."""
         return self._find_widget_of_type(
             MapDrawControl
         )  # pytype: disable=bad-return-type
