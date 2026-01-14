@@ -272,12 +272,12 @@ def bar_chart(
         labels = {}
 
     if x_label is not None:
-        labels[x] = x_label
+        labels[x] = x_label  # pytype: disable=unsupported-operands
     if y_label is not None:
         if isinstance(y, str):
-            labels[y] = y_label
+            labels[y] = y_label  # pytype: disable=unsupported-operands
         elif isinstance(y, list):
-            labels[y[0]] = y_label
+            labels[y[0]] = y_label  # pytype: disable=unsupported-operands
 
     if isinstance(legend_title, str):
         if "legend" not in layout_args:
