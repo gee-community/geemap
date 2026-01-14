@@ -122,7 +122,7 @@ def osm_gdf_from_place(query, tags: dict[str, Any], which_result: int | None = N
     """
     import osmnx as ox
 
-    ox.config(use_cache=True, log_console=True)
+    ox.config(use_cache=True, log_console=True)  # pytype: disable=module-attr
 
     gdf = ox.features.features_from_place(query, tags, which_result)
     return gdf
@@ -367,7 +367,9 @@ def osm_gdf_from_bbox(north, south, east, west, tags):
     """
     import osmnx as ox
 
-    gdf = ox.features.features_from_bbox(north, south, east, west, tags)
+    gdf = ox.features.features_from_bbox(
+        north, south, east, west, tags
+    )  # pytype: disable=wrong-arg-count
     return gdf
 
 
@@ -439,7 +441,9 @@ def osm_gdf_from_xml(filepath, polygon=None, tags=None):
     """
     import osmnx as ox
 
-    gdf = ox.features.features_from_xml(filepath, polygon, tags)
+    gdf = ox.features.features_from_xml(
+        filepath, polygon, tags
+    )  # pytype: disable=wrong-arg-count
     return gdf
 
 
