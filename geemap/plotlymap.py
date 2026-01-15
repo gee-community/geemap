@@ -267,7 +267,7 @@ class Map(go.FigureWidget):
             mapbox_style=style, mapbox_layers=[], mapbox_accesstoken=access_token
         )
 
-    def add_layer(self, layer, name: str = None, **kwargs) -> None:
+    def add_layer(self, layer, name: str | None = None, **kwargs) -> None:
         """Adds a layer to the map.
 
         Args:
@@ -426,7 +426,7 @@ class Map(go.FigureWidget):
         self,
         ee_object,
         vis_params={},
-        name: str = None,
+        name: str | None = None,
         shown: bool = True,
         opacity: float = 1.0,
         **kwargs,
@@ -551,29 +551,35 @@ class Map(go.FigureWidget):
 
     def add_stac_layer(
         self,
-        url=None,
-        collection=None,
-        item=None,
+        url: str | None = None,
+        collection: str | None = None,
+        item: str | None = None,
         assets=None,
         bands=None,
-        titiler_endpoint=None,
-        name="STAC Layer",
-        attribution="",
-        opacity=1.0,
+        titiler_endpoint: str | None = None,
+        name: str = "STAC Layer",
+        attribution: str = "",
+        opacity: float = 1.0,
         **kwargs,
     ):
         """Adds a STAC TileLayer to the map.
 
         Args:
-            url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-            collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-            item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-            assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
+            url: HTTP URL to a STAC item, e.g.,
+                https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+            collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+                landsat-8-c2-l2.
+            item: The Microsoft Planetary Computer STAC item ID, e.g.,
+                LC08_L2SP_047027_20201204_02_T1.
+            assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g.,
+                ["SR_B7", "SR_B5", "SR_B4"].
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-            name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
-            attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            titiler_endpoint: Titiler endpoint, e.g.,
+                "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+                "pc". Defaults to None.
+            name: The layer name to use for the layer. Defaults to 'STAC Layer'.
+            attribution: The attribution to use. Defaults to ''.
+            opacity: The opacity of the layer. Defaults to 1.
         """
         tile_url = stac_tile(
             url, collection, item, assets, bands, titiler_endpoint, **kwargs
@@ -584,24 +590,27 @@ class Map(go.FigureWidget):
 
     def add_planet_by_month(
         self,
-        year=2016,
-        month=1,
-        api_key=None,
-        token_name="PLANET_API_KEY",
-        name=None,
-        attribution="",
-        opacity=1.0,
-    ):
-        """Adds Planet global mosaic by month to the map. To get a Planet API key, see https://developers.planet.com/quickstart/apis/
+        year: int = 2016,
+        month: int = 1,
+        api_key: str | None = None,
+        token_name: str = "PLANET_API_KEY",
+        name: str | None = None,
+        attribution: str = "",
+        opacity: float = 1.0,
+    ) -> None:
+        """Adds Planet global mosaic by month to the map.
+
+        To get a Planet API key, see https://developers.planet.com/quickstart/apis/
 
         Args:
-            year (int, optional): The year of Planet global mosaic, must be >=2016. Defaults to 2016.
-            month (int, optional): The month of Planet global mosaic, must be 1-12. Defaults to 1.
-            api_key (str, optional): The Planet API key. Defaults to None.
-            token_name (str, optional): The environment variable name of the API key. Defaults to "PLANET_API_KEY".
-            name (str, optional): Name of the layer. Defaults to 'TileLayer'.
-            attribution (str): The attribution to use. Defaults to "".
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            year: The year of Planet global mosaic, must be >=2016. Defaults to 2016.
+            month: The month of Planet global mosaic, must be 1-12. Defaults to 1.
+            api_key: The Planet API key. Defaults to None.
+            token_name: The environment variable name of the API key. Defaults to
+                "PLANET_API_KEY".
+            name: Name of the layer. Defaults to 'TileLayer'.
+            attribution: The attribution to use. Defaults to "".
+            opacity: The opacity of the layer. Defaults to 1.
         """
         if name is None:
             name = str(year) + "-" + str(month).zfill(2)
@@ -612,24 +621,27 @@ class Map(go.FigureWidget):
 
     def add_planet_by_quarter(
         self,
-        year=2016,
-        quarter=1,
-        api_key=None,
-        token_name="PLANET_API_KEY",
-        name=None,
-        attribution="",
-        opacity=1.0,
-    ):
-        """Adds Planet global mosaic by month to the map. To get a Planet API key, see https://developers.planet.com/quickstart/apis/
+        year: int = 2016,
+        quarter: int = 1,
+        api_key: str | None = None,
+        token_name: str = "PLANET_API_KEY",
+        name: str | None = None,
+        attribution: str = "",
+        opacity: float = 1.0,
+    ) -> None:
+        """Adds Planet global mosaic by month to the map.
+
+        To get a Planet API key, see https://developers.planet.com/quickstart/apis/
 
         Args:
-            year (int, optional): The year of Planet global mosaic, must be >=2016. Defaults to 2016.
-            quarter (int, optional): The quarter of Planet global mosaic, must be 1-4. Defaults to 1.
-            api_key (str, optional): The Planet API key. Defaults to None.
-            token_name (str, optional): The environment variable name of the API key. Defaults to "PLANET_API_KEY".
-            name (str, optional): Name of the layer. Defaults to 'TileLayer'.
-            attribution (str): The attribution to use. Defaults to "".
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
+            year: The year of Planet global mosaic, must be >=2016. Defaults to 2016.
+            quarter: The quarter of Planet global mosaic, must be 1-4. Defaults to 1.
+            api_key: The Planet API key. Defaults to None.
+            token_name: The environment variable name of the API key. Defaults to
+                "PLANET_API_KEY".
+            name: Name of the layer. Defaults to 'TileLayer'.
+            attribution: The attribution to use. Defaults to "".
+            opacity: The opacity of the layer. Defaults to 1.
         """
         if name is None:
             name = str(year) + "-" + "q" + str(quarter)
@@ -638,30 +650,53 @@ class Map(go.FigureWidget):
             tile_url, name=name, attribution=attribution, opacity=opacity
         )
 
-    def save(self, file, format=None, width=None, height=None, scale=None, **kwargs):
-        """Convert a map to a static image and write it to a file or writeable object
+    def save(
+        self,
+        file: str,
+        format: str | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        scale: int | None = None,
+        **kwargs,
+    ) -> None:
+        """Convert a map to a static image and write it to a file or writeable object.
 
         Args:
-            file (str): A string representing a local file path or a writeable object (e.g. a pathlib.Path object or an open file descriptor)
-            format (str, optional): The desired image format. One of png, jpg, jpeg, webp, svg, pdf, eps. Defaults to None.
-            width (int, optional): The width of the exported image in layout pixels. If the `scale` property is 1.0, this will also be the width of the exported image in physical pixels. Defaults to None.
-            height (int, optional): The height of the exported image in layout pixels. If the `scale` property is 1.0, this will also be the height of the exported image in physical pixels. Defaults to None.
-            scale (int, optional): The scale factor to use when exporting the figure. A scale factor larger than 1.0 will increase the image resolution with respect to the figure's layout pixel dimensions. Whereas as scale factor of less than 1.0 will decrease the image resolution. Defaults to None.
+            file: A string representing a local file path or a writeable object (e.g. a
+                pathlib.Path object or an open file descriptor)
+            format: The desired image format. One of png, jpg, jpeg, webp, svg, pdf,
+                eps. Defaults to None.
+            width: The width of the exported image in layout pixels. If the `scale`
+                property is 1.0, this will also be the width of the exported image in
+                physical pixels. Defaults to None.
+            height: The height of the exported image in layout pixels. If the `scale`
+                property is 1.0, this will also be the height of the exported image in
+                physical pixels. Defaults to None.
+            scale: The scale factor to use when exporting the figure. A scale factor
+                larger than 1.0 will increase the image resolution with respect to the
+                figure's layout pixel dimensions. Whereas as scale factor of less than
+                1.0 will decrease the image resolution. Defaults to None.
         """
         self.write_image(
             file, format=format, width=width, height=height, scale=scale, **kwargs
         )
 
     def add_choropleth_map(
-        self, data, name=None, z=None, colorscale="Viridis", **kwargs
-    ):
+        self,
+        data: str,
+        name: str | None = None,
+        z: str | None = None,
+        colorscale: str = "Viridis",
+        **kwargs,
+    ) -> None:
         """Adds a choropleth map to the map.
 
         Args:
-            data (str): File path to vector data, e.g., https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/countries.geojson
-            name (str, optional): Name of the layer. Defaults to None.
-            z (str, optional): Z value of the data. Defaults to None.
-            colorscale (str, optional): Color scale of the data. Defaults to "Viridis".
+            data: File path to vector data, e.g.,
+                https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/countries.geojson
+            name: Name of the layer. Defaults to None.
+            z: Z value of the data. Defaults to None.
+            colorscale: Color scale of the data. Defaults to "Viridis".
         """
         import geopandas as gpd
 
@@ -677,7 +712,7 @@ class Map(go.FigureWidget):
             **kwargs,
         )
 
-    def add_scatter_plot_demo(self, **kwargs):
+    def add_scatter_plot_demo(self, **kwargs) -> None:
         """Adds a scatter plot to the map."""
         lons = np.random.random(1000) * 360.0
         lats = np.random.random(1000) * 180.0 - 90.0
@@ -689,27 +724,30 @@ class Map(go.FigureWidget):
     def add_heatmap(
         self,
         data,
-        latitude="latitude",
-        longitude="longitude",
-        z="value",
-        radius=10,
-        colorscale=None,
-        name="Heat map",
+        latitude: str = "latitude",
+        longitude: str = "longitude",
+        z: str = "value",
+        radius: int = 10,
+        colorscale: str | None = None,
+        name: str = "Heat map",
         **kwargs,
-    ):
-        """Adds a heat map to the map. Reference: https://plotly.com/python/mapbox-density-heatmaps
+    ) -> None:
+        """Adds a heat map to the map.
+
+        Reference: https://plotly.com/python/mapbox-density-heatmaps
 
         Args:
-            data (str | pd.DataFrame): File path or HTTP URL to the input file or a . For example, https://raw.githubusercontent.com/plotly/datasets/master/earthquakes-23k.csv
-            latitude (str, optional): The column name of latitude. Defaults to "latitude".
-            longitude (str, optional): The column name of longitude. Defaults to "longitude".
-            z (str, optional): The column name of z values. Defaults to "value".
-            radius (int, optional): Radius of each “point” of the heatmap. Defaults to 25.
-            colorscale (str, optional): Color scale of the data, e.g., Viridis. See https://plotly.com/python/builtin-colorscales. Defaults to None.
-            name (str, optional): Layer name to use. Defaults to "Heat map".
-
+            data (str | pd.DataFrame): File path or HTTP URL to the input file or a '.'
+                For example,
+                https://raw.githubusercontent.com/plotly/datasets/master/earthquakes-23k.csv
+            latitude: The column name of latitude. Defaults to "latitude".
+            longitude: The column name of longitude. Defaults to "longitude".
+            z: The column name of z values. Defaults to "value".
+            radius: Radius of each “point” of the heatmap. Defaults to 10.
+            colorscale: Color scale of the data, e.g., Viridis. See
+                https://plotly.com/python/builtin-colorscales. Defaults to None.
+            name: Layer name to use. Defaults to "Heat map".
         """
-
         if isinstance(data, str):
             df = pd.read_csv(data)
         elif isinstance(data, pd.DataFrame):
@@ -728,10 +766,11 @@ class Map(go.FigureWidget):
         )
         self.add_trace(heatmap)
 
-    def add_heatmap_demo(self, **kwargs):
+    def add_heatmap_demo(self, **kwargs) -> None:
         """Adds a heatmap to the map."""
         quakes = pd.read_csv(
-            "https://raw.githubusercontent.com/plotly/datasets/master/earthquakes-23k.csv"
+            "https://raw.githubusercontent.com/"
+            "plotly/datasets/master/earthquakes-23k.csv"
         )
         heatmap = go.Densitymapbox(
             lat=quakes.Latitude,
@@ -748,20 +787,24 @@ class Map(go.FigureWidget):
     def add_gdf(
         self,
         gdf,
-        label_col=None,
-        color_col=None,
+        label_col: str | None = None,
+        color_col: str | None = None,
         labels=None,
-        opacity=1.0,
+        opacity: float = 1.0,
         zoom=None,
-        color_continuous_scale="Viridis",
+        color_continuous_scale: str = "Viridis",
         **kwargs,
-    ):
+    ) -> None:
         """Adds a GeoDataFrame to the map.
 
         Args:
             gdf (GeoDataFrame): A GeoDataFrame.
-            label_col (str, optional): The column name of locations. Defaults to None.
-            color_col (str, optional): The column name of color. Defaults to None.
+            label_col: The column name of locations. Defaults to None.
+            color_col: The column name of color. Defaults to None.
+            labels: TODO
+            opacity: TODO
+            zoom: TODO
+            color_continuous_scale: TODO
         """
         import geopandas as gpd
 
@@ -804,9 +847,9 @@ class Map(go.FigureWidget):
         self.set_center(center_lat, center_lon, zoom)
 
 
-def fix_widget_error():
-    """
-    Fix FigureWidget - 'mapbox._derived' Value Error.
+def fix_widget_error() -> None:
+    """Fix FigureWidget - 'mapbox._derived' Value Error.
+
     Adopted from: https://github.com/plotly/plotly.py/issues/2570#issuecomment-738735816
     """
     basedatatypesPath = os.path.join(
@@ -816,7 +859,7 @@ def fix_widget_error():
     backup_file = basedatatypesPath.replace(".py", "_bk.py")
     shutil.copyfile(basedatatypesPath, backup_file)
 
-    # read basedatatypes.py
+    # Read basedatatypes.py.
     with open(basedatatypesPath) as f:
         lines = f.read()
 
@@ -826,9 +869,9 @@ def fix_widget_error():
                 if key_path_str == "mapbox._derived":
                     return"""
 
-    # add new text
+    # Add new text.
     lines = lines.replace(find, replace)
 
-    # overwrite old 'basedatatypes.py'
+    # Overwrite old 'basedatatypes.py'.
     with open(basedatatypesPath, "w") as f:
         f.write(lines)
