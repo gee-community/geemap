@@ -24,7 +24,7 @@ from typing import Any
 
 import ee
 import ipyleaflet
-from ipyleaflet import Heatmap
+import ipyleaflet
 import ipywidgets as widgets
 import numpy as np
 import pandas as pd
@@ -350,7 +350,7 @@ class Map(core.Map):
 
     setOptions = set_options
 
-    def add_ee_layer(
+    def add_ee_layer(  # pytype: disable=signature-mismatch
         self,
         ee_object: ee.FeatureCollection | ee.Feature | ee.Image | ee.ImageCollection,
         vis_params: dict[str, Any] | None = None,
@@ -423,7 +423,7 @@ class Map(core.Map):
 
     setCenter = set_center
 
-    def center_object(
+    def center_object(  # pytype: disable=signature-mismatch
         self,
         ee_object: ee.Element | ee.Geometry,
         zoom: int | None = None,
@@ -432,10 +432,9 @@ class Map(core.Map):
         """Centers the map view on a given object.
 
         Args:
-            ee_object (Union[ee.Element, ee.Geometry]): An Earth Engine object to
-                center on a geometry, image or feature.
-            zoom (Optional[int], optional): The zoom level, from 1 to 24. Defaults to None.
-            max_error (float, optional): The maximum error for the geometry. Defaults to 0.001.
+            ee_object: An Earth Engine object to center on a geometry, image or feature.
+            zoom: The zoom level, from 1 to 24. Defaults to None.
+            max_error: The maximum error for the geometry. Defaults to 0.001.
         """
         super().center_object(ee_object=ee_object, zoom=zoom, max_error=max_error)
         if is_arcpy():
@@ -516,7 +515,7 @@ class Map(core.Map):
                 arc_add_layer(basemaps[basemap].url, basemap)
             elif basemap in basemaps and basemaps[basemap].name in layer_names:
                 print(f"{basemap} has been already added before.")
-            elif basemap.startswith("http"):
+            elif basemap.startswith("http"):  # pytype: disable=attribute-error
                 self.add_tile_layer(url=basemap, shown=show, **kwargs)
             else:
                 print(
@@ -1226,7 +1225,7 @@ class Map(core.Map):
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
         """
         bounds = gdf.total_bounds
-        self.zoom_to_bounds(bounds)
+        self.zoom_to_bounds(bounds)  # pytype: disable=wrong-arg-types
 
     def get_bounds(self, asGeoJSON=False):
         """Returns the bounds of the current map view, as a list in the format [west, south, east, north] in degrees.
@@ -1509,9 +1508,14 @@ class Map(core.Map):
         self.add(plot_control)
 
         self.default_style = {"cursor": "crosshair"}
-        msg = "The plot function can only be used on ee.Image or ee.ImageCollection with more than one band."
+        msg = (
+            "The plot function can only be used on ee.Image or ee.ImageCollection with "
+            "more than one band."
+        )
         if (ee_object is None) and len(self.ee_raster_layers) > 0:
+            # pytype: disable=unsupported-operands
             ee_object = self.ee_raster_layers.values()[-1]["ee_object"]
+            # pytype: enable=unsupported-operands
             if isinstance(ee_object, ee.ImageCollection):
                 ee_object = ee_object.mosaic()
         elif isinstance(ee_object, ee.ImageCollection):
@@ -3861,9 +3865,11 @@ class Map(core.Map):
             markers = []
             for point in points:
                 if items is not None:
+                    # pytype: disable=name-error
                     marker_color = marker_colors[items.index(df[color_column][index])]
                     icon_name = icon_names[items.index(df[color_column][index])]
                     icon_color = icon_colors[items.index(df[color_column][index])]
+                    # pytype: enable=name-error
                     marker_icon = ipyleaflet.AwesomeIcon(
                         name=icon_name,
                         marker_color=marker_color,
@@ -4013,7 +4019,6 @@ class Map(core.Map):
             ValueError: If the specified column names do not exist.
         """
         warnings.filterwarnings("ignore")
-        check_package(name="geopandas", URL="https://geopandas.org")
         import geopandas as gpd
 
         self.default_style = {"cursor": "wait"}
@@ -4185,7 +4190,9 @@ class Map(core.Map):
             else:
                 raise ValueError("data must be a list, a DataFrame, or a file path.")
 
-            heatmap = Heatmap(locations=data, radius=radius, name=name, **kwargs)
+            heatmap = ipyleaflet.Heatmap(
+                locations=data, radius=radius, name=name, **kwargs
+            )
             self.add(heatmap)
 
         except Exception as e:
@@ -4501,7 +4508,7 @@ class Map(core.Map):
             encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
         """
 
-        gdf, legend_dict = classify(
+        gdf, legend_dict = classify(  # pytype: disable=attribute-error
             data=data,
             column=column,
             cmap=cmap,
@@ -4820,6 +4827,7 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
 
         try:
             url = kwargs.get("url")
+            assert url is not None  # For pytype.
             if not url.startswith("http"):
                 url = os.path.abspath(url)
                 if not os.path.exists(url):
@@ -5052,12 +5060,12 @@ def ts_inspector(
             split_control = ctrl
             break
 
-    def left_change(change):
+    def left_change(change):  # pytype: disable=attribute-error
         split_control.left_layer.url = layers_dict[left_dropdown.value].url
 
     left_dropdown.observe(left_change, "value")
 
-    def right_change(change):
+    def right_change(change):  # pytype: disable=attribute-error
         split_control.right_layer.url = layers_dict[right_dropdown.value].url
 
     right_dropdown.observe(right_change, "value")
