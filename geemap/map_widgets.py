@@ -540,8 +540,12 @@ class Inspector(anywidget.AnyWidget):
         layers = {}
         if self._names is not None:
             names = (
-                [names] if isinstance(names, str) else self._names
-            )  # pytype: disable=name-error
+                # pytype: disable=name-error
+                [names]
+                if isinstance(names, str)
+                else self._names
+                # pytype: enable=name-error
+            )
             for name in names:
                 if name in self._host_map.ee_layers:
                     layers[name] = self._host_map.ee_layers[name]
@@ -998,8 +1002,10 @@ class LayerEditor(anywidget.AnyWidget):
 
         stretch_params = {}
         stretch_value = int(
+            # pytype: disable=attribute-error
             re.search(r"\d+", stretch).group()
-        )  # pytype: disable=attribute-error
+            # pytype: enable=attribute-error
+        )
         if stretch.startswith("percent"):
             stretch_params["percent"] = stretch_value / 100.0
         elif stretch.startswith("sigma"):
