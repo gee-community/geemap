@@ -124,7 +124,7 @@ def osm_gdf_from_place(query, tags: dict[str, Any], which_result: int | None = N
 
     ox.config(use_cache=True, log_console=True)  # pytype: disable=module-attr
 
-    gdf = ox.features.features_from_place(query, tags, which_result)
+    gdf = ox.features.features_from_place(query, tags, which_result=which_result)
     return gdf
 
 
