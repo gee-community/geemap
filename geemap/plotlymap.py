@@ -553,7 +553,7 @@ class Map(go.FigureWidget):
         self,
         url: str | None = None,
         collection: str | None = None,
-        item: str = None,
+        item: str | None = None,
         assets=None,
         bands=None,
         titiler_endpoint: str | None = None,
@@ -799,8 +799,8 @@ class Map(go.FigureWidget):
 
         Args:
             gdf (GeoDataFrame): A GeoDataFrame.
-            label_col (str, optional): The column name of locations. Defaults to None.
-            color_col (str, optional): The column name of color. Defaults to None.
+            label_col: The column name of locations. Defaults to None.
+            color_col: The column name of color. Defaults to None.
             labels: TODO
             opacity: TODO
             zoom: TODO
