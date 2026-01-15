@@ -31,7 +31,6 @@ class DataTable(pd.DataFrame):
         """Initializes the DataTable with data.
 
         Args:
-
             data: The input data. If it's a dictionary, it will be converted to a
                 DataFrame.
             date_column: The date column to convert to a DataFrame.
@@ -612,11 +611,11 @@ class BarChart(BaseChartClass):
         )
 
         self.bar_chart = plt.bar(
-            self.x_data,
-            self.y_data,
+            self.x_data,  # pytype: disable=attribute-error
+            self.y_data,  # pytype: disable=attribute-error
             labels=self.labels,
             display_legend=self.display_legend,
-        )  # pytype: disable=attribute-error
+        )
 
         self.generate_tooltip()
         plt.ylim(*self.get_ylim())
@@ -663,9 +662,9 @@ class LineChart(BarChart):
             legend_location=self.legend_location,
         )
 
-        self.line_chart = plt.plot(  # pytype: disable=attribute-error
-            self.x_data,
-            self.y_data,
+        self.line_chart = plt.plot(
+            self.x_data,  # pytype: disable=attribute-error
+            self.y_data,  # pytype: disable=attribute-error
             label=self.labels,
         )
 
@@ -1537,7 +1536,7 @@ def doy_series_by_year(
     y_cols = df.columns.tolist()[1:]
     x_cols = "doy"
 
-    fig = Chart(  # pytype: disable=wrong-arg-types
+    return Chart(  # pytype: disable=wrong-arg-types
         df,
         chart_type,
         x_cols,
@@ -1548,7 +1547,6 @@ def doy_series_by_year(
         y_label,
         **kwargs,
     )
-    return fig
 
 
 def image_histogram(
@@ -1759,7 +1757,7 @@ def image_series(
     if "date" in df.columns:
         df["date"] = pd.to_datetime(df["date"])
 
-    fig = Chart(
+    return Chart(
         df,
         chart_type,
         x_cols,
@@ -1770,7 +1768,6 @@ def image_series(
         y_label,
         **kwargs,
     )
-    return fig
 
 
 def image_series_by_region(
@@ -1845,7 +1842,7 @@ def image_series_by_region(
         indexes = image_collection.aggregate_array(x_property).getInfo()
         df["index"] = indexes
 
-    fig = Chart(
+    return Chart(
         df,
         chart_type,
         x_cols,
@@ -1856,7 +1853,6 @@ def image_series_by_region(
         y_label,
         **kwargs,
     )
-    return fig
 
 
 def array_values(
@@ -1888,9 +1884,8 @@ def array_values(
     Returns:
         Chart: The generated chart.
     """
-
     df = array_to_df(array, x_values=x_labels, y_labels=series_names, axis=axis)
-    fig = Chart(
+    return Chart(
         df,
         x_cols=["x"],
         y_cols=df.columns.tolist()[1:],
@@ -1901,4 +1896,3 @@ def array_values(
         y_label=y_label,
         **kwargs,
     )
-    return fig
