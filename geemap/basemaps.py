@@ -511,9 +511,6 @@ def xyz_to_pydeck() -> dict[str, Any]:
     Returns:
         A dictionary of pydeck tile layers.
     """
-    common.check_package(
-        "pydeck", "https://deckgl.readthedocs.io/en/latest/installation.html"
-    )
     import pydeck as pdk
 
     pydeck_dict = {}
