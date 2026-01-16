@@ -40,6 +40,8 @@ import zipfile
 
 import box
 import ee
+from IPython.display import display, HTML, IFrame, Javascript
+from IPython.display import YouTubeVideo
 import ipyleaflet
 import ipywidgets as widgets
 import matplotlib as mpl
@@ -54,11 +56,6 @@ import requests
 from . import colormaps
 from .coreutils import *
 from . import coreutils
-
-try:
-    from IPython.display import display, HTML, IFrame, Javascript
-except ImportError:
-    pass
 
 
 def ee_export_image(
@@ -1743,35 +1740,6 @@ def copy_credentials_to_colab() -> None:
 ########################################
 
 
-def check_install(package: str) -> None:
-    """Checks whether a package is installed.
-
-    If not, it will install the package.
-
-    Args:
-        package: The name of the package to check.
-    """
-    try:
-        __import__(package)
-    except ImportError:
-        print(f"{package} is not installed. Installing ...")
-        try:
-            subprocess.check_call(["python", "-m", "pip", "install", package])
-        except Exception as e:
-            print(f"Failed to install {package}")
-            print(e)
-        print(f"{package} has been installed successfully.")
-
-
-def check_package(name: str, URL: str = "") -> None:
-    try:
-        __import__(name.lower())
-    except Exception:
-        raise ImportError(
-            f"{name} is not installed. Please install it before proceeding. {URL}"
-        )
-
-
 def install_package(package: str | list[str]) -> None:
     """Install a Python package.
 
@@ -1993,8 +1961,6 @@ def show_image(img_path: str, width: int | None = None, height: int | None = Non
         width: Width of the image in pixels. Defaults to None.
         height: Height of the image in pixels. Defaults to None.
     """
-    from IPython.display import display
-
     try:
         out = widgets.Output()
         out.outputs = ()
@@ -3461,8 +3427,6 @@ def show_youtube(id="h0pz3S6Tvx0"):
         id (str, optional): Unique ID of the video. Defaults to 'h0pz3S6Tvx0'.
 
     """
-    from IPython.display import YouTubeVideo, display
-
     if "/" in id:
         id = id.split("/")[-1]
 
