@@ -19,8 +19,8 @@ import os
 import random
 import threading
 import time
-import warnings
 from typing import Any
+import warnings
 
 import ee
 import ipyleaflet
