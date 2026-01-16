@@ -13,17 +13,16 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import base64
 import csv
-import threading
 import io
 import json
 import os
 import random
+import threading
 import time
-import warnings
 from typing import Any
+import warnings
 
 import ee
-import ipyleaflet
 import ipyleaflet
 import ipywidgets as widgets
 import numpy as np
@@ -1802,14 +1801,14 @@ class Map(core.Map):
         left_ts,
         left_names=None,
         left_vis={},
-        left_index=0,
+        left_index: int = 0,
         right_ts=None,
         right_names=None,
         right_vis=None,
-        right_index=-1,
-        width="130px",
-        date_format="YYYY-MM-dd",
-        add_close_button=False,
+        right_index: int = -1,
+        width: str = "130px",
+        date_format: str = "YYYY-MM-dd",
+        add_close_button: bool = False,
         **kwargs,
     ):
         """Creates a split-panel map for inspecting timeseries images.
@@ -1817,15 +1816,18 @@ class Map(core.Map):
         Args:
             left_ts (object): An ee.ImageCollection to show on the left panel.
             left_names (list): A list of names to show under the left dropdown.
-            left_vis (dict, optional): Visualization parameters for the left layer. Defaults to {}.
-            left_index (int, optional): The index of the left layer to show. Defaults to 0.
+            left_vis (dict, optional): Visualization parameters for the left
+                layer. Defaults to {}.
+            left_index: The index of the left layer to show. Defaults to 0.
             right_ts (object): An ee.ImageCollection to show on the right panel.
             right_names (list): A list of names to show under the right dropdown.
-            right_vis (dict, optional): Visualization parameters for the right layer. Defaults to {}.
-            right_index (int, optional): The index of the right layer to show. Defaults to -1.
-            width (str, optional): The width of the dropdown list. Defaults to '130px'.
-            date_format (str, optional): The date format to show in the dropdown. Defaults to 'YYYY-MM-dd'.
-            add_close_button (bool, optional): Whether to show the close button. Defaults to False.
+            right_vis (dict, optional): Visualization parameters for the right
+                layer. Defaults to {}.
+            right_index: The index of the right layer to show. Defaults to -1.
+            width: The width of the dropdown list. Defaults to '130px'.
+            date_format: The date format to show in the dropdown. Defaults to
+                'YYYY-MM-dd'.
+            add_close_button: Whether to show the close button. Defaults to False.
         """
         controls = self.controls
         layers = self.layers
@@ -1918,7 +1920,7 @@ class Map(core.Map):
 
         left_dropdown.observe(left_dropdown_change, names="value")
 
-        def right_dropdown_change(change):
+        def right_dropdown_change(change) -> None:
             right_dropdown_index = right_dropdown.index
             if right_dropdown_index is not None and right_dropdown_index >= 0:
                 try:
@@ -1965,7 +1967,7 @@ class Map(core.Map):
             ),
         )
 
-        def close_btn_click(change):
+        def close_btn_click(change) -> None:
             if change["new"]:
                 self.controls = controls
                 self.clear_layers()
@@ -1988,7 +1990,7 @@ class Map(core.Map):
         except Exception as e:
             raise Exception(e)
 
-    def basemap_demo(self):
+    def basemap_demo(self) -> None:
         """A demo for using geemap basemaps."""
         self.add_basemap_widget()
 
@@ -4973,28 +4975,27 @@ def linked_maps(
 
 def ts_inspector(
     layers_dict=None,
-    left_name=None,
-    right_name=None,
-    width="120px",
+    left_name: str | None = None,
+    right_name: str | None = None,
+    width: str = "120px",
     center=[40, -100],
-    zoom=4,
+    zoom: int = 4,
     **kwargs,
 ):
     """Creates a time series inspector.
 
     Args:
-        layers_dict (dict, optional): A dictionary of layers to be shown on the map. Defaults to None.
-        left_name (str, optional): A name for the left layer. Defaults to None.
-        right_name (str, optional): A name for the right layer. Defaults to None.
-        width (str, optional): Width of the dropdown list. Defaults to "120px".
-        center (list, optional): Center of the map. Defaults to [40, -100].
-        zoom (int, optional): Zoom level of the map. Defaults to 4.
+        layers_dict (dict, optional): A dictionary of layers to be shown on the
+            map. Defaults to None.
+        left_name: A name for the left layer. Defaults to None.
+        right_name: A name for the right layer. Defaults to None.
+        width: Width of the dropdown list. Defaults to "120px".
+        center (list): Center of the map. Defaults to [40, -100].
+        zoom: Zoom level of the map. Defaults to 4.
 
     Returns:
         leafmap.Map: The Map instance.
     """
-    import ipywidgets as widgets
-
     add_zoom = True
     add_fullscreen = True
 
