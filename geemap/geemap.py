@@ -13,11 +13,11 @@ ipyleaflet functions use snake case, such as add_tile_layer(), add_wms_layer(), 
 
 import base64
 import csv
-import threading
 import io
 import json
 import os
 import random
+import threading
 import time
 import warnings
 from typing import Any
