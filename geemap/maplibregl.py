@@ -225,9 +225,6 @@ class Map(MapWidget):
                 inserted.
             name: The name to use as the key to store the layer in the layer
                 dictionary. If None, the layer's ID is used as the key.
-
-        Returns:
-            None
         """
         if isinstance(layer, dict):
             if "minzoom" in layer:
@@ -265,9 +262,6 @@ class Map(MapWidget):
 
         Args:
             name: The name of the layer to remove.
-
-        Returns:
-            None
         """
 
         super().add_call("removeLayer", name)
@@ -291,9 +285,6 @@ class Map(MapWidget):
                 "draw".
             position: The position of the control. Defaults to "top-right".
             **kwargs: Additional keyword arguments that are passed to the control object.
-
-        Returns:
-            None
 
         Raises:
             ValueError: If the control is a string and is not one of the
@@ -348,9 +339,6 @@ class Map(MapWidget):
                 into the drawing control. Defaults to None.
             **kwargs (Any): Additional keyword arguments to be passed to the
                 drawing control.
-
-        Returns:
-            None
         """
 
         super().add_mapbox_draw(
@@ -370,9 +358,6 @@ class Map(MapWidget):
             **kwargs: Additional keyword arguments to be passed to json.dump for custom
                 serialization.
 
-        Returns:
-            None
-
         Raises:
             ValueError: If the feature collection is empty.
         """
@@ -389,9 +374,6 @@ class Map(MapWidget):
         Args:
             id: The ID of the source.
             source: The source data. .
-
-        Returns:
-            None
         """
         super().add_source(id, source)
         self.source_dict[id] = source
@@ -406,9 +388,6 @@ class Map(MapWidget):
             lon: The longitude of the center of the map.
             lat: The latitude of the center of the map.
             zoom: The zoom level of the map. If None, the zoom level is not changed.
-
-        Returns:
-            None
         """
         center = [lon, lat]
         self.add_call("setCenter", center)
@@ -423,9 +402,6 @@ class Map(MapWidget):
 
         Args:
             zoom: The zoom level of the map.
-
-        Returns:
-            None
         """
         self.add_call("setZoom", zoom)
 
@@ -445,9 +421,6 @@ class Map(MapWidget):
                 should be visible in the viewport. Each point is a list of two numbers
                 representing the longitude and latitude. For example, [[32.958984,
                 -5.353521],[43.50585, 5.615985]]
-
-        Returns:
-            None
         """
 
         if isinstance(bounds, list):
@@ -481,9 +454,6 @@ class Map(MapWidget):
                 TileProvider. Defaults to None.
             **kwargs: Additional keyword arguments that are passed to the
                 RasterTileSource class. See https://bit.ly/4erD2MQ for more information.
-
-        Returns:
-            None
 
         Raises:
             ValueError: If the basemap is not one of the predefined strings,
@@ -548,7 +518,7 @@ class Map(MapWidget):
         self,
         data: str | dict,
         layer_type: str | None = None,
-        filter: dict | None = None,
+        filter: dict | None = None,  # pylint: disable=redefined-builtin
         paint: dict | None = None,
         name: str | None = None,
         fit_bounds: bool = True,
@@ -557,8 +527,7 @@ class Map(MapWidget):
         source_args: dict = {},
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a GeoJSON layer to the map.
+        """Adds a GeoJSON layer to the map.
 
         This method adds a GeoJSON layer to the map. The GeoJSON data can be a
         URL to a GeoJSON file or a GeoJSON dictionary. If a name is provided, it
@@ -566,31 +535,25 @@ class Map(MapWidget):
         a random name is generated.
 
         Args:
-            data (str | dict): The GeoJSON data. This can be a URL to a GeoJSON
-                file or a GeoJSON dictionary.
-            layer_type (str, optional): The type of the layer. It can be one of
-                the following: 'circle', 'fill', 'fill-extrusion', 'line', 'symbol',
-                'raster', 'background', 'heatmap', 'hillshade'. If None, the type
-                is inferred from the GeoJSON data.
-            filter (dict, optional): The filter to apply to the layer. If None,
-                no filter is applied.
-            paint (dict, optional): The paint properties to apply to the layer.
-                If None, no paint properties are applied.
-            name (str, optional): The name of the layer. If None, a random name
-                is generated.
-            fit_bounds (bool, optional): Whether to adjust the viewport of the
-                map to fit the bounds of the GeoJSON data. Defaults to True.
-            visible (bool, optional): Whether the layer is visible or not.
-                Defaults to True.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
-            source_args (dict, optional): Additional keyword arguments that are
+            data: The GeoJSON data. This can be a URL to a GeoJSON file or a GeoJSON
+                dictionary.
+            layer_type: The type of the layer. It can be one of the following: 'circle',
+                'fill', 'fill-extrusion', 'line', 'symbol', 'raster', 'background',
+                'heatmap', 'hillshade'. If None, the type is inferred from the GeoJSON
+                data.
+            filter: The filter to apply to the layer. If None, no filter is applied.
+            paint: The paint properties to apply to the layer.  If None, no paint
+                properties are applied.
+            name: The name of the layer. If None, a random name is generated.
+            fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
+                the GeoJSON data. Defaults to True.
+            visible: Whether the layer is visible or not.  Defaults to True.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
+            source_args: Additional keyword arguments that are
                 passed to the GeoJSONSource class.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
                 See https://maplibre.org/maplibre-style-spec/layers/ for more info.
-
-        Returns:
-            None
 
         Raises:
             ValueError: If the data is not a URL or a GeoJSON dictionary.
@@ -668,7 +631,7 @@ class Map(MapWidget):
         self,
         data: str | dict,
         layer_type: str | None = None,
-        filter: dict | None = None,
+        filter: dict | None = None,  # pylint: disable=redefined-builtin
         paint: dict | None = None,
         name: str | None = None,
         fit_bounds: bool = True,
@@ -677,8 +640,7 @@ class Map(MapWidget):
         source_args: dict = {},
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a vector layer to the map.
+        """Adds a vector layer to the map.
 
         This method adds a vector layer to the map. The vector data can be a
         URL or local file path to a vector file. If a name is provided, it
@@ -686,33 +648,26 @@ class Map(MapWidget):
         a random name is generated.
 
         Args:
-            data (str | dict): The vector data. This can be a URL or local file
-                path to a vector file.
-            layer_type (str, optional): The type of the layer. If None, the type
-                is inferred from the GeoJSON data.
-            filter (dict, optional): The filter to apply to the layer. If None,
-                no filter is applied.
-            paint (dict, optional): The paint properties to apply to the layer.
-                If None, no paint properties are applied.
-            name (str, optional): The name of the layer. If None, a random name
-                is generated.
-            fit_bounds (bool, optional): Whether to adjust the viewport of the
-                map to fit the bounds of the GeoJSON data. Defaults to True.
-            visible (bool, optional): Whether the layer is visible or not.
-                Defaults to True.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
-            source_args (dict, optional): Additional keyword arguments that are
-                passed to the GeoJSONSource class.
+            data: The vector data. This can be a URL or local file path to a vector
+                file.
+            layer_type: The type of the layer. If None, the type is inferred from the
+                GeoJSON data.
+            filter: The filter to apply to the layer. If None, no filter is applied.
+            paint: The paint properties to apply to the layer.  If None, no paint
+                properties are applied.
+            name: The name of the layer. If None, a random name is generated.
+            fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
+                the GeoJSON data. Defaults to True.
+            visible: Whether the layer is visible or not.  Defaults to True.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
+            source_args: Additional keyword arguments that are passed to the
+                GeoJSONSource class.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
-
-        Returns:
-            None
 
         Raises:
             ValueError: If the data is not a URL or a GeoJSON dictionary.
         """
-
         if not isinstance(data, gpd.GeoDataFrame):
             data = gpd.read_file(data).__geo_interface__
         else:
@@ -735,7 +690,7 @@ class Map(MapWidget):
         self,
         gdf: gpd.GeoDataFrame,
         layer_type: str | None = None,
-        filter: dict | None = None,
+        filter: dict | None = None,  # pylint: disable=redefined-builtin
         paint: dict | None = None,
         name: str | None = None,
         fit_bounds: bool = True,
@@ -744,33 +699,26 @@ class Map(MapWidget):
         source_args: dict = {},
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a vector layer to the map.
+        """Adds a vector layer to the map.
 
         This method adds a GeoDataFrame to the map as a vector layer.
 
         Args:
-            gdf (gpd.GeoDataFrame): The GeoDataFrame to add to the map.
-            layer_type (str, optional): The type of the layer. If None, the type
-                is inferred from the GeoJSON data.
-            filter (dict, optional): The filter to apply to the layer. If None,
-                no filter is applied.
-            paint (dict, optional): The paint properties to apply to the layer.
-                If None, no paint properties are applied.
-            name (str, optional): The name of the layer. If None, a random name
-                is generated.
-            fit_bounds (bool, optional): Whether to adjust the viewport of the
-                map to fit the bounds of the GeoJSON data. Defaults to True.
-            visible (bool, optional): Whether the layer is visible or not.
-                Defaults to True.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
-            source_args (dict, optional): Additional keyword arguments that are
-                passed to the GeoJSONSource class.
+            gdf: The GeoDataFrame to add to the map.
+            layer_type: The type of the layer. If None, the type is inferred from the
+                GeoJSON data.
+            filter: The filter to apply to the layer. If None, no filter is applied.
+            paint: The paint properties to apply to the layer.  If None, no paint
+                properties are applied.
+            name: The name of the layer. If None, a random name is generated.
+            fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
+                the GeoJSON data. Defaults to True.
+            visible: Whether the layer is visible or not.  Defaults to True.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
+            source_args: Additional keyword arguments that are passed to the
+                GeoJSONSource class.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
-
-        Returns:
-            None
 
         Raises:
             ValueError: If the data is not a URL or a GeoJSON dictionary.
@@ -803,34 +751,25 @@ class Map(MapWidget):
         source_args: dict = {},
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a TileLayer to the map.
+        """Adds a TileLayer to the map.
 
         This method adds a TileLayer to the map. The TileLayer is created from
             the specified URL, and it is added to the map with the specified
             name, attribution, visibility, and tile size.
 
         Args:
-            url (str): The URL of the tile layer.
-            name (str, optional): The name to use for the layer. Defaults to '
-                Tile Layer'.
-            attribution (str, optional): The attribution to use for the layer.
-                Defaults to ''.
-            visible (bool, optional): Whether the layer should be visible by
-                default. Defaults to True.
-            tile_size (int, optional): The size of the tiles in the layer.
-                Defaults to 256.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
-            source_args (dict, optional): Additional keyword arguments that are
-                passed to the RasterTileSource class.
+            url: The URL of the tile layer.
+            name: The name to use for the layer. Defaults to ' Tile Layer'.
+            attribution: The attribution to use for the layer.  Defaults to ''.
+            visible: Whether the layer should be visible by default. Defaults to True.
+            tile_size: The size of the tiles in the layer.  Defaults to 256.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
+            source_args: Additional keyword arguments that are passed to the
+                RasterTileSource class.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
                 See https://eodagmbh.github.io/py-maplibregl/api/layer/ for more information.
-
-        Returns:
-            None
         """
-
         raster_source = RasterTileSource(
             tiles=[url.strip()],
             attribution=attribution,
@@ -846,7 +785,7 @@ class Map(MapWidget):
         self,
         url: str,
         layers: str,
-        format: str = "image/png",
+        format: str = "image/png",  # pylint: disable=redefined-builtin
         name: str = "WMS Layer",
         attribution: str = "",
         opacity: float = 1.0,
@@ -856,37 +795,34 @@ class Map(MapWidget):
         source_args: dict = {},
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a WMS layer to the map.
+        """Adds a WMS layer to the map.
 
-        This method adds a WMS layer to the map. The WMS  is created from
+        This method adds a WMS layer to the map. The WMS is created from
             the specified URL, and it is added to the map with the specified
             name, attribution, visibility, and tile size.
 
         Args:
-            url (str): The URL of the tile layer.
-            layers (str): The layers to include in the WMS request.
-            format (str, optional): The format of the tiles in the layer.
-            name (str, optional): The name to use for the layer. Defaults to
-                'WMS Layer'.
-            attribution (str, optional): The attribution to use for the layer.
-                Defaults to ''.
-            visible (bool, optional): Whether the layer should be visible by
-                default. Defaults to True.
-            tile_size (int, optional): The size of the tiles in the layer.
-                Defaults to 256.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
-            source_args (dict, optional): Additional keyword arguments that are
-                passed to the RasterTileSource class.
+            url: The URL of the tile layer.
+            layers: The layers to include in the WMS request.
+            format: The format of the tiles in the layer.
+            name: The name to use for the layer. Defaults to 'WMS Layer'.
+            attribution: The attribution to use for the layer. Defaults to ''.
+            visible: Whether the layer should be visible by default. Defaults to True.
+            tile_size: The size of the tiles in the layer.  Defaults to 256.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
+            source_args: Additional keyword arguments that are passed to the
+                RasterTileSource class.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
-                See https://eodagmbh.github.io/py-maplibregl/api/layer/ for more information.
-
-        Returns:
-            None
+                See https://eodagmbh.github.io/py-maplibregl/api/layer/ for more
+                information.
         """
-
-        url = f"{url.strip()}?service=WMS&request=GetMap&layers={layers}&styles=&format={format.replace('/', '%2F')}&transparent=true&version=1.1.1&height=256&width=256&srs=EPSG%3A3857&bbox={{bbox-epsg-3857}}"
+        url = (
+            f"{url.strip()}?service=WMS&request=GetMap"
+            f"&layers={layers}&styles=&format={format.replace('/', '%2F')}"
+            "&transparent=true&version=1.1.1&height=256&width=256"
+            "&srs=EPSG%3A3857&bbox={{bbox-epsg-3857}}"
+        )
 
         self.add_tile_layer(
             url,
@@ -913,30 +849,26 @@ class Map(MapWidget):
         ee_initialize: bool = False,
         **kwargs,
     ) -> None:
-        """
-        Adds a Google Earth Engine tile layer to the map based on the tile layer URL from
+        """Adds a Google Earth Engine tile layer to the map.
+
+        Based on the tile layer URL from:
             https://github.com/opengeos/ee-tile-layers/blob/main/datasets.tsv.
 
         Args:
             ee_object (object): The Earth Engine object to display.
             vis_params (dict): Visualization parameters. For example, {'min': 0, 'max': 100}.
-            asset_id (str): The ID of the Earth Engine asset.
-            name (str, optional): The name of the tile layer. If not provided,
-                the asset ID will be used. Default is None.
-            opacity (float, optional): The opacity of the tile layer (0 to 1).
-                Default is 1.
-            attribution (str, optional): The attribution text to be displayed.
-                Default is "Google Earth Engine".
-            visible (bool, optional): Whether the tile layer should be shown on
-                the map. Default is True.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
-            ee_initialize (bool, optional): Whether to initialize the Earth Engine
+            asset_id: The ID of the Earth Engine asset.
+            name: The name of the tile layer. If not provided, the asset ID will be
+                used. Default is None.
+            opacity: The opacity of the tile layer (0 to 1).  Default is 1.
+            attribution: The attribution text to be displayed. Default is "Google Earth
+                Engine".
+            visible: Whether the tile layer should be shown on the map. Default is True.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
+            ee_initialize: Whether to initialize the Earth Engine
             **kwargs: Additional keyword arguments to be passed to the underlying
                 `add_tile_layer` method.
-
-        Returns:
-            None
         """
         if isinstance(asset_id, str):
             df = pd.read_csv(
