@@ -13,21 +13,13 @@ import box
 import ipywidgets as widgets
 import numpy as np
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
 from .basemaps import xyz_to_plotly
 from .common import *
 from . import coreutils
 from . import examples
-
-
-try:
-    import plotly.express as px
-    import plotly.graph_objects as go
-except ImportError:
-    raise ImportError(
-        "This module requires the plotly package. "
-        "Please install it using 'pip install plotly'."
-    )
 
 basemaps = xyz_to_plotly()
 
