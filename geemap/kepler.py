@@ -11,30 +11,22 @@ import os
 import sys
 from typing import Any
 
-import requests
-import ipywidgets as widgets
-
-import pandas as pd
 from IPython.display import display, HTML
+import ipywidgets as widgets
+import keplergl
+import pandas as pd
+import requests
+
 from .common import *
 from .osm import *
 
 from . import coreutils
 from . import examples
 
-try:
-    import keplergl
+if "google.colab" in sys.modules:
+    from google.colab import output
 
-    if "google.colab" in sys.modules:
-        from google.colab import output
-
-        output.enable_custom_widget_manager()
-except ImportError:
-    raise ImportError(
-        "Kepler needs to be installed to use this module. Use 'pip install keplergl' "
-        "to install the package. See https://docs.kepler.gl/docs/keplergl-jupyter for "
-        "more details."
-    )
+    output.enable_custom_widget_manager()
 
 
 class Map(keplergl.KeplerGl):
@@ -468,29 +460,18 @@ class Map(keplergl.KeplerGl):
         Returns:
             streamlit.components: components.html object.
         """
+        import streamlit as st
+        import streamlit.components.v1 as components
 
-        try:
-            import streamlit as st
-            import streamlit.components.v1 as components
-
-            html = self._repr_html_()
-            if responsive:
-                make_map_responsive = """
-                <style>
-                [title~="st.iframe"] { width: 100%}
-                </style>
-                """
-                st.markdown(make_map_responsive, unsafe_allow_html=True)
-            return components.html(
-                html, width=width, height=height, scrolling=scrolling
-            )
-
-        except ImportError:
-            raise ImportError(
-                "streamlit is not installed. You need to install streamlitusing "
-                "'pip install streamlit'. See "
-                "https://docs.streamlit.io/library/get-started/installation"
-            )
+        html = self._repr_html_()
+        if responsive:
+            make_map_responsive = """
+            <style>
+            [title~="st.iframe"] { width: 100%}
+            </style>
+            """
+            st.markdown(make_map_responsive, unsafe_allow_html=True)
+        return components.html(html, width=width, height=height, scrolling=scrolling)
 
     def load_config(self, config: str | None = None):
         """Loads a kepler.gl config file.
