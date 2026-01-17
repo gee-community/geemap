@@ -899,7 +899,7 @@ def add_scale_bar_lite(
     color: str = "black",
     unit: str = "km",
     ha: str = "center",
-    vastr="bottom",
+    va: str = "bottom",
 ) -> None:
     """Add a lite version of scale bar to the map.
 
@@ -1009,7 +1009,7 @@ def add_legend(
     font_size: int | str = 14,
     font_weight: int | str = "normal",
     font_color: str = "black",
-    font_family: str = None,
+    font_family: str | None = None,
     title=None,
     title_fontize=16,
     title_fontproperties=None,
