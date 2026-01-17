@@ -14,6 +14,7 @@ import random
 import re
 from typing import Any
 import warnings
+import webbrowser
 
 import ee
 import folium
@@ -1951,41 +1952,42 @@ class Map(folium.Map):
 
     def publish(
         self,
-        name="Folium Map",
-        description="",
-        source_url="",
+        name: str = "Folium Map",
+        description: str = "",
+        source_url: str = "",
         tags=None,
         source_file=None,
-        open=True,
+        open: bool = True,
         formatting=None,
-        token=None,
+        token: str | None = None,
         **kwargs,
     ):
         """Publish the map to datapane.com
 
         Args:
-            name (str, optional): The document name - can include spaces, caps, symbols, etc., e.g. "Profit & Loss 2020". Defaults to "Folium Map".
-            description (str, optional): A high-level description for the document, this is displayed in searches and thumbnails. Defaults to ''.
-            source_url (str, optional): A URL pointing to the source code for the document, e.g. a GitHub repo or a Colab notebook. Defaults to ''.
-            tags (bool, optional): A list of tags (as strings) used to categorise your document. Defaults to None.
-            source_file (str, optional): Path of jupyter notebook file to upload. Defaults to None.
-            open (bool, optional): Whether to open the map. Defaults to True.
-            formatting (ReportFormatting, optional): Set the basic styling for your report.
-            token (str, optional): The token to use to datapane to publish the map. See https://docs.datapane.com/tut-getting-started. Defaults to None.
-        """
-        import webbrowser
 
+            name: The document name - can include spaces, caps, symbols, etc.,
+                e.g., "Profit & Loss 2020". Defaults to "Folium Map".
+            description: A high-level description for the document, this is displayed in
+                searches and thumbnails. Defaults to ''.
+            source_url: A URL pointing to the source code for the document, e.g. a
+                GitHub repo or a Colab notebook. Defaults to ''.
+            tags (bool, optional): A list of tags (as strings) used to categorise your
+                document. Defaults to None.
+            source_file (str, optional): Path of jupyter notebook file to
+                upload. Defaults to None.
+            open: Whether to open the map. Defaults to True.
+            formatting (ReportFormatting, optional): Set the basic styling for your
+                report.
+            token: The token to use to datapane to publish the map. See
+                https://docs.datapane.com/tut-getting-started. Defaults to None.
+        """
         if os.environ.get("USE_MKDOCS") is not None:
             return
 
+        import datapane as dp
+
         warnings.filterwarnings("ignore")
-        try:
-            import datapane as dp
-        except Exception:
-            webbrowser.open_new_tab("https://docs.datapane.com/")
-            raise ImportError(
-                "The datapane Python package is not installed. You need to install and authenticate datapane first."
-            )
 
         if token is None:
             try:
@@ -1998,33 +2000,29 @@ class Map(folium.Map):
         else:
             dp.login(token)
 
-        try:
-            dp.upload_report(
-                dp.Plot(self),
-                name=name,
-                description=description,
-                source_url=source_url,
-                tags=tags,
-                source_file=source_file,
-                open=open,
-                formatting=formatting,
-                **kwargs,
-            )
+        dp.upload_report(
+            dp.Plot(self),
+            name=name,
+            description=description,
+            source_url=source_url,
+            tags=tags,
+            source_file=source_file,
+            open=open,
+            formatting=formatting,
+            **kwargs,
+        )
 
-        except Exception as e:
-            raise Exception(e)
-
-    def to_html(self, filename=None, **kwargs):
+    def to_html(self, filename: str = None, **kwargs) -> str | None:
         """Exports a map as an HTML file.
 
         Args:
-            filename (str, optional): File path to the output HTML. Defaults to None.
+            filename: File path to the output HTML. Defaults to None.
 
         Raises:
             ValueError: If it is an invalid HTML file.
 
         Returns:
-            str: A string containing the HTML code.
+            A string containing the HTML code.
         """
 
         if self.options["layersControl"]:
@@ -2050,65 +2048,58 @@ class Map(folium.Map):
 
     def to_streamlit(
         self,
-        width=None,
-        height=600,
-        scrolling=False,
-        add_layer_control=True,
-        bidirectional=False,
+        width: int | None = None,
+        height: int = 600,
+        scrolling: bool = False,
+        add_layer_control: bool = True,
+        bidirectional: bool = False,
         **kwargs,
     ):
-        """Renders `folium.Figure` or `folium.Map` in a Streamlit app. This method is a static Streamlit Component, meaning, no information is passed back from Leaflet on browser interaction.
+        """Renders `folium.Figure` or `folium.Map` in a Streamlit app.
+
+        This method is a static Streamlit Component, meaning, no information is passed
+        back from Leaflet on browser interaction.
 
         Args:
-            width (int, optional): Width of the map. Defaults to None.
-            height (int, optional): Height of the map. Defaults to 600.
-            scrolling (bool, optional): Whether to allow the map to scroll. Defaults to False.
-            add_layer_control (bool, optional): Whether to add the layer control. Defaults to True.
-            bidirectional (bool, optional): Whether to add bidirectional functionality to the map. The streamlit-folium package is required to use the bidirectional functionality. Defaults to False.
-
-        Raises:
-            ImportError: If streamlit is not installed.
+            width: Width of the map. Defaults to None.
+            height: Height of the map. Defaults to 600.
+            scrolling: Whether to allow the map to scroll. Defaults to False.
+            add_layer_control: Whether to add the layer control. Defaults to True.
+            bidirectional: Whether to add bidirectional functionality to the map. The
+                streamlit-folium package is required to use the bidirectional
+                functionality. Defaults to False.
 
         Returns:
             streamlit.components: components.html object.
         """
+        import streamlit.components.v1 as components
 
-        try:
-            import streamlit.components.v1 as components
+        if add_layer_control:
+            self.add_layer_control()
 
-            if add_layer_control:
-                self.add_layer_control()
+        if bidirectional:
+            from streamlit_folium import st_folium
 
-            if bidirectional:
-                from streamlit_folium import st_folium
+            output = st_folium(self, width=width, height=height)
+            return output
+        else:
+            # if responsive:
+            #     make_map_responsive = """
+            #     <style>
+            #     [title~="st.iframe"] { width: 100%}
+            #     </style>
+            #     """
+            #     st.markdown(make_map_responsive, unsafe_allow_html=True)
+            return components.html(
+                self.to_html(), width=width, height=height, scrolling=scrolling
+            )
 
-                output = st_folium(self, width=width, height=height)
-                return output
-            else:
-                # if responsive:
-                #     make_map_responsive = """
-                #     <style>
-                #     [title~="st.iframe"] { width: 100%}
-                #     </style>
-                #     """
-                #     st.markdown(make_map_responsive, unsafe_allow_html=True)
-                return components.html(
-                    self.to_html(), width=width, height=height, scrolling=scrolling
-                )
-
-        except Exception as e:
-            raise Exception(e)
-
-    def st_map_center(self, st_component):
-        """Get the center of the map.
+    def st_map_center(self, st_component) -> tuple[float, float]:
+        """Returns the center of the map.
 
         Args:
             st_folium (streamlit-folium): The streamlit component.
-
-        Returns:
-            tuple: The center of the map.
         """
-
         bounds = st_component["bounds"]
         west = bounds["_southWest"]["lng"]
         south = bounds["_southWest"]["lat"]
@@ -2116,67 +2107,47 @@ class Map(folium.Map):
         north = bounds["_northEast"]["lat"]
         return (south + (north - south) / 2, west + (east - west) / 2)
 
-    def st_map_bounds(self, st_component):
-        """Get the bounds of the map in the format of (miny, minx, maxy, maxx).
+    def st_map_bounds(
+        self, st_component
+    ) -> tuple[tuple[float, float], tuple[float, float]]:
+        """Returns the bounds of the map in the format of (miny, minx, maxy, maxx).
 
         Args:
             st_folium (streamlit-folium): The streamlit component.
-
-        Returns:
-            tuple: The bounds of the map.
         """
-
         bounds = st_component["bounds"]
         south = bounds["_southWest"]["lat"]
         west = bounds["_southWest"]["lng"]
         north = bounds["_northEast"]["lat"]
         east = bounds["_northEast"]["lng"]
 
-        bounds = [[south, west], [north, east]]
-        return bounds
+        return [[south, west], [north, east]]
 
-    def st_fit_bounds(self):
-        """Fit the map to the bounds of the map.
+    def st_fit_bounds(self) -> folium.Map:
+        """Fit the map to the bounds of the map."""
+        import streamlit as st
 
-        Returns:
-            folium.Map: The map.
-        """
+        if "map_bounds" in st.session_state:
+            bounds = st.session_state["map_bounds"]
 
-        try:
-            import streamlit as st
-
-            if "map_bounds" in st.session_state:
-                bounds = st.session_state["map_bounds"]
-
-                self.fit_bounds(bounds)
-
-        except Exception as e:
-            raise Exception(e)
+            self.fit_bounds(bounds)
 
     def st_last_draw(self, st_component):
-        """Get the last draw feature of the map.
+        """Returns the last draw feature of the map.
 
         Args:
             st_folium (streamlit-folium): The streamlit component.
-
-        Returns:
-            str: The last draw of the map.
         """
-
         return st_component["last_active_drawing"]
 
     def st_last_click(self, st_component):
-        """Get the last click feature of the map.
+        """Returns the last click feature of the map.
 
         Args:
             st_folium (streamlit-folium): The streamlit component.
-
-        Returns:
-            str: The last click of the map.
         """
-
         coords = st_component["last_clicked"]
-        return (coords["lat"], coords["lng"])
+        return coords["lat"], coords["lng"]
 
     def st_draw_features(self, st_component):
         """Get the draw features of the map.
@@ -2187,53 +2158,49 @@ class Map(folium.Map):
         Returns:
             list: The draw features of the map.
         """
-
         return st_component["all_drawings"]
 
-    def add_census_data(self, wms, layer, census_dict=None, **kwargs):
+    def add_census_data(self, wms: str, layer: str, census_dict=None, **kwargs):
         """Adds a census data layer to the map.
 
         Args:
-            wms (str): The wms to use. For example, "Current", "ACS 2021", "Census 2020".  See the complete list at https://tigerweb.geo.census.gov/tigerwebmain/TIGERweb_wms.html
-            layer (str): The layer name to add to the map.
-            census_dict (dict, optional): A dictionary containing census data. Defaults to None. It can be obtained from the get_census_dict() function.
+            wms: The wms to use. For example, "Current", "ACS 2021", "Census 2020".  See
+                the complete list at
+                https://tigerweb.geo.census.gov/tigerwebmain/TIGERweb_wms.html
+            layer: The layer name to add to the map.
+            census_dict (dict, optional): A dictionary containing census data. Defaults
+                to None. It can be obtained from the get_census_dict() function.
         """
+        if census_dict is None:
+            census_dict = get_census_dict()
 
-        try:
-            if census_dict is None:
-                census_dict = get_census_dict()
+        if wms not in census_dict.keys():
+            raise ValueError(
+                f"The provided WMS is invalid. It must be one of {census_dict.keys()}"
+            )
 
-            if wms not in census_dict.keys():
-                raise ValueError(
-                    f"The provided WMS is invalid. It must be one of {census_dict.keys()}"
-                )
+        layers = census_dict[wms]["layers"]
+        if layer not in layers:
+            raise ValueError(f"The layer name is not valid. It must be one of {layers}")
 
-            layers = census_dict[wms]["layers"]
-            if layer not in layers:
-                raise ValueError(
-                    f"The layer name is not valid. It must be one of {layers}"
-                )
+        url = census_dict[wms]["url"]
+        if "name" not in kwargs:
+            kwargs["name"] = layer
+        if "attribution" not in kwargs:
+            kwargs["attribution"] = "U.S. Census Bureau"
+        if "format" not in kwargs:
+            kwargs["format"] = "image/png"
+        if "transparent" not in kwargs:
+            kwargs["transparent"] = True
 
-            url = census_dict[wms]["url"]
-            if "name" not in kwargs:
-                kwargs["name"] = layer
-            if "attribution" not in kwargs:
-                kwargs["attribution"] = "U.S. Census Bureau"
-            if "format" not in kwargs:
-                kwargs["format"] = "image/png"
-            if "transparent" not in kwargs:
-                kwargs["transparent"] = True
+        self.add_wms_layer(url, layer, **kwargs)
 
-            self.add_wms_layer(url, layer, **kwargs)
-
-        except Exception as e:
-            raise Exception(e)
-
-    def add_xyz_service(self, provider, **kwargs):
+    def add_xyz_service(self, provider: str, **kwargs):
         """Add a XYZ tile layer to the map.
 
         Args:
-            provider (str): A tile layer name starts with xyz or qms. For example, xyz.OpenTopoMap,
+            provider: A tile layer name starts with xyz or qms. For example,
+                xyz.OpenTopoMap,
 
         Raises:
             ValueError: The provider is not valid. It must start with xyz or qms.
@@ -2265,31 +2232,34 @@ class Map(folium.Map):
     def add_labels(
         self,
         data,
-        column,
-        font_size="12pt",
-        font_color="black",
-        font_family="arial",
-        font_weight="normal",
-        x="longitude",
-        y="latitude",
-        draggable=True,
-        layer_name="Labels",
+        column: str,
+        font_size: str = "12pt",
+        font_color: str = "black",
+        font_family: str = "arial",
+        font_weight: str = "normal",
+        x: str = "longitude",
+        y: str = "latitude",
+        draggable: bool = True,
+        layer_name: str = "Labels",
         **kwargs,
     ):
-        """Adds a label layer to the map. Reference: https://python-visualization.github.io/folium/modules.html#folium.features.DivIcon
+        """Adds a label layer to the map.
+
+        Reference:
+        https://python-visualization.github.io/folium/modules.html#folium.features.DivIcon
 
         Args:
             data (pd.DataFrame | ee.FeatureCollection): The input data to label.
-            column (str): The column name of the data to label.
-            font_size (str, optional): The font size of the labels. Defaults to "12pt".
-            font_color (str, optional): The font color of the labels. Defaults to "black".
-            font_family (str, optional): The font family of the labels. Defaults to "arial".
-            font_weight (str, optional): The font weight of the labels, can be normal, bold. Defaults to "normal".
-            x (str, optional): The column name of the longitude. Defaults to "longitude".
-            y (str, optional): The column name of the latitude. Defaults to "latitude".
-            draggable (bool, optional): Whether the labels are draggable. Defaults to True.
-            layer_name (str, optional): The name of the layer. Defaults to "Labels".
-
+            column: The column name of the data to label.
+            font_size: The font size of the labels. Defaults to "12pt".
+            font_color: The font color of the labels. Defaults to "black".
+            font_family: The font family of the labels. Defaults to "arial".
+            font_weight: The font weight of the labels, can be normal, bold. Defaults
+                to "normal".
+            x: The column name of the longitude. Defaults to "longitude".
+            y: The column name of the latitude. Defaults to "latitude".
+            draggable: Whether the labels are draggable. Defaults to True.
+            layer_name: The name of the layer. Defaults to "Labels".
         """
         from folium.features import DivIcon
 
@@ -2305,16 +2275,11 @@ class Map(folium.Map):
             if ext == ".csv":
                 df = pd.read_csv(data)
             elif ext in [".geojson", ".json", ".shp", ".gpkg"]:
-                try:
-                    import geopandas as gpd
+                import geopandas as gpd
 
-                    df = gpd.read_file(data)
-                    df[x] = df.centroid.x
-                    df[y] = df.centroid.y
-                except Exception as e:
-                    print("geopandas is required to read geojson.")
-                    print(e)
-                    return
+                df = gpd.read_file(data)
+                df[x] = df.centroid.x
+                df[y] = df.centroid.y
         else:
             raise ValueError("data must be a DataFrame or an ee.FeatureCollection.")
 
@@ -2332,7 +2297,11 @@ class Map(folium.Map):
 
         layer_group = folium.FeatureGroup(name=layer_name)
         for index in df.index:
-            html = f'<div style="font-size: {font_size};color:{font_color};font-family:{font_family};font-weight: {font_weight}">{df[column][index]}</div>'
+            html = (
+                f'<div style="font-size: {font_size};color:{font_color};'
+                f"font-family:{font_family};"
+                f'font-weight: {font_weight}">{df[column][index]}</div>'
+            )
             folium.Marker(
                 location=[df[y][index], df[x][index]],
                 icon=DivIcon(
@@ -2348,8 +2317,8 @@ class Map(folium.Map):
 
     def split_map(
         self,
-        left_layer="TERRAIN",
-        right_layer="OpenTopoMap",
+        left_layer: str = "TERRAIN",
+        right_layer: str = "OpenTopoMap",
         left_args={},
         right_args={},
         left_label=None,
@@ -2361,10 +2330,16 @@ class Map(folium.Map):
         """Adds a split-panel map.
 
         Args:
-            left_layer (str, optional): The left tile layer. Can be a local file path, HTTP URL, or a basemap name. Defaults to 'TERRAIN'.
-            right_layer (str, optional): The right tile layer. Can be a local file path, HTTP URL, or a basemap name. Defaults to 'OpenTopoMap'.
+            left_layer: The left tile layer. Can be a local file path, HTTP URL, or a
+                basemap name. Defaults to 'TERRAIN'.
+            right_layer: The right tile layer. Can be a local file path, HTTP URL, or a
+                basemap name. Defaults to 'OpenTopoMap'.
             left_args (dict, optional): The arguments for the left tile layer. Defaults to {}.
             right_args (dict, optional): The arguments for the right tile layer. Defaults to {}.
+            left_label: TODO
+            right_label: TODO
+            left_position: TODO
+            right_position: TODO
         """
         if "max_zoom" not in left_args:
             left_args["max_zoom"] = 100
@@ -2497,41 +2472,50 @@ class Map(folium.Map):
 
     def add_netcdf(
         self,
-        filename,
-        variables=None,
-        palette=None,
-        vmin=None,
-        vmax=None,
-        nodata=None,
-        attribution=None,
-        layer_name="NetCDF layer",
-        shift_lon=True,
-        lat="lat",
-        lon="lon",
+        filename: str,
+        variables: int | None = None,
+        palette: str | None = None,
+        vmin: float | None = None,
+        vmax: float | None = None,
+        nodata: float | None = None,
+        attribution: str = None,
+        layer_name: str = "NetCDF layer",
+        shift_lon: bool = True,
+        lat: str = "lat",
+        lon: str = "lon",
         **kwargs,
     ):
         """Generate an ipyleaflet/folium TileLayer from a netCDF file.
-            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
-            try adding to following two lines to the beginning of the notebook if the raster does not render properly.
+
+        If you are using this function in JupyterHub on a remote server (e.g., Binder,
+        Microsoft Planetary Computer), try adding to following two lines to the
+        beginning of the notebook if the raster does not render properly.
 
             import os
             os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
 
         Args:
-            filename (str): File path or HTTP URL to the netCDF file.
-            variables (int, optional): The variable/band names to extract data from the netCDF file. Defaults to None. If None, all variables will be extracted.
-            port (str, optional): The port to use for the server. Defaults to "default".
-            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
-            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
-            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
-            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
-            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to "netCDF layer".
-            shift_lon (bool, optional): Flag to shift longitude values from [0, 360] to the range [-180, 180]. Defaults to True.
-            lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
-            lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
+            filename: File path or HTTP URL to the netCDF file.
+            variables: The variable/band names to extract data from the netCDF
+                file. Defaults to None. If None, all variables will be extracted.
+            port: The port to use for the server. Defaults to "default".
+            palette: The name of the color palette from `palettable` to use when
+                plotting a single band. See
+                https://jiffyclub.github.io/palettable. Default is greyscale
+            vmin: The minimum value to use when colormapping the palette when plotting a
+                single band. Defaults to None.
+            vmax: The maximum value to use when colormapping the palette when plotting a
+                single band. Defaults to None.
+            nodata: The value from the band to use to interpret as not valid
+                data. Defaults to None.
+            attribution: Attribution for the source raster. This defaults to a message
+                about it being a local file. Defaults to None.
+            layer_name: The layer name to use. Defaults to "netCDF layer".
+            shift_lon: Flag to shift longitude values from [0, 360] to the range [-180,
+                180]. Defaults to True.
+            lat: Name of the latitude variable. Defaults to 'lat'.
+            lon: Name of the longitude variable. Defaults to 'lon'.
         """
-
         if coreutils.in_colab_shell():
             print("The add_netcdf() function is not supported in Colab.")
             return
@@ -2566,42 +2550,46 @@ class Map(folium.Map):
     def add_data(
         self,
         data,
-        column,
+        column: str,
         colors=None,
         labels=None,
         cmap=None,
-        scheme="Quantiles",
-        k=5,
+        scheme: str = "Quantiles",
+        k: int = 5,
         add_legend=True,
         legend_title=None,
         legend_kwds=None,
         classification_kwds=None,
         style_function=None,
         highlight_function=None,
-        layer_name="Untitled",
-        info_mode="on_hover",
-        encoding="utf-8",
+        layer_name: str = "Untitled",
+        info_mode: str = "on_hover",
+        encoding: str = "utf-8",
         **kwargs,
     ):
         """Add vector data to the map with a variety of classification schemes.
 
         Args:
-            data (str | pd.DataFrame | gpd.GeoDataFrame): The data to classify. It can be a filepath to a vector dataset, a pandas dataframe, or a geopandas geodataframe.
-            column (str): The column to classify.
-            cmap (str, optional): The name of a colormap recognized by matplotlib. Defaults to None.
-            colors (list, optional): A list of colors to use for the classification. Defaults to None.
-            labels (list, optional): A list of labels to use for the legend. Defaults to None.
-            scheme (str, optional): Name of a choropleth classification scheme (requires mapclassify).
-                Name of a choropleth classification scheme (requires mapclassify).
-                A mapclassify.MapClassifier object will be used
-                under the hood. Supported are all schemes provided by mapclassify (e.g.
-                'BoxPlot', 'EqualInterval', 'FisherJenks', 'FisherJenksSampled',
-                'HeadTailBreaks', 'JenksCaspall', 'JenksCaspallForced',
-                'JenksCaspallSampled', 'MaxP', 'MaximumBreaks',
-                'NaturalBreaks', 'Quantiles', 'Percentiles', 'StdMean',
+            data (str | pd.DataFrame | gpd.GeoDataFrame): The data to classify. It can
+                be a filepath to a vector dataset, a pandas dataframe, or a geopandas
+                geodataframe.
+            column: The column to classify.
+            cmap: The name of a colormap recognized by matplotlib. Defaults to None.
+            colors: A list of colors to use for the classification. Defaults to None.
+            labels: A list of labels to use for the legend. Defaults to None.
+            scheme: Name of a choropleth classification scheme (requires mapclassify).
+                Name of a choropleth classification scheme (requires mapclassify).  A
+                mapclassify.MapClassifier object will be used under the hood. Supported
+                are all schemes provided by mapclassify (e.g.  'BoxPlot',
+                'EqualInterval', 'FisherJenks', 'FisherJenksSampled', 'HeadTailBreaks',
+                'JenksCaspall', 'JenksCaspallForced', 'JenksCaspallSampled', 'MaxP',
+                'MaximumBreaks', 'NaturalBreaks', 'Quantiles', 'Percentiles', 'StdMean',
                 'UserDefined'). Arguments can be passed in classification_kwds.
-            k (int, optional): Number of classes (ignored if scheme is None or if column is categorical). Default to 5.
-            legend_kwds (dict, optional): Keyword arguments to pass to :func:`matplotlib.pyplot.legend` or `matplotlib.pyplot.colorbar`. Defaults to None.
+            k: Number of classes (ignored if scheme is None or if column is
+                categorical). Default to 5.
+            legend_kwds (dict, optional): Keyword arguments to pass to
+                :func:`matplotlib.pyplot.legend` or
+                `matplotlib.pyplot.colorbar`. Defaults to None.
                 Keyword arguments to pass to :func:`matplotlib.pyplot.legend` or
                 Additional accepted keywords when `scheme` is specified:
                 fmt : string
@@ -2614,28 +2602,38 @@ class Map(folium.Map):
                 interval : boolean (default False)
                     An option to control brackets from mapclassify legend.
                     If True, open/closed interval brackets are shown in the legend.
-            classification_kwds (dict, optional): Keyword arguments to pass to mapclassify. Defaults to None.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            style_function (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-                style_callback is a function that takes the feature as argument and should return a dictionary of the following form:
-                style_callback = lambda feat: {"fillColor": feat["properties"]["color"]}
-                style is a dictionary of the following form:
-                    style = {
-                    "stroke": False,
-                    "color": "#ff0000",
-                    "weight": 1,
-                    "opacity": 1,
-                    "fill": True,
-                    "fillColor": "#ffffff",
-                    "fillOpacity": 1.0,
-                    "dashArray": "9"
-                    "clickable": True,
-                }
-            hightlight_function (function, optional): Highlighting function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-                highlight_function is a function that takes the feature as argument and should return a dictionary of the following form:
-                highlight_function = lambda feat: {"fillColor": feat["properties"]["color"]}
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-            encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
+            classification_kwds (dict, optional): Keyword arguments to pass to
+                mapclassify. Defaults to None.
+            style_function (function, optional): Styling function that is called for
+                each feature, and should return the feature style. This styling function
+                takes the feature as argument. Defaults to None.  style_callback is a
+                function that takes the feature as argument and should return a
+                dictionary of the following form:
+                    style_callback = lambda feat: {"fillColor": feat["properties"]["color"]}
+                    style is a dictionary of the following form:
+                        style = {
+                        "stroke": False,
+                        "color": "#ff0000",
+                        "weight": 1,
+                        "opacity": 1,
+                        "fill": True,
+                        "fillColor": "#ffffff",
+                        "fillOpacity": 1.0,
+                        "dashArray": "9"
+                        "clickable": True,
+                    }
+            hightlight_function (function, optional): Highlighting function that is
+                called for each feature, and should return the feature style. This
+                styling function takes the feature as argument. Defaults to None.
+                highlight_function is a function that takes the feature as argument and
+                should return a dictionary of the following form:
+                    highlight_function = lambda feat: {"fillColor": feat["properties"]["color"]}
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
+            encoding: The encoding of the GeoJSON file. Defaults to "utf-8".
+
         """
         gdf, legend_dict = classify(  # pytype: disable=attribute-error
             data=data,
@@ -2743,73 +2741,69 @@ class Map(folium.Map):
         else:
             raise Exception("Invalid image")
 
-    def add_widget(self, content, position="bottomright", **kwargs):
+    def add_widget(self, content: str, position: str = "bottomright", **kwargs):
         """Add a widget (e.g., text, HTML, figure) to the map.
 
         Args:
-            content (str): The widget to add.
-            position (str, optional): The position of the widget. Defaults to "bottomright".
+            content: The widget to add.
+            position: The position of the widget. Defaults to "bottomright".
         """
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
 
         if position not in allowed_positions:
             raise Exception(f"position must be one of {allowed_positions}")
 
-        try:
-            if isinstance(content, str):
-                widget = CustomControl(content, position=position)
-                widget.add_to(self)
-            elif isinstance(content, figure.Figure):
-                buf = io.BytesIO()
-                content.savefig(buf, format="png")
-                buf.seek(0)
-                b64_content = base64.b64encode(buf.read()).decode("utf-8")
-                widget = CustomControl(
-                    f"""<img src="data:image/png;base64,{b64_content}">""",
-                    position=position,
-                )
-                widget.add_to(self)
-            else:
-                raise Exception("The content must be a string or a matplotlib figure")
+        if isinstance(content, str):
+            widget = CustomControl(content, position=position)
+            widget.add_to(self)
+        elif isinstance(content, figure.Figure):
+            buf = io.BytesIO()
+            content.savefig(buf, format="png")
+            buf.seek(0)
+            b64_content = base64.b64encode(buf.read()).decode("utf-8")
+            widget = CustomControl(
+                f"""<img src="data:image/png;base64,{b64_content}">""",
+                position=position,
+            )
+            widget.add_to(self)
+        else:
+            raise Exception("The content must be a string or a matplotlib figure")
 
-        except Exception as e:
-            raise Exception(f"Error adding widget: {e}")
-
-    def add_html(self, html, position="bottomright", **kwargs):
+    def add_html(self, html: str, position: str = "bottomright", **kwargs):
         """Add HTML to the map.
 
         Args:
-            html (str): The HTML to add.
-            position (str, optional): The position of the widget. Defaults to "bottomright".
+            html: The HTML to add.
+            position: The position of the widget. Defaults to "bottomright".
         """
 
         self.add_widget(html, position=position, **kwargs)
 
     def add_text(
         self,
-        text,
-        fontsize=20,
-        fontcolor="black",
-        bold=False,
-        padding="5px",
-        background=True,
-        bg_color="white",
-        border_radius="5px",
-        position="bottomright",
+        text: str,
+        fontsize: int = 20,
+        fontcolor: str = "black",
+        bold: bool = False,
+        padding: str = "5px",
+        background: bool = True,
+        bg_color: str = "white",
+        border_radius: str = "5px",
+        position: str = "bottomright",
         **kwargs,
     ):
         """Add text to the map.
 
         Args:
-            text (str): The text to add.
-            fontsize (int, optional): The font size. Defaults to 20.
-            fontcolor (str, optional): The font color. Defaults to "black".
-            bold (bool, optional): Whether to use bold font. Defaults to False.
-            padding (str, optional): The padding. Defaults to "5px".
-            background (bool, optional): Whether to use background. Defaults to True.
-            bg_color (str, optional): The background color. Defaults to "white".
-            border_radius (str, optional): The border radius. Defaults to "5px".
-            position (str, optional): The position of the widget. Defaults to "bottomright".
+            text: The text to add.
+            fontsize: The font size. Defaults to 20.
+            fontcolor: The font color. Defaults to "black".
+            bold: Whether to use bold font. Defaults to False.
+            padding: The padding. Defaults to "5px".
+            background: Whether to use background. Defaults to True.
+            bg_color: The background color. Defaults to "white".
+            border_radius: The border radius. Defaults to "5px".
+            position: The position of the widget. Defaults to "bottomright".
         """
 
         if background:
@@ -2822,18 +2816,19 @@ class Map(folium.Map):
 
         self.add_html(text, position=position, **kwargs)
 
-    def to_gradio(self, width="100%", height="500px", **kwargs):
-        """Converts the map to an HTML string that can be used in Gradio. Removes unsupported elements, such as
-            attribution and any code blocks containing functions. See https://github.com/gradio-app/gradio/issues/3190
+    def to_gradio(self, width: str = "100%", height: str = "500px", **kwargs) -> str:
+        """Converts the map to an HTML string that can be used in Gradio.
+
+        Removes unsupported elements, such as attribution and any code blocks containing
+            functions. See https://github.com/gradio-app/gradio/issues/3190
 
         Args:
-            width (str, optional): The width of the map. Defaults to '100%'.
-            height (str, optional): The height of the map. Defaults to '500px'.
+            width: The width of the map. Defaults to '100%'.
+            height: The height of the map. Defaults to '500px'.
 
         Returns:
-            str: The HTML string to use in Gradio.
+            The HTML string to use in Gradio.
         """
-
         if isinstance(width, int):
             width = f"{width}px"
         if isinstance(height, int):
@@ -2916,29 +2911,33 @@ class Map(folium.Map):
 
 
 class SplitControl(Layer):
-    """
-    Creates a SplitControl that takes two Layers and adds a sliding control with the leaflet-side-by-side plugin.
-    Uses the Leaflet leaflet-side-by-side plugin https://github.com/digidem/leaflet-side-by-side Parameters.
-    The source code is adapted from https://github.com/python-visualization/folium/pull/1292
-    ----------
-    layer_left: Layer.
-        The left Layer within the side by side control.
-        Must  be created and added to the map before being passed to this class.
-    layer_right: Layer.
-        The right Layer within the side by side control.
-        Must  be created and added to the map before being passed to this class.
-    name : string, default None
-        The name of the Layer, as it will appear in LayerControls.
-    overlay : bool, default True
-        Adds the layer as an optional overlay (True) or the base layer (False).
-    control : bool, default True
-        Whether the Layer will be included in LayerControls.
-    show: bool, default True
-        Whether the layer will be shown on opening (only for overlays).
+    """Side-by-side plugin.
+
+    Creates a SplitControl that takes two Layers and adds a sliding control with the
+    leaflet-side-by-side plugin.  Uses the Leaflet leaflet-side-by-side plugin
+    https://github.com/digidem/leaflet-side-by-side Parameters.  The source code is
+    adapted from https://github.com/python-visualization/folium/pull/1292
+
+    Args:
+        layer_left: Layer.
+            The left Layer within the side by side control.
+            Must  be created and added to the map before being passed to this class.
+        layer_right: Layer.
+            The right Layer within the side by side control.
+            Must  be created and added to the map before being passed to this class.
+        name : string, default None
+            The name of the Layer, as it will appear in LayerControls.
+        overlay : bool, default True
+            Adds the layer as an optional overlay (True) or the base layer (False).
+        control : bool, default True
+            Whether the Layer will be included in LayerControls.
+        show: bool, default True
+            Whether the layer will be shown on opening (only for overlays).
+
     Examples
-    --------
-    >>> sidebyside = SideBySideLayers(layer_left, layer_right)
-    >>> sidebyside.add_to(m)
+
+        >>> sidebyside = SideBySideLayers(layer_left, layer_right)
+        >>> sidebyside.add_to(m)
     """
 
     _template = Template(
@@ -2959,7 +2958,7 @@ class SplitControl(Layer):
         self.layer_left = layer_left
         self.layer_right = layer_right
 
-    def render(self, **kwargs):
+    def render(self, **kwargs) -> None:
         super().render()
 
         figure = self.get_root()
@@ -2976,23 +2975,24 @@ class SplitControl(Layer):
 
 
 class SideBySideLayers(JSCSSMixin, Layer):
-    """
-    Creates a SideBySideLayers that takes two Layers and adds a sliding
-    control with the leaflet-side-by-side plugin.
-    Uses the Leaflet leaflet-side-by-side plugin https://github.com/digidem/leaflet-side-by-side.
-    Adopted from https://github.com/python-visualization/folium/pull/1292/files.
-    Parameters
-    ----------
-    layer_left: Layer.
-        The left Layer within the side by side control.
-        Must be created and added to the map before being passed to this class.
-    layer_right: Layer.
-        The right Layer within the side by side control.
-        Must be created and added to the map before being passed to this class.
+    """Side-by-side with swiping.
+
+    Creates a SideBySideLayers that takes two Layers and adds a sliding control with the
+    leaflet-side-by-side plugin.  Uses the Leaflet leaflet-side-by-side plugin
+    https://github.com/digidem/leaflet-side-by-side.  Adopted from
+    https://github.com/python-visualization/folium/pull/1292/files.
+
+    Args:
+        layer_left: Layer.
+            The left Layer within the side by side control.
+            Must be created and added to the map before being passed to this class.
+        layer_right: Layer.
+            The right Layer within the side by side control.
+            Must be created and added to the map before being passed to this class.
+
     Examples
-    --------
-    >>> sidebyside = SideBySideLayers(layer_left, layer_right)
-    >>> sidebyside.add_to(m)
+        >>> sidebyside = SideBySideLayers(layer_left, layer_right)
+        >>> sidebyside.add_to(m)
     """
 
     _template = Template(
@@ -3021,8 +3021,8 @@ class SideBySideLayers(JSCSSMixin, Layer):
 
 class CustomControl(MacroElement):
     """Put any HTML on the map as a Leaflet Control.
-    Adopted from https://github.com/python-visualization/folium/pull/1662
 
+    Adopted from https://github.com/python-visualization/folium/pull/1662
     """
 
     _template = Template(
@@ -3048,7 +3048,7 @@ class CustomControl(MacroElement):
     """
     )
 
-    def __init__(self, html, position="bottomleft"):
+    def __init__(self, html, position: str = "bottomleft"):
         def escape_backticks(text):
             """Escape backticks so text can be used in a JS template."""
             return re.sub(r"(?<!\\)`", r"\`", text)
@@ -3111,56 +3111,55 @@ class FloatText(MacroElement):
         self.left = left
 
 
-def delete_dp_report(name):
+def delete_dp_report(name: str) -> None:
     """Deletes a datapane report.
 
     Args:
-        name (str): Name of the report to delete.
+        name: Name of the report to delete.
     """
-    try:
-        import datapane as dp
+    import datapane as dp
 
-        reports = dp.Report.list()
-        items = list(reports)
-        names = list(map(lambda item: item["name"], items))
-        if name in names:
-            report = dp.Report.get(name)
-            url = report.blocks[0]["url"]
-            # print(f'Deleting {url}...')
-            dp.Report.delete(dp.Report.by_id(url))
-    except Exception as e:
-        print(e)
+    reports = dp.Report.list()
+    items = list(reports)
+    names = list(map(lambda item: item["name"], items))
+    if name in names:
+        report = dp.Report.get(name)
+        url = report.blocks[0]["url"]
+        dp.Report.delete(dp.Report.by_id(url))
 
 
 def delete_dp_reports():
     """Deletes all datapane reports."""
-    try:
-        import datapane as dp
+    import datapane as dp
 
-        reports = dp.Report.list()
-        for item in reports:
-            print(item["name"])
-            report = dp.Report.get(item["name"])
-            url = report.blocks[0]["url"]
-            print(f"Deleting {url}...")
-            dp.Report.delete(dp.Report.by_id(url))
-    except Exception as e:
-        print(e)
+    reports = dp.Report.list()
+    for item in reports:
+        print(item["name"])
+        report = dp.Report.get(item["name"])
+        url = report.blocks[0]["url"]
+        print(f"Deleting {url}...")
+        dp.Report.delete(dp.Report.by_id(url))
 
 
 def ee_tile_layer(
-    ee_object, vis_params={}, name="Layer untitled", shown=True, opacity=1.0, **kwargs
+    ee_object,
+    vis_params={},
+    name: str = "Layer untitled",
+    shown: bool = True,
+    opacity: float = 1.0,
+    **kwargs,
 ):
     """Converts and Earth Engine layer to ipyleaflet TileLayer.
 
     Args:
         ee_object (Collection|Feature|Image|MapId): The object to add to the map.
         vis_params (dict, optional): The visualization parameters. Defaults to {}.
-        name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-        opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+        name: The name of the layer. Defaults to 'Layer untitled'.
+        shown: A flag indicating whether the layer should be on by default. Defaults to
+            True.
+        opacity: The layer's opacity represented as a number between 0 and 1. Defaults
+            to 1.0.
     """
-
     image = None
 
     if (
@@ -3232,15 +3231,15 @@ def ee_tile_layer(
     return tile_layer
 
 
-def st_map_center(lat, lon):
+def st_map_center(lat: float, lon: float):
     """Returns the map center coordinates for a given latitude and longitude.
 
     If the system variable 'map_center' exists, it is used. Otherwise, the default is
     returned.
 
     Args:
-        lat (float): Latitude.
-        lon (float): Longitude.
+        lat: Latitude.
+        lon: Longitude.
     """
     import streamlit as st
 
@@ -3250,7 +3249,7 @@ def st_map_center(lat, lon):
         return [lat, lon]
 
 
-def st_save_bounds(st_component):
+def st_save_bounds(st_component) -> None:
     """Saves the map bounds to the session state.
 
     Args:
@@ -3273,13 +3272,13 @@ def st_save_bounds(st_component):
 
 
 def linked_maps(
-    rows=2,
-    cols=2,
-    height="400px",
+    rows: int = 2,
+    cols: int = 2,
+    height: str = "400px",
     ee_objects=[],
     vis_params=[],
     labels=[],
-    label_position="topright",
+    label_position: str = "topright",
     **kwargs,
 ):
     print("The folium plotting backend does not support this function.")
