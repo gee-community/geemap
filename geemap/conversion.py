@@ -20,6 +20,8 @@ import shutil
 from typing import Sequence
 import urllib.request
 
+from IPython.core.getipython import get_ipython
+
 from . import coreutils
 
 
@@ -742,8 +744,6 @@ def create_new_cell(contents: str, replace: bool = False) -> None:
     Args:
         contents: A string of Python code.
     """
-    from IPython.core.getipython import get_ipython
-
     shell = get_ipython()
     shell.set_next_input(contents, replace=replace)
 
