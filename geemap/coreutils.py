@@ -18,10 +18,7 @@ from matplotlib import colors
 
 from . import colormaps
 
-try:
-    from IPython.display import display, Javascript
-except ImportError:
-    pass
+from IPython.display import display, Javascript
 
 
 def get_env_var(key: str) -> str | None:
