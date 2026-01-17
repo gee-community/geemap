@@ -10,10 +10,14 @@ import io
 import os
 import warnings
 
-import cartopy.crs as ccrs
-import cartopy.io.img_tiles as cimgt
-from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
-from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
+try:
+    import cartopy.crs as ccrs
+    import cartopy.io.img_tiles as cimgt
+    from cartopy.mpl.geoaxes import GeoAxes, GeoAxesSubplot
+    from cartopy.mpl.gridliner import LATITUDE_FORMATTER, LONGITUDE_FORMATTER
+except ImportError:
+    print("cartopy not available")
+
 import ee
 import matplotlib as mpl
 import matplotlib.patches as patches
