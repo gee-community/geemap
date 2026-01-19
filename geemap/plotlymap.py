@@ -19,7 +19,6 @@ from .common import *
 from . import coreutils
 from . import examples
 
-
 try:
     import plotly.express as px
     import plotly.graph_objects as go

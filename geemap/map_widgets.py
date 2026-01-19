@@ -44,9 +44,7 @@ def _set_css_in_cell_output(info: Any) -> None:
         None
     """
     del info  # Unused.
-    display(
-        HTML(
-            """
+    display(HTML("""
             <style>
                 .geemap-dark {
                     --jp-widgets-color: white;
@@ -68,9 +66,7 @@ def _set_css_in_cell_output(info: Any) -> None:
                     --jp-layout-color3: var(--colab-primary-surface-color, white);
                 }
             </style>
-            """
-        )
-    )
+            """))
 
 
 try:

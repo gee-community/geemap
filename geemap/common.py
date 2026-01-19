@@ -4078,33 +4078,24 @@ def ee_data_html(asset):
             coder_url = code_url
 
         ## ee datasets always have a asset_url, and should have a thumbnail
-        catalog = (
-            bool(asset_url)
-            * f"""
+        catalog = bool(asset_url) * f"""
                     <h4>Data Catalog</h4>
                         <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','description')}" target="_blank">Description</a></p>
                         <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','bands')}" target="_blank">Bands</a></p>
                         <p style="margin-left: 40px"><a href="{asset_url.replace('terms-of-use','image-properties')}" target="_blank">Properties</a></p>
                         <p style="margin-left: 40px"><a href="{coder_url}" target="_blank">Example</a></p>
                     """
-        )
-        thumbnail = (
-            bool(thumbnail_url)
-            * f"""
+        thumbnail = bool(thumbnail_url) * f"""
                     <h4>Dataset Thumbnail</h4>
                     <img src="{thumbnail_url}">
                     """
-        )
         ## only community datasets have a code_url
-        alternative = (
-            bool(code_url)
-            * f"""
+        alternative = bool(code_url) * f"""
                     <h4>Community Catalog</h4>
                         <p style="margin-left: 40px">{asset.get('provider','Provider unknown')}</p>
                         <p style="margin-left: 40px">{asset.get('tags','Tags unknown')}</p>
                         <p style="margin-left: 40px"><a href="{coder_url}" target="_blank">Example</a></p>
                     """
-        )
 
         template = f"""
             <html>
