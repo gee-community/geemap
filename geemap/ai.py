@@ -1865,8 +1865,7 @@ class DatasetSearchInterface:
 
         # @title CSS
         # Custom CSS for Material Design styling with enhanced table styling, chat panel, and debug panel
-        CSS = syntax.css(
-            """
+        CSS = syntax.css("""
         @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap');
 
         body {
@@ -1937,8 +1936,7 @@ class DatasetSearchInterface:
         opacity: 0.5;
         cursor: default;
         }
-        """
-        )
+        """)
 
         # Display the widget
         display(HTML(f"<style>{CSS}</style>"))
@@ -2038,9 +2036,7 @@ class DatasetSearchInterface:
         Returns:
             The JavaScript code as a string.
         """
-        return Template(
-            syntax.javascript(
-                """
+        return Template(syntax.javascript("""
     function initializeTableInteraction() {
         const table = document.querySelector('.custom-table');
         if (!table) {
@@ -2076,9 +2072,7 @@ class DatasetSearchInterface:
 
     // Run the initialization function after a short delay to ensure the DOM is ready
     setTimeout(initializeTableInteraction, 1000);
-    """
-            )
-        ).render(callback_id=callback_id)
+    """)).render(callback_id=callback_id)
 
 
 class DatasetExplorer:

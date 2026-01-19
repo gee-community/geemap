@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Tests for `coreutils` module."""
+
 import json
 import os
 import string
