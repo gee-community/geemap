@@ -7196,37 +7196,6 @@ cartopy GeoAxesSubplot object to add image overlay to.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
-                <code>loc</code>
-            </td>
-            <td>
-                  <code><span title="str">str</span></code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>String specifying the position.</p>
-              </div>
-            </td>
-            <td>
-                  <code>None</code>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
-                <code>TODO</code>
-            </td>
-            <td>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>Fix the args documentation.</p>
-              </div>
-            </td>
-            <td>
-                <em>required</em>
-            </td>
-          </tr>
-          <tr class="doc-section-item">
-            <td>
                 <code>vis_params</code>
             </td>
             <td>
@@ -7241,6 +7210,69 @@ options.</p>
             </td>
             <td>
                 <em>required</em>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>loc</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span> | None</code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>String specifying the position.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>cmap</code>
+            </td>
+            <td>
+                  <code><span title="str">str</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
+              </div>
+            </td>
+            <td>
+                  <code>&#39;gray&#39;</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>discrete</code>
+            </td>
+            <td>
+                  <code><span title="bool">bool</span></code>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
+              </div>
+            </td>
+            <td>
+                  <code>False</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>label</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -7347,7 +7379,19 @@ options.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">258</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span>
+<span class="normal">257</span>
+<span class="normal">258</span>
 <span class="normal">259</span>
 <span class="normal">260</span>
 <span class="normal">261</span>
@@ -7507,17 +7551,7 @@ options.</p>
 <span class="normal">415</span>
 <span class="normal">416</span>
 <span class="normal">417</span>
-<span class="normal">418</span>
-<span class="normal">419</span>
-<span class="normal">420</span>
-<span class="normal">421</span>
-<span class="normal">422</span>
-<span class="normal">423</span>
-<span class="normal">424</span>
-<span class="normal">425</span>
-<span class="normal">426</span>
-<span class="normal">427</span>
-<span class="normal">428</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_colorbar</span><span class="p">(</span>
+<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_colorbar</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">vis_params</span><span class="p">,</span>
     <span class="n">loc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -7531,11 +7565,13 @@ options.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required</span>
 <span class="sd">            cartopy GeoAxesSubplot object to add image overlay to.</span>
-<span class="sd">        loc (str, optional): String specifying the position.</span>
-<span class="sd">        TODO: Fix the args documentation.</span>
 <span class="sd">        vis_params (dict, optional): visualization parameters as a dictionary. See</span>
 <span class="sd">            https://developers.google.com/earth-engine/guides/image_visualization for</span>
 <span class="sd">            options.</span>
+<span class="sd">        loc: String specifying the position.</span>
+<span class="sd">        cmap: TODO</span>
+<span class="sd">        discrete: TODO</span>
+<span class="sd">        label: TODO</span>
 <span class="sd">        **kwargs: Remaining keyword arguments are passed to colorbar().</span>
 
 <span class="sd">    Raises:</span>
@@ -7860,7 +7896,7 @@ extent. Default = true.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>remaining keyword arguments are passed to gridlines()</p>
+                <p>Remaining keyword arguments are passed to gridlines()</p>
               </div>
             </td>
             <td>
@@ -7896,7 +7932,17 @@ extent. Default = true.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">480</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">470</span>
+<span class="normal">471</span>
+<span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
+<span class="normal">475</span>
+<span class="normal">476</span>
+<span class="normal">477</span>
+<span class="normal">478</span>
+<span class="normal">479</span>
+<span class="normal">480</span>
 <span class="normal">481</span>
 <span class="normal">482</span>
 <span class="normal">483</span>
@@ -7989,17 +8035,7 @@ extent. Default = true.</p>
 <span class="normal">570</span>
 <span class="normal">571</span>
 <span class="normal">572</span>
-<span class="normal">573</span>
-<span class="normal">574</span>
-<span class="normal">575</span>
-<span class="normal">576</span>
-<span class="normal">577</span>
-<span class="normal">578</span>
-<span class="normal">579</span>
-<span class="normal">580</span>
-<span class="normal">581</span>
-<span class="normal">582</span>
-<span class="normal">583</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_gridlines</span><span class="p">(</span>
+<span class="normal">573</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_gridlines</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">n_ticks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -8026,7 +8062,7 @@ extent. Default = true.</p>
 <span class="sd">            extent. Default = true.</span>
 <span class="sd">        xtick_rotation: TODO</span>
 <span class="sd">        ytick_rotation: TODO</span>
-<span class="sd">        **kwargs: remaining keyword arguments are passed to gridlines()</span>
+<span class="sd">        **kwargs: Remaining keyword arguments are passed to gridlines()</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: if all interval, n_ticks, or (xs,ys) are set to None</span>
@@ -8310,7 +8346,18 @@ Earth Engine results displayed.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">114</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">103</span>
+<span class="normal">104</span>
+<span class="normal">105</span>
+<span class="normal">106</span>
+<span class="normal">107</span>
+<span class="normal">108</span>
+<span class="normal">109</span>
+<span class="normal">110</span>
+<span class="normal">111</span>
+<span class="normal">112</span>
+<span class="normal">113</span>
+<span class="normal">114</span>
 <span class="normal">115</span>
 <span class="normal">116</span>
 <span class="normal">117</span>
@@ -8421,19 +8468,7 @@ Earth Engine results displayed.</p>
 <span class="normal">222</span>
 <span class="normal">223</span>
 <span class="normal">224</span>
-<span class="normal">225</span>
-<span class="normal">226</span>
-<span class="normal">227</span>
-<span class="normal">228</span>
-<span class="normal">229</span>
-<span class="normal">230</span>
-<span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span>
-<span class="normal">234</span>
-<span class="normal">235</span>
-<span class="normal">236</span>
-<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_layer</span><span class="p">(</span>
+<span class="normal">225</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_layer</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">ee_object</span><span class="p">,</span>
     <span class="n">dims</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span>
@@ -8468,7 +8503,6 @@ Earth Engine results displayed.</p>
 <span class="sd">        ValueError: If `imgObj` is not of type ee.image.Image.</span>
 <span class="sd">        ValueError: If `ax` if not of type cartopy.mpl.geoaxes.GeoAxesSubplot.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-
     <span class="k">if</span> <span class="p">(</span>
         <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">Geometry</span><span class="p">)</span>
         <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">feature</span><span class="o">.</span><span class="n">Feature</span><span class="p">)</span>
@@ -8497,7 +8531,7 @@ Earth Engine results displayed.</p>
         <span class="n">view_extent</span> <span class="o">=</span> <span class="p">(</span><span class="n">region</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">region</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">region</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">region</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">map_region</span> <span class="o">=</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
-        <span class="c1"># get the image bounds</span>
+        <span class="c1"># Get the image bounds.</span>
         <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">map_region</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
         <span class="n">view_extent</span> <span class="o">=</span> <span class="p">[</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="nb">max</span><span class="p">(</span><span class="n">y</span><span class="p">)]</span>
 
@@ -8639,9 +8673,8 @@ cartopy GeoAxesSubplot object.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Location of the legend, can be any of
-['upper left', 'upper right', 'lower left', 'lower right'].
-Defaults to "lower right".</p>
+                <p>Location of the legend, can be any of ['upper left', 'upper right', 'lower
+left', 'lower right'].  Defaults to "lower right".</p>
               </div>
             </td>
             <td>
@@ -8653,13 +8686,13 @@ Defaults to "lower right".</p>
                 <code>font_size</code>
             </td>
             <td>
-                  <code><span title="int">int</span> | <span title="geemap.geemap.string">string</span></code>
+                  <code><span title="int">int</span> | <span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Font size. Either an absolute font size or an
-relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
-'x-large', 'xx-large'. Defaults to 14.</p>
+                <p>Font size. Either an absolute font size or an relative value of
+'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large',
+'xx-large'. Defaults to 14.</p>
               </div>
             </td>
             <td>
@@ -8671,14 +8704,14 @@ relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
                 <code>font_weight</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.string">string</span> | <span title="int">int</span></code>
+                  <code><span title="int">int</span> | <span title="str">str</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Font weight. A numeric value in the range
-0-1000 or one of 'ultralight', 'light', 'normal' (default), 'regular', 'book',
-'medium', 'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy',
-'extra bold', 'black'. Defaults to 'normal'.</p>
+                <p>Font weight. A numeric value in the range 0-1000 or one of
+'ultralight', 'light', 'normal' (default), 'regular', 'book', 'medium',
+'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold',
+'black'. Defaults to 'normal'.</p>
               </div>
             </td>
             <td>
@@ -8706,12 +8739,57 @@ relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
                 <code>font_family</code>
             </td>
             <td>
-                  <code><span title="geemap.geemap.string">string</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
                 <p>Name of font family. Set to a font family like
 'SimHei' if you want to show Chinese in the legend. Defaults to None.</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>title</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>title_fontize</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
+              </div>
+            </td>
+            <td>
+                  <code>16</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>title_fontproperties</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
               </div>
             </td>
             <td>
@@ -8747,7 +8825,19 @@ relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1021</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1009</span>
+<span class="normal">1010</span>
+<span class="normal">1011</span>
+<span class="normal">1012</span>
+<span class="normal">1013</span>
+<span class="normal">1014</span>
+<span class="normal">1015</span>
+<span class="normal">1016</span>
+<span class="normal">1017</span>
+<span class="normal">1018</span>
+<span class="normal">1019</span>
+<span class="normal">1020</span>
+<span class="normal">1021</span>
 <span class="normal">1022</span>
 <span class="normal">1023</span>
 <span class="normal">1024</span>
@@ -8818,32 +8908,19 @@ relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
 <span class="normal">1089</span>
 <span class="normal">1090</span>
 <span class="normal">1091</span>
-<span class="normal">1092</span>
-<span class="normal">1093</span>
-<span class="normal">1094</span>
-<span class="normal">1095</span>
-<span class="normal">1096</span>
-<span class="normal">1097</span>
-<span class="normal">1098</span>
-<span class="normal">1099</span>
-<span class="normal">1100</span>
-<span class="normal">1101</span>
-<span class="normal">1102</span>
-<span class="normal">1103</span>
-<span class="normal">1104</span>
-<span class="normal">1105</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span>
+<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">legend_elements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">loc</span><span class="o">=</span><span class="s2">&quot;lower right&quot;</span><span class="p">,</span>
-    <span class="n">font_size</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
-    <span class="n">font_weight</span><span class="o">=</span><span class="s2">&quot;normal&quot;</span><span class="p">,</span>
-    <span class="n">font_color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
-    <span class="n">font_family</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+    <span class="n">loc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lower right&quot;</span><span class="p">,</span>
+    <span class="n">font_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="mi">14</span><span class="p">,</span>
+    <span class="n">font_weight</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;normal&quot;</span><span class="p">,</span>
+    <span class="n">font_color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+    <span class="n">font_family</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">title</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">title_fontize</span><span class="o">=</span><span class="mi">16</span><span class="p">,</span>
     <span class="n">title_fontproperties</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-<span class="p">):</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a legend to the map.</span>
 
 <span class="sd">    The legend elements can be formatted as:</span>
@@ -8859,19 +8936,21 @@ relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
 <span class="sd">        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required</span>
 <span class="sd">            cartopy GeoAxesSubplot object.</span>
 <span class="sd">        legend_elements (list, optional): A list of legend elements. Defaults to None.</span>
-<span class="sd">        loc (str, optional): Location of the legend, can be any of</span>
-<span class="sd">            [&#39;upper left&#39;, &#39;upper right&#39;, &#39;lower left&#39;, &#39;lower right&#39;].</span>
-<span class="sd">            Defaults to &quot;lower right&quot;.</span>
-<span class="sd">        font_size(int|string, optional): Font size. Either an absolute font size or an</span>
-<span class="sd">            relative value of &#39;xx-small&#39;, &#39;x-small&#39;, &#39;small&#39;, &#39;medium&#39;, &#39;large&#39;,</span>
-<span class="sd">            &#39;x-large&#39;, &#39;xx-large&#39;. Defaults to 14.</span>
-<span class="sd">        font_weight(string|int, optional): Font weight. A numeric value in the range</span>
-<span class="sd">            0-1000 or one of &#39;ultralight&#39;, &#39;light&#39;, &#39;normal&#39; (default), &#39;regular&#39;, &#39;book&#39;,</span>
-<span class="sd">            &#39;medium&#39;, &#39;roman&#39;, &#39;semibold&#39;, &#39;demibold&#39;, &#39;demi&#39;, &#39;bold&#39;, &#39;heavy&#39;,</span>
-<span class="sd">            &#39;extra bold&#39;, &#39;black&#39;. Defaults to &#39;normal&#39;.</span>
-<span class="sd">        font_color(str, optional): Text color. Defaults to &quot;black&quot;.</span>
-<span class="sd">        font_family(string, optional): Name of font family. Set to a font family like</span>
+<span class="sd">        loc: Location of the legend, can be any of [&#39;upper left&#39;, &#39;upper right&#39;, &#39;lower</span>
+<span class="sd">            left&#39;, &#39;lower right&#39;].  Defaults to &quot;lower right&quot;.</span>
+<span class="sd">        font_size: Font size. Either an absolute font size or an relative value of</span>
+<span class="sd">            &#39;xx-small&#39;, &#39;x-small&#39;, &#39;small&#39;, &#39;medium&#39;, &#39;large&#39;, &#39;x-large&#39;,</span>
+<span class="sd">            &#39;xx-large&#39;. Defaults to 14.</span>
+<span class="sd">        font_weight: Font weight. A numeric value in the range 0-1000 or one of</span>
+<span class="sd">            &#39;ultralight&#39;, &#39;light&#39;, &#39;normal&#39; (default), &#39;regular&#39;, &#39;book&#39;, &#39;medium&#39;,</span>
+<span class="sd">            &#39;roman&#39;, &#39;semibold&#39;, &#39;demibold&#39;, &#39;demi&#39;, &#39;bold&#39;, &#39;heavy&#39;, &#39;extra bold&#39;,</span>
+<span class="sd">            &#39;black&#39;. Defaults to &#39;normal&#39;.</span>
+<span class="sd">        font_color: Text color. Defaults to &quot;black&quot;.</span>
+<span class="sd">        font_family: Name of font family. Set to a font family like</span>
 <span class="sd">            &#39;SimHei&#39; if you want to show Chinese in the legend. Defaults to None.</span>
+<span class="sd">        title: TODO</span>
+<span class="sd">        title_fontize: TODO</span>
+<span class="sd">        title_fontproperties: TODO</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        Exception: If the legend fails to add.</span>
@@ -8883,39 +8962,36 @@ relative value of 'xx-small', 'x-small', 'small', 'medium', 'large',
     <span class="k">elif</span> <span class="n">title_fontproperties</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">kwargs</span><span class="p">[</span><span class="s2">&quot;title_fontproperties&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">title_fontproperties</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">legend_elements</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span>
-                <span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#00ffff&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Coastline&quot;</span><span class="p">),</span>
-                <span class="n">Line2D</span><span class="p">(</span>
-                    <span class="p">[],</span>
-                    <span class="p">[],</span>
-                    <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
-                    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#A8321D&quot;</span><span class="p">,</span>
-                    <span class="n">label</span><span class="o">=</span><span class="s2">&quot;City&quot;</span><span class="p">,</span>
-                    <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;#A8321D&quot;</span><span class="p">,</span>
-                    <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-                    <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-                <span class="p">),</span>
-            <span class="p">]</span>
-        <span class="k">if</span> <span class="n">font_family</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">fontdict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;family&quot;</span><span class="p">:</span> <span class="n">font_family</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">font_size</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">font_weight</span><span class="p">}</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="n">fontdict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">font_size</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">font_weight</span><span class="p">}</span>
-        <span class="n">leg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
-            <span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span>
-            <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span>
-            <span class="n">prop</span><span class="o">=</span><span class="n">fontdict</span><span class="p">,</span>
-            <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
-            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
-        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">legend_elements</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">legend_elements</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">Line2D</span><span class="p">([],</span> <span class="p">[],</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#00ffff&quot;</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s2">&quot;Coastline&quot;</span><span class="p">),</span>
+            <span class="n">Line2D</span><span class="p">(</span>
+                <span class="p">[],</span>
+                <span class="p">[],</span>
+                <span class="n">marker</span><span class="o">=</span><span class="s2">&quot;o&quot;</span><span class="p">,</span>
+                <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#A8321D&quot;</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="s2">&quot;City&quot;</span><span class="p">,</span>
+                <span class="n">markerfacecolor</span><span class="o">=</span><span class="s2">&quot;#A8321D&quot;</span><span class="p">,</span>
+                <span class="n">markersize</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+                <span class="n">ls</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
+            <span class="p">),</span>
+        <span class="p">]</span>
+    <span class="k">if</span> <span class="n">font_family</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">fontdict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;family&quot;</span><span class="p">:</span> <span class="n">font_family</span><span class="p">,</span> <span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">font_size</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">font_weight</span><span class="p">}</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">fontdict</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="n">font_size</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">font_weight</span><span class="p">}</span>
+    <span class="n">leg</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
+        <span class="n">handles</span><span class="o">=</span><span class="n">legend_elements</span><span class="p">,</span>
+        <span class="n">loc</span><span class="o">=</span><span class="n">loc</span><span class="p">,</span>
+        <span class="n">prop</span><span class="o">=</span><span class="n">fontdict</span><span class="p">,</span>
+        <span class="n">title</span><span class="o">=</span><span class="n">title</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span>
 
-        <span class="c1"># Change font color If default color is changed.</span>
-        <span class="k">if</span> <span class="n">font_color</span> <span class="o">!=</span> <span class="s2">&quot;black&quot;</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">leg</span><span class="o">.</span><span class="n">get_texts</span><span class="p">():</span>
-                <span class="n">text</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">font_color</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="c1"># Change font color If default color is changed.</span>
+    <span class="k">if</span> <span class="n">font_color</span> <span class="o">!=</span> <span class="s2">&quot;black&quot;</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">leg</span><span class="o">.</span><span class="n">get_texts</span><span class="p">():</span>
+            <span class="n">text</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">font_color</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -9133,7 +9209,17 @@ map).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">614</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">604</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
+<span class="normal">607</span>
+<span class="normal">608</span>
+<span class="normal">609</span>
+<span class="normal">610</span>
+<span class="normal">611</span>
+<span class="normal">612</span>
+<span class="normal">613</span>
+<span class="normal">614</span>
 <span class="normal">615</span>
 <span class="normal">616</span>
 <span class="normal">617</span>
@@ -9165,17 +9251,7 @@ map).</p>
 <span class="normal">643</span>
 <span class="normal">644</span>
 <span class="normal">645</span>
-<span class="normal">646</span>
-<span class="normal">647</span>
-<span class="normal">648</span>
-<span class="normal">649</span>
-<span class="normal">650</span>
-<span class="normal">651</span>
-<span class="normal">652</span>
-<span class="normal">653</span>
-<span class="normal">654</span>
-<span class="normal">655</span>
-<span class="normal">656</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_north_arrow</span><span class="p">(</span>
+<span class="normal">646</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_north_arrow</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span>
     <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
@@ -9271,12 +9347,12 @@ GeoAxesSubplot object.</p>
                 <code>metric_distance</code>
             </td>
             <td>
-                  <code><span title="int">int</span> | <span title="float">float</span></code>
+                  <code><span title="float">float</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Length in meters of each region of the
-scale bar. Defaults to 4.</p>
+                <p>Length in meters of each region of the scale bar. Defaults to
+4.</p>
               </div>
             </td>
             <td>
@@ -9304,12 +9380,12 @@ scale bar. Defaults to 4.</p>
                 <code>at_x</code>
             </td>
             <td>
-                  <code><span title="float">float</span></code>
+                  <code><span title="tuple">tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Target axes X coordinates (0..1) of box (= left,
-right). Defaults to (0.05, 0.2).</p>
+                <p>Target axes X coordinates (0..1) of box (= left, right). Defaults to
+(0.05, 0.2).</p>
               </div>
             </td>
             <td>
@@ -9321,12 +9397,12 @@ right). Defaults to (0.05, 0.2).</p>
                 <code>at_y</code>
             </td>
             <td>
-                  <code><span title="float">float</span></code>
+                  <code><span title="tuple">tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Axes Y coordinates (0..1) of box (= lower,
-upper). Defaults to (0.08, 0.11).</p>
+                <p>Axes Y coordinates (0..1) of box (= lower, upper). Defaults to (0.08,
+0.11).</p>
               </div>
             </td>
             <td>
@@ -9342,8 +9418,7 @@ upper). Defaults to (0.08, 0.11).</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Typical/maximum number of black+white
-regions. Defaults to 5.</p>
+                <p>Typical/maximum number of black+white regions. Defaults to 5.</p>
               </div>
             </td>
             <td>
@@ -9359,8 +9434,8 @@ regions. Defaults to 5.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Location of distance labels on the Y
-axis. Defaults to 0.25.</p>
+                <p>Location of distance labels on the Y axis. Defaults to
+0.25.</p>
               </div>
             </td>
             <td>
@@ -9408,8 +9483,8 @@ axis. Defaults to 0.25.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Rotation of the length labels for each region of the
-scale bar. Defaults to 0.</p>
+                <p>Rotation of the length labels for each region of the scale
+bar. Defaults to 0.</p>
               </div>
             </td>
             <td>
@@ -9437,7 +9512,7 @@ scale bar. Defaults to 0.</p>
                 <code>paddings</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span>[<span title="str">str</span>, <span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -9470,7 +9545,17 @@ scale bar. Defaults to 0.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">681</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">671</span>
+<span class="normal">672</span>
+<span class="normal">673</span>
+<span class="normal">674</span>
+<span class="normal">675</span>
+<span class="normal">676</span>
+<span class="normal">677</span>
+<span class="normal">678</span>
+<span class="normal">679</span>
+<span class="normal">680</span>
+<span class="normal">681</span>
 <span class="normal">682</span>
 <span class="normal">683</span>
 <span class="normal">684</span>
@@ -9683,30 +9768,19 @@ scale bar. Defaults to 0.</p>
 <span class="normal">891</span>
 <span class="normal">892</span>
 <span class="normal">893</span>
-<span class="normal">894</span>
-<span class="normal">895</span>
-<span class="normal">896</span>
-<span class="normal">897</span>
-<span class="normal">898</span>
-<span class="normal">899</span>
-<span class="normal">900</span>
-<span class="normal">901</span>
-<span class="normal">902</span>
-<span class="normal">903</span>
-<span class="normal">904</span>
-<span class="normal">905</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar</span><span class="p">(</span>
+<span class="normal">894</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
-    <span class="n">metric_distance</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span>
-    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;km&quot;</span><span class="p">,</span>
-    <span class="n">at_x</span><span class="o">=</span><span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
-    <span class="n">at_y</span><span class="o">=</span><span class="p">(</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">),</span>
-    <span class="n">max_stripes</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-    <span class="n">ytick_label_margins</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
-    <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span>
-    <span class="n">font_weight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
-    <span class="n">rotation</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
-    <span class="n">zorder</span><span class="o">=</span><span class="mi">999</span><span class="p">,</span>
-    <span class="n">paddings</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;ymin&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
+    <span class="n">metric_distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;km&quot;</span><span class="p">,</span>
+    <span class="n">at_x</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span>
+    <span class="n">at_y</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.08</span><span class="p">,</span> <span class="mf">0.11</span><span class="p">),</span>
+    <span class="n">max_stripes</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span>
+    <span class="n">ytick_label_margins</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">0.25</span><span class="p">,</span>
+    <span class="n">fontsize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">8</span><span class="p">,</span>
+    <span class="n">font_weight</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+    <span class="n">rotation</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span>
+    <span class="n">zorder</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">999</span><span class="p">,</span>
+    <span class="n">paddings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;xmin&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;xmax&quot;</span><span class="p">:</span> <span class="mf">0.05</span><span class="p">,</span> <span class="s2">&quot;ymin&quot;</span><span class="p">:</span> <span class="mf">1.5</span><span class="p">,</span> <span class="s2">&quot;ymax&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
     <span class="n">bbox_kwargs</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;facecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;white&quot;</span><span class="p">,</span> <span class="s2">&quot;edgecolor&quot;</span><span class="p">:</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span> <span class="s2">&quot;alpha&quot;</span><span class="p">:</span> <span class="mf">0.5</span><span class="p">},</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a scale bar to the map.</span>
@@ -9714,23 +9788,22 @@ scale bar. Defaults to 0.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy</span>
 <span class="sd">            GeoAxesSubplot object.</span>
-<span class="sd">        metric_distance (int | float, optional): Length in meters of each region of the</span>
-<span class="sd">          scale bar. Defaults to 4.</span>
-<span class="sd">        unit (str, optional): Scale bar distance unit. Defaults to &quot;km&quot;</span>
-<span class="sd">        at_x (float, optional): Target axes X coordinates (0..1) of box (= left,</span>
-<span class="sd">            right). Defaults to (0.05, 0.2).</span>
-<span class="sd">        at_y (float, optional): Axes Y coordinates (0..1) of box (= lower,</span>
-<span class="sd">            upper). Defaults to (0.08, 0.11).</span>
-<span class="sd">        max_stripes (int, optional): Typical/maximum number of black+white</span>
-<span class="sd">            regions. Defaults to 5.</span>
-<span class="sd">        ytick_label_margins (float, optional): Location of distance labels on the Y</span>
-<span class="sd">            axis. Defaults to 0.25.</span>
-<span class="sd">        fontsize (int, optional): Scale bar text size. Defaults to 8.</span>
-<span class="sd">        font_weight (str, optional): Font weight. Defaults to &#39;bold&#39;.</span>
-<span class="sd">        rotation (int, optional): Rotation of the length labels for each region of the</span>
-<span class="sd">            scale bar. Defaults to 0.</span>
-<span class="sd">        zorder (float, optional): z order of the text bounding box.</span>
-<span class="sd">        paddings (dict, optional): Boundaries of the box that contains the scale bar.</span>
+<span class="sd">        metric_distance: Length in meters of each region of the scale bar. Defaults to</span>
+<span class="sd">          4.</span>
+<span class="sd">        unit: Scale bar distance unit. Defaults to &quot;km&quot;</span>
+<span class="sd">        at_x: Target axes X coordinates (0..1) of box (= left, right). Defaults to</span>
+<span class="sd">            (0.05, 0.2).</span>
+<span class="sd">        at_y: Axes Y coordinates (0..1) of box (= lower, upper). Defaults to (0.08,</span>
+<span class="sd">            0.11).</span>
+<span class="sd">        max_stripes: Typical/maximum number of black+white regions. Defaults to 5.</span>
+<span class="sd">        ytick_label_margins: Location of distance labels on the Y axis. Defaults to</span>
+<span class="sd">            0.25.</span>
+<span class="sd">        fontsize: Scale bar text size. Defaults to 8.</span>
+<span class="sd">        font_weight: Font weight. Defaults to &#39;bold&#39;.</span>
+<span class="sd">        rotation: Rotation of the length labels for each region of the scale</span>
+<span class="sd">            bar. Defaults to 0.</span>
+<span class="sd">        zorder: z order of the text bounding box.</span>
+<span class="sd">        paddings: Boundaries of the box that contains the scale bar.</span>
 <span class="sd">        bbox_kwargs (dict, optional): Style of the box containing the scale bar.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
@@ -9871,7 +9944,7 @@ scale bar. Defaults to 0.</p>
 
         <span class="n">i_color</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">i_color</span>
 
-    <span class="c1"># adding boxes</span>
+    <span class="c1"># Adding boxes.</span>
     <span class="n">_add_bbox</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">filled_boxs</span><span class="p">,</span> <span class="n">bbox_kwargs</span><span class="o">=</span><span class="n">bbox_kwargs</span><span class="p">,</span> <span class="n">paddings</span><span class="o">=</span><span class="n">paddings</span><span class="p">)</span>
 
     <span class="c1"># Add short tick lines.</span>
@@ -9901,7 +9974,7 @@ scale bar. Defaults to 0.</p>
         <span class="n">zorder</span><span class="o">=</span><span class="n">zorder</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c1"># add numeric labels</span>
+    <span class="c1"># Add numeric labels.</span>
     <span class="k">for</span> <span class="n">x</span><span class="p">,</span> <span class="n">xlabel</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">x_targets</span><span class="p">,</span> <span class="n">xlabels</span><span class="p">):</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
             <span class="n">x</span><span class="p">,</span>
@@ -9989,13 +10062,12 @@ GeoAxesSubplot object.</p>
                 <code>xy</code>
             </td>
             <td>
-                  <code><span title="tuple">tuple</span></code>
+                  <code><span title="tuple">tuple</span>[<span title="float">float</span>, <span title="float">float</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Location of the north arrow. Each number representing the
-percentage length of the map from the lower-left cornor.
-Defaults to (0.1, 0.1).</p>
+                <p>Location of the north arrow. Each number representing the percentage length
+of the map from the lower-left cornor.  Defaults to (0.1, 0.1).</p>
               </div>
             </td>
             <td>
@@ -10104,7 +10176,18 @@ Defaults to (0.1, 0.1).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">908</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">897</span>
+<span class="normal">898</span>
+<span class="normal">899</span>
+<span class="normal">900</span>
+<span class="normal">901</span>
+<span class="normal">902</span>
+<span class="normal">903</span>
+<span class="normal">904</span>
+<span class="normal">905</span>
+<span class="normal">906</span>
+<span class="normal">907</span>
+<span class="normal">908</span>
 <span class="normal">909</span>
 <span class="normal">910</span>
 <span class="normal">911</span>
@@ -10177,29 +10260,17 @@ Defaults to (0.1, 0.1).</p>
 <span class="normal">978</span>
 <span class="normal">979</span>
 <span class="normal">980</span>
-<span class="normal">981</span>
-<span class="normal">982</span>
-<span class="normal">983</span>
-<span class="normal">984</span>
-<span class="normal">985</span>
-<span class="normal">986</span>
-<span class="normal">987</span>
-<span class="normal">988</span>
-<span class="normal">989</span>
-<span class="normal">990</span>
-<span class="normal">991</span>
-<span class="normal">992</span>
-<span class="normal">993</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar_lite</span><span class="p">(</span>
+<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar_lite</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
-    <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span>
-    <span class="n">fontsize</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;black&quot;</span><span class="p">,</span>
-    <span class="n">unit</span><span class="o">=</span><span class="s2">&quot;km&quot;</span><span class="p">,</span>
-    <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
-    <span class="n">va</span><span class="o">=</span><span class="s2">&quot;bottom&quot;</span><span class="p">,</span>
-<span class="p">):</span>
+    <span class="n">xy</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
+    <span class="n">linewidth</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span>
+    <span class="n">fontsize</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">20</span><span class="p">,</span>
+    <span class="n">color</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;black&quot;</span><span class="p">,</span>
+    <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;km&quot;</span><span class="p">,</span>
+    <span class="n">ha</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;center&quot;</span><span class="p">,</span>
+    <span class="n">va</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;bottom&quot;</span><span class="p">,</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Add a lite version of scale bar to the map.</span>
 
 <span class="sd">    Reference: https://stackoverflow.com/a/50674451/2676166</span>
@@ -10208,17 +10279,16 @@ Defaults to (0.1, 0.1).</p>
 <span class="sd">        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy</span>
 <span class="sd">            GeoAxesSubplot object.</span>
 <span class="sd">        length ([type], optional): Length of the scale car. Defaults to None.</span>
-<span class="sd">        xy (tuple, optional): Location of the north arrow. Each number representing the</span>
-<span class="sd">            percentage length of the map from the lower-left cornor.</span>
-<span class="sd">            Defaults to (0.1, 0.1).</span>
-<span class="sd">        linewidth (int, optional): Line width of the scale bar. Defaults to 3.</span>
-<span class="sd">        fontsize (int, optional): Text font size. Defaults to 20.</span>
-<span class="sd">        color (str, optional): Color for the scale bar. Defaults to &quot;black&quot;.</span>
-<span class="sd">        unit (str, optional): Length unit for the scale bar. Defaults to &quot;km&quot;.</span>
-<span class="sd">        ha (str, optional): Horizontal alignment. Defaults to &quot;center&quot;.</span>
-<span class="sd">        va (str, optional): Vertical alignment. Defaults to &quot;bottom&quot;.</span>
-<span class="sd">    &quot;&quot;&quot;</span>
+<span class="sd">        xy: Location of the north arrow. Each number representing the percentage length</span>
+<span class="sd">            of the map from the lower-left cornor.  Defaults to (0.1, 0.1).</span>
+<span class="sd">        linewidth: Line width of the scale bar. Defaults to 3.</span>
+<span class="sd">        fontsize: Text font size. Defaults to 20.</span>
+<span class="sd">        color: Color for the scale bar. Defaults to &quot;black&quot;.</span>
+<span class="sd">        unit: Length unit for the scale bar. Defaults to &quot;km&quot;.</span>
+<span class="sd">        ha: Horizontal alignment. Defaults to &quot;center&quot;.</span>
+<span class="sd">        va: Vertical alignment. Defaults to &quot;bottom&quot;.</span>
 
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">allow_units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cm&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;km&quot;</span><span class="p">,</span> <span class="s2">&quot;inch&quot;</span><span class="p">,</span> <span class="s2">&quot;foot&quot;</span><span class="p">,</span> <span class="s2">&quot;mile&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allow_units</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span>
@@ -10351,18 +10421,18 @@ Defaults to (0.1, 0.1).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">466</span>
-<span class="normal">467</span>
-<span class="normal">468</span>
-<span class="normal">469</span>
-<span class="normal">470</span>
-<span class="normal">471</span>
-<span class="normal">472</span>
-<span class="normal">473</span>
-<span class="normal">474</span>
-<span class="normal">475</span>
-<span class="normal">476</span>
-<span class="normal">477</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bbox_to_extent</span><span class="p">(</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">456</span>
+<span class="normal">457</span>
+<span class="normal">458</span>
+<span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
+<span class="normal">462</span>
+<span class="normal">463</span>
+<span class="normal">464</span>
+<span class="normal">465</span>
+<span class="normal">466</span>
+<span class="normal">467</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bbox_to_extent</span><span class="p">(</span>
     <span class="n">bbox</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reorder a list of coordinates from [W,S,E,N] to [W,E,S,N].</span>
@@ -10467,22 +10537,22 @@ specified visParams cannot contain 'palette' key.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">228</span>
+<span class="normal">229</span>
+<span class="normal">230</span>
+<span class="normal">231</span>
+<span class="normal">232</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span>
+<span class="normal">237</span>
+<span class="normal">238</span>
+<span class="normal">239</span>
+<span class="normal">240</span>
 <span class="normal">241</span>
 <span class="normal">242</span>
-<span class="normal">243</span>
-<span class="normal">244</span>
-<span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span>
-<span class="normal">248</span>
-<span class="normal">249</span>
-<span class="normal">250</span>
-<span class="normal">251</span>
-<span class="normal">252</span>
-<span class="normal">253</span>
-<span class="normal">254</span>
-<span class="normal">255</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_palette</span><span class="p">(</span><span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_palette</span><span class="p">(</span><span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates hex color code palette from a matplotlib colormap.</span>
 
 <span class="sd">    Args:</span>
@@ -10606,7 +10676,17 @@ specified visParams cannot contain 'palette' key.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">659</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">649</span>
+<span class="normal">650</span>
+<span class="normal">651</span>
+<span class="normal">652</span>
+<span class="normal">653</span>
+<span class="normal">654</span>
+<span class="normal">655</span>
+<span class="normal">656</span>
+<span class="normal">657</span>
+<span class="normal">658</span>
+<span class="normal">659</span>
 <span class="normal">660</span>
 <span class="normal">661</span>
 <span class="normal">662</span>
@@ -10615,17 +10695,7 @@ specified visParams cannot contain 'palette' key.</p>
 <span class="normal">665</span>
 <span class="normal">666</span>
 <span class="normal">667</span>
-<span class="normal">668</span>
-<span class="normal">669</span>
-<span class="normal">670</span>
-<span class="normal">671</span>
-<span class="normal">672</span>
-<span class="normal">673</span>
-<span class="normal">674</span>
-<span class="normal">675</span>
-<span class="normal">676</span>
-<span class="normal">677</span>
-<span class="normal">678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_SI</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">668</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_SI</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Unit converter.</span>
 
 <span class="sd">    Args:</span>
@@ -10759,6 +10829,36 @@ specified visParams cannot contain 'palette' key.</p>
           </tr>
           <tr class="doc-section-item">
             <td>
+                <code>cmap</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
+                <code>proj</code>
+            </td>
+            <td>
+            </td>
+            <td>
+              <div class="doc-md-description">
+                <p>TODO</p>
+              </div>
+            </td>
+            <td>
+                  <code>None</code>
+            </td>
+          </tr>
+          <tr class="doc-section-item">
+            <td>
                 <code>fps</code>
             </td>
             <td>
@@ -10846,7 +10946,7 @@ Defaults to "YYYY-MM-dd".</p>
                 <code>fig_size</code>
             </td>
             <td>
-                  <code><span title="tuple">tuple</span></code>
+                  <code><span title="tuple">tuple</span>[<span title="int">int</span>, <span title="int">int</span>]</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11015,7 +11115,20 @@ running. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1108</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1095</span>
+<span class="normal">1096</span>
+<span class="normal">1097</span>
+<span class="normal">1098</span>
+<span class="normal">1099</span>
+<span class="normal">1100</span>
+<span class="normal">1101</span>
+<span class="normal">1102</span>
+<span class="normal">1103</span>
+<span class="normal">1104</span>
+<span class="normal">1105</span>
+<span class="normal">1106</span>
+<span class="normal">1107</span>
+<span class="normal">1108</span>
 <span class="normal">1109</span>
 <span class="normal">1110</span>
 <span class="normal">1111</span>
@@ -11217,42 +11330,22 @@ running. Defaults to True.</p>
 <span class="normal">1307</span>
 <span class="normal">1308</span>
 <span class="normal">1309</span>
-<span class="normal">1310</span>
-<span class="normal">1311</span>
-<span class="normal">1312</span>
-<span class="normal">1313</span>
-<span class="normal">1314</span>
-<span class="normal">1315</span>
-<span class="normal">1316</span>
-<span class="normal">1317</span>
-<span class="normal">1318</span>
-<span class="normal">1319</span>
-<span class="normal">1320</span>
-<span class="normal">1321</span>
-<span class="normal">1322</span>
-<span class="normal">1323</span>
-<span class="normal">1324</span>
-<span class="normal">1325</span>
-<span class="normal">1326</span>
-<span class="normal">1327</span>
-<span class="normal">1328</span>
-<span class="normal">1329</span>
-<span class="normal">1330</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_image_collection_gif</span><span class="p">(</span>
+<span class="normal">1310</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_image_collection_gif</span><span class="p">(</span>
     <span class="n">ee_ic</span><span class="p">,</span>
-    <span class="n">out_dir</span><span class="p">,</span>
-    <span class="n">out_gif</span><span class="p">,</span>
+    <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+    <span class="n">out_gif</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">vis_params</span><span class="p">,</span>
     <span class="n">region</span><span class="p">,</span>
     <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-    <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">fps</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">10</span><span class="p">,</span>
+    <span class="n">mp4</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">grid_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
-    <span class="n">plot_title</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span>
-    <span class="n">date_format</span><span class="o">=</span><span class="s2">&quot;YYYY-MM-dd&quot;</span><span class="p">,</span>
-    <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
-    <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span>
-    <span class="n">file_format</span><span class="o">=</span><span class="s2">&quot;png&quot;</span><span class="p">,</span>
+    <span class="n">plot_title</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span>
+    <span class="n">date_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;YYYY-MM-dd&quot;</span><span class="p">,</span>
+    <span class="n">fig_size</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
+    <span class="n">dpi_plot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+    <span class="n">file_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span><span class="p">,</span>
     <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span>
     <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span>
@@ -11265,23 +11358,25 @@ running. Defaults to True.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_ic (object): ee.ImageCollection.</span>
-<span class="sd">        out_dir (str): The output directory of images and video.</span>
-<span class="sd">        out_gif (str): The name of the gif file.</span>
+<span class="sd">        out_dir: The output directory of images and video.</span>
+<span class="sd">        out_gif: The name of the gif file.</span>
 <span class="sd">        vis_params (dict): Visualization parameters as a dictionary.</span>
 <span class="sd">        region (list | tuple): Geospatial region of the image to render in format</span>
 <span class="sd">            [E,S,W,N].</span>
-<span class="sd">        fps (int, optional): Video frames per second. Defaults to 10.</span>
-<span class="sd">        mp4 (bool, optional): Whether to create mp4 video.</span>
+<span class="sd">        cmap: TODO</span>
+<span class="sd">        proj: TODO</span>
+<span class="sd">        fps: Video frames per second. Defaults to 10.</span>
+<span class="sd">        mp4: Whether to create mp4 video.</span>
 <span class="sd">        grid_interval (float | tuple[float]): Interval at which to create gridlines,</span>
 <span class="sd">            units are decimal degrees. Lists will be interpreted a (x_interval,</span>
 <span class="sd">            y_interval), such as (0.1, 0.1). Defaults to None.</span>
-<span class="sd">        plot_title (str): Plot title. Defaults to &quot;&quot;.</span>
-<span class="sd">        date_format (str, optional): A pattern, as described at</span>
+<span class="sd">        plot_title: Plot title. Defaults to &quot;&quot;.</span>
+<span class="sd">        date_format: A pattern, as described at</span>
 <span class="sd">            http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html.</span>
 <span class="sd">            Defaults to &quot;YYYY-MM-dd&quot;.</span>
-<span class="sd">        fig_size (tuple, optional): Size of the figure.</span>
-<span class="sd">        dpi_plot (int, optional): The resolution in dots per inch of the plot.</span>
-<span class="sd">        file_format (str, optional): Either &#39;png&#39; or &#39;jpg&#39;. Defaults to &#39;png&#39;.</span>
+<span class="sd">        fig_size: Size of the figure.</span>
+<span class="sd">        dpi_plot: The resolution in dots per inch of the plot.</span>
+<span class="sd">        file_format: Either &#39;png&#39; or &#39;jpg&#39;. Defaults to &#39;png&#39;.</span>
 <span class="sd">        north_arrow_dict (dict, optional): Parameters for the north arrow. See</span>
 <span class="sd">            https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow.</span>
 <span class="sd">            Defaults to {}.</span>
@@ -11299,8 +11394,6 @@ running. Defaults to True.</p>
 <span class="sd">            running. Defaults to True.</span>
 <span class="sd">        **kwargs: Additional keyword arguments are passed to the add_layer() function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">from</span><span class="w"> </span><span class="nn">.geemap</span><span class="w"> </span><span class="kn">import</span> <span class="n">png_to_gif</span><span class="p">,</span> <span class="n">jpg_to_gif</span>
-
     <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
@@ -11402,22 +11495,16 @@ running. Defaults to True.</p>
 
     <span class="n">out_gif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">out_gif</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">file_format</span> <span class="o">==</span> <span class="s2">&quot;png&quot;</span><span class="p">:</span>
-        <span class="n">png_to_gif</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">fps</span><span class="p">)</span>
+        <span class="n">common</span><span class="o">.</span><span class="n">png_to_gif</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">fps</span><span class="p">)</span>
     <span class="k">elif</span> <span class="n">file_format</span> <span class="o">==</span> <span class="s2">&quot;jpg&quot;</span><span class="p">:</span>
-        <span class="n">jpg_to_gif</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">fps</span><span class="p">)</span>
+        <span class="n">common</span><span class="o">.</span><span class="n">jpg_to_gif</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">fps</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">verbose</span><span class="p">:</span>
         <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;GIF saved to </span><span class="si">{</span><span class="n">out_gif</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">mp4</span><span class="p">:</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
+
         <span class="n">video_filename</span> <span class="o">=</span> <span class="n">out_gif</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.gif&quot;</span><span class="p">,</span> <span class="s2">&quot;.mp4&quot;</span><span class="p">)</span>
-
-        <span class="k">try</span><span class="p">:</span>
-            <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
-        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Installing opencv-python ...&quot;</span><span class="p">)</span>
-            <span class="n">subprocess</span><span class="o">.</span><span class="n">check_call</span><span class="p">([</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="s2">&quot;pip&quot;</span><span class="p">,</span> <span class="s2">&quot;install&quot;</span><span class="p">,</span> <span class="s2">&quot;opencv-python&quot;</span><span class="p">])</span>
-            <span class="kn">import</span><span class="w"> </span><span class="nn">cv2</span>
-
         <span class="n">output_video_file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">video_filename</span><span class="p">)</span>
 
         <span class="n">frame</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">img_list</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
@@ -11425,19 +11512,18 @@ running. Defaults to True.</p>
         <span class="n">frame_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
         <span class="n">fps_video</span> <span class="o">=</span> <span class="n">fps</span>
 
-        <span class="c1"># Make mp4</span>
+        <span class="c1"># Make mp4.</span>
         <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">&quot;mp4v&quot;</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">convert_frames_to_video</span><span class="p">(</span>
-            <span class="n">input_list</span><span class="p">,</span> <span class="n">output_video_file_name</span><span class="p">,</span> <span class="n">fps_video</span><span class="p">,</span> <span class="n">frame_size</span>
+            <span class="n">input_list</span><span class="p">,</span> <span class="n">output_video_file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fps_video</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">frame_size</span>
         <span class="p">):</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Convert frames to video</span>
 
 <span class="sd">            Args:</span>
 <span class="sd">                input_list (list): Downloaded Image Name List.</span>
-<span class="sd">                output_video_file_name (str): The name of the video file in the image</span>
-<span class="sd">                    directory.</span>
-<span class="sd">                fps_video (int): Video frames per second.</span>
+<span class="sd">                output_video_file_name: Name of the video file in the image directory.</span>
+<span class="sd">                fps_video: Video frames per second.</span>
 <span class="sd">                frame_size (tuple): Frame size.</span>
 <span class="sd">            &quot;&quot;&quot;</span>
             <span class="n">out</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter</span><span class="p">(</span><span class="n">output_video_file_name</span><span class="p">,</span> <span class="n">fourcc</span><span class="p">,</span> <span class="n">fps_video</span><span class="p">,</span> <span class="n">frame_size</span><span class="p">)</span>
@@ -11606,7 +11692,18 @@ Earth Engine results displayed.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 47</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 36</span>
+<span class="normal"> 37</span>
+<span class="normal"> 38</span>
+<span class="normal"> 39</span>
+<span class="normal"> 40</span>
+<span class="normal"> 41</span>
+<span class="normal"> 42</span>
+<span class="normal"> 43</span>
+<span class="normal"> 44</span>
+<span class="normal"> 45</span>
+<span class="normal"> 46</span>
+<span class="normal"> 47</span>
 <span class="normal"> 48</span>
 <span class="normal"> 49</span>
 <span class="normal"> 50</span>
@@ -11659,18 +11756,7 @@ Earth Engine results displayed.</p>
 <span class="normal"> 97</span>
 <span class="normal"> 98</span>
 <span class="normal"> 99</span>
-<span class="normal">100</span>
-<span class="normal">101</span>
-<span class="normal">102</span>
-<span class="normal">103</span>
-<span class="normal">104</span>
-<span class="normal">105</span>
-<span class="normal">106</span>
-<span class="normal">107</span>
-<span class="normal">108</span>
-<span class="normal">109</span>
-<span class="normal">110</span>
-<span class="normal">111</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_map</span><span class="p">(</span>
+<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_map</span><span class="p">(</span>
     <span class="n">ee_object</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">basemap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">zoom_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a new cartopy plot with project and adds Earth Engine image results.</span>
@@ -11806,7 +11892,17 @@ interpreted at [xfactor, yfactor].</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">586</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">576</span>
+<span class="normal">577</span>
+<span class="normal">578</span>
+<span class="normal">579</span>
+<span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
+<span class="normal">584</span>
+<span class="normal">585</span>
+<span class="normal">586</span>
 <span class="normal">587</span>
 <span class="normal">588</span>
 <span class="normal">589</span>
@@ -11821,17 +11917,7 @@ interpreted at [xfactor, yfactor].</p>
 <span class="normal">598</span>
 <span class="normal">599</span>
 <span class="normal">600</span>
-<span class="normal">601</span>
-<span class="normal">602</span>
-<span class="normal">603</span>
-<span class="normal">604</span>
-<span class="normal">605</span>
-<span class="normal">606</span>
-<span class="normal">607</span>
-<span class="normal">608</span>
-<span class="normal">609</span>
-<span class="normal">610</span>
-<span class="normal">611</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">601</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pad area around the view extent of a map, used for visual appeal.</span>
 
 <span class="sd">    Args:</span>
@@ -11931,8 +12017,8 @@ more details.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The resolution in dots per inch. If 'figure', use the
-figure's dpi value. Defaults to 'figure'.</p>
+                <p>The resolution in dots per inch. If 'figure', use the figure's dpi
+value. Defaults to 'figure'.</p>
               </div>
             </td>
             <td>
@@ -11948,9 +12034,8 @@ figure's dpi value. Defaults to 'figure'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Bounding box in inches: only the given portion of
-the figure is saved.  If 'tight', try to figure out the tight bbox of the
-figure.</p>
+                <p>Bounding box in inches: only the given portion of the figure is
+saved.  If 'tight', try to figure out the tight bbox of the figure.</p>
               </div>
             </td>
             <td>
@@ -11962,12 +12047,10 @@ figure.</p>
                 <code>kwargs</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Additional keyword arguments are passed on to the
-savefig() method.</p>
+                <p>Additional keyword arguments are passed on to the savefig() method.</p>
               </div>
             </td>
             <td>
@@ -11980,25 +12063,27 @@ savefig() method.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1333</span>
-<span class="normal">1334</span>
-<span class="normal">1335</span>
-<span class="normal">1336</span>
-<span class="normal">1337</span>
-<span class="normal">1338</span>
-<span class="normal">1339</span>
-<span class="normal">1340</span>
-<span class="normal">1341</span>
-<span class="normal">1342</span>
-<span class="normal">1343</span>
-<span class="normal">1344</span>
-<span class="normal">1345</span>
-<span class="normal">1346</span>
-<span class="normal">1347</span>
-<span class="normal">1348</span>
-<span class="normal">1349</span>
-<span class="normal">1350</span>
-<span class="normal">1351</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">savefig</span><span class="p">(</span><span class="n">fig</span><span class="p">,</span> <span class="n">fname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="s2">&quot;figure&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s2">&quot;tight&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1313</span>
+<span class="normal">1314</span>
+<span class="normal">1315</span>
+<span class="normal">1316</span>
+<span class="normal">1317</span>
+<span class="normal">1318</span>
+<span class="normal">1319</span>
+<span class="normal">1320</span>
+<span class="normal">1321</span>
+<span class="normal">1322</span>
+<span class="normal">1323</span>
+<span class="normal">1324</span>
+<span class="normal">1325</span>
+<span class="normal">1326</span>
+<span class="normal">1327</span>
+<span class="normal">1328</span>
+<span class="normal">1329</span>
+<span class="normal">1330</span>
+<span class="normal">1331</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">savefig</span><span class="p">(</span>
+    <span class="n">fig</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;figure&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tight&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save figure to file. It wraps the matplotlib.pyplot.savefig() function.</span>
 
 <span class="sd">    See https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.savefig.html for</span>
@@ -12006,14 +12091,12 @@ savefig() method.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fig (matplotlib.figure.Figure): The figure to save.</span>
-<span class="sd">        fname (str): A path to a file, or a Python file-like object.</span>
-<span class="sd">        dpi (int | str, optional): The resolution in dots per inch. If &#39;figure&#39;, use the</span>
-<span class="sd">            figure&#39;s dpi value. Defaults to &#39;figure&#39;.</span>
-<span class="sd">        bbox_inches (str, optional): Bounding box in inches: only the given portion of</span>
-<span class="sd">            the figure is saved.  If &#39;tight&#39;, try to figure out the tight bbox of the</span>
-<span class="sd">            figure.</span>
-<span class="sd">        kwargs (dict, optional): Additional keyword arguments are passed on to the</span>
-<span class="sd">            savefig() method.</span>
+<span class="sd">        fname: A path to a file, or a Python file-like object.</span>
+<span class="sd">        dpi: The resolution in dots per inch. If &#39;figure&#39;, use the figure&#39;s dpi</span>
+<span class="sd">            value. Defaults to &#39;figure&#39;.</span>
+<span class="sd">        bbox_inches: Bounding box in inches: only the given portion of the figure is</span>
+<span class="sd">            saved.  If &#39;tight&#39;, try to figure out the tight bbox of the figure.</span>
+<span class="sd">        kwargs: Additional keyword arguments are passed on to the savefig() method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">fname</span><span class="o">=</span><span class="n">fname</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="n">dpi</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="n">bbox_inches</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
