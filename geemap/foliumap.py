@@ -2080,8 +2080,7 @@ class Map(folium.Map):
         if bidirectional:
             from streamlit_folium import st_folium
 
-            output = st_folium(self, width=width, height=height)
-            return output
+            return st_folium(self, width=width, height=height)
         else:
             # if responsive:
             #     make_map_responsive = """
@@ -2478,7 +2477,7 @@ class Map(folium.Map):
         vmin: float | None = None,
         vmax: float | None = None,
         nodata: float | None = None,
-        attribution: str = None,
+        attribution: str | None = None,
         layer_name: str = "NetCDF layer",
         shift_lon: bool = True,
         lat: str = "lat",
@@ -2498,7 +2497,6 @@ class Map(folium.Map):
             filename: File path or HTTP URL to the netCDF file.
             variables: The variable/band names to extract data from the netCDF
                 file. Defaults to None. If None, all variables will be extracted.
-            port: The port to use for the server. Defaults to "default".
             palette: The name of the color palette from `palettable` to use when
                 plotting a single band. See
                 https://jiffyclub.github.io/palettable. Default is greyscale
