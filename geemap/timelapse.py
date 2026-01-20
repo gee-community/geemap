@@ -21,6 +21,7 @@ import matplotlib.dates as mdates
 import matplotlib.pyplot as plt
 
 from .common import *
+from . import colormaps
 from . import coreutils
 
 try:
@@ -214,23 +215,15 @@ def merge_gifs(in_gifs: str | list[str], out_gif: str) -> None:
     Raises:
         Exception:  Raise exception when gifsicle is not installed.
     """
-    try:
-        if isinstance(in_gifs, str) and os.path.isdir(in_gifs):
-            in_gifs = glob.glob(os.path.join(in_gifs, "*.gif"))
-        elif not isinstance(in_gifs, list):
-            raise Exception("in_gifs must be a list.")
+    if isinstance(in_gifs, str) and os.path.isdir(in_gifs):
+        in_gifs = glob.glob(os.path.join(in_gifs, "*.gif"))
+    elif not isinstance(in_gifs, list):
+        raise Exception("in_gifs must be a list.")
 
-        in_gifs = " ".join(in_gifs)
+    in_gifs = " ".join(in_gifs)
 
-        cmd = f"gifsicle {in_gifs} > {out_gif}"
-        os.system(cmd)
-
-    except Exception as e:
-        print(
-            "gifsicle is not installed. "
-            "Run 'sudo apt-get install -y gifsicle' to install it."
-        )
-        print(e)
+    cmd = f"gifsicle {in_gifs} > {out_gif}"
+    os.system(cmd)
 
 
 def gif_to_png(
@@ -700,31 +693,44 @@ def reduce_gif_size(in_gif: str, out_gif: str | None = None) -> None:
 
 def create_timeseries(
     collection,
-    start_date,
-    end_date,
+    start_date: str,
+    end_date: str,
     region=None,
     bands=None,
-    frequency="year",
-    reducer="median",
-    drop_empty=True,
-    date_format=None,
-    parallel_scale=1,
-    step=1,
+    frequency: str = "year",
+    reducer: str = "median",
+    drop_empty: bool = True,
+    date_format: str | None = None,
+    parallel_scale: int = 1,
+    step: int = 1,
 ):
     """Creates a timeseries from a collection of images by a specified frequency and reducer.
 
     Args:
-        collection (str | ee.ImageCollection): The collection of images to create a timeseries from. It can be a string representing the collection ID or an ee.ImageCollection object.
-        start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
-        end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
-        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
-        bands (list, optional): The list of bands to use to create the timeseries. It must be a list of strings. Defaults to None.
-        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
-        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
-        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
-        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
-        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
-        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
+        collection (str | ee.ImageCollection): The collection of images to create a
+            timeseries from. It can be a string representing the collection ID or an
+            ee.ImageCollection object.
+        start_date: The start date of the timeseries. It must be formatted like this:
+            'YYYY-MM-dd'.
+        end_date: The end date of the timeseries. It must be formatted like this:
+            'YYYY-MM-dd'.
+        region (ee.Geometry, optional): The region to use to filter the collection of
+            images. It must be an ee.Geometry object. Defaults to None.
+        bands (list, optional): The list of bands to use to create the timeseries. It
+            must be a list of strings. Defaults to None.
+        frequency: The frequency of the timeseries. It must be one of the following:
+            'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
+        reducer: The reducer to use to reduce the collection of images to a single
+            value. It can be one of the following: 'median', 'mean', 'min', 'max',
+            'variance', 'sum'. Defaults to 'median'.
+        drop_empty: Whether to drop empty images from the timeseries. Defaults to True.
+        date_format: A pattern, as described at
+            http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults
+            to 'YYYY-MM-dd'.
+        parallel_scale: A scaling factor used to limit memory use; using a larger
+            parallel_scale (e.g. 2 or 4) may enable computations that run out of memory
+            with the default. Defaults to 1.
+        step: The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
         ee.ImageCollection: The timeseries.
@@ -804,108 +810,139 @@ def create_timeseries(
 
 def create_timelapse(
     collection,
-    start_date,
-    end_date,
+    start_date: str,
+    end_date: str,
     region=None,
     bands=None,
-    frequency="year",
-    reducer="median",
-    date_format=None,
-    out_gif=None,
+    frequency: str = "year",
+    reducer: str = "median",
+    date_format: str | None = None,
+    out_gif: str | None = None,
     palette=None,
     vis_params=None,
-    dimensions=768,
-    frames_per_second=10,
-    crs="EPSG:3857",
+    dimensions: int = 768,
+    frames_per_second: int = 10,
+    crs: str = "EPSG:3857",
     overlay_data=None,
-    overlay_color="black",
-    overlay_width=1,
-    overlay_opacity=1.0,
-    title=None,
-    title_xy=("2%", "90%"),
-    add_text=True,
-    text_xy=("2%", "2%"),
+    overlay_color: str = "black",
+    overlay_width: int = 1,
+    overlay_opacity: float = 1.0,
+    title: str | None = None,
+    title_xy: tuple[str, str] = ("2%", "90%"),
+    add_text: bool = True,
+    text_xy: tuple[str, str] = ("2%", "2%"),
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
-    font_color="white",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    add_colorbar=False,
-    colorbar_width=6.0,
-    colorbar_height=0.4,
-    colorbar_label=None,
-    colorbar_label_size=12,
-    colorbar_label_weight="normal",
-    colorbar_tick_size=10,
-    colorbar_bg_color=None,
-    colorbar_orientation="horizontal",
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
+    font_color: str = "white",
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    add_colorbar: bool = False,
+    colorbar_width: float = 6.0,
+    colorbar_height: float = 0.4,
+    colorbar_label: str | None = None,
+    colorbar_label_size: int = 12,
+    colorbar_label_weight: str = "normal",
+    colorbar_tick_size: int = 10,
+    colorbar_bg_color: str | None = None,
+    colorbar_orientation: str = "horizontal",
     colorbar_dpi="figure",
     colorbar_xy=None,
     colorbar_size=(300, 300),
-    loop=0,
-    mp4=False,
-    fading=False,
-    parallel_scale=1,
-    step=1,
+    loop: int = 0,
+    mp4: bool = False,
+    fading: bool = False,
+    parallel_scale: int = 1,
+    step: int = 1,
 ):
     """Create a timelapse from any ee.ImageCollection.
 
     Args:
-        collection (str | ee.ImageCollection): The collection of images to create a timeseries from. It can be a string representing the collection ID or an ee.ImageCollection object.
-        start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
-        end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
-        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
-        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
-        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
-        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
-        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
-        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
-        out_gif (str): The output gif file path. Defaults to None.
-        palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
-        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 10.
-        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
-        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        title (str, optional): The title of the timelapse. Defaults to None.
-        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
-        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        add_colorbar (bool, optional): Whether to add a colorbar to the timelapse. Defaults to False.
-        colorbar_width (float, optional): Width of the colorbar. Defaults to 6.0.
-        colorbar_height (float, optional): Height of the colorbar. Defaults to 0.4.
-        colorbar_label (str, optional): Label for the colorbar. Defaults to None.
-        colorbar_label_size (int, optional): Font size for the colorbar label. Defaults to 12.
-        colorbar_label_weight (str, optional): Font weight for the colorbar label. Defaults to 'normal'.
-        colorbar_tick_size (int, optional): Font size for the colorbar ticks. Defaults to 10.
-        colorbar_bg_color (str, optional): Background color for the colorbar, can be color like "white", "black". Defaults to None.
-        colorbar_orientation (str, optional): Orientation of the colorbar. Defaults to 'horizontal'.
-        colorbar_dpi (str, optional): DPI for the colorbar, can be numbers like 100, 300. Defaults to 'figure'.
-        colorbar_xy (tuple, optional): Lower left corner of the colorbar. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300). Defaults to (300, 300).
-        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
-        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
-        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
+        collection (str | ee.ImageCollection): The collection of images to create a
+            timeseries from. It can be a string representing the collection ID or an
+            ee.ImageCollection object.
+        start_date: The start date of the timeseries. It must be formatted like this:
+            'YYYY-MM-dd'.
+        end_date: The end date of the timeseries. It must be formatted like this:
+            'YYYY-MM-dd'.
+        region (ee.Geometry, optional): The region to use to filter the collection of
+            images. It must be an ee.Geometry object. Defaults to None.
+        bands (list, optional): A list of band names to use in the timelapse. Defaults
+            to None.
+        frequency: The frequency of the timeseries. It must be one of the following:
+            'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
+        reducer: The reducer to use to reduce the collection of images to a single
+            value. It can be one of the following: 'median', 'mean', 'min', 'max',
+            'variance', 'sum'. Defaults to 'median'.
+        date_format: A pattern, as described at
+            http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults
+            to 'YYYY-MM-dd'.
+        out_gif: The output gif file path. Defaults to None.
+        palette (list, optional): A list of colors to render a single-band image in the
+            timelapse. Defaults to None.
+        vis_params (dict, optional): A dictionary of visualization parameters to use in
+            the timelapse. Defaults to None. See more at
+            https://developers.google.com/earth-engine/guides/image_visualization.
+        dimensions: a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum
+            dimensions of the thumbnail to render, in pixels. If only one number is
+            passed, it is used as the maximum, and the other dimension is computed by
+            proportional scaling. Defaults to 768.
+        frames_per_second: Animation speed. Defaults to 10.
+        crs: The coordinate reference system to use. Defaults to "EPSG:3857".
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on
+            the timelapse. Defaults to None.
+        overlay_color: Color for the overlay data. Can be any color name or hex color
+            code. Defaults to 'black'.
+        overlay_width: Width of the overlay. Defaults to 1.
+        overlay_opacity: Opacity of the overlay. Defaults to 1.0.
+        title: The title of the timelapse. Defaults to None.
+        title_xy: Lower left corner of the title. It can be formatted like this: (10,
+            10) or ('15%', '25%'). Defaults to None.
+        add_text: Whether to add animated text to the timelapse. Defaults to True.
+        title_xy: Lower left corner of the text sequency. It can be formatted like this:
+            (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer
+            number, a string, or a list of strings. Defaults to None.
+        font_type: Font type. Defaults to "arial.ttf".
+        font_size: Font size. Defaults to 20.
+        font_color: Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255,
+            127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar: Whether to add a progress bar at the bottom of the
+            GIF. Defaults to True.
+        progress_bar_color: Color for the progress bar. Defaults to 'white'.
+        progress_bar_height: Height of the progress bar. Defaults to 5.
+        add_colorbar: Whether to add a colorbar to the timelapse. Defaults to False.
+        colorbar_width: Width of the colorbar. Defaults to 6.0.
+        colorbar_height: Height of the colorbar. Defaults to 0.4.
+        colorbar_label: Label for the colorbar. Defaults to None.
+        colorbar_label_size: Font size for the colorbar label. Defaults to 12.
+        colorbar_label_weight: Font weight for the colorbar label. Defaults to 'normal'.
+        colorbar_tick_size: Font size for the colorbar ticks. Defaults to 10.
+        colorbar_bg_color: Background color for the colorbar, can be color like "white",
+            "black". Defaults to None.
+        colorbar_orientation: Orientation of the colorbar. Defaults to 'horizontal'.
+        colorbar_dpi (str, optional): DPI for the colorbar, can be numbers like 100,
+            300. Defaults to 'figure'.
+        colorbar_xy (tuple, optional): Lower left corner of the colorbar. It can be
+            formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like
+            this: (300, 300). Defaults to (300, 300).
+        loop: Controls how many times the animation repeats. The default, 1, means that
+            the animation will play once and then stop (displaying the last frame). A
+            value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4: Whether to create an mp4 file. Defaults to False.
+        fading: If True, add fading effect to the timelapse. Defaults to False, no
+            fading. To add fading effect, set it to True (1 second fading duration) or
+            to an integer value (fading duration).
+        parallel_scale: A scaling factor used to limit memory use; using a larger
+            parallel_scale (e.g. 2 or 4) may enable computations that run out of memory
+            with the default. Defaults to 1.
+        step: The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
         str: File path to the timelapse gif.
     """
-    import geemap.colormaps as cm
-
     if not isinstance(collection, ee.ImageCollection):
         if isinstance(collection, str):
             collection = ee.ImageCollection(collection)
@@ -954,7 +991,7 @@ def create_timelapse(
         raise Exception("The bands must be a string or a list of strings.")
 
     if isinstance(palette, str):
-        palette = cm.get_palette(palette, 15)
+        palette = colormaps.get_palette(palette, 15)
     elif isinstance(palette, list) or isinstance(palette, tuple):
         pass
     elif palette is not None:
@@ -975,7 +1012,7 @@ def create_timelapse(
             if palette is not None:
                 vis_params["palette"] = palette
             else:
-                vis_params["palette"] = cm.palettes.ndvi
+                vis_params["palette"] = colormaps.palettes.ndvi
     elif isinstance(vis_params, dict):
         if "bands" not in vis_params:
             vis_params["bands"] = bands
@@ -996,7 +1033,7 @@ def create_timelapse(
                 image_max_value(img, region=region, scale=scale).getInfo().values()
             )
         if palette is None and (len(bands) == 1) and ("palette" not in vis_params):
-            vis_params["palette"] = cm.palettes.ndvi
+            vis_params["palette"] = colormaps.palettes.ndvi
         elif palette is not None and ("palette" not in vis_params):
             vis_params["palette"] = palette
         if len(bands) > 1 and "palette" in vis_params:
