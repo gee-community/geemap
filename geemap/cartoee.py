@@ -912,7 +912,7 @@ def add_scale_bar_lite(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object.
-        length: Length of the scale car. Defaults to None.
+        length ([type], optional): Length of the scale car. Defaults to None.
         xy: Location of the north arrow. Each number representing the percentage length
             of the map from the lower-left cornor.  Defaults to (0.1, 0.1).
         linewidth: Line width of the scale bar. Defaults to 3.
