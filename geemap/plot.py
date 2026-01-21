@@ -26,7 +26,7 @@ def bar_chart(
     legend_title: str | None = None,
     width: int | None = None,
     height: int = 500,
-    layout_args={},
+    layout_args: dict | None = None,
     **kwargs,
 ):
     """Create a bar chart with plotly.express,
@@ -64,8 +64,8 @@ def bar_chart(
         legend_title: Title for the legend. Defaults to None.
         width: Width of the plot in pixels. Defaults to None.
         height: Height of the plot in pixels. Defaults to 500.
-        layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
-            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to None.
+        layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
+            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
             pattern_shape: str or int or Series or array-like
                 Either a name of a column in `data_frame`, or a pandas Series or
@@ -276,6 +276,9 @@ def bar_chart(
         elif isinstance(y, list):
             labels[y[0]] = y_label  # pytype: disable=unsupported-operands
 
+    if layout_args is None:
+        layout_args = {}
+
     if isinstance(legend_title, str):
         if "legend" not in layout_args:
             layout_args["legend"] = {}
@@ -315,7 +318,7 @@ def line_chart(
     legend_title: str | None = None,
     width: int | None = None,
     height: int = 500,
-    layout_args={},
+    layout_args: dict | None = None,
     **kwargs,
 ):
     """Create a line chart with plotly.express,
@@ -352,8 +355,8 @@ def line_chart(
         legend_title: Title for the legend. Defaults to None.
         width: Width of the plot in pixels. Defaults to None.
         height: Height of the plot in pixels. Defaults to 500.
-        layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
-            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to None.
+        layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
+            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
 
             pattern_shape: str or int or Series or array-like
@@ -555,6 +558,9 @@ def line_chart(
     if y_label is not None:
         labels[y] = y_label
 
+    if layout_args is None:
+        layout_args = {}
+
     if isinstance(legend_title, str):
         if "legend" not in layout_args:
             layout_args["legend"] = {}
@@ -593,7 +599,7 @@ def histogram(
     title: str | None = None,
     width: int | None = None,
     height: int = 500,
-    layout_args={},
+    layout_args: dict | None = None,
     **kwargs,
 ):
     """Create a line chart with plotly.express,
@@ -629,10 +635,9 @@ def histogram(
         title: Title for the plot. Defaults to None.
         width: Width of the plot in pixels. Defaults to None.
         height: Height of the plot in pixels. Defaults to 500.
-        layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
-            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to None.
+        layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
+            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
-
             pattern_shape: str or int or Series or array-like
                 Either a name of a column in `data_frame`, or a pandas Series or
                 array_like object. Values from this column or array_like are used to
@@ -873,7 +878,7 @@ def pie_chart(
     height: int | None = None,
     opacity: float | None = None,
     hole: float | None = None,
-    layout_args={},
+    layout_args: dict | None = None,
     **kwargs,
 ):
     """Create a plotly pie chart.
@@ -946,6 +951,7 @@ def pie_chart(
         opacity: Value between 0 and 1. Sets the opacity for markers.
         hole: Fraction of the radius to cut out of the pie. Use this to make a donut
             chart.
+        layout_args: TODO
 
     Returns:
         plotly.graph_objs._figure.Figure: A plotly figure object.
@@ -975,6 +981,9 @@ def pie_chart(
         max_rows = min(len(data), max_rows) - 2
         value = data.iloc[max_rows][values]
         data.loc[data[values] < value, names] = other_label
+
+    if layout_args is None:
+        layout_args = {}
 
     if isinstance(legend_title, str):
         if "legend" not in layout_args:
