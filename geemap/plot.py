@@ -239,10 +239,7 @@ def bar_chart(
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
-        try:
-            data = pd.read_csv(data)
-        except Exception as e:
-            raise ValueError(f"Could not read data from {data}. {e}")
+        data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
         raise ValueError(
@@ -284,25 +281,22 @@ def bar_chart(
             layout_args["legend"] = {}
         layout_args["legend"]["title"] = legend_title
 
-    try:
-        fig = px.bar(
-            data,
-            x=x,
-            y=y,
-            color=color,
-            labels=labels,
-            title=title,
-            width=width,
-            height=height,
-            **kwargs,
-        )
+    fig = px.bar(
+        data,
+        x=x,
+        y=y,
+        color=color,
+        labels=labels,
+        title=title,
+        width=width,
+        height=height,
+        **kwargs,
+    )
 
-        if isinstance(layout_args, dict):
-            fig.update_layout(**layout_args)
+    if isinstance(layout_args, dict):
+        fig.update_layout(**layout_args)
 
-        return fig
-    except Exception as e:
-        raise ValueError(f"Could not create bar plot. {e}")
+    return fig
 
 
 def line_chart(
@@ -531,10 +525,7 @@ def line_chart(
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
-        try:
-            data = pd.read_csv(data)
-        except Exception as e:
-            raise ValueError(f"Could not read data from {data}. {e}")
+        data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
         raise ValueError(
@@ -566,25 +557,22 @@ def line_chart(
             layout_args["legend"] = {}
         layout_args["legend"]["title"] = legend_title
 
-    try:
-        fig = px.line(
-            data,
-            x=x,
-            y=y,
-            color=color,
-            labels=labels,
-            title=title,
-            width=width,
-            height=height,
-            **kwargs,
-        )
+    fig = px.line(
+        data,
+        x=x,
+        y=y,
+        color=color,
+        labels=labels,
+        title=title,
+        width=width,
+        height=height,
+        **kwargs,
+    )
 
-        if isinstance(layout_args, dict):
-            fig.update_layout(**layout_args)
+    if isinstance(layout_args, dict):
+        fig.update_layout(**layout_args)
 
-        return fig
-    except Exception as e:
-        raise ValueError(f"Could not create bar plot. {e}")
+    return fig
 
 
 def histogram(
@@ -810,10 +798,7 @@ def histogram(
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
-        try:
-            data = pd.read_csv(data)
-        except Exception as e:
-            raise ValueError(f"Could not read data from {data}. {e}")
+        data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
         raise ValueError(
@@ -836,25 +821,22 @@ def histogram(
     if y_label is not None:
         labels[y] = y_label
 
-    try:
-        fig = px.histogram(
-            data,
-            x=x,
-            y=y,
-            color=color,
-            labels=labels,
-            title=title,
-            width=width,
-            height=height,
-            **kwargs,
-        )
+    fig = px.histogram(
+        data,
+        x=x,
+        y=y,
+        color=color,
+        labels=labels,
+        title=title,
+        width=width,
+        height=height,
+        **kwargs,
+    )
 
-        if isinstance(layout_args, dict):
-            fig.update_layout(**layout_args)
+    if isinstance(layout_args, dict):
+        fig.update_layout(**layout_args)
 
-        return fig
-    except Exception as e:
-        raise ValueError(f"Could not create bar plot. {e}")
+    return fig
 
 
 def pie_chart(
@@ -961,10 +943,7 @@ def pie_chart(
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
-        try:
-            data = pd.read_csv(data)
-        except Exception as e:
-            raise ValueError(f"Could not read data from {data}. {e}")
+        data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
         raise ValueError(
@@ -990,30 +969,27 @@ def pie_chart(
             layout_args["legend"] = {}
         layout_args["legend"]["title"] = legend_title
 
-    try:
-        fig = px.pie(
-            data_frame=data,
-            names=names,
-            values=values,
-            color=color,
-            color_discrete_sequence=color_discrete_sequence,
-            color_discrete_map=color_discrete_map,
-            hover_name=hover_name,
-            hover_data=hover_data,
-            custom_data=custom_data,
-            labels=labels,
-            title=title,
-            template=template,
-            width=width,
-            height=height,
-            opacity=opacity,
-            hole=hole,
-            **kwargs,
-        )
+    fig = px.pie(
+        data_frame=data,
+        names=names,
+        values=values,
+        color=color,
+        color_discrete_sequence=color_discrete_sequence,
+        color_discrete_map=color_discrete_map,
+        hover_name=hover_name,
+        hover_data=hover_data,
+        custom_data=custom_data,
+        labels=labels,
+        title=title,
+        template=template,
+        width=width,
+        height=height,
+        opacity=opacity,
+        hole=hole,
+        **kwargs,
+    )
 
-        if isinstance(layout_args, dict):
-            fig.update_layout(**layout_args)
+    if isinstance(layout_args, dict):
+        fig.update_layout(**layout_args)
 
-        return fig
-    except Exception as e:
-        raise Exception(f"Could not create pie chart. {e}")
+    return fig
