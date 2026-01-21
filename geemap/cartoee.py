@@ -914,14 +914,13 @@ def add_scale_bar_lite(
             GeoAxesSubplot object.
         length ([type], optional): Length of the scale car. Defaults to None.
         xy: Location of the north arrow. Each number representing the percentage length
-            of the map from the lower-left cornor.  Defaults to (0.1, 0.1).
+            of the map from the lower-left corner. Defaults to (0.1, 0.1).
         linewidth: Line width of the scale bar. Defaults to 3.
         fontsize: Text font size. Defaults to 20.
         color: Color for the scale bar. Defaults to "black".
         unit: Length unit for the scale bar. Defaults to "km".
         ha: Horizontal alignment. Defaults to "center".
         va: Vertical alignment. Defaults to "bottom".
-
     """
     allow_units = ["cm", "m", "km", "inch", "foot", "mile"]
     if unit not in allow_units:
@@ -1035,7 +1034,7 @@ def add_legend(
             cartopy GeoAxesSubplot object.
         legend_elements (list, optional): A list of legend elements. Defaults to None.
         loc: Location of the legend, can be any of ['upper left', 'upper right', 'lower
-            left', 'lower right'].  Defaults to "lower right".
+            left', 'lower right']. Defaults to "lower right".
         font_size: Font size. Either an absolute font size or an relative value of
             'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large',
             'xx-large'. Defaults to 14.
@@ -1324,7 +1323,7 @@ def savefig(
         dpi: The resolution in dots per inch. If 'figure', use the figure's dpi
             value. Defaults to 'figure'.
         bbox_inches: Bounding box in inches: only the given portion of the figure is
-            saved.  If 'tight', try to figure out the tight bbox of the figure.
+            saved. If 'tight', try to figure out the tight bbox of the figure.
         kwargs: Additional keyword arguments are passed on to the savefig() method.
     """
 
