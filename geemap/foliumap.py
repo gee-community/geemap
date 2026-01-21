@@ -460,7 +460,7 @@ class Map(folium.Map):
             popup: The popup text. Defaults to None.
             tooltip: The tooltip text. Defaults to None.
             icon: The icon to use. Defaults to None.
-            draggable: Whether the marker is draggable.  Defaults to False.
+            draggable: Whether the marker is draggable. Defaults to False.
         """
         if isinstance(location, list):
             location = tuple(location)
@@ -993,20 +993,29 @@ class Map(folium.Map):
             height: Height of the colorbar in inches. Default is 0.3.
             vmin: Minimum value of the colorbar. Default is 0.
             vmax: Maximum value of the colorbar. Default is 1.0.
-            palette (list): List of colors to use for the colorbar. It can also be a cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
-            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
-            cmap: Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
+            palette (list): List of colors to use for the colorbar. It can also be a
+                cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
+            vis_params (dict): Visualization parameters as a dictionary. See
+                https://developers.google.com/earth-engine/guides/image_visualization for
+                options.
+            cmap: Matplotlib colormap. Defaults to "gray". See
+                https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py
+                for options.
             discrete: Whether to create a discrete colorbar. Defaults to False.
             label: Label for the colorbar. Defaults to None.
             label_size: Font size for the colorbar label. Defaults to 12.
-            label_weight: Font weight for the colorbar label, can be "normal", "bold", etc. Defaults to "normal".
+            label_weight: Font weight for the colorbar label, can be "normal", "bold",
+                etc. Defaults to "normal".
             tick_size: Font size for the colorbar tick labels. Defaults to 10.
             bg_color: Background color for the colorbar. Defaults to "white".
-            orientation: Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
-            dpi: The resolution in dots per inch.  If 'figure', use the figure's dpi value. Defaults to "figure".
+            orientation: Orientation of the colorbar, such as "vertical" and
+                "horizontal". Defaults to "horizontal".
+            dpi: The resolution in dots per inch. If 'figure', use the figure's dpi
+                value. Defaults to "figure".
             transparent: Whether to make the background transparent. Defaults to False.
-            position (tuple, optional): The position of the colormap in the format of (x, y),
-                the percentage ranging from 0 to 100, starting from the lower-left corner. Defaults to (0, 0).
+            position (tuple, optional): The position of the colormap in the format of
+                (x, y), the percentage ranging from 0 to 100, starting from the
+                lower-left corner. Defaults to (0, 0).
             **kwargs: Other keyword arguments to pass to matplotlib.pyplot.savefig().
 
         Returns:
@@ -1620,7 +1629,8 @@ class Map(folium.Map):
             icon_names: A list of names to be used for the icons. More icons can be
                 found at https://fontawesome.com/v4/icons or
                 https://getbootstrap.com/docs/3.3/components/?utm_source=pocket_mylist. Defaults
-                to ['info'].  angle: The angle of the icon. Defaults to 0.
+                to ['info'].
+            angle: The angle of the icon. Defaults to 0.
             prefix: The prefix states the source of the icon. 'fa' for font-awesome or
                 'glyphicon' for bootstrap 3. Defaults to 'fa'.
             add_legend: If True, a legend will be added to the map. Defaults to True.
@@ -2012,7 +2022,7 @@ class Map(folium.Map):
             **kwargs,
         )
 
-    def to_html(self, filename: str = None, **kwargs) -> str | None:
+    def to_html(self, filename: str | None = None, **kwargs) -> str | None:
         """Exports a map as an HTML file.
 
         Args:
@@ -2024,7 +2034,6 @@ class Map(folium.Map):
         Returns:
             A string containing the HTML code.
         """
-
         if self.options["layersControl"]:
             self.add_layer_control()
 
@@ -2163,7 +2172,7 @@ class Map(folium.Map):
         """Adds a census data layer to the map.
 
         Args:
-            wms: The wms to use. For example, "Current", "ACS 2021", "Census 2020".  See
+            wms: The wms to use. For example, "Current", "ACS 2021", "Census 2020". See
                 the complete list at
                 https://tigerweb.geo.census.gov/tigerwebmain/TIGERweb_wms.html
             layer: The layer name to add to the map.
@@ -2576,7 +2585,7 @@ class Map(folium.Map):
             colors: A list of colors to use for the classification. Defaults to None.
             labels: A list of labels to use for the legend. Defaults to None.
             scheme: Name of a choropleth classification scheme (requires mapclassify).
-                Name of a choropleth classification scheme (requires mapclassify).  A
+                Name of a choropleth classification scheme (requires mapclassify). A
                 mapclassify.MapClassifier object will be used under the hood. Supported
                 are all schemes provided by mapclassify (e.g.  'BoxPlot',
                 'EqualInterval', 'FisherJenks', 'FisherJenksSampled', 'HeadTailBreaks',
@@ -2604,7 +2613,7 @@ class Map(folium.Map):
                 mapclassify. Defaults to None.
             style_function (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None.  style_callback is a
+                takes the feature as argument. Defaults to None. style_callback is a
                 function that takes the feature as argument and should return a
                 dictionary of the following form:
                     style_callback = lambda feat: {"fillColor": feat["properties"]["color"]}
@@ -2912,17 +2921,17 @@ class SplitControl(Layer):
     """Side-by-side plugin.
 
     Creates a SplitControl that takes two Layers and adds a sliding control with the
-    leaflet-side-by-side plugin.  Uses the Leaflet leaflet-side-by-side plugin
-    https://github.com/digidem/leaflet-side-by-side Parameters.  The source code is
+    leaflet-side-by-side plugin. Uses the Leaflet leaflet-side-by-side plugin
+    https://github.com/digidem/leaflet-side-by-side Parameters. The source code is
     adapted from https://github.com/python-visualization/folium/pull/1292
 
     Args:
         layer_left: Layer.
             The left Layer within the side by side control.
-            Must  be created and added to the map before being passed to this class.
+            Must be created and added to the map before being passed to this class.
         layer_right: Layer.
             The right Layer within the side by side control.
-            Must  be created and added to the map before being passed to this class.
+            Must be created and added to the map before being passed to this class.
         name : string, default None
             The name of the Layer, as it will appear in LayerControls.
         overlay : bool, default True
@@ -2976,8 +2985,8 @@ class SideBySideLayers(JSCSSMixin, Layer):
     """Side-by-side with swiping.
 
     Creates a SideBySideLayers that takes two Layers and adds a sliding control with the
-    leaflet-side-by-side plugin.  Uses the Leaflet leaflet-side-by-side plugin
-    https://github.com/digidem/leaflet-side-by-side.  Adopted from
+    leaflet-side-by-side plugin. Uses the Leaflet leaflet-side-by-side plugin
+    https://github.com/digidem/leaflet-side-by-side. Adopted from
     https://github.com/python-visualization/folium/pull/1292/files.
 
     Args:
