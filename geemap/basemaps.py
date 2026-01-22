@@ -386,12 +386,10 @@ def get_xyz_dict(free_only: bool = True, france: bool = False) -> dict[str, Any]
     Args:
         free_only: Whether to return only free xyz tile services that do not require an
             access token. Defaults to True.
-
         france: Whether to include Geoportail France basemaps.  Defaults to False.
 
     Returns:
         dict: A dictionary of xyz services.
-
     """
     xyz_bunch = xyzservices.providers
 
@@ -446,7 +444,7 @@ def xyz_to_folium() -> dict[str, Any]:
     """Convert xyz tile services to folium tile layers.
 
     Returns:
-        dict: A dictionary of folium tile layers.
+        A dictionary of folium tile layers.
     """
     folium_dict = {}
     # Ignore Esri basemaps if they are already in the custom XYZ_TILES.
