@@ -702,7 +702,6 @@ class Feature_ByFeature(BarChart):
             y_properties: The properties to use for the y-axis.
             name: The name of the chart. Defaults to 'feature.byFeature'.
             **kwargs: Additional keyword arguments to set as attributes.
-
         """
         default_labels = y_properties
         super().__init__(features, default_labels, name, **kwargs)
@@ -979,7 +978,7 @@ def feature_histogram(
             f"property {property} not found. Available properties: {', '.join(props)}"
         )
 
-    def nextPowerOf2(n):
+    def nextPowerOf2(n) -> float:
         return pow(2, math.ceil(math.log2(n)))
 
     def grow_bin(bin_size, ref):
