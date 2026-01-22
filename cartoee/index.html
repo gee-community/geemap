@@ -8674,7 +8674,7 @@ cartopy GeoAxesSubplot object.</p>
             <td>
               <div class="doc-md-description">
                 <p>Location of the legend, can be any of ['upper left', 'upper right', 'lower
-left', 'lower right'].  Defaults to "lower right".</p>
+left', 'lower right']. Defaults to "lower right".</p>
               </div>
             </td>
             <td>
@@ -8825,7 +8825,8 @@ left', 'lower right'].  Defaults to "lower right".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1009</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1008</span>
+<span class="normal">1009</span>
 <span class="normal">1010</span>
 <span class="normal">1011</span>
 <span class="normal">1012</span>
@@ -8907,8 +8908,7 @@ left', 'lower right'].  Defaults to "lower right".</p>
 <span class="normal">1088</span>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
-<span class="normal">1091</span>
-<span class="normal">1092</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span>
+<span class="normal">1091</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">legend_elements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">loc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lower right&quot;</span><span class="p">,</span>
@@ -8937,7 +8937,7 @@ left', 'lower right'].  Defaults to "lower right".</p>
 <span class="sd">            cartopy GeoAxesSubplot object.</span>
 <span class="sd">        legend_elements (list, optional): A list of legend elements. Defaults to None.</span>
 <span class="sd">        loc: Location of the legend, can be any of [&#39;upper left&#39;, &#39;upper right&#39;, &#39;lower</span>
-<span class="sd">            left&#39;, &#39;lower right&#39;].  Defaults to &quot;lower right&quot;.</span>
+<span class="sd">            left&#39;, &#39;lower right&#39;]. Defaults to &quot;lower right&quot;.</span>
 <span class="sd">        font_size: Font size. Either an absolute font size or an relative value of</span>
 <span class="sd">            &#39;xx-small&#39;, &#39;x-small&#39;, &#39;small&#39;, &#39;medium&#39;, &#39;large&#39;, &#39;x-large&#39;,</span>
 <span class="sd">            &#39;xx-large&#39;. Defaults to 14.</span>
@@ -10067,7 +10067,7 @@ GeoAxesSubplot object.</p>
             <td>
               <div class="doc-md-description">
                 <p>Location of the north arrow. Each number representing the percentage length
-of the map from the lower-left cornor.  Defaults to (0.1, 0.1).</p>
+of the map from the lower-left corner. Defaults to (0.1, 0.1).</p>
               </div>
             </td>
             <td>
@@ -10259,8 +10259,7 @@ of the map from the lower-left cornor.  Defaults to (0.1, 0.1).</p>
 <span class="normal">977</span>
 <span class="normal">978</span>
 <span class="normal">979</span>
-<span class="normal">980</span>
-<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar_lite</span><span class="p">(</span>
+<span class="normal">980</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar_lite</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">xy</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
@@ -10280,14 +10279,13 @@ of the map from the lower-left cornor.  Defaults to (0.1, 0.1).</p>
 <span class="sd">            GeoAxesSubplot object.</span>
 <span class="sd">        length ([type], optional): Length of the scale car. Defaults to None.</span>
 <span class="sd">        xy: Location of the north arrow. Each number representing the percentage length</span>
-<span class="sd">            of the map from the lower-left cornor.  Defaults to (0.1, 0.1).</span>
+<span class="sd">            of the map from the lower-left corner. Defaults to (0.1, 0.1).</span>
 <span class="sd">        linewidth: Line width of the scale bar. Defaults to 3.</span>
 <span class="sd">        fontsize: Text font size. Defaults to 20.</span>
 <span class="sd">        color: Color for the scale bar. Defaults to &quot;black&quot;.</span>
 <span class="sd">        unit: Length unit for the scale bar. Defaults to &quot;km&quot;.</span>
 <span class="sd">        ha: Horizontal alignment. Defaults to &quot;center&quot;.</span>
 <span class="sd">        va: Vertical alignment. Defaults to &quot;bottom&quot;.</span>
-
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">allow_units</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;cm&quot;</span><span class="p">,</span> <span class="s2">&quot;m&quot;</span><span class="p">,</span> <span class="s2">&quot;km&quot;</span><span class="p">,</span> <span class="s2">&quot;inch&quot;</span><span class="p">,</span> <span class="s2">&quot;foot&quot;</span><span class="p">,</span> <span class="s2">&quot;mile&quot;</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">unit</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">allow_units</span><span class="p">:</span>
@@ -11115,7 +11113,8 @@ running. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1095</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1094</span>
+<span class="normal">1095</span>
 <span class="normal">1096</span>
 <span class="normal">1097</span>
 <span class="normal">1098</span>
@@ -11329,8 +11328,7 @@ running. Defaults to True.</p>
 <span class="normal">1306</span>
 <span class="normal">1307</span>
 <span class="normal">1308</span>
-<span class="normal">1309</span>
-<span class="normal">1310</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_image_collection_gif</span><span class="p">(</span>
+<span class="normal">1309</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_image_collection_gif</span><span class="p">(</span>
     <span class="n">ee_ic</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">out_gif</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -12035,7 +12033,7 @@ value. Defaults to 'figure'.</p>
             <td>
               <div class="doc-md-description">
                 <p>Bounding box in inches: only the given portion of the figure is
-saved.  If 'tight', try to figure out the tight bbox of the figure.</p>
+saved. If 'tight', try to figure out the tight bbox of the figure.</p>
               </div>
             </td>
             <td>
@@ -12063,7 +12061,8 @@ saved.  If 'tight', try to figure out the tight bbox of the figure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1313</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1312</span>
+<span class="normal">1313</span>
 <span class="normal">1314</span>
 <span class="normal">1315</span>
 <span class="normal">1316</span>
@@ -12080,8 +12079,7 @@ saved.  If 'tight', try to figure out the tight bbox of the figure.</p>
 <span class="normal">1327</span>
 <span class="normal">1328</span>
 <span class="normal">1329</span>
-<span class="normal">1330</span>
-<span class="normal">1331</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">savefig</span><span class="p">(</span>
+<span class="normal">1330</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">savefig</span><span class="p">(</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;figure&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tight&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save figure to file. It wraps the matplotlib.pyplot.savefig() function.</span>
@@ -12095,7 +12093,7 @@ saved.  If 'tight', try to figure out the tight bbox of the figure.</p>
 <span class="sd">        dpi: The resolution in dots per inch. If &#39;figure&#39;, use the figure&#39;s dpi</span>
 <span class="sd">            value. Defaults to &#39;figure&#39;.</span>
 <span class="sd">        bbox_inches: Bounding box in inches: only the given portion of the figure is</span>
-<span class="sd">            saved.  If &#39;tight&#39;, try to figure out the tight bbox of the figure.</span>
+<span class="sd">            saved. If &#39;tight&#39;, try to figure out the tight bbox of the figure.</span>
 <span class="sd">        kwargs: Additional keyword arguments are passed on to the savefig() method.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
