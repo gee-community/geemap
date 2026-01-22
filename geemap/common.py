@@ -427,7 +427,6 @@ def ee_export_image_to_asset(
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
     """
-
     if isinstance(image, ee.Image) or isinstance(image, ee.image.Image):
         pass
     else:
@@ -518,7 +517,6 @@ def ee_export_image_to_cloud_storage(
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
     """
-
     if not isinstance(image, ee.Image):
         raise ValueError("Input image must be an instance of ee.Image")
 
@@ -610,7 +608,6 @@ def ee_export_image_collection_to_drive(
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform', 'driveFolder', and 'driveFileNamePrefix'.
     """
-
     if not isinstance(ee_object, ee.ImageCollection):
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
@@ -704,7 +701,6 @@ def ee_export_image_collection_to_asset(
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
     """
-
     if not isinstance(ee_object, ee.ImageCollection):
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
@@ -812,7 +808,6 @@ def ee_export_image_collection_to_cloud_storage(
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
     """
-
     if not isinstance(ee_object, ee.ImageCollection):
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
@@ -1314,7 +1309,6 @@ def ee_export_video_to_drive(
             raise or lower the limit.
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
-
     """
     if not isinstance(collection, ee.ImageCollection):
         raise TypeError("collection must be an ee.ImageCollection")
@@ -1394,7 +1388,6 @@ def ee_export_video_to_cloud_storage(
             raise or lower the limit.
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
-
     """
     if not isinstance(collection, ee.ImageCollection):
         raise TypeError("collection must be an ee.ImageCollection")
@@ -1476,7 +1469,6 @@ def ee_export_map_to_cloud_storage(
             removes the "development purposes only" message from the map.
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
-
     """
     if not isinstance(image, ee.Image):
         raise TypeError("image must be an ee.Image")
@@ -1704,7 +1696,7 @@ def credentials_in_colab() -> bool:
     """Checks if the ee credentials file exists in Google Colab.
 
     Returns:
-        bool: Returns True if Google Drive is mounted, False otherwise.
+        Returns True if Google Drive is mounted, False otherwise.
     """
     credentials_path = "/root/.config/earthengine/credentials"
     if os.path.exists(credentials_path):
@@ -1746,8 +1738,7 @@ def install_package(package: str | list[str]) -> None:
     """Install a Python package.
 
     Args:
-        package: The package name or a GitHub URL or a list of package names or GitHub
-            URLs.
+        package: Package name or a GitHub URL or a list of package names or GitHub URLs.
     """
     if isinstance(package, str):
         packages = [package]
@@ -2018,7 +2009,7 @@ def has_transparency(img) -> bool:
         img: A PIL Image object.
 
     Returns:
-        bool: True if it has transparency, False otherwise.
+        True if it has transparency, False otherwise.
     """
     if img.mode == "P":
         transparent = img.info.get("transparency", -1)
@@ -2034,7 +2025,7 @@ def has_transparency(img) -> bool:
 
 
 def upload_to_imgur(in_gif: str) -> None:
-    """Uploads an image to imgur.com
+    """Uploads an image to imgur.com.
 
     Args:
         in_gif: The file path to the image.
@@ -2207,7 +2198,7 @@ def download_from_gdrive(
         file_name: The output file name to use.
         out_dir: The output directory. Defaults to '.'.
         unzip: Whether to unzip the output file if it is a zip file. Defaults to True.
-        verbose: Whether to display or not the output of the function
+        verbose: Whether to display or not the output of the function.
     """
     from google_drive_downloader import GoogleDriveDownloader as gdd
 
@@ -2227,7 +2218,7 @@ def create_download_link(
     Adopted from https://github.com/voila-dashboards/voila/issues/578
 
     Args:
-        filename: The file path to the file to download
+        filename: The file path to the file to download.
         title: Defaults to "Click here to download: ".
 
     Returns:
@@ -2280,21 +2271,26 @@ def edit_download_html(
 ########################################
 
 
-def xy_to_points(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
+def xy_to_points(
+    in_csv,
+    latitude: str = "latitude",
+    longitude: str = "longitude",
+    encoding: str = "utf-8",
+):
     """Converts a csv containing points (latitude and longitude) into an ee.FeatureCollection.
 
     Args:
-        in_csv (str): File path or HTTP URL to the input csv file. For example, https://raw.githubusercontent.com/giswqs/data/main/world/world_cities.csv
-        latitude (str, optional): Column name for the latitude column. Defaults to 'latitude'.
-        longitude (str, optional): Column name for the longitude column. Defaults to 'longitude'.
+        in_csv: File path or HTTP URL to the input csv file. For example,
+            https://raw.githubusercontent.com/giswqs/data/main/world/world_cities.csv
+        latitude: Column name for the latitude column. Defaults to 'latitude'.
+        longitude: Column name for the longitude column. Defaults to 'longitude'.
 
     Returns:
-        ee.FeatureCollection: The ee.FeatureCollection containing the points converted from the input csv.
+        ee.FeatureCollection: The ee.FeatureCollection containing the points converted
+        from the input csv.
     """
-
     geojson = csv_to_geojson(in_csv, None, latitude, longitude, encoding)
-    fc = coreutils.geojson_to_ee(geojson)
-    return fc
+    return coreutils.geojson_to_ee(geojson)
 
 
 def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude"):
@@ -2305,7 +2301,6 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
         out_shp (str): File path to the output shapefile.
         latitude (str, optional): Column name for the latitude column. Defaults to 'latitude'.
         longitude (str, optional): Column name for the longitude column. Defaults to 'longitude'.
-
     """
     import whitebox
 
@@ -2388,7 +2383,6 @@ def csv_to_geojson(
         latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
         longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
         encoding (str, optional): The encoding of characters. Defaults to "utf-8".
-
     """
     in_csv = coreutils.github_raw_url(in_csv)
 
@@ -2422,7 +2416,6 @@ def df_to_geojson(
         latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
         longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
         encoding (str, optional): The encoding of characters. Defaults to "utf-8".
-
     """
     from geojson import Feature, FeatureCollection, Point
 
@@ -2463,7 +2456,6 @@ def csv_to_ee(
     Returns:
         ee_object: An ee.Geometry object
     """
-
     geojson = csv_to_geojson(
         in_csv, latitude=latitude, longitude=longitude, encoding=encoding
     )
@@ -2511,42 +2503,38 @@ def csv_to_vector(
         latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
         longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
         encoding (str, optional): The encoding of characters. Defaults to "utf-8".
-
     """
     gdf = csv_to_gdf(in_csv, latitude, longitude, encoding)
     gdf.to_file(output, **kwargs)
 
 
-def ee_to_geojson(ee_object, filename=None, indent=2, **kwargs):
+def ee_to_geojson(ee_object, filename: str | None = None, indent: int = 2, **kwargs):
     """Converts Earth Engine object to geojson.
 
     Args:
         ee_object (object): An Earth Engine object.
-        filename (str, optional): The file path to save the geojson. Defaults to None.
+        filename: The file path to save the geojson. Defaults to None.
+        indent: TODO
 
     Returns:
         object: GeoJSON object.
     """
-
-    try:
-        if (
-            isinstance(ee_object, ee.Geometry)
-            or isinstance(ee_object, ee.Feature)
-            or isinstance(ee_object, ee.FeatureCollection)
-        ):
-            json_object = ee_object.getInfo()
-            if filename is not None:
-                filename = os.path.abspath(filename)
-                if not os.path.exists(os.path.dirname(filename)):
-                    os.makedirs(os.path.dirname(filename))
-                with open(filename, "w") as f:
-                    f.write(json.dumps(json_object, indent=indent, **kwargs) + "\n")
-            else:
-                return json_object
+    if (
+        isinstance(ee_object, ee.Geometry)
+        or isinstance(ee_object, ee.Feature)
+        or isinstance(ee_object, ee.FeatureCollection)
+    ):
+        json_object = ee_object.getInfo()
+        if filename is not None:
+            filename = os.path.abspath(filename)
+            if not os.path.exists(os.path.dirname(filename)):
+                os.makedirs(os.path.dirname(filename))
+            with open(filename, "w") as f:
+                f.write(json.dumps(json_object, indent=indent, **kwargs) + "\n")
         else:
-            print("Could not convert the Earth Engine object to geojson")
-    except Exception as e:
-        raise Exception(e)
+            return json_object
+    else:
+        print("Could not convert the Earth Engine object to geojson")
 
 
 def ee_to_bbox(ee_object):
@@ -2720,7 +2708,6 @@ def ee_to_shp(
             gdf.to_file(filename)
         else:
             print("The filename must end with .shp")
-
     except Exception as e:
         print(e)
 
@@ -2742,7 +2729,6 @@ def ee_to_csv(
         remove_geom (bool, optional): Whether to remove the geometry column. Defaults to True.
         sort_columns (bool, optional): Whether to sort the columns alphabetically. Defaults to False.
         kwargs: Additional arguments passed to ee_to_df().
-
     """
     try:
         if filename.lower().endswith(".csv"):
@@ -2750,7 +2736,6 @@ def ee_to_csv(
             df.to_csv(filename, index=False)
         else:
             print("The filename must end with .csv")
-
     except Exception as e:
         print(e)
 
@@ -2765,7 +2750,6 @@ def dict_to_csv(data_dict, out_csv, by_row=False, timeout=300, proxies=None):
         timeout (int, optional): Timeout in seconds. Defaults to 300 seconds.
         proxies (dict, optional): Proxy settings. Defaults to None.
     """
-
     out_dir = os.path.dirname(out_csv)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -2805,7 +2789,6 @@ def get_image_thumbnail(
         timeout (int, optional): The number of seconds after which the request will be terminated. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use for the request. Defaults to None.
     """
-
     if not isinstance(ee_object, ee.Image):
         raise TypeError("The ee_object must be an ee.Image.")
 
@@ -2933,7 +2916,6 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat", deci
 
     Returns:
         image: An ee.Image
-
     """
     import xarray as xr
 
@@ -3020,7 +3002,6 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
 
     Returns:
         image: An ee.Image
-
     """
     if not isinstance(np_array, np.ndarray):
         print("The input must be a numpy.ndarray.")
@@ -3303,7 +3284,6 @@ def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None
         timeout (int, optional): The number of seconds the request will be timed out. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use. Defaults to None.
     """
-
     out_gif = os.path.abspath(out_gif)
     if not out_gif.endswith(".gif"):
         print("The output file must have an extension of .gif.")
