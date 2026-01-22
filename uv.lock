@@ -358,22 +358,23 @@ wheels = [
 
 [[package]]
 name = "bokeh"
-version = "3.4.3"
+version = "3.8.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "contourpy" },
     { name = "jinja2" },
+    { name = "narwhals" },
     { name = "numpy" },
     { name = "packaging" },
     { name = "pandas" },
     { name = "pillow" },
     { name = "pyyaml" },
-    { name = "tornado" },
+    { name = "tornado", marker = "sys_platform != 'emscripten'" },
     { name = "xyzservices" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/c1/a8/4f750e1febe3b8d448794a7b85cd0efd2eb649eb915c990bcdd3650a5f3b/bokeh-3.4.3.tar.gz", hash = "sha256:b7c22fb0f7004b04f12e1b7b26ee0269a26737a08ded848fb58f6a34ec1eb155", size = 6410715, upload-time = "2024-07-25T10:44:33.237Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/31/7ee0c4dfd0255631b0624ce01be178704f91f763f02a1879368eb109befd/bokeh-3.8.2.tar.gz", hash = "sha256:8e7dcacc21d53905581b54328ad2705954f72f2997f99fc332c1de8da53aa3cc", size = 6529251, upload-time = "2026-01-06T00:20:06.568Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/65/5d/e96520996607c9b894a4716ddedc447a68351b0a8729f26ac012c8e7041b/bokeh-3.4.3-py3-none-any.whl", hash = "sha256:c6f33817f866fc67fbeb5df79cd13a8bb592c05c591f3fd7f4f22b824f7afa01", size = 7017720, upload-time = "2024-07-25T10:44:29.542Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/a8/877f306720bc114c612579c5af36bcb359026b83d051226945499b306b1a/bokeh-3.8.2-py3-none-any.whl", hash = "sha256:5e2c0d84f75acb25d60efb9e4d2f434a791c4639b47d685534194c4e07bd0111", size = 7207131, upload-time = "2026-01-06T00:20:04.917Z" },
 ]
 
 [[package]]
@@ -4136,11 +4137,11 @@ wheels = [
 
 [[package]]
 name = "narwhals"
-version = "1.24.2"
+version = "2.15.0"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/8f/db/f5d3b2d2f759ac341f8ce909e8df5233945768344c44d0cec007bce41de6/narwhals-1.24.2.tar.gz", hash = "sha256:c7bbb96ec8efb22ee384872e4a57cff591df653dc49067c314f88e2a54d8a76b", size = 254303, upload-time = "2025-02-01T13:54:54.087Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/47/6d/b57c64e5038a8cf071bce391bb11551657a74558877ac961e7fa905ece27/narwhals-2.15.0.tar.gz", hash = "sha256:a9585975b99d95084268445a1fdd881311fa26ef1caa18020d959d5b2ff9a965", size = 603479, upload-time = "2026-01-06T08:10:13.27Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f9/cf/6723d679c1eb75f9b976ed98bb3575c6bb571ffd427479288b98819604dd/narwhals-1.24.2-py3-none-any.whl", hash = "sha256:5d70dda4c032c86d0bda3f4d60a9d3f8dbd7d83deb8d23d68dd2f2eb3bc86417", size = 312773, upload-time = "2025-02-01T13:54:51.143Z" },
+    { url = "https://files.pythonhosted.org/packages/3d/2e/cf2ffeb386ac3763526151163ad7da9f1b586aac96d2b4f7de1eaebf0c61/narwhals-2.15.0-py3-none-any.whl", hash = "sha256:cbfe21ca19d260d9fd67f995ec75c44592d1f106933b03ddd375df7ac841f9d6", size = 432856, upload-time = "2026-01-06T08:10:11.511Z" },
 ]
 
 [[package]]
@@ -4611,7 +4612,7 @@ wheels = [
 
 [[package]]
 name = "panel"
-version = "1.4.5"
+version = "1.8.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "bleach" },
@@ -4620,6 +4621,8 @@ dependencies = [
     { name = "markdown" },
     { name = "markdown-it-py" },
     { name = "mdit-py-plugins" },
+    { name = "narwhals" },
+    { name = "packaging" },
     { name = "pandas" },
     { name = "param" },
     { name = "pyviz-comms" },
@@ -4627,11 +4630,10 @@ dependencies = [
     { name = "requests", version = "2.32.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "tqdm" },
     { name = "typing-extensions" },
-    { name = "xyzservices" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/74/92/92e001ec389d25db4e00323a27cadb08c111053c6819c4191fa9e2a1171b/panel-1.4.5.tar.gz", hash = "sha256:a7c9be109b57bdea16a143ce6a897500e1172a28b8a7c0dcfd5b7f61c616ea42", size = 39096558, upload-time = "2024-08-02T09:04:07.179Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b4/64/ad3aabf9d65685da3810bb80bff8584b31c1e713c823e0d0c83a6798af3e/panel-1.8.5.tar.gz", hash = "sha256:67f7529b06cfcd67a2eb2338c4c7d43b325925b209fb6a966526bcb32c956cb7", size = 32102720, upload-time = "2025-12-30T15:24:14.318Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/f4/e3/81303aec6a131eefa21030f2bdea12c0e0f57d1b416e7bda91841f791d20/panel-1.4.5-py3-none-any.whl", hash = "sha256:a6dbddd65e9e68c54a9b683f103b79b48fcea5dd9f463b81a783ea11520fe9cb", size = 24680678, upload-time = "2024-08-02T09:04:00.174Z" },
+    { url = "https://files.pythonhosted.org/packages/b0/2d/a159ff23441ad2fc8081ea553a53804d3f1625bb6b1b7e1b4d2eb9371676/panel-1.8.5-py3-none-any.whl", hash = "sha256:b2baf010fcfac4c92eeffe71f469907b2f7fadcffdd36e42f87c541cbb48c3b3", size = 30188051, upload-time = "2025-12-30T15:24:11.209Z" },
 ]
 
 [[package]]
