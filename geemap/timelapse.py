@@ -77,7 +77,7 @@ def add_overlay(
                     "The overlay_data must be a valid ee.FeatureCollection, a valid "
                     "ee.FeatureCollection asset id, or http url to a geojson file."
                 )
-                raise Exception(e)
+                raise e
         elif isinstance(overlay_data, ee.Feature):
             overlay_data = ee.FeatureCollection([overlay_data])
         elif isinstance(overlay_data, ee.Geometry):
@@ -108,7 +108,7 @@ def add_overlay(
         return blend_col
     except Exception as e:
         print("Error in add_overlay:")
-        raise Exception(e)
+        raise e
 
 
 def make_gif(
@@ -768,7 +768,7 @@ def create_timeseries(
         reducer = eval(f"ee.Reducer.{reducer}()")
     except Exception as e:
         print("The provided reducer is invalid.")
-        raise Exception(e)
+        raise e
 
     def create_image(date):
         start = ee.Date(date)
@@ -798,14 +798,11 @@ def create_timeseries(
             }
         ).rename(bands)
 
-    try:
-        images = ee.ImageCollection(dates.map(create_image))
-        if drop_empty:
-            return images.filterMetadata("empty", "equals", 0)
-        else:
-            return images
-    except Exception as e:
-        raise Exception(e)
+    images = ee.ImageCollection(dates.map(create_image))
+    if drop_empty:
+        return images.filterMetadata("empty", "equals", 0)
+    else:
+        return images
 
 
 def create_timelapse(
@@ -1741,17 +1738,12 @@ def sentinel2_timeseries_legacy(
     except Exception as e:
         raise ValueError("The input dates are invalid.")
 
-    try:
-        start_test = datetime.datetime(
-            int(start_year), int(start_date[:2]), int(start_date[3:5])
-        )
-        end_test = datetime.datetime(
-            int(end_year), int(end_date[:2]), int(end_date[3:5])
-        )
-        if start_test > end_test:
-            raise ValueError("Start date must be prior to end date")
-    except Exception as e:
-        raise Exception(e)
+    start_test = datetime.datetime(
+        int(start_year), int(start_date[:2]), int(start_date[3:5])
+    )
+    end_test = datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
+    if start_test > end_test:
+        raise ValueError("Start date must be prior to end date")
 
     def days_between(d1, d2):
         d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
@@ -2054,7 +2046,7 @@ def landsat_timeseries(
         datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
     except Exception as e:
         print("The input dates are invalid.")
-        raise Exception(e)
+        raise e
 
     def days_between(d1, d2):
         d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
@@ -2343,7 +2335,7 @@ def landsat_timeseries_legacy(
         datetime.datetime(int(end_year), int(end_date[:2]), int(end_date[3:5]))
     except Exception as e:
         print("The input dates are invalid.")
-        raise Exception(e)
+        raise e
 
     def days_between(d1, d2):
         d1 = datetime.datetime.strptime(d1, "%Y-%m-%d")
@@ -2606,39 +2598,32 @@ def modis_timeseries(
     Returns:
         object: Returns an ImageCollection containing month MODIS images.
     """
+    if end_year is None:
+        end_year = datetime.datetime.now().year
 
-    try:
-        if end_year is None:
-            end_year = datetime.datetime.now().year
+    collection = ee.ImageCollection(asset_id)
+    if band_name is None:
+        band_name = collection.first().bandNames().getInfo()[0]
+    collection = collection.select(band_name)
+    if roi is not None:
+        if isinstance(roi, ee.Geometry):
+            collection = ee.ImageCollection(collection.map(lambda img: img.clip(roi)))
+        elif isinstance(roi, ee.FeatureCollection):
+            collection = ee.ImageCollection(
+                collection.map(lambda img: img.clipToCollection(roi))
+            )
 
-        collection = ee.ImageCollection(asset_id)
-        if band_name is None:
-            band_name = collection.first().bandNames().getInfo()[0]
-        collection = collection.select(band_name)
-        if roi is not None:
-            if isinstance(roi, ee.Geometry):
-                collection = ee.ImageCollection(
-                    collection.map(lambda img: img.clip(roi))
-                )
-            elif isinstance(roi, ee.FeatureCollection):
-                collection = ee.ImageCollection(
-                    collection.map(lambda img: img.clipToCollection(roi))
-                )
+    start = str(start_year) + "-" + start_date
+    end = str(end_year) + "-" + end_date
 
-        start = str(start_year) + "-" + start_date
-        end = str(end_year) + "-" + end_date
+    seq = date_sequence(start, end, "month")
 
-        seq = date_sequence(start, end, "month")
+    def monthly_modis(start_d):
+        end_d = ee.Date(start_d).advance(1, "month")
+        return ee.Image(collection.filterDate(start_d, end_d).mean())
 
-        def monthly_modis(start_d):
-            end_d = ee.Date(start_d).advance(1, "month")
-            return ee.Image(collection.filterDate(start_d, end_d).mean())
-
-        images = ee.ImageCollection(seq.map(monthly_modis))
-        return images
-
-    except Exception as e:
-        raise Exception(e)
+    images = ee.ImageCollection(seq.map(monthly_modis))
+    return images
 
 
 def landsat_timelapse(
@@ -2779,148 +2764,144 @@ def landsat_timelapse(
                 )
             )
 
-    try:
-        if vis_params is None:
-            vis_params = {}
-            vis_params["bands"] = bands
-            vis_params["min"] = 0
-            vis_params["max"] = 0.4
-            vis_params["gamma"] = [1, 1, 1]
-        raw_col = landsat_timeseries(
-            roi,
-            start_year,
-            end_year,
-            start_date,
-            end_date,
-            apply_fmask,
-            frequency,
-            date_format,
-            step,
+    if vis_params is None:
+        vis_params = {}
+        vis_params["bands"] = bands
+        vis_params["min"] = 0
+        vis_params["max"] = 0.4
+        vis_params["gamma"] = [1, 1, 1]
+    raw_col = landsat_timeseries(
+        roi,
+        start_year,
+        end_year,
+        start_date,
+        end_date,
+        apply_fmask,
+        frequency,
+        date_format,
+        step,
+    )
+
+    col = raw_col.select(bands).map(
+        lambda img: img.visualize(**vis_params).set(
+            {
+                "system:time_start": img.get("system:time_start"),
+                "system:date": img.get("system:date"),
+            }
+        )
+    )
+    if overlay_data is not None:
+        col = add_overlay(
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity
         )
 
-        col = raw_col.select(bands).map(
-            lambda img: img.visualize(**vis_params).set(
-                {
-                    "system:time_start": img.get("system:time_start"),
-                    "system:date": img.get("system:date"),
-                }
+    if (
+        isinstance(dimensions, int)
+        and dimensions > 768
+        or isinstance(dimensions, str)
+        and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
+    ):
+        count = col.size().getInfo()
+        basename = os.path.basename(out_gif)[:-4]
+        names = [
+            os.path.join(
+                out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
             )
+            for i in range(count)
+        ]
+        get_image_collection_thumbnails(
+            col,
+            out_dir,
+            vis_params={
+                "min": 0,
+                "max": 255,
+                "bands": ["vis-red", "vis-green", "vis-blue"],
+            },
+            dimensions=dimensions,
+            names=names,
         )
-        if overlay_data is not None:
-            col = add_overlay(
-                col, overlay_data, overlay_color, overlay_width, overlay_opacity
-            )
+        make_gif(
+            names,
+            out_gif,
+            fps=frames_per_second,
+            loop=loop,
+            mp4=False,
+            clean_up=True,
+        )
 
-        if (
-            isinstance(dimensions, int)
-            and dimensions > 768
-            or isinstance(dimensions, str)
-            and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
-        ):
-            count = col.size().getInfo()
-            basename = os.path.basename(out_gif)[:-4]
-            names = [
-                os.path.join(
-                    out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
-                )
-                for i in range(count)
-            ]
-            get_image_collection_thumbnails(
-                col,
-                out_dir,
-                vis_params={
-                    "min": 0,
-                    "max": 255,
-                    "bands": ["vis-red", "vis-green", "vis-blue"],
-                },
-                dimensions=dimensions,
-                names=names,
-            )
-            make_gif(
-                names,
+    else:
+        video_args = vis_params.copy()
+        video_args["dimensions"] = dimensions
+        video_args["region"] = roi
+        video_args["framesPerSecond"] = frames_per_second
+        video_args["crs"] = crs
+        video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
+        video_args["min"] = 0
+        video_args["max"] = 255
+
+        download_ee_video(col, video_args, out_gif)
+
+    if os.path.exists(out_gif):
+        if title is not None and isinstance(title, str):
+            add_text_to_gif(
                 out_gif,
-                fps=frames_per_second,
+                out_gif,
+                xy=title_xy,
+                text_sequence=title,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                duration=1000 / frames_per_second,
                 loop=loop,
-                mp4=False,
-                clean_up=True,
+            )
+        if add_text:
+            if text_sequence is None:
+                text_sequence = col.aggregate_array("system:date").getInfo()
+            add_text_to_gif(
+                out_gif,
+                out_gif,
+                xy=text_xy,
+                text_sequence=text_sequence,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                duration=1000 / frames_per_second,
+                loop=loop,
             )
 
-        else:
-            video_args = vis_params.copy()
-            video_args["dimensions"] = dimensions
-            video_args["region"] = roi
-            video_args["framesPerSecond"] = frames_per_second
-            video_args["crs"] = crs
-            video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
-            video_args["min"] = 0
-            video_args["max"] = 255
+    if nd_bands is not None:
+        nd_images = landsat_ts_norm_diff(
+            raw_col, bands=nd_bands, threshold=nd_threshold
+        )
+        out_nd_gif = out_gif.replace(".gif", "_nd.gif")
+        landsat_ts_norm_diff_gif(
+            nd_images,
+            out_gif=out_nd_gif,
+            vis_params=None,
+            palette=nd_palette,
+            dimensions=dimensions,
+            frames_per_second=frames_per_second,
+        )
 
-            download_ee_video(col, video_args, out_gif)
+    if os.path.exists(out_gif):
+        reduce_gif_size(out_gif)
 
-        if os.path.exists(out_gif):
-            if title is not None and isinstance(title, str):
-                add_text_to_gif(
-                    out_gif,
-                    out_gif,
-                    xy=title_xy,
-                    text_sequence=title,
-                    font_type=font_type,
-                    font_size=font_size,
-                    font_color=font_color,
-                    add_progress_bar=add_progress_bar,
-                    progress_bar_color=progress_bar_color,
-                    progress_bar_height=progress_bar_height,
-                    duration=1000 / frames_per_second,
-                    loop=loop,
-                )
-            if add_text:
-                if text_sequence is None:
-                    text_sequence = col.aggregate_array("system:date").getInfo()
-                add_text_to_gif(
-                    out_gif,
-                    out_gif,
-                    xy=text_xy,
-                    text_sequence=text_sequence,
-                    font_type=font_type,
-                    font_size=font_size,
-                    font_color=font_color,
-                    add_progress_bar=add_progress_bar,
-                    progress_bar_color=progress_bar_color,
-                    progress_bar_height=progress_bar_height,
-                    duration=1000 / frames_per_second,
-                    loop=loop,
-                )
+    if isinstance(fading, bool):
+        fading = int(fading)
+    if fading > 0:
+        gif_fading(out_gif, out_gif, duration=fading, verbose=False)
 
-        if nd_bands is not None:
-            nd_images = landsat_ts_norm_diff(
-                raw_col, bands=nd_bands, threshold=nd_threshold
-            )
-            out_nd_gif = out_gif.replace(".gif", "_nd.gif")
-            landsat_ts_norm_diff_gif(
-                nd_images,
-                out_gif=out_nd_gif,
-                vis_params=None,
-                palette=nd_palette,
-                dimensions=dimensions,
-                frames_per_second=frames_per_second,
-            )
+    if mp4:
+        out_mp4 = out_gif.replace(".gif", ".mp4")
+        gif_to_mp4(out_gif, out_mp4)
 
-        if os.path.exists(out_gif):
-            reduce_gif_size(out_gif)
-
-        if isinstance(fading, bool):
-            fading = int(fading)
-        if fading > 0:
-            gif_fading(out_gif, out_gif, duration=fading, verbose=False)
-
-        if mp4:
-            out_mp4 = out_gif.replace(".gif", ".mp4")
-            gif_to_mp4(out_gif, out_mp4)
-
-        return out_gif
-
-    except Exception as e:
-        raise Exception(e)
+    return out_gif
 
 
 def landsat_timelapse_legacy(
@@ -3059,147 +3040,143 @@ def landsat_timelapse_legacy(
                 )
             )
 
-    try:
-        if vis_params is None:
-            vis_params = {}
-            vis_params["bands"] = bands
-            vis_params["min"] = 0
-            vis_params["max"] = 4000
-            vis_params["gamma"] = [1, 1, 1]
-        raw_col = landsat_timeseries(
-            roi,
-            start_year,
-            end_year,
-            start_date,
-            end_date,
-            apply_fmask,
-            frequency,
-            date_format,
+    if vis_params is None:
+        vis_params = {}
+        vis_params["bands"] = bands
+        vis_params["min"] = 0
+        vis_params["max"] = 4000
+        vis_params["gamma"] = [1, 1, 1]
+    raw_col = landsat_timeseries(
+        roi,
+        start_year,
+        end_year,
+        start_date,
+        end_date,
+        apply_fmask,
+        frequency,
+        date_format,
+    )
+
+    col = raw_col.select(bands).map(
+        lambda img: img.visualize(**vis_params).set(
+            {
+                "system:time_start": img.get("system:time_start"),
+                "system:date": img.get("system:date"),
+            }
+        )
+    )
+    if overlay_data is not None:
+        col = add_overlay(
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity
         )
 
-        col = raw_col.select(bands).map(
-            lambda img: img.visualize(**vis_params).set(
-                {
-                    "system:time_start": img.get("system:time_start"),
-                    "system:date": img.get("system:date"),
-                }
+    if (
+        isinstance(dimensions, int)
+        and dimensions > 768
+        or isinstance(dimensions, str)
+        and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
+    ):
+        count = col.size().getInfo()
+        basename = os.path.basename(out_gif)[:-4]
+        names = [
+            os.path.join(
+                out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
             )
+            for i in range(count)
+        ]
+        get_image_collection_thumbnails(
+            col,
+            out_dir,
+            vis_params={
+                "min": 0,
+                "max": 255,
+                "bands": ["vis-red", "vis-green", "vis-blue"],
+            },
+            dimensions=dimensions,
+            names=names,
         )
-        if overlay_data is not None:
-            col = add_overlay(
-                col, overlay_data, overlay_color, overlay_width, overlay_opacity
-            )
+        make_gif(
+            names,
+            out_gif,
+            fps=frames_per_second,
+            loop=loop,
+            mp4=False,
+            clean_up=True,
+        )
 
-        if (
-            isinstance(dimensions, int)
-            and dimensions > 768
-            or isinstance(dimensions, str)
-            and any(dim > 768 for dim in list(map(int, dimensions.split("x"))))
-        ):
-            count = col.size().getInfo()
-            basename = os.path.basename(out_gif)[:-4]
-            names = [
-                os.path.join(
-                    out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
-                )
-                for i in range(count)
-            ]
-            get_image_collection_thumbnails(
-                col,
-                out_dir,
-                vis_params={
-                    "min": 0,
-                    "max": 255,
-                    "bands": ["vis-red", "vis-green", "vis-blue"],
-                },
-                dimensions=dimensions,
-                names=names,
-            )
-            make_gif(
-                names,
+    else:
+        video_args = vis_params.copy()
+        video_args["dimensions"] = dimensions
+        video_args["region"] = roi
+        video_args["framesPerSecond"] = frames_per_second
+        video_args["crs"] = crs
+        video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
+        video_args["min"] = 0
+        video_args["max"] = 255
+
+        download_ee_video(col, video_args, out_gif)
+
+    if os.path.exists(out_gif):
+        if title is not None and isinstance(title, str):
+            add_text_to_gif(
                 out_gif,
-                fps=frames_per_second,
+                out_gif,
+                xy=title_xy,
+                text_sequence=title,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                duration=1000 / frames_per_second,
                 loop=loop,
-                mp4=False,
-                clean_up=True,
+            )
+        if add_text:
+            if text_sequence is None:
+                text_sequence = col.aggregate_array("system:date").getInfo()
+            add_text_to_gif(
+                out_gif,
+                out_gif,
+                xy=text_xy,
+                text_sequence=text_sequence,
+                font_type=font_type,
+                font_size=font_size,
+                font_color=font_color,
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+                duration=1000 / frames_per_second,
+                loop=loop,
             )
 
-        else:
-            video_args = vis_params.copy()
-            video_args["dimensions"] = dimensions
-            video_args["region"] = roi
-            video_args["framesPerSecond"] = frames_per_second
-            video_args["crs"] = crs
-            video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
-            video_args["min"] = 0
-            video_args["max"] = 255
+    if nd_bands is not None:
+        nd_images = landsat_ts_norm_diff(
+            raw_col, bands=nd_bands, threshold=nd_threshold
+        )
+        out_nd_gif = out_gif.replace(".gif", "_nd.gif")
+        landsat_ts_norm_diff_gif(
+            nd_images,
+            out_gif=out_nd_gif,
+            vis_params=None,
+            palette=nd_palette,
+            dimensions=dimensions,
+            frames_per_second=frames_per_second,
+        )
 
-            download_ee_video(col, video_args, out_gif)
+    if os.path.exists(out_gif):
+        reduce_gif_size(out_gif)
 
-        if os.path.exists(out_gif):
-            if title is not None and isinstance(title, str):
-                add_text_to_gif(
-                    out_gif,
-                    out_gif,
-                    xy=title_xy,
-                    text_sequence=title,
-                    font_type=font_type,
-                    font_size=font_size,
-                    font_color=font_color,
-                    add_progress_bar=add_progress_bar,
-                    progress_bar_color=progress_bar_color,
-                    progress_bar_height=progress_bar_height,
-                    duration=1000 / frames_per_second,
-                    loop=loop,
-                )
-            if add_text:
-                if text_sequence is None:
-                    text_sequence = col.aggregate_array("system:date").getInfo()
-                add_text_to_gif(
-                    out_gif,
-                    out_gif,
-                    xy=text_xy,
-                    text_sequence=text_sequence,
-                    font_type=font_type,
-                    font_size=font_size,
-                    font_color=font_color,
-                    add_progress_bar=add_progress_bar,
-                    progress_bar_color=progress_bar_color,
-                    progress_bar_height=progress_bar_height,
-                    duration=1000 / frames_per_second,
-                    loop=loop,
-                )
+    if isinstance(fading, bool):
+        fading = int(fading)
+    if fading > 0:
+        gif_fading(out_gif, out_gif, duration=fading, verbose=False)
 
-        if nd_bands is not None:
-            nd_images = landsat_ts_norm_diff(
-                raw_col, bands=nd_bands, threshold=nd_threshold
-            )
-            out_nd_gif = out_gif.replace(".gif", "_nd.gif")
-            landsat_ts_norm_diff_gif(
-                nd_images,
-                out_gif=out_nd_gif,
-                vis_params=None,
-                palette=nd_palette,
-                dimensions=dimensions,
-                frames_per_second=frames_per_second,
-            )
+    if mp4:
+        out_mp4 = out_gif.replace(".gif", ".mp4")
+        gif_to_mp4(out_gif, out_mp4)
 
-        if os.path.exists(out_gif):
-            reduce_gif_size(out_gif)
-
-        if isinstance(fading, bool):
-            fading = int(fading)
-        if fading > 0:
-            gif_fading(out_gif, out_gif, duration=fading, verbose=False)
-
-        if mp4:
-            out_mp4 = out_gif.replace(".gif", ".mp4")
-            gif_to_mp4(out_gif, out_mp4)
-
-        return out_gif
-
-    except Exception as e:
-        raise Exception(e)
+    return out_gif
 
 
 def sentinel1_timelapse_legacy(
@@ -4059,99 +4036,94 @@ def goes_timelapse(
     Raises:
         Exception: Raise exception.
     """
+    if "region" in kwargs:
+        roi = kwargs["region"]
 
-    try:
-        if "region" in kwargs:
-            roi = kwargs["region"]
+    if out_gif is None:
+        out_gif = os.path.abspath(f"goes_{coreutils.random_string(3)}.gif")
 
-        if out_gif is None:
-            out_gif = os.path.abspath(f"goes_{coreutils.random_string(3)}.gif")
-
-        visParams = {
-            "bands": bands,
-            "min": 0,
-            "max": 0.8,
-        }
-        col = goes_timeseries(start_date, end_date, data, scan, roi)
-        col = col.select(bands).map(
-            lambda img: img.visualize(**visParams).set(
-                {
-                    "system:time_start": img.get("system:time_start"),
-                }
-            )
+    visParams = {
+        "bands": bands,
+        "min": 0,
+        "max": 0.8,
+    }
+    col = goes_timeseries(start_date, end_date, data, scan, roi)
+    col = col.select(bands).map(
+        lambda img: img.visualize(**visParams).set(
+            {
+                "system:time_start": img.get("system:time_start"),
+            }
         )
-        if overlay_data is not None:
-            col = add_overlay(
-                col, overlay_data, overlay_color, overlay_width, overlay_opacity
-            )
+    )
+    if overlay_data is not None:
+        col = add_overlay(
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity
+        )
 
-        if roi is None:
-            roi = ee.Geometry.Polygon(
+    if roi is None:
+        roi = ee.Geometry.Polygon(
+            [
                 [
-                    [
-                        [-159.5954, 60.4088],
-                        [-159.5954, 24.5178],
-                        [-114.2438, 24.5178],
-                        [-114.2438, 60.4088],
-                    ]
-                ],
-                None,
-                False,
-            )
+                    [-159.5954, 60.4088],
+                    [-159.5954, 24.5178],
+                    [-114.2438, 24.5178],
+                    [-114.2438, 60.4088],
+                ]
+            ],
+            None,
+            False,
+        )
 
-        if crs is None:
-            crs = col.first().projection()
+    if crs is None:
+        crs = col.first().projection()
 
-        videoParams = {
-            "bands": ["vis-red", "vis-green", "vis-blue"],
-            "min": 0,
-            "max": 255,
-            "dimensions": dimensions,
-            "framesPerSecond": framesPerSecond,
-            "region": roi,
-            "crs": crs,
-        }
+    videoParams = {
+        "bands": ["vis-red", "vis-green", "vis-blue"],
+        "min": 0,
+        "max": 255,
+        "dimensions": dimensions,
+        "framesPerSecond": framesPerSecond,
+        "region": roi,
+        "crs": crs,
+    }
 
-        if text_sequence is None:
-            text_sequence = image_dates(col, date_format=date_format).getInfo()
+    if text_sequence is None:
+        text_sequence = image_dates(col, date_format=date_format).getInfo()
 
-        download_ee_video(col, videoParams, out_gif)
+    download_ee_video(col, videoParams, out_gif)
 
-        if os.path.exists(out_gif):
-            add_text_to_gif(
-                out_gif,
-                out_gif,
-                xy,
-                text_sequence,
-                font_type,
-                font_size,
-                font_color,
-                add_progress_bar,
-                progress_bar_color,
-                progress_bar_height,
-                duration=1000 / framesPerSecond,
-                loop=loop,
-            )
+    if os.path.exists(out_gif):
+        add_text_to_gif(
+            out_gif,
+            out_gif,
+            xy,
+            text_sequence,
+            font_type,
+            font_size,
+            font_color,
+            add_progress_bar,
+            progress_bar_color,
+            progress_bar_height,
+            duration=1000 / framesPerSecond,
+            loop=loop,
+        )
 
-            try:
-                reduce_gif_size(out_gif)
+        try:
+            reduce_gif_size(out_gif)
 
-                if isinstance(fading, bool):
-                    fading = int(fading)
-                if fading > 0:
-                    gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+            if isinstance(fading, bool):
+                fading = int(fading)
+            if fading > 0:
+                gif_fading(out_gif, out_gif, duration=fading, verbose=False)
 
-            except Exception as _:
-                pass
+        except Exception as _:
+            pass
 
-            if mp4:
-                out_mp4 = out_gif.replace(".gif", ".mp4")
-                gif_to_mp4(out_gif, out_mp4)
+        if mp4:
+            out_mp4 = out_gif.replace(".gif", ".mp4")
+            gif_to_mp4(out_gif, out_mp4)
 
-            return out_gif
-
-    except Exception as e:
-        raise Exception(e)
+        return out_gif
 
 
 def goes_fire_timelapse(
@@ -4215,82 +4187,77 @@ def goes_fire_timelapse(
     Raises:
         Exception: Raise exception.
     """
+    if "region" in kwargs:
+        roi = kwargs["region"]
 
-    try:
-        if "region" in kwargs:
-            roi = kwargs["region"]
+    if out_gif is None:
+        out_gif = os.path.abspath(f"goes_fire_{coreutils.random_string(3)}.gif")
 
-        if out_gif is None:
-            out_gif = os.path.abspath(f"goes_fire_{coreutils.random_string(3)}.gif")
+    if roi is None:
+        roi = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
 
-        if roi is None:
-            roi = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
+    col = goes_fire_timeseries(start_date, end_date, data, scan, roi)
+    if overlay_data is not None:
+        col = add_overlay(
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity
+        )
 
-        col = goes_fire_timeseries(start_date, end_date, data, scan, roi)
-        if overlay_data is not None:
-            col = add_overlay(
-                col, overlay_data, overlay_color, overlay_width, overlay_opacity
-            )
+    # visParams = {
+    #     "bands": ["CMI_C02", "CMI_GREEN", "CMI_C01"],
+    #     "min": 0,
+    #     "max": 0.8,
+    #     "dimensions": dimensions,
+    #     "framesPerSecond": framesPerSecond,
+    #     "region": region,
+    #     "crs": col.first().projection(),
+    # }
 
-        # visParams = {
-        #     "bands": ["CMI_C02", "CMI_GREEN", "CMI_C01"],
-        #     "min": 0,
-        #     "max": 0.8,
-        #     "dimensions": dimensions,
-        #     "framesPerSecond": framesPerSecond,
-        #     "region": region,
-        #     "crs": col.first().projection(),
-        # }
+    if crs is None:
+        crs = col.first().projection()
 
-        if crs is None:
-            crs = col.first().projection()
+    cmiFdcVisParams = {
+        "dimensions": dimensions,
+        "framesPerSecond": framesPerSecond,
+        "region": roi,
+        "crs": crs,
+    }
 
-        cmiFdcVisParams = {
-            "dimensions": dimensions,
-            "framesPerSecond": framesPerSecond,
-            "region": roi,
-            "crs": crs,
-        }
+    if text_sequence is None:
+        text_sequence = image_dates(col, date_format=date_format).getInfo()
 
-        if text_sequence is None:
-            text_sequence = image_dates(col, date_format=date_format).getInfo()
+    download_ee_video(col, cmiFdcVisParams, out_gif)
 
-        download_ee_video(col, cmiFdcVisParams, out_gif)
+    if os.path.exists(out_gif):
+        add_text_to_gif(
+            out_gif,
+            out_gif,
+            xy,
+            text_sequence,
+            font_type,
+            font_size,
+            font_color,
+            add_progress_bar,
+            progress_bar_color,
+            progress_bar_height,
+            duration=1000 / framesPerSecond,
+            loop=loop,
+        )
 
-        if os.path.exists(out_gif):
-            add_text_to_gif(
-                out_gif,
-                out_gif,
-                xy,
-                text_sequence,
-                font_type,
-                font_size,
-                font_color,
-                add_progress_bar,
-                progress_bar_color,
-                progress_bar_height,
-                duration=1000 / framesPerSecond,
-                loop=loop,
-            )
+        try:
+            reduce_gif_size(out_gif)
+            if isinstance(fading, bool):
+                fading = int(fading)
+            if fading > 0:
+                gif_fading(out_gif, out_gif, duration=fading, verbose=False)
 
-            try:
-                reduce_gif_size(out_gif)
-                if isinstance(fading, bool):
-                    fading = int(fading)
-                if fading > 0:
-                    gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+        except Exception as _:
+            pass
 
-            except Exception as _:
-                pass
+        if mp4:
+            out_mp4 = out_gif.replace(".gif", ".mp4")
+            gif_to_mp4(out_gif, out_mp4)
 
-            if mp4:
-                out_mp4 = out_gif.replace(".gif", ".mp4")
-                gif_to_mp4(out_gif, out_mp4)
-
-            return out_gif
-
-    except Exception as e:
-        raise Exception(e)
+        return out_gif
 
 
 def modis_ndvi_doy_ts(
@@ -4436,95 +4403,91 @@ def modis_ndvi_timelapse(
     if out_gif is None:
         out_gif = os.path.abspath(f"modis_ndvi_{coreutils.random_string(3)}.gif")
 
-    try:
-        col = modis_ndvi_doy_ts(data, band, start_date, end_date, roi)
+    col = modis_ndvi_doy_ts(data, band, start_date, end_date, roi)
 
-        # Define RGB visualization parameters.
-        visParams = {
-            "min": 0.0,
-            "max": 9000.0,
-            "palette": [
-                "FFFFFF",
-                "CE7E45",
-                "DF923D",
-                "F1B555",
-                "FCD163",
-                "99B718",
-                "74A901",
-                "66A000",
-                "529400",
-                "3E8601",
-                "207401",
-                "056201",
-                "004C00",
-                "023B01",
-                "012E01",
-                "011D01",
-                "011301",
-            ],
-        }
+    # Define RGB visualization parameters.
+    visParams = {
+        "min": 0.0,
+        "max": 9000.0,
+        "palette": [
+            "FFFFFF",
+            "CE7E45",
+            "DF923D",
+            "F1B555",
+            "FCD163",
+            "99B718",
+            "74A901",
+            "66A000",
+            "529400",
+            "3E8601",
+            "207401",
+            "056201",
+            "004C00",
+            "023B01",
+            "012E01",
+            "011D01",
+            "011301",
+        ],
+    }
 
-        # Create RGB visualization images for use as animation frames.
-        rgbVis = col.map(lambda img: img.visualize(**visParams).clip(roi))
+    # Create RGB visualization images for use as animation frames.
+    rgbVis = col.map(lambda img: img.visualize(**visParams).clip(roi))
 
-        if overlay_data is not None:
-            rgbVis = add_overlay(
-                rgbVis,
-                overlay_data,
-                overlay_color,
-                overlay_width,
-                overlay_opacity,
-                roi,
-            )
+    if overlay_data is not None:
+        rgbVis = add_overlay(
+            rgbVis,
+            overlay_data,
+            overlay_color,
+            overlay_width,
+            overlay_opacity,
+            roi,
+        )
 
-        # Define GIF visualization arguments.
-        videoArgs = {
-            "region": roi,
-            "dimensions": dimensions,
-            "crs": crs,
-            "framesPerSecond": framesPerSecond,
-        }
+    # Define GIF visualization arguments.
+    videoArgs = {
+        "region": roi,
+        "dimensions": dimensions,
+        "crs": crs,
+        "framesPerSecond": framesPerSecond,
+    }
 
-        download_ee_video(rgbVis, videoArgs, out_gif)
+    download_ee_video(rgbVis, videoArgs, out_gif)
 
-        if text_sequence is None:
-            text = rgbVis.aggregate_array("system:index").getInfo()
-            text_sequence = [d.replace("_", "-")[5:] for d in text]
+    if text_sequence is None:
+        text = rgbVis.aggregate_array("system:index").getInfo()
+        text_sequence = [d.replace("_", "-")[5:] for d in text]
 
-        if os.path.exists(out_gif):
-            add_text_to_gif(
-                out_gif,
-                out_gif,
-                xy,
-                text_sequence,
-                font_type,
-                font_size,
-                font_color,
-                add_progress_bar,
-                progress_bar_color,
-                progress_bar_height,
-                duration=1000 / framesPerSecond,
-                loop=loop,
-            )
+    if os.path.exists(out_gif):
+        add_text_to_gif(
+            out_gif,
+            out_gif,
+            xy,
+            text_sequence,
+            font_type,
+            font_size,
+            font_color,
+            add_progress_bar,
+            progress_bar_color,
+            progress_bar_height,
+            duration=1000 / framesPerSecond,
+            loop=loop,
+        )
 
-            try:
-                reduce_gif_size(out_gif)
-                if isinstance(fading, bool):
-                    fading = int(fading)
-                if fading > 0:
-                    gif_fading(out_gif, out_gif, duration=fading, verbose=False)
+        try:
+            reduce_gif_size(out_gif)
+            if isinstance(fading, bool):
+                fading = int(fading)
+            if fading > 0:
+                gif_fading(out_gif, out_gif, duration=fading, verbose=False)
 
-            except Exception as _:
-                pass
+        except Exception as _:
+            pass
 
-        if mp4:
-            out_mp4 = out_gif.replace(".gif", ".mp4")
-            gif_to_mp4(out_gif, out_mp4)
+    if mp4:
+        out_mp4 = out_gif.replace(".gif", ".mp4")
+        gif_to_mp4(out_gif, out_mp4)
 
-        return out_gif
-
-    except Exception as e:
-        raise Exception(e)
+    return out_gif
 
 
 def modis_ocean_color_timeseries(
@@ -5130,10 +5093,7 @@ def add_progress_bar_to_gif(
 
     progress_bar_color = coreutils.check_color(progress_bar_color)
 
-    try:
-        image = Image.open(in_gif)
-    except Exception as e:
-        raise Exception("An error occurred while opening the gif.")
+    image = Image.open(in_gif)
 
     count = image.n_frames
     W, H = image.size
@@ -5142,35 +5102,32 @@ def add_progress_bar_to_gif(
         [(0, H - progress_bar_height), (x, H)] for x in progress_bar_widths
     ]
 
-    try:
-        frames = []
-        # Loop over each frame in the animated image
-        for index, frame in enumerate(ImageSequence.Iterator(image)):
-            # Draw the text on the frame
-            frame = frame.convert("RGB")
-            draw = ImageDraw.Draw(frame)
-            # w, h = draw.textsize(text[index])
-            draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
-            del draw
+    frames = []
+    # Loop over each frame in the animated image
+    for index, frame in enumerate(ImageSequence.Iterator(image)):
+        # Draw the text on the frame
+        frame = frame.convert("RGB")
+        draw = ImageDraw.Draw(frame)
+        # w, h = draw.textsize(text[index])
+        draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
+        del draw
 
-            b = io.BytesIO()
-            frame.save(b, format="GIF")
-            frame = Image.open(b)
+        b = io.BytesIO()
+        frame.save(b, format="GIF")
+        frame = Image.open(b)
 
-            frames.append(frame)
-        # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
-        # Save the frames as a new image
+        frames.append(frame)
+    # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
+    # Save the frames as a new image
 
-        frames[0].save(
-            out_gif,
-            save_all=True,
-            append_images=frames[1:],
-            duration=duration,
-            loop=loop,
-            optimize=True,
-        )
-    except Exception as e:
-        raise Exception(e)
+    frames[0].save(
+        out_gif,
+        save_all=True,
+        append_images=frames[1:],
+        duration=duration,
+        loop=loop,
+        optimize=True,
+    )
 
 
 def vector_to_gif(
@@ -5925,11 +5882,11 @@ def add_sample_markers_to_gif(
 def draw_cross_marker(draw, x, y, size, color):
     """Draw a cross marker."""
     half_size = size // 2
-    # Horizontal line
+    # Horizontal line.
     draw.line([x - half_size, y, x + half_size, y], fill=color, width=3)
-    # Vertical line
+    # Vertical line.
     draw.line([x, y - half_size, x, y + half_size], fill=color, width=3)
-    # Add outline for better visibility
+    # Add outline for better visibility.
     draw.line([x - half_size, y, x + half_size, y], fill="white", width=1)
     draw.line([x, y - half_size, x, y + half_size], fill="white", width=1)
 
@@ -5937,13 +5894,13 @@ def draw_cross_marker(draw, x, y, size, color):
 def draw_circle_marker(draw, x, y, size, color):
     """Draw a circle marker."""
     half_size = size // 2
-    # Outer circle (outline)
+    # Outer circle (outline).
     draw.ellipse(
         [x - half_size, y - half_size, x + half_size, y + half_size],
         outline="white",
         width=3,
     )
-    # Inner circle (fill)
+    # Inner circle (fill).
     draw.ellipse(
         [x - half_size + 2, y - half_size + 2, x + half_size - 2, y + half_size - 2],
         fill=color,
@@ -5966,11 +5923,11 @@ def get_pixel_coordinates_from_geo(lon, lat, roi_bounds, gif_width, gif_height):
     """
     min_lon, min_lat, max_lon, max_lat = roi_bounds
 
-    # Linear transformation from geographic to pixel coordinates
+    # Linear transformation from geographic to pixel coordinates.
     pixel_x = int(((lon - min_lon) / (max_lon - min_lon)) * gif_width)
     pixel_y = int(((max_lat - lat) / (max_lat - min_lat)) * gif_height)  # Flip Y axis
 
-    # Ensure coordinates are within bounds
+    # Ensure coordinates are within bounds.
     pixel_x = max(0, min(gif_width - 1, pixel_x))
     pixel_y = max(0, min(gif_height - 1, pixel_y))
 
@@ -5990,7 +5947,7 @@ def create_time_series_chart_frames(
     if not sample_data:
         return []
 
-    # Get all unique dates across all points
+    # Get all unique dates across all points.
     all_dates = set()
     for point_data in sample_data.values():
         all_dates.update(point_data["dates"])
@@ -6000,17 +5957,17 @@ def create_time_series_chart_frames(
 
     sorted_dates = sorted(list(all_dates))
 
-    # Create chart frames
+    # Create chart frames.
     chart_frames = []
     temp_dir = tempfile.mkdtemp()
 
-    # Calculate chart dimensions
+    # Calculate chart dimensions.
     if isinstance(dimensions, str) and "x" in dimensions:
         width, height = map(int, dimensions.split("x"))
     else:
         width = height = int(dimensions) if isinstance(dimensions, int) else 768
 
-    chart_width = int(width * 0.8)  # 80% of gif width
+    chart_width = int(width * 0.8)  # 80% of gif width.
     chart_height = height
 
     try:
@@ -6019,7 +5976,7 @@ def create_time_series_chart_frames(
                 figsize=(chart_width / 100, chart_height / 100), dpi=100
             )
 
-            # Plot all time series
+            # Plot all time series.
             for point_name, point_data in sample_data.items():
                 if point_data["dates"] and point_data["values"]:
                     ax.plot(
