@@ -810,7 +810,7 @@ wheels = [
 
 [[package]]
 name = "dask"
-version = "2024.8.0"
+version = "2026.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -822,36 +822,20 @@ dependencies = [
     { name = "pyyaml" },
     { name = "toolz" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1f/2e/568a422d907745a3a897a732c83d05a3923d8cfa2511a6abea2a0e19994e/dask-2024.8.0.tar.gz", hash = "sha256:f1fec39373d2f101bc045529ad4e9b30e34e6eb33b7aa0fa7073aec7b1bf9eee", size = 9895684, upload-time = "2024-08-06T20:23:54.464Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1e/46/61ecde57bac647ca7eb6ffef8dcd90af6c1c649020874cd7fd8738003d62/dask-2026.1.1.tar.gz", hash = "sha256:12b1dbb0d6e92f287feb4076871600b2fba3a843d35ff214776ada5e9e7a1529", size = 10994732, upload-time = "2026-01-16T12:35:30.258Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/db/47/136a5dd68a33089f96f8aa1178ccd545d325ec9ab2bb42a3038711a935c0/dask-2024.8.0-py3-none-any.whl", hash = "sha256:250ea3df30d4a25958290eec4f252850091c6cfaed82d098179c3b25bba18309", size = 1233681, upload-time = "2024-08-06T20:23:42.258Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/4b/9cc373120658a2516aa5f6dcdde631c95d714b876d29ad8f8e009d793f3f/dask-2026.1.1-py3-none-any.whl", hash = "sha256:146b0ef2918eb581e06139183a88801b4a8c52d7c37758a91f8c3b75c54b0e15", size = 1481492, upload-time = "2026-01-16T12:35:22.602Z" },
 ]
 
 [package.optional-dependencies]
 complete = [
     { name = "bokeh" },
-    { name = "dask-expr" },
     { name = "distributed" },
     { name = "jinja2" },
     { name = "lz4" },
     { name = "numpy" },
     { name = "pandas" },
     { name = "pyarrow" },
-    { name = "pyarrow-hotfix" },
-]
-
-[[package]]
-name = "dask-expr"
-version = "1.1.10"
-source = { registry = "https://pypi.org/simple" }
-dependencies = [
-    { name = "dask" },
-    { name = "pandas" },
-    { name = "pyarrow" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/af/d4/c34302c5c1350468a8793c5d6acae06e829f6a5f674145668b589e47107f/dask_expr-1.1.10.tar.gz", hash = "sha256:3d9ac7231f41ce7a109faaf855a60d89bd4f90d304452894178a114470164014", size = 221879, upload-time = "2024-08-06T20:23:53.013Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/2c/e3/cf7a05892b04b22b9e28ec25f8bc2acaa0304bf3128f76031e4363b63e21/dask_expr-1.1.10-py3-none-any.whl", hash = "sha256:c6365c6fa6d3e386c5ee79bd20d4c89e566c0cf78fb6c762f74b2f04028935c6", size = 242183, upload-time = "2024-08-06T20:23:50.115Z" },
 ]
 
 [[package]]
@@ -924,7 +908,7 @@ wheels = [
 
 [[package]]
 name = "distributed"
-version = "2024.8.0"
+version = "2026.1.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "click" },
@@ -943,9 +927,9 @@ dependencies = [
     { name = "urllib3" },
     { name = "zict" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/61/09/f3640d43559876a8b9b03204e684ed3be259d04dd017260b002b6cfe8401/distributed-2024.8.0.tar.gz", hash = "sha256:b99caf0a7f257f59477a70a334e081c1241f7cd9860211cc669742e6450e1310", size = 1112136, upload-time = "2024-08-06T20:23:51.017Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/45/19/0c13efdffc55cb311594f66c1c8d36a3c4711e427c820155fb9c59138b5e/distributed-2026.1.1.tar.gz", hash = "sha256:3d2709a43912797df3c345af3bb333bbf1a386ec1e9e6a134e5f050521373dbd", size = 2102870, upload-time = "2026-01-16T12:34:58.258Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/95/8a/d828dea3a1b6d7e796bebd8c64dc40d44d9a60762f759a11a61386eb38b5/distributed-2024.8.0-py3-none-any.whl", hash = "sha256:11af55d22dd6e04eb868b87f166b8f59ef1b300f659f87c016643b7f98280ec6", size = 1019423, upload-time = "2024-08-06T20:23:45.136Z" },
+    { url = "https://files.pythonhosted.org/packages/b9/dc/6d709bcf8fed7611d8a510aeed23b0436cf6db5b61e63c8eb8451eb0d4d8/distributed-2026.1.1-py3-none-any.whl", hash = "sha256:506759b1ed88e45e12ba65e2a429de9911862db55d27dd8bb293c6268430374e", size = 1008417, upload-time = "2026-01-16T12:34:55.535Z" },
 ]
 
 [[package]]
