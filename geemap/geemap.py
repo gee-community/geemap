@@ -455,10 +455,10 @@ class Map(core.Map):
         self.fit_bounds([[bounds[1], bounds[0]], [bounds[3], bounds[2]]])
 
     def get_scale(self) -> float:
-        """Returns the approximate pixel scale of the current map view, in meters.
+        """Returns the approximate pixel scale of the current map view in meters.
 
         Returns:
-            float: Map resolution in meters.
+            Map resolution in meters.
         """
         return super().get_scale()
 
@@ -534,7 +534,7 @@ class Map(core.Map):
         """Gets layer names as a list.
 
         Returns:
-            List[str]: A list of layer names.
+            A list of layer names.
         """
         layer_names = []
 
@@ -548,10 +548,10 @@ class Map(core.Map):
         """Finds a layer by name.
 
         Args:
-            name (str): Name of the layer to find.
+            name: Name of the layer to find.
 
         Returns:
-            Optional[ipyleaflet.Layer]: The ipyleaflet layer object if found, else None.
+            The ipyleaflet layer object if found, else None.
         """
         layers = self.layers
 
@@ -565,8 +565,8 @@ class Map(core.Map):
         """Shows or hides a layer on the map.
 
         Args:
-            name (str): Name of the layer to show/hide.
-            show (bool, optional): Whether to show or hide the layer. Defaults to True.
+            name: Name of the layer to show/hide.
+            show: Whether to show or hide the layer. Defaults to True.
         """
         layer = self.find_layer(name)
 
@@ -577,10 +577,10 @@ class Map(core.Map):
         """Finds the index of a layer by name.
 
         Args:
-            name (str): Name of the layer to find.
+            name: Name of the layer to find.
 
         Returns:
-            int: Index of the layer with the specified name, or -1 if not found.
+            Index of the layer with the specified name, or -1 if not found.
         """
         layers = self.layers
 
@@ -594,14 +594,11 @@ class Map(core.Map):
         """Changes the opacity of a layer.
 
         Args:
-            name (str): The name of the layer to change opacity.
-            opacity (float, optional): The opacity value to set. Defaults to 1.0.
+            name: The name of the layer to change opacity.
+            opacity: The opacity value to set. Defaults to 1.0.
         """
         layer = self.find_layer(name)
-        try:
-            layer.opacity = opacity
-        except Exception as e:
-            raise Exception(e)
+        layer.opacity = opacity
 
     def add_tile_layer(
         self,
@@ -642,7 +639,7 @@ class Map(core.Map):
 
         except Exception as e:
             print("Failed to add the specified TileLayer.")
-            raise Exception(e)
+            raise e
 
     def set_plot_options(
         self,
@@ -678,7 +675,6 @@ class Map(core.Map):
                 if None it will respect the content size. Defaults to None.
             max_height (int, optional): Max height of the widget (in pixels),
                 if None it will respect the content size. Defaults to None.
-
         """
         plot_options_dict = {}
         plot_options_dict["add_marker_cluster"] = add_marker_cluster
@@ -727,7 +723,6 @@ class Map(core.Map):
             max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
             min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
             max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
-
         """
         if hasattr(self, "_plot_widget") and self._plot_widget is not None:
             plot_widget = self._plot_widget
@@ -781,13 +776,13 @@ class Map(core.Map):
 
             except Exception as e:
                 print("Failed to create plot.")
-                raise Exception(e)
+                raise e
 
     def add_layer_control(self, position: str = "topright") -> None:
         """Adds a layer control to the map.
 
         Args:
-            position (str, optional): The position of the layer control on the map.
+            position: The position of the layer control on the map.
                 Defaults to "topright".
         """
         if self.layer_control is None:
@@ -829,26 +824,23 @@ class Map(core.Map):
             widget_args (dict, optional): Additional arguments passed to the
                 widget_template() function. Defaults to {}.
         """
-        try:
-            legend = self._add_legend(
-                title,
-                legend_dict,
-                keys,
-                colors,
-                position,
-                builtin_legend,
-                layer_name,
-                add_header,
-                widget_args,
-                **kwargs,
-            )
-            self._legend = legend
-            if not hasattr(self, "legends"):
-                self.legends = [legend]
-            else:
-                self.legends.append(legend)
-        except Exception as e:
-            raise Exception(e)
+        legend = self._add_legend(
+            title,
+            legend_dict,
+            keys,
+            colors,
+            position,
+            builtin_legend,
+            layer_name,
+            add_header,
+            widget_args,
+            **kwargs,
+        )
+        self._legend = legend
+        if not hasattr(self, "legends"):
+            self.legends = [legend]
+        else:
+            self.legends.append(legend)
 
     def add_colorbar(
         self,
@@ -868,17 +860,23 @@ class Map(core.Map):
         """Add a matplotlib colorbar to the map
 
         Args:
-            vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
-            cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
-            discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
-            label (str, optional): Label for the colorbar. Defaults to None.
-            orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
-            position (str, optional): Position of the colorbar on the map. It can be one of: topleft, topright, bottomleft, and bottomright. Defaults to "bottomright".
-            transparent_bg (bool, optional): Whether to use transparent background. Defaults to False.
-            layer_name (str, optional): The layer name associated with the colorbar. Defaults to None.
-            font_size (int, optional): Font size for the colorbar. Defaults to 9.
-            axis_off (bool, optional): Whether to turn off the axis. Defaults to False.
-            max_width (str, optional): Maximum width of the colorbar in pixels. Defaults to None.
+            vis_params: Visualization parameters as a dictionary. See
+                https://developers.google.com/earth-engine/guides/image_visualization for
+                options.
+            cmap: Matplotlib colormap. Defaults to "gray". See
+                https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py
+                for options.
+            discrete: Whether to create a discrete colorbar. Defaults to False.
+            label: Label for the colorbar. Defaults to None.
+            orientation: Orientation of the colorbar, such as "vertical" and
+                "horizontal". Defaults to "horizontal".
+            position: Position of the colorbar on the map. It can be one of: topleft,
+                topright, bottomleft, and bottomright. Defaults to "bottomright".
+            transparent_bg: Whether to use transparent background. Defaults to False.
+            layer_name: The layer name associated with the colorbar. Defaults to None.
+            font_size: Font size for the colorbar. Defaults to 9.
+            axis_off: Whether to turn off the axis. Defaults to False.
+            max_width: Maximum width of the colorbar in pixels. Defaults to None.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -888,7 +886,6 @@ class Map(core.Map):
             TypeError: If the provided opacity value is not scalar type.
             TypeError: If cmap or palette is not provided.
         """
-
         colorbar = self._add_colorbar(
             vis_params,
             cmap,
@@ -944,8 +941,8 @@ class Map(core.Map):
         """Creates a GUI for changing layer visualization parameters interactively.
 
         Args:
-            layer_dict (Dict[str, Any]): A dictionary containing information about
-                the layer. It is an element from Map.ee_layers.
+            layer_dict: A dictionary containing information about the layer. It is an
+                element from Map.ee_layers.
         """
         self._add_layer_editor(position="topright", layer_dict=layer_dict)
 
@@ -961,11 +958,12 @@ class Map(core.Map):
         """Add the Inspector GUI to the map.
 
         Args:
-            names (str | list, optional): The names of the layers to be included. Defaults to None.
-            visible (bool, optional): Whether to inspect visible layers only. Defaults to True.
-            decimals (int, optional): The number of decimal places to round the coordinates. Defaults to 2.
-            position (str, optional): The position of the Inspector GUI. Defaults to "topright".
-            opened (bool, optional): Whether the control is opened. Defaults to True.
+            names: The names of the layers to be included. Defaults to None.
+            visible: Whether to inspect visible layers only. Defaults to True.
+            decimals: The number of decimal places to round the coordinates. Defaults to
+                2.
+            position: The position of the Inspector GUI. Defaults to "topright".
+            opened: Whether the control is opened. Defaults to True.
         """
         super()._add_inspector(
             position,
@@ -985,9 +983,9 @@ class Map(core.Map):
         """Add the Layer Manager to the map.
 
         Args:
-            position (str, optional): The position of the Layer Manager. Defaults to "topright".
-            opened (bool, optional): Whether the control is opened. Defaults to True.
-            show_close_button (bool, optional): Whether to show the close button. Defaults to True.
+            position: The position of the Layer Manager. Defaults to "topright".
+            opened: Whether the control is opened. Defaults to True.
+            show_close_button: Whether to show the close button. Defaults to True.
         """
         super()._add_layer_manager(position)
         if layer_manager := self._layer_manager:
@@ -998,7 +996,7 @@ class Map(core.Map):
         """Handles the event when the basemap is changed.
 
         Args:
-            basemap_name (str): The name of the new basemap.
+            basemap_name: The name of the new basemap.
         """
         if basemap_name not in self.get_layer_names():
             self.add_basemap(basemap_name)
@@ -1012,7 +1010,7 @@ class Map(core.Map):
         """Add the Basemap GUI to the map.
 
         Args:
-            position (str, optional): The position of the Basemap GUI. Defaults to "topright".
+            position: The position of the Basemap GUI. Defaults to "topright".
         """
         super()._add_basemap_selector(position=position)
 
@@ -1020,7 +1018,7 @@ class Map(core.Map):
         """Add a draw control to the map.
 
         Args:
-            position (str, optional): The position of the draw control. Defaults to "topleft".
+            position: The position of the draw control. Defaults to "topleft".
         """
         super().add("draw_control", position=position)
 
@@ -1028,7 +1026,7 @@ class Map(core.Map):
         """Add a lite version draw control to the map for the plotting tool.
 
         Args:
-            position (str, optional): The position of the draw control. Defaults to "topleft".
+            position: The position of the draw control. Defaults to "topleft".
         """
         super().add(
             "draw_control",
@@ -1047,7 +1045,7 @@ class Map(core.Map):
         """Add a toolbar to the map.
 
         Args:
-            position (str, optional): The position of the toolbar. Defaults to "topright".
+            position: The position of the toolbar. Defaults to "topright".
             **kwargs: Additional keyword arguments.
         """
         self.add("toolbar", position, **kwargs)
@@ -1056,7 +1054,7 @@ class Map(core.Map):
         """Gets the main tools for the toolbar.
 
         Returns:
-            Any: The main tools for the toolbar.
+            The main tools for the toolbar.
         """
         return toolbar.get_main_tools()
 
@@ -1064,7 +1062,7 @@ class Map(core.Map):
         """Gets the extra tools for the toolbar.
 
         Returns:
-            Any: The extra tools for the toolbar.
+            The extra tools for the toolbar.
         """
         return toolbar.get_extra_tools()
 
@@ -1072,7 +1070,7 @@ class Map(core.Map):
         """Adds the plot widget to the map.
 
         Args:
-            position (str, optional): Position of the widget. Defaults to "topright".
+            position: Position of the widget. Defaults to "topright".
             **kwargs: Additional keyword arguments.
         """
         from .toolbar import ee_plot_gui
@@ -1090,12 +1088,11 @@ class Map(core.Map):
         """Add a GUI to the map.
 
         Args:
-            name (str): The name of the GUI. Options include "layer_manager",
-                "inspector", "plot", and "timelapse".
-            position (str, optional): The position of the GUI. Defaults to "topright".
-            opened (bool, optional): Whether the GUI is opened. Defaults to True.
-            show_close_button (bool, optional): Whether to show the close button.
-                Defaults to True.
+            name: The name of the GUI. Options include "layer_manager", "inspector",
+                "plot", and "timelapse".
+            position: The position of the GUI. Defaults to "topright".
+            opened: Whether the GUI is opened. Defaults to True.
+            show_close_button: Whether to show the close button.  Defaults to True.
             **kwargs: Additional keyword arguments.
         """
         name = name.lower()
@@ -1138,11 +1135,14 @@ class Map(core.Map):
             self.layers = layers
 
     def add_marker(self, location, **kwargs):
-        """Adds a marker to the map. More info about marker at https://ipyleaflet.readthedocs.io/en/latest/api_reference/marker.html.
+        """Adds a marker to the map.
+
+        More info about marker at
+        https://ipyleaflet.readthedocs.io/en/latest/api_reference/marker.html.
 
         Args:
-            location (list | tuple): The location of the marker in the format of [lat, lng].
-
+            location (list | tuple): The location of the marker in the format of [lat,
+                lng].
             **kwargs: Keyword arguments for the marker.
         """
         if isinstance(location, list):
@@ -1155,29 +1155,31 @@ class Map(core.Map):
 
     def add_wms_layer(
         self,
-        url,
-        layers,
-        name=None,
-        attribution="",
-        format="image/png",
-        transparent=True,
-        opacity=1.0,
-        shown=True,
+        url: str,
+        layers: str,
+        name: str | None = None,
+        attribution: str = "",
+        format: str = "image/png",
+        transparent: bool = True,
+        opacity: float = 1.0,
+        shown: bool = True,
         **kwargs,
     ):
         """Add a WMS layer to the map.
 
         Args:
-            url (str): The URL of the WMS web service.
-            layers (str): Comma-separated list of WMS layers to show.
-            name (str, optional): The layer name to use on the layer control. Defaults to None.
-            attribution (str, optional): The attribution of the data layer. Defaults to ''.
-            format (str, optional): WMS image format (use ‘image/png’ for layers with transparency). Defaults to 'image/png'.
-            transparent (bool, optional): If True, the WMS service will return images with transparency. Defaults to True.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.0.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            url: The URL of the WMS web service.
+            layers: Comma-separated list of WMS layers to show.
+            name: The layer name to use on the layer control. Defaults to None.
+            attribution: The attribution of the data layer. Defaults to ''.
+            format: WMS image format (use ‘image/png’ for layers with
+                transparency). Defaults to 'image/png'.
+            transparent: If True, the WMS service will return images with
+                transparency. Defaults to True.
+            opacity: The opacity of the layer. Defaults to 1.0.
+            shown: A flag indicating whether the layer should be on by default. Defaults
+                to True.
         """
-
         if name is None:
             name = str(layers)
 
@@ -1197,14 +1199,15 @@ class Map(core.Map):
 
         except Exception as e:
             print("Failed to add the specified WMS TileLayer.")
-            raise Exception(e)
+            raise e
 
-    def zoom_to_me(self, zoom=14, add_marker=True):
+    def zoom_to_me(self, zoom: int = 14, add_marker: bool = True):
         """Zoom to the current device location.
 
         Args:
-            zoom (int, optional): Zoom level. Defaults to 14.
-            add_marker (bool, optional): Whether to add a marker of the current device location. Defaults to True.
+            zoom: Zoom level. Defaults to 14.
+            add_marker: Whether to add a marker of the current device location. Defaults
+                to True.
         """
         lat, lon = get_current_latlon()
         self.set_center(lon, lat, zoom)
@@ -1217,7 +1220,7 @@ class Map(core.Map):
             )
             self.add(marker)
 
-    def zoom_to_gdf(self, gdf):
+    def zoom_to_gdf(self, gdf) -> None:
         """Zooms to the bounding box of a GeoPandas GeoDataFrame.
 
         Args:
@@ -1226,11 +1229,11 @@ class Map(core.Map):
         bounds = gdf.total_bounds
         self.zoom_to_bounds(bounds)  # pytype: disable=wrong-arg-types
 
-    def get_bounds(self, asGeoJSON=False):
-        """Returns the bounds of the current map view, as a list in the format [west, south, east, north] in degrees.
+    def get_bounds(self, asGeoJSON: bool = False):
+        """Returns the bounds of the current map view.
 
         Args:
-            asGeoJSON (bool, optional): If true, returns map bounds as GeoJSON. Defaults to False.
+            asGeoJSON: If true, returns map bounds as GeoJSON. Defaults to False.
 
         Returns:
             list | dict: A list in the format [west, south, east, north] in degrees.
@@ -1239,26 +1242,32 @@ class Map(core.Map):
 
     def add_cog_layer(
         self,
-        url,
-        name="Untitled",
-        attribution="",
-        opacity=1.0,
-        shown=True,
-        bands=None,
-        titiler_endpoint=None,
+        url: str,
+        name: str = "Untitled",
+        attribution: str = "",
+        opacity: float = 1.0,
+        shown: bool = True,
+        bands: list[str] = None,
+        titiler_endpoint: str = None,
         **kwargs,
     ):
         """Adds a COG TileLayer to the map.
 
         Args:
-            url (str): The URL of the COG tile layer.
-            name (str, optional): The layer name to use for the layer. Defaults to 'Untitled'.
-            attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-            bands (list, optional): A list of bands to use for the layer. Defaults to None.
-            titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-            **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata, unscale, resampling, rescale, color_formula, colormap, colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain bands, use bidx=[1, 2, 3]
+            url: The URL of the COG tile layer.
+            name: The layer name to use for the layer. Defaults to 'Untitled'.
+            attribution: The attribution to use. Defaults to ''.
+            opacity: The opacity of the layer. Defaults to 1.
+            shown: A flag indicating whether the layer should be on by default. Defaults
+                to True.
+            bands: A list of bands to use for the layer. Defaults to None.
+            titiler_endpoint: Titiler endpoint. Defaults to
+                "https://giswqs-titiler-endpoint.hf.space".
+            **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata,
+                unscale, resampling, rescale, color_formula, colormap, colormap_name,
+                return_mask. See https://developmentseed.org/titiler/endpoints/cog/ and
+                https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain
+                bands, use bidx=[1, 2, 3]
         """
 
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
@@ -1284,31 +1293,39 @@ class Map(core.Map):
 
     def add_stac_layer(
         self,
-        url=None,
-        collection=None,
-        item=None,
-        assets=None,
-        bands=None,
-        titiler_endpoint=None,
-        name="STAC Layer",
-        attribution="",
-        opacity=1.0,
-        shown=True,
+        url: str | None = None,
+        collection: str | None = None,
+        item: str | None = None,
+        assets: list[str] | None = None,
+        bands: list[str] | None = None,
+        titiler_endpoint: str | None = None,
+        name: str = "STAC Layer",
+        attribution: str = "",
+        opacity: float = 1.0,
+        shown: bool = True,
         **kwargs,
     ):
         """Adds a STAC TileLayer to the map.
 
         Args:
-            url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-            collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-            item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-            assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-            bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
-            name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
-            attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
-            shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
+            url: HTTP URL to a STAC item, e.g.,
+                https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+            collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+                landsat-8-c2-l2.
+            item: The Microsoft Planetary Computer STAC item ID, e.g.,
+                LC08_L2SP_047027_20201204_02_T1.
+            assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7",
+                "SR_B5", "SR_B4"].
+            bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
+            titiler_endpoint: Titiler endpoint, e.g.,
+                "https://giswqs-titiler-endpoint.hf.space",
+                "https://planetarycomputer.microsoft.com/api/data/v1",
+                "planetary-computer", "pc". Defaults to None.
+            name: The layer name to use for the layer. Defaults to 'STAC Layer'.
+            attribution: The attribution to use. Defaults to ''.
+            opacity: The opacity of the layer. Defaults to 1.
+            shown: A flag indicating whether the layer should be on by default. Defaults
+                to True.
         """
         tile_url = stac_tile(
             url, collection, item, assets, bands, titiler_endpoint, **kwargs
@@ -1335,12 +1352,12 @@ class Map(core.Map):
 
         self.cog_layer_dict[name] = params
 
-    def add_minimap(self, zoom=5, position="bottomright"):
+    def add_minimap(self, zoom: int = 5, position: str = "bottomright") -> None:
         """Adds a minimap (overview) to the ipyleaflet map.
 
         Args:
-            zoom (int, optional): Initial map zoom level. Defaults to 5.
-            position (str, optional): Position of the minimap. Defaults to "bottomright".
+            zoom: Initial map zoom level. Defaults to 5.
+            position: Position of the minimap. Defaults to "bottomright".
         """
         minimap = ipyleaflet.Map(
             zoom_control=False,
@@ -1383,33 +1400,39 @@ class Map(core.Map):
             elif kwargs.get("type") == "mousemove":
                 pass
 
-        # cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
+        # Cursor style: https://www.w3schools.com/cssref/pr_class_cursor.asp
         self.default_style = {"cursor": "crosshair"}
         self.on_interaction(handle_interaction)
 
     def plot_demo(
         self,
-        iterations=20,
-        plot_type=None,
-        overlay=False,
-        position="bottomright",
-        min_width=None,
-        max_width=None,
-        min_height=None,
-        max_height=None,
+        iterations: int = 20,
+        plot_type: str | None = None,
+        overlay: bool = False,
+        position: str = "bottomright",
+        min_width: int | None = None,
+        max_width: int | None = None,
+        min_height: int | None = None,
+        max_height: int | None = None,
         **kwargs,
     ):
         """A demo of interactive plotting using random pixel coordinates.
 
         Args:
-            iterations (int, optional): How many iterations to run for the demo. Defaults to 20.
-            plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
-            overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
-            position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
-            min_width (int, optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
+            iterations: How many iterations to run for the demo. Defaults to 20.
+            plot_type: The plot type can be one of "None", "bar", "scatter" or
+                "hist". Defaults to None.
+            overlay: Whether to overlay plotted lines on the figure. Defaults to False.
+            position: Position of the control, can be ‘bottomleft’, ‘bottomright’,
+                ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width: Min width of the widget (in pixels), if None it will respect the
+                content size. Defaults to None.
+            max_width: Max width of the widget (in pixels), if None it will respect the
+                content size. Defaults to None.
+            min_height: Min height of the widget (in pixels), if None it will respect
+                the content size. Defaults to None.
+            max_height: Max height of the widget (in pixels), if None it will respect
+                the content size. Defaults to None.
         """
         if hasattr(self, "random_marker") and self.random_marker is not None:
             self.remove_layer(self.random_marker)
@@ -1431,59 +1454,63 @@ class Map(core.Map):
         self.add(marker)
 
         for i in range(iterations):
-            try:
-                coordinate = ee.Geometry.Point([longitudes[i], latitudes[i]])
-                dict_values = image.sample(coordinate).first().toDictionary().getInfo()
-                band_values = list(dict_values.values())
-                title = "{}/{}: Spectral signature at ({}, {})".format(
-                    i + 1,
-                    iterations,
-                    round(latitudes[i], 2),
-                    round(longitudes[i], 2),
-                )
-                marker.location = (latitudes[i], longitudes[i])
-                self.plot(
-                    band_names,
-                    band_values,
-                    plot_type=plot_type,
-                    overlay=overlay,
-                    min_width=min_width,
-                    max_width=max_width,
-                    min_height=min_height,
-                    max_height=max_height,
-                    title=title,
-                    **kwargs,
-                )
-                time.sleep(0.3)
-            except Exception as e:
-                raise Exception(e)
+            coordinate = ee.Geometry.Point([longitudes[i], latitudes[i]])
+            dict_values = image.sample(coordinate).first().toDictionary().getInfo()
+            band_values = list(dict_values.values())
+            title = "{}/{}: Spectral signature at ({}, {})".format(
+                i + 1,
+                iterations,
+                round(latitudes[i], 2),
+                round(longitudes[i], 2),
+            )
+            marker.location = (latitudes[i], longitudes[i])
+            self.plot(
+                band_names,
+                band_values,
+                plot_type=plot_type,
+                overlay=overlay,
+                min_width=min_width,
+                max_width=max_width,
+                min_height=min_height,
+                max_height=max_height,
+                title=title,
+                **kwargs,
+            )
+            time.sleep(0.3)
 
     def plot_raster(
         self,
         ee_object=None,
-        sample_scale=None,
-        plot_type=None,
-        overlay=False,
-        position="bottomright",
-        min_width=None,
-        max_width=None,
-        min_height=None,
-        max_height=None,
+        sample_scale: float | None = None,
+        plot_type: str | None = None,
+        overlay: bool = False,
+        position: str = "bottomright",
+        min_width: int | None = None,
+        max_width: int | None = None,
+        min_height: int | None = None,
+        max_height: int | None = None,
         **kwargs,
     ):
         """Interactive plotting of Earth Engine data by clicking on the map.
 
         Args:
-            ee_object (object, optional): The ee.Image or ee.ImageCollection to sample. Defaults to None.
-            sample_scale (float, optional): A nominal scale in meters of the projection to sample in. Defaults to None.
-            plot_type (str, optional): The plot type can be one of "None", "bar", "scatter" or "hist". Defaults to None.
-            overlay (bool, optional): Whether to overlay plotted lines on the figure. Defaults to False.
-            position (str, optional): Position of the control, can be ‘bottomleft’, ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
-            min_width (int, optional): Min width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_width (int, optional): Max width of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            min_height (int, optional): Min height of the widget (in pixels), if None it will respect the content size. Defaults to None.
-            max_height (int, optional): Max height of the widget (in pixels), if None it will respect the content size. Defaults to None.
-
+            ee_object (object, optional): The ee.Image or ee.ImageCollection to
+                sample. Defaults to None.
+            sample_scale: A nominal scale in meters of the projection to sample
+                in. Defaults to None.
+            plot_type: The plot type can be one of "None", "bar", "scatter" or
+                "hist". Defaults to None.
+            overlay: Whether to overlay plotted lines on the figure. Defaults to False.
+            position: Position of the control, can be ‘bottomleft’, ‘bottomright’,
+                ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width: Min width of the widget (in pixels), if None it will respect the
+                content size. Defaults to None.
+            max_width: Max width of the widget (in pixels), if None it will respect the
+                content size. Defaults to None.
+            min_height: Min height of the widget (in pixels), if None it will respect
+                the content size. Defaults to None.
+            max_height: Max height of the widget (in pixels), if None it will respect
+                the content size. Defaults to None.
         """
         if hasattr(self, "_plot_control") and self._plot_control is not None:
             del self._plot_widget
@@ -1580,12 +1607,12 @@ class Map(core.Map):
 
         self.on_interaction(handle_interaction)
 
-    def add_marker_cluster(self, event="click", add_marker=True):
+    def add_marker_cluster(self, event: str = "click", add_marker: bool = True):
         """Captures user inputs and add markers to the map.
 
         Args:
-            event (str, optional): [description]. Defaults to 'click'.
-            add_marker (bool, optional): If True, add markers to the map. Defaults to True.
+            event: [description]. Defaults to 'click'.
+            add_marker: If True, add markers to the map. Defaults to True.
 
         Returns:
             object: a marker cluster.
@@ -1616,14 +1643,20 @@ class Map(core.Map):
         self.on_interaction(handle_interaction)
 
     def set_control_visibility(
-        self, layerControl=True, fullscreenControl=True, latLngPopup=True
-    ):
+        self,
+        layerControl: bool = True,
+        fullscreenControl: bool = True,
+        latLngPopup: bool = True,
+    ) -> None:
         """Sets the visibility of the controls on the map.
 
         Args:
-            layerControl (bool, optional): Whether to show the control that allows the user to toggle layers on/off. Defaults to True.
-            fullscreenControl (bool, optional): Whether to show the control that allows the user to make the map full-screen. Defaults to True.
-            latLngPopup (bool, optional): Whether to show the control that pops up the Lat/lon when the user clicks on the map. Defaults to True.
+            layerControl: Whether to show the control that allows the user to toggle
+                layers on/off. Defaults to True.
+            fullscreenControl: Whether to show the control that allows the user to make
+                the map full-screen. Defaults to True.
+            latLngPopup: Whether to show the control that pops up the Lat/lon when the
+                user clicks on the map. Defaults to True.
         """
         pass
 
@@ -1709,7 +1742,8 @@ class Map(core.Map):
                 pass
             else:
                 raise ValueError(
-                    f"left_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
+                    "left_layer must be one of the following: "
+                    f"{', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             if right_layer in basemaps.keys():
@@ -1732,7 +1766,8 @@ class Map(core.Map):
                 pass
             else:
                 raise ValueError(
-                    f"right_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
+                    "right_layer must be one of the following: "
+                    f"{', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             control = ipyleaflet.SplitMapControl(
@@ -1978,17 +2013,13 @@ class Map(core.Map):
             widget=close_button, position="bottomright"
         )
 
-        try:
-            split_control = ipyleaflet.SplitMapControl(
-                left_layer=left_layer, right_layer=right_layer
-            )
-            self.add(split_control)
+        split_control = ipyleaflet.SplitMapControl(
+            left_layer=left_layer, right_layer=right_layer
+        )
+        self.add(split_control)
 
-            if add_close_button:
-                self.add(close_control)
-
-        except Exception as e:
-            raise Exception(e)
+        if add_close_button:
+            self.add(close_control)
 
     def basemap_demo(self) -> None:
         """A demo for using geemap basemaps."""
@@ -2023,7 +2054,6 @@ class Map(core.Map):
             transparent_bg (bool, optional): Whether to use transparent background for the colormap widget. Defaults to True.
             position (str, optional): The position for the colormap widget. Defaults to "bottomright".
             layer_name (str, optional): Layer name of the colorbar to be associated with. Defaults to None.
-
         """
         from branca.colormap import LinearColormap
 
@@ -2038,7 +2068,7 @@ class Map(core.Map):
                 colors = list(colors["default"])
             except Exception as e:
                 print("The provided color list is invalid.")
-                raise Exception(e)
+                raise e
 
         if all(len(color) == 6 for color in colors):
             colors = ["#" + color for color in colors]
@@ -2187,118 +2217,111 @@ class Map(core.Map):
             nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).
             nd_threshold (float, optional): The threshold for extracting pixels from the normalized difference band.
             nd_palette (str, optional): The color palette to use for displaying the normalized difference band.
-
         """
-        try:
-            if roi is None:
-                if self.draw_last_feature is not None:
-                    feature = self.draw_last_feature
-                    roi = feature.geometry()
-                else:
-                    roi = ee.Geometry.Polygon(
-                        [
-                            [
-                                [-115.471773, 35.892718],
-                                [-115.471773, 36.409454],
-                                [-114.271283, 36.409454],
-                                [-114.271283, 35.892718],
-                                [-115.471773, 35.892718],
-                            ]
-                        ],
-                        None,
-                        False,
-                    )
-            elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
-                roi = roi.geometry()
-            elif isinstance(roi, ee.Geometry):
-                pass
+        if roi is None:
+            if self.draw_last_feature is not None:
+                feature = self.draw_last_feature
+                roi = feature.geometry()
             else:
-                print("The provided roi is invalid. It must be an ee.Geometry")
-                return
+                roi = ee.Geometry.Polygon(
+                    [
+                        [
+                            [-115.471773, 35.892718],
+                            [-115.471773, 36.409454],
+                            [-114.271283, 36.409454],
+                            [-114.271283, 35.892718],
+                            [-115.471773, 35.892718],
+                        ]
+                    ],
+                    None,
+                    False,
+                )
+        elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+            roi = roi.geometry()
+        elif isinstance(roi, ee.Geometry):
+            pass
+        else:
+            print("The provided roi is invalid. It must be an ee.Geometry")
+            return
 
-            geojson = ee_to_geojson(roi)
-            bounds = minimum_bounding_box(geojson)
-            geojson = adjust_longitude(geojson)
-            roi = ee.Geometry(geojson)
+        geojson = ee_to_geojson(roi)
+        bounds = minimum_bounding_box(geojson)
+        geojson = adjust_longitude(geojson)
+        roi = ee.Geometry(geojson)
 
-            in_gif = landsat_timelapse(
-                roi=roi,
-                out_gif=out_gif,
-                start_year=start_year,
-                end_year=end_year,
-                start_date=start_date,
-                end_date=end_date,
-                bands=bands,
-                vis_params=vis_params,
-                dimensions=dimensions,
-                frames_per_second=frames_per_second,
-                apply_fmask=apply_fmask,
-                nd_bands=nd_bands,
-                nd_threshold=nd_threshold,
-                nd_palette=nd_palette,
+        in_gif = landsat_timelapse(
+            roi=roi,
+            out_gif=out_gif,
+            start_year=start_year,
+            end_year=end_year,
+            start_date=start_date,
+            end_date=end_date,
+            bands=bands,
+            vis_params=vis_params,
+            dimensions=dimensions,
+            frames_per_second=frames_per_second,
+            apply_fmask=apply_fmask,
+            nd_bands=nd_bands,
+            nd_threshold=nd_threshold,
+            nd_palette=nd_palette,
+            font_size=font_size,
+            font_color=font_color,
+            progress_bar_color=progress_bar_color,
+            progress_bar_height=progress_bar_height,
+        )
+        in_nd_gif = in_gif.replace(".gif", "_nd.gif")
+
+        if nd_bands is not None:
+            add_text_to_gif(
+                in_nd_gif,
+                in_nd_gif,
+                xy=("2%", "2%"),
+                text_sequence=start_year,
                 font_size=font_size,
                 font_color=font_color,
+                duration=int(1000 / frames_per_second),
+                add_progress_bar=add_progress_bar,
                 progress_bar_color=progress_bar_color,
                 progress_bar_height=progress_bar_height,
             )
-            in_nd_gif = in_gif.replace(".gif", "_nd.gif")
 
+        if label is not None:
+            add_text_to_gif(
+                in_gif,
+                in_gif,
+                xy=("2%", "90%"),
+                text_sequence=label,
+                font_size=font_size,
+                font_color=font_color,
+                duration=int(1000 / frames_per_second),
+                add_progress_bar=add_progress_bar,
+                progress_bar_color=progress_bar_color,
+                progress_bar_height=progress_bar_height,
+            )
+
+        if is_tool("ffmpeg"):
+            reduce_gif_size(in_gif)
             if nd_bands is not None:
-                add_text_to_gif(
-                    in_nd_gif,
-                    in_nd_gif,
-                    xy=("2%", "2%"),
-                    text_sequence=start_year,
-                    font_size=font_size,
-                    font_color=font_color,
-                    duration=int(1000 / frames_per_second),
-                    add_progress_bar=add_progress_bar,
-                    progress_bar_color=progress_bar_color,
-                    progress_bar_height=progress_bar_height,
-                )
+                reduce_gif_size(in_nd_gif)
 
-            if label is not None:
-                add_text_to_gif(
-                    in_gif,
-                    in_gif,
-                    xy=("2%", "90%"),
-                    text_sequence=label,
-                    font_size=font_size,
-                    font_color=font_color,
-                    duration=int(1000 / frames_per_second),
-                    add_progress_bar=add_progress_bar,
-                    progress_bar_color=progress_bar_color,
-                    progress_bar_height=progress_bar_height,
-                )
+        print("Adding GIF to the map ...")
+        self.image_overlay(url=in_gif, bounds=bounds, name=layer_name)
+        if nd_bands is not None:
+            self.image_overlay(url=in_nd_gif, bounds=bounds, name=layer_name + " ND")
+        print("The timelapse has been added to the map.")
 
-            if is_tool("ffmpeg"):
-                reduce_gif_size(in_gif)
-                if nd_bands is not None:
-                    reduce_gif_size(in_nd_gif)
-
-            print("Adding GIF to the map ...")
-            self.image_overlay(url=in_gif, bounds=bounds, name=layer_name)
+        if download:
+            link = create_download_link(
+                in_gif,
+                title="Click here to download the Landsat timelapse: ",
+            )
+            display(link)
             if nd_bands is not None:
-                self.image_overlay(
-                    url=in_nd_gif, bounds=bounds, name=layer_name + " ND"
+                link2 = create_download_link(
+                    in_nd_gif,
+                    title="Click here to download the Normalized Difference Index timelapse: ",
                 )
-            print("The timelapse has been added to the map.")
-
-            if download:
-                link = create_download_link(
-                    in_gif,
-                    title="Click here to download the Landsat timelapse: ",
-                )
-                display(link)
-                if nd_bands is not None:
-                    link2 = create_download_link(
-                        in_nd_gif,
-                        title="Click here to download the Normalized Difference Index timelapse: ",
-                    )
-                    display(link2)
-
-        except Exception as e:
-            raise Exception(e)
+                display(link2)
 
     def to_html(
         self,
@@ -2317,70 +2340,65 @@ class Map(core.Map):
             width (str, optional): The width of the map in pixels or percentage. Defaults to '100%'.
             height (str, optional): The height of the map in pixels. Defaults to '880px'.
             add_layer_control (bool, optional): Whether to add the LayersControl. Defaults to True.
-
         """
-        try:
-            save = True
-            if filename is not None:
-                if not filename.endswith(".html"):
-                    raise ValueError("The output file extension must be html.")
-                filename = os.path.abspath(filename)
-                out_dir = os.path.dirname(filename)
-                if not os.path.exists(out_dir):
-                    os.makedirs(out_dir)
-            else:
-                filename = os.path.abspath(coreutils.random_string() + ".html")
-                save = False
+        save = True
+        if filename is not None:
+            if not filename.endswith(".html"):
+                raise ValueError("The output file extension must be html.")
+            filename = os.path.abspath(filename)
+            out_dir = os.path.dirname(filename)
+            if not os.path.exists(out_dir):
+                os.makedirs(out_dir)
+        else:
+            filename = os.path.abspath(coreutils.random_string() + ".html")
+            save = False
 
-            if add_layer_control and self.layer_control is None:
-                layer_control = ipyleaflet.LayersControl(position="topright")
-                self.layer_control = layer_control
-                self.add(layer_control)
+        if add_layer_control and self.layer_control is None:
+            layer_control = ipyleaflet.LayersControl(position="topright")
+            self.layer_control = layer_control
+            self.add(layer_control)
 
-            before_width = self.layout.width
-            before_height = self.layout.height
+        before_width = self.layout.width
+        before_height = self.layout.height
 
-            if not isinstance(width, str):
-                print("width must be a string.")
-                return
-            elif width.endswith("px") or width.endswith("%"):
-                pass
-            else:
-                print("width must end with px or %")
-                return
+        if not isinstance(width, str):
+            print("width must be a string.")
+            return
+        elif width.endswith("px") or width.endswith("%"):
+            pass
+        else:
+            print("width must end with px or %")
+            return
 
-            if not isinstance(height, str):
-                print("height must be a string.")
-                return
-            elif not height.endswith("px"):
-                print("height must end with px")
-                return
+        if not isinstance(height, str):
+            print("height must be a string.")
+            return
+        elif not height.endswith("px"):
+            print("height must end with px")
+            return
 
-            self.layout.width = width
-            self.layout.height = height
+        self.layout.width = width
+        self.layout.height = height
 
-            self.save(filename, title=title, **kwargs)
+        self.save(filename, title=title, **kwargs)
 
-            self.layout.width = before_width
-            self.layout.height = before_height
+        self.layout.width = before_width
+        self.layout.height = before_height
 
-            if not save:
-                out_html = ""
-                with open(filename) as f:
-                    lines = f.readlines()
-                    out_html = "".join(lines)
-                os.remove(filename)
-                return out_html
+        if not save:
+            out_html = ""
+            with open(filename) as f:
+                lines = f.readlines()
+                out_html = "".join(lines)
+            os.remove(filename)
+            return out_html
 
-        except Exception as e:
-            raise Exception(e)
-
-    def to_image(self, filename=None, monitor=1):
+    def to_image(self, filename: str | None = None, monitor: int = 1):
         """Saves the map as a PNG or JPG image.
 
         Args:
-            filename (str, optional): The output file path to the image. Defaults to None.
-            monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
+            filename: The output file path to the image. Defaults to None.
+            monitor: The monitor to take the screenshot. Defaults to 1.
         """
         self.screenshot = None
 
@@ -2549,11 +2567,11 @@ class Map(core.Map):
                 if hasattr(self, "_chart_points"):
                     self._chart_points = self._chart_points[:-1]
 
-    def extract_values_to_points(self, filename):
+    def extract_values_to_points(self, filename: str):
         """Exports pixel values to a csv file based on user-drawn geometries.
 
         Args:
-            filename (str): The output file path to the csv file or shapefile.
+            filename: The output file path to the csv file or shapefile.
         """
         filename = os.path.abspath(filename)
         allowed_formats = ["csv", "shp"]
@@ -2706,26 +2724,23 @@ class Map(core.Map):
         if len(style) == 0 and style_callback is not None:
             style_callback_only = True
 
-        try:
-            if isinstance(in_geojson, str):
-                if in_geojson.startswith("http"):
-                    in_geojson = coreutils.github_raw_url(in_geojson)
-                    data = requests.get(in_geojson).json()
-                else:
-                    in_geojson = os.path.abspath(in_geojson)
-                    if not os.path.exists(in_geojson):
-                        raise FileNotFoundError(
-                            "The provided GeoJSON file could not be found."
-                        )
-
-                    with open(in_geojson, encoding=encoding) as f:
-                        data = json.load(f)
-            elif isinstance(in_geojson, dict):
-                data = in_geojson
+        if isinstance(in_geojson, str):
+            if in_geojson.startswith("http"):
+                in_geojson = coreutils.github_raw_url(in_geojson)
+                data = requests.get(in_geojson).json()
             else:
-                raise TypeError("The input geojson must be a type of str or dict.")
-        except Exception as e:
-            raise Exception(e)
+                in_geojson = os.path.abspath(in_geojson)
+                if not os.path.exists(in_geojson):
+                    raise FileNotFoundError(
+                        "The provided GeoJSON file could not be found."
+                    )
+
+                with open(in_geojson, encoding=encoding) as f:
+                    data = json.load(f)
+        elif isinstance(in_geojson, dict):
+            data = in_geojson
+        else:
+            raise TypeError("The input geojson must be a type of str or dict.")
 
         if not style:
             style = {
@@ -2925,7 +2940,6 @@ class Map(core.Map):
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             encoding (str, optional): The encoding to use to read the file. Defaults to "utf-8".
-
         """
         if not filename.startswith("http"):
             filename = os.path.abspath(filename)
@@ -3015,7 +3029,6 @@ class Map(core.Map):
             by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
             to_ee (bool, optional): Whether to convert the csv to an ee.FeatureCollection.
             geodesic (bool, optional): Whether line segments should be interpreted as spherical geodesics. If false, indicates that line segments should be interpreted as planar lines in the specified CRS. If absent, defaults to true if the CRS is geographic (including the default EPSG:4326), or to false if the CRS is projected.
-
         """
         gdf = osm_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
         geojson = gdf.__geo_interface__
@@ -3061,7 +3074,6 @@ class Map(core.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
         """
         from .osm import osm_gdf_from_geocode
 
@@ -3103,7 +3115,6 @@ class Map(core.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
         """
         from .osm import osm_gdf_from_address
 
@@ -3145,7 +3156,6 @@ class Map(core.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
         """
         from .osm import osm_gdf_from_place
 
@@ -3187,7 +3197,6 @@ class Map(core.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
         """
         from .osm import osm_gdf_from_point
 
@@ -3227,7 +3236,6 @@ class Map(core.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
         """
         from .osm import osm_gdf_from_polygon
 
@@ -3261,7 +3269,6 @@ class Map(core.Map):
     ):
         """Adds OSM entities within a N, S, E, W bounding box to the map.
 
-
         Args:
             north (float): Northern latitude of bounding box.
             south (float): Southern latitude of bounding box.
@@ -3274,7 +3281,6 @@ class Map(core.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
         """
         from .osm import osm_gdf_from_bbox
 
@@ -3312,7 +3318,6 @@ class Map(core.Map):
             style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
             fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
         """
         from .osm import osm_gdf_from_bbox
 
@@ -3368,7 +3373,6 @@ class Map(core.Map):
             zoom_to_layer (bool, optional): Whether to zoom to the layer.
             encoding (str, optional): The encoding of the GeoDataFrame. Defaults to "utf-8".
         """
-
         data = gdf_to_geojson(gdf, epsg="4326")
 
         self.add_geojson(
@@ -3694,7 +3698,6 @@ class Map(core.Map):
             icon_names (list, optional): A list of names to be used for the icons. More icons can be found at https://fontawesome.com/v4/icons. Defaults to ['info'].
             spin (bool, optional): If True, the icon will spin. Defaults to False.
             add_legend (bool, optional): If True, a legend will be added to the map. Defaults to True.
-
         """
         data = coreutils.github_raw_url(data)
 
@@ -3914,7 +3917,6 @@ class Map(core.Map):
             y (str, optional): The column name for the y values. Defaults to "latitude".
             radius (int, optional): The radius of the circle. Defaults to 10.
             popup (list, optional): A list of column names to be used as the popup. Defaults to None.
-
         """
         data = coreutils.github_raw_url(data)
 
@@ -3995,16 +3997,11 @@ class Map(core.Map):
         Returns:
             streamlit.components: components.html object.
         """
+        import streamlit.components.v1 as components
 
-        try:
-            import streamlit.components.v1 as components
-
-            return components.html(
-                self.to_html(), width=width, height=height, scrolling=scrolling
-            )
-
-        except Exception as e:
-            raise Exception(e)
+        return components.html(
+            self.to_html(), width=width, height=height, scrolling=scrolling
+        )
 
     def add_point_layer(
         self, filename, popup=None, layer_name="Marker Cluster", **kwargs
@@ -4094,36 +4091,29 @@ class Map(core.Map):
             layer (str): The layer name to add to the map.
             census_dict (dict, optional): A dictionary containing census data. Defaults to None. It can be obtained from the get_census_dict() function.
         """
+        if census_dict is None:
+            census_dict = get_census_dict()
 
-        try:
-            if census_dict is None:
-                census_dict = get_census_dict()
+        if wms not in census_dict.keys():
+            raise ValueError(
+                f"The provided WMS is invalid. It must be one of {census_dict.keys()}"
+            )
 
-            if wms not in census_dict.keys():
-                raise ValueError(
-                    f"The provided WMS is invalid. It must be one of {census_dict.keys()}"
-                )
+        layers = census_dict[wms]["layers"]
+        if layer not in layers:
+            raise ValueError(f"The layer name is not valid. It must be one of {layers}")
 
-            layers = census_dict[wms]["layers"]
-            if layer not in layers:
-                raise ValueError(
-                    f"The layer name is not valid. It must be one of {layers}"
-                )
+        url = census_dict[wms]["url"]
+        if "name" not in kwargs:
+            kwargs["name"] = layer
+        if "attribution" not in kwargs:
+            kwargs["attribution"] = "U.S. Census Bureau"
+        if "format" not in kwargs:
+            kwargs["format"] = "image/png"
+        if "transparent" not in kwargs:
+            kwargs["transparent"] = True
 
-            url = census_dict[wms]["url"]
-            if "name" not in kwargs:
-                kwargs["name"] = layer
-            if "attribution" not in kwargs:
-                kwargs["attribution"] = "U.S. Census Bureau"
-            if "format" not in kwargs:
-                kwargs["format"] = "image/png"
-            if "transparent" not in kwargs:
-                kwargs["transparent"] = True
-
-            self.add_wms_layer(url, layer, **kwargs)
-
-        except Exception as e:
-            raise Exception(e)
+        self.add_wms_layer(url, layer, **kwargs)
 
     def add_xyz_service(self, provider, **kwargs):
         """Add a XYZ tile layer to the map.
@@ -4181,24 +4171,18 @@ class Map(core.Map):
         Raises:
             ValueError: If data is not a list.
         """
-        try:
-            if isinstance(data, str):
-                df = pd.read_csv(data)
-                data = df[[latitude, longitude, value]].values.tolist()
-            elif isinstance(data, pd.DataFrame):
-                data = data[[latitude, longitude, value]].values.tolist()
-            elif isinstance(data, list):
-                pass
-            else:
-                raise ValueError("data must be a list, a DataFrame, or a file path.")
+        if isinstance(data, str):
+            df = pd.read_csv(data)
+            data = df[[latitude, longitude, value]].values.tolist()
+        elif isinstance(data, pd.DataFrame):
+            data = data[[latitude, longitude, value]].values.tolist()
+        elif isinstance(data, list):
+            pass
+        else:
+            raise ValueError("data must be a list, a DataFrame, or a file path.")
 
-            heatmap = ipyleaflet.Heatmap(
-                locations=data, radius=radius, name=name, **kwargs
-            )
-            self.add(heatmap)
-
-        except Exception as e:
-            raise Exception(e)
+        heatmap = ipyleaflet.Heatmap(locations=data, radius=radius, name=name, **kwargs)
+        self.add(heatmap)
 
     def add_labels(
         self,
@@ -4326,7 +4310,6 @@ class Map(core.Map):
             lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
             lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
         """
-
         tif, vars = netcdf_to_tif(
             filename, shift_lon=shift_lon, lat=lat, lon=lon, return_vars=True
         )
@@ -4509,7 +4492,6 @@ class Map(core.Map):
             info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
             encoding (str, optional): The encoding of the GeoJSON file. Defaults to "utf-8".
         """
-
         gdf, legend_dict = classify(  # pytype: disable=attribute-error
             data=data,
             column=column,
@@ -4559,11 +4541,11 @@ class Map(core.Map):
         if add_legend:
             self.add_legend(title=legend_title, legend_dict=legend_dict)
 
-    def user_roi_coords(self, decimals=4):
+    def user_roi_coords(self, decimals: int = 4):
         """Return the bounding box of the ROI as a list of coordinates.
 
         Args:
-            decimals (int, optional): Number of decimals to round the coordinates to. Defaults to 4.
+            decimals: Number of decimals to round the coordinates to. Defaults to 4.
         """
         return bbox_coords(self.user_roi, decimals=decimals)
 
@@ -4596,7 +4578,6 @@ class Map(core.Map):
             display_widget (ipywidgets.Widget, optional): The widget to be displayed when the toolbar is clicked.
             **kwargs: Additional arguments to pass to the HTML or Output widgets
         """
-
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
 
         if position not in allowed_positions:
@@ -4643,9 +4624,7 @@ class Map(core.Map):
             image (str | ipywidgets.Image): The image to add.
             position (str, optional): The position of the image, can be one of "topleft",
                 "topright", "bottomleft", "bottomright". Defaults to "bottomright".
-
         """
-
         if isinstance(image, str):
             if image.startswith("http"):
                 image = widgets.Image(value=requests.get(image).content, **kwargs)
@@ -4695,7 +4674,6 @@ class Map(core.Map):
             border_radius (str, optional): The border radius. Defaults to "5px".
             position (str, optional): The position of the widget. Defaults to "bottomright".
         """
-
         if background:
             text = f"""<div style="font-size: {fontsize}px; color: {fontcolor}; font-weight: {'bold' if bold else 'normal'};
             padding: {padding}; background-color: {bg_color};
@@ -4717,7 +4695,6 @@ class Map(core.Map):
         Returns:
             str: The HTML string to use in Gradio.
         """
-
         print(
             "The ipyleaflet plotting backend does not support this function. Please use the folium backend instead."
         )
@@ -4778,11 +4755,7 @@ class Map(core.Map):
             region (ee.Geometry, optional): The region of interest for the conversion. Defaults to None.
             vis_params (dict, optional): The visualization parameters. Defaults to None.
             **kwargs: Additional keyword arguments to pass to the `download_ee_image` function.
-
-        Returns:
-            None
         """
-
         if region is None:
             b = self.bounds
             west, south, east, north = b[0][1], b[0][0], b[1][1], b[1][0]
@@ -4827,43 +4800,40 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
     def __init__(self, **kwargs):
         from PIL import Image, ImageSequence
 
-        try:
-            url = kwargs.get("url")
-            assert url is not None  # For pytype.
-            if not url.startswith("http"):
-                url = os.path.abspath(url)
-                if not os.path.exists(url):
-                    raise FileNotFoundError("The provided file does not exist.")
+        url = kwargs.get("url")
+        assert url is not None  # For pytype.
+        if not url.startswith("http"):
+            url = os.path.abspath(url)
+            if not os.path.exists(url):
+                raise FileNotFoundError("The provided file does not exist.")
 
-                ext = os.path.splitext(url)[1][1:]  # file extension
-                image = Image.open(url)
+            ext = os.path.splitext(url)[1][1:]  # file extension
+            image = Image.open(url)
 
-                f = io.BytesIO()
-                if ext.lower() == "gif":
-                    frames = []
-                    # Loop over each frame in the animated image
-                    for frame in ImageSequence.Iterator(image):
-                        frame = frame.convert("RGBA")
-                        b = io.BytesIO()
-                        frame.save(b, format="gif")
-                        frame = Image.open(b)
-                        frames.append(frame)
-                    frames[0].save(
-                        f,
-                        format="GIF",
-                        save_all=True,
-                        append_images=frames[1:],
-                        loop=0,
-                    )
-                else:
-                    image.save(f, ext)
+            f = io.BytesIO()
+            if ext.lower() == "gif":
+                frames = []
+                # Loop over each frame in the animated image
+                for frame in ImageSequence.Iterator(image):
+                    frame = frame.convert("RGBA")
+                    b = io.BytesIO()
+                    frame.save(b, format="gif")
+                    frame = Image.open(b)
+                    frames.append(frame)
+                frames[0].save(
+                    f,
+                    format="GIF",
+                    save_all=True,
+                    append_images=frames[1:],
+                    loop=0,
+                )
+            else:
+                image.save(f, ext)
 
-                data = base64.b64encode(f.getvalue())
-                data = data.decode("ascii")
-                url = f"data:image/{ext};base64," + data
-                kwargs["url"] = url
-        except Exception as e:
-            raise Exception(e)
+            data = base64.b64encode(f.getvalue())
+            data = data.decode("ascii")
+            url = f"data:image/{ext};base64," + data
+            kwargs["url"] = url
 
         super().__init__(**kwargs)
 
@@ -5080,7 +5050,6 @@ def get_basemap(name: str) -> ipyleaflet.TileLayer | ipyleaflet.WMSLayer:
     Args:
         name: The name of the basemap.
     """
-
     if isinstance(name, str):
         if name in basemaps.keys():
             basemap = basemaps[name]
