@@ -1247,7 +1247,7 @@ class Map(core.Map):
         attribution: str = "",
         opacity: float = 1.0,
         shown: bool = True,
-        bands: bool = None,
+        bands: list[str] = None,
         titiler_endpoint: str = None,
         **kwargs,
     ):
