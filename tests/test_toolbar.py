@@ -117,7 +117,10 @@ class TestToolbar(unittest.TestCase):
             icon="info", tooltip="dummy item", callback=callback, reset=False
         )
         map_fake = fake_map.FakeMap()
+        # pytype: disable=wrong-arg-types
+        # TODO: Fix this call.
         toolbar = Toolbar(map_fake, [item], [])
+        # pytype: enable=wrong-arg-types
         toolbar.main_tools[0].active = True
         self.assertEqual(1, widget.selected_count)
         self.assertEqual(0, widget.cleanup_count)
