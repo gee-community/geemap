@@ -2115,9 +2115,7 @@ class Map(folium.Map):
         north = bounds["_northEast"]["lat"]
         return (south + (north - south) / 2, west + (east - west) / 2)
 
-    def st_map_bounds(
-        self, st_component
-    ) -> tuple[tuple[float, float], tuple[float, float]]:
+    def st_map_bounds(self, st_component) -> list[list[float]]:
         """Returns the bounds of the map in the format of (miny, minx, maxy, maxx).
 
         Args:
@@ -2131,7 +2129,7 @@ class Map(folium.Map):
 
         return [[south, west], [north, east]]
 
-    def st_fit_bounds(self) -> folium.Map:
+    def st_fit_bounds(self) -> None:
         """Fit the map to the bounds of the map."""
         import streamlit as st
 
@@ -2481,7 +2479,7 @@ class Map(folium.Map):
     def add_netcdf(
         self,
         filename: str,
-        variables: int | None = None,
+        variables: list[str] | None = None,
         palette: str | None = None,
         vmin: float | None = None,
         vmax: float | None = None,
@@ -2527,7 +2525,7 @@ class Map(folium.Map):
             print("The add_netcdf() function is not supported in Colab.")
             return
 
-        tif, vars = netcdf_to_tif(
+        tif, vars = netcdf_to_tif(  # pylint: disable=redefined-builtin
             filename, shift_lon=shift_lon, lat=lat, lon=lon, return_vars=True
         )
 
@@ -2842,6 +2840,7 @@ class Map(folium.Map):
             height = f"{height}px"
 
         html = self.to_html()
+        assert html is not None  # For pytype.
         lines = html.split("\n")
         output = []
         skipped_lines = []
@@ -2858,7 +2857,8 @@ class Map(folium.Map):
                     skipped_lines.append(index + i)
             elif "function(e)" in line:
                 print(
-                    f"Warning: The folium plotting backend does not support functions in code blocks. Please delete line {index + 1}."
+                    "Warning: The folium plotting backend does not support functions "
+                    f"in code blocks. Please delete line {index + 1}."
                 )
             else:
                 output.append(line + "\n")
