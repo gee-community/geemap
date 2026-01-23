@@ -8,16 +8,14 @@
 # *******************************************************************************#
 
 import base64
+import collections
 import concurrent.futures
 import contextlib
 import copy
 import csv
-from collections import Counter
 import datetime
-from datetime import date
-from datetime import datetime
 import decimal
-from functools import reduce
+import functools
 import glob
 import importlib.resources
 import io
@@ -69,7 +67,7 @@ def ee_export_image(
     region: Any | None = None,
     dimensions: list[int] | None = None,
     file_per_band: bool = False,
-    format: str = "ZIPPED_GEO_TIFF",
+    format: str = "ZIPPED_GEO_TIFF",  # pylint: disable=redefined-builtin
     unzip: bool = True,
     unmask_value: float | None = None,
     timeout: int = 300,
@@ -107,7 +105,6 @@ def ee_export_image(
         proxies: A dictionary of proxy servers to use. Defaults to None.
         verbose: Whether to print out descriptive text. Defaults to True.
     """
-
     if not isinstance(ee_object, ee.Image):
         print("The ee_object must be an ee.Image.")
         return
@@ -129,66 +126,62 @@ def ee_export_image(
         print("The filename must end with .tif")
         return
 
+    if verbose:
+        print("Generating URL ...")
+    params = {"name": name, "filePerBand": file_per_band}
+
+    params["scale"] = scale
+    if region is None:
+        region = ee_object.geometry()
+    if dimensions is not None:
+        params["dimensions"] = dimensions
+    if region is not None:
+        params["region"] = region
+    if crs is not None:
+        params["crs"] = crs
+    if crs_transform is not None:
+        params["crs_transform"] = crs_transform
+    if format != "ZIPPED_GEO_TIFF":
+        params["format"] = format
+
     try:
-        if verbose:
-            print("Generating URL ...")
-        params = {"name": name, "filePerBand": file_per_band}
+        url = ee_object.getDownloadURL(params)
+    except Exception as e:
+        print("An error occurred while downloading.")
+        print(e)
+        return
 
-        params["scale"] = scale
-        if region is None:
-            region = ee_object.geometry()
-        if dimensions is not None:
-            params["dimensions"] = dimensions
-        if region is not None:
-            params["region"] = region
-        if crs is not None:
-            params["crs"] = crs
-        if crs_transform is not None:
-            params["crs_transform"] = crs_transform
-        if format != "ZIPPED_GEO_TIFF":
-            params["format"] = format
+    if verbose:
+        print(f"Downloading data from {url}\nPlease wait ...")
 
-        try:
-            url = ee_object.getDownloadURL(params)
-        except Exception as e:
-            print("An error occurred while downloading.")
-            print(e)
-            return
-
-        if verbose:
-            print(f"Downloading data from {url}\nPlease wait ...")
-        # Need to initialize r to something because of how we currently handle errors.
-        # We should aim to refactor the code such that only one try block is needed.
-        r = None
+    # Need to initialize r to something because of how we currently handle errors.
+    r = None
+    try:
         r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
             print("An error occurred while downloading.")
             return
-
-        with open(filename_zip, "wb") as fd:
-            for chunk in r.iter_content(chunk_size=1024):
-                fd.write(chunk)
-
     except Exception as e:
         print("An error occurred while downloading.")
         if r is not None:
             print(r.json()["error"]["message"])
         return
 
-    try:
-        if unzip:
-            with zipfile.ZipFile(filename_zip) as z:
-                z.extractall(os.path.dirname(filename))
-            os.remove(filename_zip)
+    with open(filename_zip, "wb") as fd:
+        for chunk in r.iter_content(chunk_size=1024):
+            fd.write(chunk)
 
-        if verbose:
-            if file_per_band:
-                print(f"Data downloaded to {os.path.dirname(filename)}")
-            else:
-                print(f"Data downloaded to {filename}")
-    except Exception as e:
-        print(e)
+    if unzip:
+        with zipfile.ZipFile(filename_zip) as z:
+            z.extractall(os.path.dirname(filename))
+        os.remove(filename_zip)
+
+    if verbose:
+        if file_per_band:
+            print(f"Data downloaded to {os.path.dirname(filename)}")
+        else:
+            print(f"Data downloaded to {filename}")
 
 
 def ee_export_image_collection(
@@ -198,13 +191,13 @@ def ee_export_image_collection(
     crs: str | None = None,
     crs_transform: list[float] | None = None,
     region: Any = None,
-    dimensions: list[float] = None,
+    dimensions: list[float] | None = None,
     file_per_band: bool = False,
-    format: str = "ZIPPED_GEO_TIFF",
+    format: str = "ZIPPED_GEO_TIFF",  # pylint: disable=redefined-builtin
     unmask_value: float | None = None,
     filenames=None,
     timeout: int = 300,
-    proxies: dict[str, Any] = None,
+    proxies: dict[str, Any] | None = None,
     verbose: bool = True,
 ):
     """Exports an ImageCollection as GeoTIFFs.
@@ -638,7 +631,7 @@ def ee_export_image_collection_to_drive(
                 fileNamePrefix,
                 dimensions,
                 region,
-                scale,
+                scale,  # pytype: disable=attribute-error
                 crs,
                 crsTransform,
                 maxPixels,
@@ -859,7 +852,7 @@ def ee_export_geojson(
     selectors: list[str] | None = None,
     timeout: int = 300,
     proxies: dict[str, None] = None,
-) -> None:
+) -> str | None:
     """Exports Earth Engine FeatureCollection to geojson.
 
     Args:
@@ -950,7 +943,7 @@ def ee_export_vector(
     verbose: bool = True,
     keep_zip: bool = False,
     timeout: int = 300,
-    proxies: dict[str, Any] = None,
+    proxies: dict[str, Any] | None = None,
 ):
     """Exports Earth Engine FeatureCollection to other formats.
 
@@ -969,7 +962,6 @@ def ee_export_vector(
         raise ValueError("ee_object must be an ee.FeatureCollection")
 
     allowed_formats = ["csv", "geojson", "json", "kml", "kmz", "shp"]
-    # allowed_formats = ['csv', 'kml', 'kmz']
     filename = os.path.abspath(filename)
     basename = os.path.basename(filename)
     name = os.path.splitext(basename)[0]
@@ -1757,7 +1749,7 @@ def install_package(package: str | list[str]) -> None:
 
         # Print output in real-time
         while True:
-            output = process.stdout.readline()
+            output = process.stdout.readline()  # pytype: disable=attribute-error
             if output == b"" and process.poll() is not None:
                 break
             if output:
@@ -1924,7 +1916,9 @@ def is_tool(name: str) -> bool:
     return shutil.which(name) is not None
 
 
-def open_image_from_url(url: str, timeout: int = 300, proxies: dict[str, str] = None):
+def open_image_from_url(
+    url: str, timeout: int = 300, proxies: dict[str, str] | None = None
+):
     """Loads an image from the specified URL.
 
     Args:
@@ -2027,37 +2021,30 @@ def has_transparency(img) -> bool:
 def upload_to_imgur(in_gif: str) -> None:
     """Uploads an image to imgur.com.
 
+    Requires imgur-uploader.
+
     Args:
         in_gif: The file path to the image.
     """
-    pkg_name = "imgur-uploader"
-    if not is_tool(pkg_name):
-        check_install(pkg_name)
+    IMGUR_API_ID = os.environ.get("IMGUR_API_ID", None)
+    IMGUR_API_SECRET = os.environ.get("IMGUR_API_SECRET", None)
+    credentials_path = os.path.join(
+        os.path.expanduser("~"), ".config/imgur_uploader/uploader.cfg"
+    )
 
-    try:
-        IMGUR_API_ID = os.environ.get("IMGUR_API_ID", None)
-        IMGUR_API_SECRET = os.environ.get("IMGUR_API_SECRET", None)
-        credentials_path = os.path.join(
-            os.path.expanduser("~"), ".config/imgur_uploader/uploader.cfg"
+    if (IMGUR_API_ID is not None and IMGUR_API_SECRET is not None) or os.path.exists(
+        credentials_path
+    ):
+        proc = subprocess.Popen(["imgur-uploader", in_gif], stdout=subprocess.PIPE)
+        for _ in range(0, 2):
+            line = proc.stdout.readline()  # pytype: disable=attribute-error
+            print(line.rstrip().decode("utf-8"))
+    else:
+        print(
+            "Imgur API credentials could not be found. "
+            "Please check https://pypi.org/project/imgur-uploader/ for "
+            "instructions on how to get Imgur API credentials."
         )
-
-        if (
-            (IMGUR_API_ID is not None) and (IMGUR_API_SECRET is not None)
-        ) or os.path.exists(credentials_path):
-            proc = subprocess.Popen(["imgur-uploader", in_gif], stdout=subprocess.PIPE)
-            for _ in range(0, 2):
-                line = proc.stdout.readline()
-                print(line.rstrip().decode("utf-8"))
-        else:
-            print(
-                "Imgur API credentials could not be found. "
-                "Please check https://pypi.org/project/imgur-uploader/ for "
-                "instructions on how to get Imgur API credentials."
-            )
-            return
-
-    except Exception as e:
-        print(e)
 
 
 ########################################
@@ -2068,31 +2055,25 @@ def upload_to_imgur(in_gif: str) -> None:
 def system_fonts(show_full_path: bool = False) -> list[str]:
     """Returns a list of system fonts.
 
-        # Common font locations:
-        # Linux: /usr/share/fonts/TTF/
-        # Windows: C:/Windows/Fonts
-        # macOS:  System > Library > Fonts
+    Common font locations:
+        Linux:   /usr/share/fonts/TTF/
+        Windows: C:/Windows/Fonts
+        macOS:   System > Library > Fonts
 
     Args:
         show_full_path: Whether to show the full path of each system font. Defaults to
         False.
     """
-    try:
-        font_list = matplotlib.font_manager.findSystemFonts(
-            fontpaths=None, fontext="ttf"
-        )
-        font_list.sort()
+    font_list = matplotlib.font_manager.findSystemFonts(fontpaths=None, fontext="ttf")
+    font_list.sort()
 
-        font_names = [os.path.basename(f) for f in font_list]
-        font_names.sort()
+    font_names = [os.path.basename(f) for f in font_list]
+    font_names.sort()
 
-        if show_full_path:
-            return font_list
-        else:
-            return font_names
-
-    except Exception as e:
-        print(e)
+    if show_full_path:
+        return font_list
+    else:
+        return font_names
 
 
 ########################################
@@ -2551,7 +2532,7 @@ def ee_to_bbox(ee_object):
         or isinstance(ee_object, ee.Feature)
         or isinstance(ee_object, ee.FeatureCollection)
     ):
-        geometry = ee_object.geometry()
+        geometry = ee_object.geometry()  # pytype: disable=attribute-error
     elif isinstance(ee_object, ee.Geometry):
         geometry = ee_object
     else:
@@ -2772,7 +2753,7 @@ def get_image_thumbnail(
     vis_params,
     dimensions=500,
     region=None,
-    format="jpg",
+    format="jpg",  # pylint: disable=redefined-builtin
     crs="EPSG:3857",
     timeout=300,
     proxies=None,
@@ -2833,7 +2814,7 @@ def get_image_collection_thumbnails(
     vis_params,
     dimensions=500,
     region=None,
-    format="jpg",
+    format="jpg",  # pylint: disable=redefined-builtin
     names=None,
     verbose=True,
     timeout=300,
@@ -2920,7 +2901,7 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat", deci
     import xarray as xr
 
     def most_common_value(lst):
-        counter = Counter(lst)
+        counter = collections.Counter(lst)
         most_common = counter.most_common(1)
         return float(format(most_common[0][0], f".{decimal}f"))
 
@@ -3424,7 +3405,9 @@ def create_colorbar(
     from PIL import Image, ImageDraw, ImageFont
 
     warnings.simplefilter("ignore")
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: enable=attribute-error
 
     if out_file is None:
         filename = f"colorbar_{coreutils.random_string()}.png"
@@ -3545,7 +3528,8 @@ def create_colorbar(
                     font = ImageFont.truetype(font_type, font_size)
                 else:
                     print(
-                        "The specified font type could not be found on your system. Using the default font instead."
+                        "The specified font type could not be found on your system. "
+                        "Using the default font instead."
                     )
                     font = ImageFont.truetype(default_font, font_size)
             except Exception as e:
@@ -3555,10 +3539,10 @@ def create_colorbar(
         font_color = coreutils.check_color(font_color)
 
         draw = ImageDraw.Draw(im)
-        w, h = draw.textsize(labels[0], font=font)
+        w, h = draw.textsize(labels[0], font=font)  # pytype: disable=attribute-error
 
         for label in labels:
-            w_tmp, h_tmp = draw.textsize(label, font)
+            w_tmp, h_tmp = draw.textsize(label, font)  # pytype: disable=attribute-error
             if w_tmp > w:
                 w = w_tmp
             if h_tmp > h:
@@ -3575,7 +3559,7 @@ def create_colorbar(
         background.paste(im, xy, im)
 
         for index, label in enumerate(labels):
-            w_tmp, h_tmp = draw.textsize(label, font)
+            w_tmp, h_tmp = draw.textsize(label, font)  # pytype: disable=attribute-error
 
             if vertical:
                 spacing = 5
@@ -3922,7 +3906,7 @@ def search_ee_data(
         assets = list(
             {json.dumps(match) for match in search_all(pattern=k)} for k in keywords
         )
-        assets = sorted(list(reduce(set.intersection, assets)))
+        assets = sorted(list(functools.reduce(set.intersection, assets)))
         assets = [json.loads(x) for x in assets]
 
         results = []
@@ -4080,7 +4064,9 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
     """
     from bs4 import BeautifulSoup
 
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: ensable=attribute-error
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     csv_file = os.path.join(template_dir, "ee_api_docs.csv")
@@ -4126,6 +4112,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
             else:
                 detail_tables.append("")
 
+        # pytype: disable=attribute-error
         for detail_table in detail_tables:
             if detail_table != "":
                 items = [item.text for item in detail_table.find_all("code")]
@@ -4147,6 +4134,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
             else:
                 items = ""
             details.append(items)
+        # pytype: ensable=attribute-error
 
         with open(outfile, "w", encoding="utf-8") as csv_file:
             csv_writer = csv.writer(csv_file, delimiter="\t")
@@ -4192,9 +4180,13 @@ def read_api_csv():
     """Extracts Earth Engine API from a csv file and returns a dictionary containing information about each function.
 
     Returns:
-        dict: The dictionary containing information about each function, including name, description, function form, return type, arguments, html.
+        dict: The dictionary containing information about each function, including name,
+            description, function form, return type, arguments, html.
     """
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: ensable=attribute-error
+
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     csv_file = os.path.join(template_dir, "ee_api_docs.csv")
@@ -4227,6 +4219,7 @@ def read_api_csv():
             types = line.get("type")
             details = line.get("details")
 
+            # pytype: disable=attribute-error
             if "|" in arguments:
                 argument_items = arguments.split("|")
             else:
@@ -4241,6 +4234,7 @@ def read_api_csv():
                 details_items = details.split("|")
             else:
                 details_items = [details]
+            # pytype: ensable=attribute-error
 
             out_argument_lines = []
 
@@ -4372,19 +4366,24 @@ def search_api_tree(keywords, api_tree):
 
     sub_tree = Tree()
 
-    for key in api_tree.keys():
+    for key in api_tree.keys():  # pytype: disable=attribute-error
         if keywords.lower() in key.lower():
             sub_tree.add_node(api_tree[key])
 
     return sub_tree
 
 
-def ee_search(asset_limit=100):
-    """Search Earth Engine API and user assets. If you received a warning (IOPub message rate exceeded) in Jupyter notebook, you can relaunch Jupyter notebook using the following command:
+def ee_search(asset_limit: int = 100):
+    """Search Earth Engine API and user assets.
+
+    If you received a warning (IOPub message rate exceeded) in Jupyter notebook, you can
+    relaunch Jupyter notebook using the following command:
+
         jupyter notebook --NotebookApp.iopub_msg_rate_limit=10000
 
     Args:
-        asset_limit (int, optional): The number of assets to display for each asset type, i.e., Image, ImageCollection, and FeatureCollection. Defaults to 100.
+        asset_limit: The number of assets to display for each asset type, i.e., Image,
+            ImageCollection, and FeatureCollection. Defaults to 100.
     """
 
     warnings.filterwarnings("ignore")
@@ -4472,9 +4471,11 @@ def ee_search(asset_limit=100):
             right_widget.children = [output_widget]
             search_box.value = "Loading..."
             if flags.assets is None:
+                # pytype: disable=attribute-error
                 asset_tree, asset_widget, asset_dict = build_asset_tree(
                     limit=asset_limit
                 )
+                # pytype: enable=attribute-error
                 flags.assets = asset_tree
                 flags.asset_dict = asset_dict
                 flags.asset_import = asset_widget
@@ -4581,7 +4582,9 @@ def build_asset_tree(limit=100):
     tree_dict[user_id] = root_node
     tree.add_node(root_node)
 
+    # pytype: disable=attribute-error
     collection_list, table_list, image_list, folder_paths = geeadd.fparse(user_path)
+    # pytype: enable=attribute-error
     collection_list = collection_list[:limit]
     table_list = table_list[:limit]
     image_list = image_list[:limit]
@@ -5082,8 +5085,10 @@ def vis_to_qml(ee_class_table, out_qml):
         ee_class_table (str): An Earth Engine class table with triple quotes.
         out_qml (str): File path to the output QGIS Layer Style (.qml).
     """
-
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: enable=attribute-error
+
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     qml_template = os.path.join(template_dir, "NLCD.qml")
@@ -5130,7 +5135,10 @@ def create_nlcd_qml(out_qml):
     Args:
         out_qml (str): File path to the output qml.
     """
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: enable=attribute-error
+
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     qml_template = os.path.join(template_dir, "NLCD.qml")
@@ -5720,9 +5728,11 @@ def stac_tile(
             timeout=timeout,
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_item(), params=kwargs, timeout=timeout
         ).json()
+        # pytype: enable=attribute-error
 
     return r["tiles"][0]
 
@@ -5763,9 +5773,11 @@ def stac_bounds(
             f"{titiler_endpoint}/stac/bounds", params=kwargs, timeout=timeout
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_bounds(), params=kwargs, timeout=timeout
         ).json()
+        # pytype: enable=attribute-error
 
     bounds = r["bounds"]
     return bounds
@@ -5830,9 +5842,11 @@ def stac_bands(
             f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout
         ).json()
+        # pytype: enable=attribute-error
 
     return r
 
@@ -5882,9 +5896,11 @@ def stac_stats(
             f"{titiler_endpoint}/stac/statistics", params=kwargs, timeout=timeout
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_statistics(), params=kwargs, timeout=timeout
         ).json()
+        # pytype: enable=attribute-error
 
     return r
 
@@ -5934,9 +5950,11 @@ def stac_info(
             f"{titiler_endpoint}/stac/info", params=kwargs, timeout=timeout
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_info(), params=kwargs, timeout=timeout
         ).json()
+        # pytype: enable=attribute-error
 
     return r
 
@@ -5986,9 +6004,11 @@ def stac_info_geojson(
             f"{titiler_endpoint}/stac/info.geojson", params=kwargs, timeout=timeout
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_info_geojson(), params=kwargs, timeout=timeout
         ).json()
+        # pytype: enable=attribute-error
 
     return r
 
@@ -6029,9 +6049,11 @@ def stac_assets(
             f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout
         ).json()
+        # pytype: enable=attribute-error
 
     return r
 
@@ -6095,11 +6117,13 @@ def stac_pixel_value(
             f"{titiler_endpoint}/stac/{lon},{lat}", params=kwargs, timeout=timeout
         ).json()
     else:
+        # pytype: disable=attribute-error
         r = requests.get(
             titiler_endpoint.url_for_stac_pixel_value(lon, lat),
             params=kwargs,
             timeout=timeout,
         ).json()
+        # pytype: enable=attribute-error
 
     if "detail" in r:
         if verbose:
@@ -7768,7 +7792,7 @@ def extract_timeseries_to_point(
             )
 
         result_df["time"] = result_df["time"].apply(
-            lambda t: datetime.utcfromtimestamp(t / 1000)
+            lambda t: datetime.datetime.utcfromtimestamp(t / 1000)
         )
 
         if out_csv:
@@ -7791,8 +7815,7 @@ def image_reclassify(img, in_list, out_list):
     Returns:
         object: ee.Image
     """
-    image = img.remap(in_list, out_list)
-    return image
+    return img.remap(in_list, out_list)
 
 
 def image_smoothing(img, reducer, kernel):
@@ -8425,7 +8448,7 @@ def png_to_gif(in_dir, out_gif, fps=10, loop=0):
     # Save into a GIF file that loops forever
     frames[0].save(
         out_gif,
-        format="GIF",
+        format="GIF",  # pylint: disable=redefined-builtin
         append_images=frames[1:],
         save_all=True,
         duration=1000 / fps,
@@ -8471,7 +8494,7 @@ def jpg_to_gif(in_dir, out_gif, fps=10, loop=0):
     # Save into a GIF file that loops forever
     frames[0].save(
         out_gif,
-        format="GIF",
+        format="GIF",  # pylint: disable=redefined-builtin
         append_images=frames[1:],
         save_all=True,
         duration=1000 / fps,
@@ -9817,7 +9840,6 @@ def planet_by_month(
     today = datetime.date.today()
     year_now = int(today.strftime("%Y"))
     month_now = int(today.strftime("%m"))
-    # quarter_now = (month_now - 1) // 3 + 1
 
     if year > year_now:
         raise ValueError(f"Year must be between 2016 and {year_now}.")
@@ -9953,7 +9975,10 @@ def get_census_dict(reset=False):
     Returns:
         dict: A dictionary of Census data.
     """
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: enable=attribute-error
+
     census_data = os.path.join(pkg_dir, "data/census_data.json")
 
     if reset:
@@ -11353,21 +11378,28 @@ def convert_lidar(
         return destination
 
 
-def write_lidar(source, destination, do_compress=None, laz_backend=None):
+def write_lidar(
+    source,
+    destination: str,
+    do_compress: bool | None = None,
+    laz_backend: str | None = None,
+) -> None:
     """Writes to a stream or file.
 
     Args:
         source (str | laspy.lasdatas.base.LasBase): The source data to be written.
-        destination (str): The destination filepath.
-        do_compress (bool, optional): Flags to indicate if you want to compress the data. Defaults to None.
-        laz_backend (str, optional): The laz backend to use. Defaults to None.
+        destination: The destination filepath.
+        do_compress: Flags to indicate if you want to compress the data. Defaults to None.
+        laz_backend: The laz backend to use. Defaults to None.
     """
     import laspy
 
     if isinstance(source, str):
         source = read_lidar(source)
 
+    # pytype: disable=attribute-error
     source.write(destination, do_compress=do_compress, laz_backend=laz_backend)
+    # pytype: enable=attribute-error
 
 
 def download_folder(
@@ -12668,10 +12700,12 @@ def plot_raster(
     else:
         raise ValueError("image must be a string or xarray.Dataset.")
 
+    # pytype: disable=attribute-error
     if band is not None:
         da = da[dict(band=band)]
 
     da = da.rio.reproject(proj)
+    # pytype: enable=attribute-error
     kwargs["cmap"] = cmap
     kwargs["figsize"] = figsize
     da.plot(**kwargs)
@@ -12734,10 +12768,12 @@ def plot_raster_3d(
     else:
         raise ValueError("image must be a string or xarray.Dataset.")
 
+    # pytype: disable=attribute-error
     if band is not None:
         da = da[dict(band=band)]
 
     da = da.rio.reproject(proj)
+    # pytype: enable=attribute-error
     mesh_kwargs["factor"] = factor
     kwargs["cmap"] = cmap
 
@@ -13110,7 +13146,7 @@ def jrc_hist_monthly_history(
         pd.DataFrame: Pandas dataframe of the plot.
     """
     if end_date is None:
-        end_date = date.today().strftime("%Y-%m-%d")
+        end_date = datetime.date.today().strftime("%Y-%m-%d")
 
     if collection is None:
         collection = ee.ImageCollection("JRC/GSW1_4/MonthlyHistory")
@@ -13355,7 +13391,9 @@ def mosaic(images, output, merge_args={}, verbose=True, **kwargs):
 
     if verbose:
         print("Merging rasters...")
+    # pytype: disable=attribute-error
     arr, transform = merge(raster_to_mosiac, **merge_args)
+    # pytype: enable=attribute-error
 
     output_meta = raster.meta.copy()
     output_meta.update(
@@ -13491,7 +13529,10 @@ def create_legend(
     """
     from .legends import builtin_legends
 
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: enable=attribute-error
+
     legend_template = os.path.join(pkg_dir, "data/template/legend_style.html")
 
     if draggable:
@@ -13668,8 +13709,10 @@ def create_legend(
             elif index == 22:
                 for index, key in enumerate(labels):
                     color = colors[index]
+                    # pytype: disable=attribute-error
                     if not color.startswith("#"):
                         color = "#" + color
+                    # pytype: enable=attribute-error
                     item = "                    <li><span style='background:{};opacity:{};'></span>{}</li>\n".format(
                         color, opacity, key
                     )
@@ -14207,7 +14250,7 @@ def center_zoom_to_xy_range(
 
 def get_geometry_coords(
     row, geom: str, coord_type: str, shape_type: str, mercator: bool = False
-) -> float | list[float]:
+) -> float | list[float] | None:
     """Returns the coordinates ('x' or 'y') of edges of a Polygon exterior.
 
     row (GeoPandas Series): The row of each of the GeoPandas DataFrame.
@@ -14457,10 +14500,12 @@ def tms_to_geotiff(
         y2 = round(base_size[1] * yfrac)
         imgw = round(base_size[0] * (x1 - x0))
         imgh = round(base_size[1] * (y1 - y0))
+        # pytype: disable=attribute-error
         retim = bigim.crop((x2, y2, x2 + imgw, y2 + imgh))
+        # pytype: enable=attribute-error
         if retim.mode == "RGBA" and retim.getextrema()[3] == (255, 255):
             retim = retim.convert("RGB")
-        bigim.close()
+        bigim.close()  # pytype: disable=attribute-error
         return retim
 
     def get_tile(url):
@@ -14497,9 +14542,11 @@ def tms_to_geotiff(
         futures = []
         with concurrent.futures.ThreadPoolExecutor(5) as executor:
             for x, y in corners:
+                # pytype: disable=attribute-error
                 futures.append(
                     executor.submit(get_tile, source.format(z=zoom, x=x, y=y))
                 )
+                # pytype: enable=attribute-error
             bbox = (math.floor(x0), math.floor(y0), math.ceil(x1), math.ceil(y1))
             bigim = None
             base_size = [256, 256]
@@ -14537,7 +14584,7 @@ def tms_to_geotiff(
         gtiff.SetGeoTransform((min(xp0, xp1), pwidth, 0, max(yp0, yp1), 0, -pheight))
         gtiff.SetProjection(WKT_3857)
         for band in range(imgbands):
-            array = numpy.array(img.getdata(band), dtype="u8")
+            array = np.array(img.getdata(band), dtype="u8")
             array = array.reshape((img.size[1], img.size[0]))
             band = gtiff.GetRasterBand(band + 1)
             band.WriteArray(array)
@@ -14758,13 +14805,13 @@ def get_ee_token():
     """
     credential_file_path = os.path.expanduser("~/.config/earthengine/credentials")
 
-    if os.path.exists(credential_file_path):
-        with open(credential_file_path) as f:
-            credentials = json.load(f)
-            return credentials
-    else:
+    if not os.path.exists(credential_file_path):
         print("Earth Engine credentials not found. Please run ee.Authenticate()")
         return None
+
+    with open(credential_file_path) as f:
+        credentials = json.load(f)
+        return credentials
 
 
 def geotiff_to_image(image: str, output: str) -> None:
@@ -14884,29 +14931,34 @@ def xee_to_image(
 
 
 def array_to_memory_file(
-    array,
-    source: str = None,
-    dtype: str = None,
+    array: np.ndarray,
+    source: str | None = None,
+    dtype: str | None = None,
     compress: str = "deflate",
     transpose: bool = True,
-    cellsize: float = None,
-    crs: str = None,
-    transform: tuple = None,
-    driver="COG",
+    cellsize: float | None = None,
+    crs: str | None = None,
+    transform: tuple | None = None,
+    driver: str = "COG",
     **kwargs,
 ):
     """Convert a NumPy array to a memory file.
 
     Args:
-        array (numpy.ndarray): The input NumPy array.
-        source (str, optional): Path to the source file to extract metadata from. Defaults to None.
-        dtype (str, optional): The desired data type of the array. Defaults to None.
-        compress (str, optional): The compression method for the output file. Defaults to "deflate".
-        transpose (bool, optional): Whether to transpose the array from (bands, rows, columns) to (rows, columns, bands). Defaults to True.
-        cellsize (float, optional): The cell size of the array if source is not provided. Defaults to None.
-        crs (str, optional): The coordinate reference system of the array if source is not provided. Defaults to None.
-        transform (tuple, optional): The affine transformation matrix if source is not provided. Defaults to None.
-        driver (str, optional): The driver to use for creating the output file, such as 'GTiff'. Defaults to "COG".
+        array: The input NumPy array.
+        source: Path to the source file to extract metadata from. Defaults to None.
+        dtype: The desired data type of the array. Defaults to None.
+        compress: The compression method for the output file. Defaults to "deflate".
+        transpose: Whether to transpose the array from (bands, rows, columns) to (rows,
+            columns, bands). Defaults to True.
+        cellsize: The cell size of the array if source is not provided. Defaults to
+            None.
+        crs: The coordinate reference system of the array if source is not
+            provided. Defaults to None.
+        transform: The affine transformation matrix if source is not provided. Defaults
+            to None.
+        driver: The driver to use for creating the output file, such as
+            'GTiff'. Defaults to "COG".
         **kwargs: Additional keyword arguments to be passed to the rasterio.open() function.
 
     Returns:
@@ -14944,7 +14996,7 @@ def array_to_memory_file(
             )
 
         if "transform" not in kwargs:
-            # Define the geotransformation parameters
+            # Define the geotransformation parameters.
             xmin, ymin, xmax, ymax = (
                 0,
                 0,
@@ -14959,10 +15011,10 @@ def array_to_memory_file(
             transform = kwargs["transform"]
 
     if dtype is None:
-        # Determine the minimum and maximum values in the array
+        # Determine the minimum and maximum values in the array.
         min_value = np.min(array)
         max_value = np.max(array)
-        # Determine the best dtype for the array
+        # Determine the best dtype for the array.
         if min_value >= 0 and max_value <= 1:
             dtype = np.float32
         elif min_value >= 0 and max_value <= 255:
@@ -14976,10 +15028,10 @@ def array_to_memory_file(
         else:
             dtype = np.float64
 
-    # Convert the array to the best dtype
+    # Convert the array to the best dtype.
     array = array.astype(dtype)
 
-    # Define the GeoTIFF metadata
+    # Define the GeoTIFF metadata.
     metadata = {
         "driver": driver,
         "height": array.shape[0],
@@ -14998,7 +15050,7 @@ def array_to_memory_file(
 
     metadata.update(**kwargs)
 
-    # Create a new memory file and write the array to it
+    # Create a new memory file and write the array to it.
     memory_file = rasterio.MemoryFile()
     dst = memory_file.open(**metadata)
 
@@ -15010,39 +15062,44 @@ def array_to_memory_file(
 
     dst.close()
 
-    # Read the dataset from memory
+    # Read the dataset from memory.
     dataset_reader = rasterio.open(dst.name, mode="r")
 
     return dataset_reader
 
 
 def array_to_image(
-    array,
-    output: str = None,
-    source: str = None,
-    dtype: str = None,
+    array: np.ndarray,
+    output: str | None = None,
+    source: str | None = None,
+    dtype: str | None = None,
     compress: str = "deflate",
     transpose: bool = True,
-    cellsize: float = None,
-    crs: str = None,
+    cellsize: float | None = None,
+    crs: str | None = None,
     driver: str = "COG",
     **kwargs,
-) -> str:
+) -> str | None:
     """Save a NumPy array as a GeoTIFF using the projection information from an existing GeoTIFF file.
 
     Args:
-        array (np.ndarray): The NumPy array to be saved as a GeoTIFF.
-        output (str): The path to the output image. If None, a temporary file will be created. Defaults to None.
-        source (str, optional): The path to an existing GeoTIFF file with map projection information. Defaults to None.
+        array: The NumPy array to be saved as a GeoTIFF.
+        output: The path to the output image. If None, a temporary file will be
+            created. Defaults to None.
+        source: The path to an existing GeoTIFF file with map projection
+            information. Defaults to None.
+        # TODO: What type should dtype be?
         dtype (np.dtype, optional): The data type of the output array. Defaults to None.
-        compress (str, optional): The compression method. Can be one of the following: "deflate", "lzw", "packbits", "jpeg". Defaults to "deflate".
-        transpose (bool, optional): Whether to transpose the array from (bands, rows, columns) to (rows, columns, bands). Defaults to True.
-        cellsize (float, optional): The resolution of the output image in meters. Defaults to None.
-        crs (str, optional): The CRS of the output image. Defaults to None.
-        driver (str, optional): The driver to use for creating the output file, such as 'GTiff'. Defaults to "COG".
+        compress: The compression method. Can be one of the following: "deflate", "lzw",
+            "packbits", "jpeg". Defaults to "deflate".
+        transpose: Whether to transpose the array from (bands, rows, columns) to (rows,
+            columns, bands). Defaults to True.
+        cellsize: The resolution of the output image in meters. Defaults to None.
+        crs: The CRS of the output image. Defaults to None.
+        driver: The driver to use for creating the output file, such as
+            'GTiff'. Defaults to "COG".
         **kwargs: Additional keyword arguments to be passed to the rasterio.open() function.
     """
-
     import rasterio
     import xarray as xr
 
@@ -15289,8 +15346,7 @@ def remove_port_from_string(data: str) -> str:
 
 
 def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
-    """
-    Fetch the metadata from a local or remote .pmtiles file.
+    """Fetch the metadata from a local or remote .pmtiles file.
 
     This function retrieves metadata from a PMTiles file, whether it's local or hosted remotely.
     If it's remote, the function fetches the header to determine the range of bytes to download
@@ -15321,7 +15377,7 @@ def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
     if not urllib.parse.urlparse(input_file).path.endswith(".pmtiles"):
         raise ValueError("Input file must be a .pmtiles file.")
 
-    header = pmtiles_header(input_file)
+    header = pmtiles_header(input_file)  # pytype: disable=name-error
     metadata_offset = header["metadata_offset"]
     metadata_length = header["metadata_length"]
 
@@ -15362,8 +15418,7 @@ def pmtiles_style(
     line_width: int = 1,
     attribution: str = "PMTiles",
 ):
-    """
-    Generates a Mapbox style JSON for rendering PMTiles data.
+    """Generates a Mapbox style JSON for rendering PMTiles data.
 
     Args:
         url (str): The URL of the PMTiles file.
