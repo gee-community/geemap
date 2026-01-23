@@ -915,6 +915,7 @@ def get_js_examples(out_dir: str | None = None) -> str:
     if out_dir is None:
         out_dir = js_dir
     else:
+        assert isinstance(out_dir, pathlib.Path)
         out_dir.mkdir(parent=True, exist_ok=True)
 
         for file in files:
@@ -925,7 +926,7 @@ def get_js_examples(out_dir: str | None = None) -> str:
 
 
 def get_nb_template(
-    download_latest: bool = False, out_file: str | None = None
+    download_latest: bool = False, out_file: pathlib.Path | None = None
 ) -> pathlib.Path:
     """Get the Earth Engine Jupyter notebook template.
 
@@ -1084,10 +1085,7 @@ def py_to_ipynb(
         print("pip install ipynb-py-convert")
         raise Exception(e)
 
-    try:
-        os.remove(out_py_file)
-    except Exception as e:
-        print(e)
+    os.remove(out_py_file)
 
 
 def py_to_ipynb_dir(
@@ -1270,10 +1268,7 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
 
     json_path = out_file_path + "on"
 
-    try:
-        urllib.request.urlretrieve(json_url, json_path)
-    except Exception:
-        raise Exception("The URL is invalid. Please double check the URL.")
+    urllib.request.urlretrieve(json_url, json_path)
 
     with open(out_file_path, "w") as f1:
         with open(json_path, encoding="utf-8") as f2:
