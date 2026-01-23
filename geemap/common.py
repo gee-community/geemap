@@ -4066,7 +4066,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
 
     # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: ensable=attribute-error
+    # pytype: enable=attribute-error
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     csv_file = os.path.join(template_dir, "ee_api_docs.csv")
@@ -4113,6 +4113,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
                 detail_tables.append("")
 
         # pytype: disable=attribute-error
+        # Type trouble is in the item.text access.
         for detail_table in detail_tables:
             if detail_table != "":
                 items = [item.text for item in detail_table.find_all("code")]
@@ -4134,7 +4135,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
             else:
                 items = ""
             details.append(items)
-        # pytype: ensable=attribute-error
+        # pytype: enable=attribute-error
 
         with open(outfile, "w", encoding="utf-8") as csv_file:
             csv_writer = csv.writer(csv_file, delimiter="\t")
@@ -4185,7 +4186,7 @@ def read_api_csv():
     """
     # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: ensable=attribute-error
+    # pytype: enable=attribute-error
 
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
@@ -4234,7 +4235,7 @@ def read_api_csv():
                 details_items = details.split("|")
             else:
                 details_items = [details]
-            # pytype: ensable=attribute-error
+            # pytype: enable=attribute-error
 
             out_argument_lines = []
 
@@ -15072,7 +15073,7 @@ def array_to_image(
     array: np.ndarray,
     output: str | None = None,
     source: str | None = None,
-    dtype: str | None = None,
+    dtype=None,
     compress: str = "deflate",
     transpose: bool = True,
     cellsize: float | None = None,
