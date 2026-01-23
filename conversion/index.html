@@ -7903,7 +7903,9 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1246</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1244</span>
+<span class="normal">1245</span>
+<span class="normal">1246</span>
 <span class="normal">1247</span>
 <span class="normal">1248</span>
 <span class="normal">1249</span>
@@ -7942,12 +7944,7 @@
 <span class="normal">1282</span>
 <span class="normal">1283</span>
 <span class="normal">1284</span>
-<span class="normal">1285</span>
-<span class="normal">1286</span>
-<span class="normal">1287</span>
-<span class="normal">1288</span>
-<span class="normal">1289</span>
-<span class="normal">1290</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1285</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Downloads JavaScript source code from a GEE App.</span>
 
 <span class="sd">    Args:</span>
@@ -7974,10 +7971,7 @@
 
     <span class="n">json_path</span> <span class="o">=</span> <span class="n">out_file_path</span> <span class="o">+</span> <span class="s2">&quot;on&quot;</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">json_url</span><span class="p">,</span> <span class="n">json_path</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;The URL is invalid. Please double check the URL.&quot;</span><span class="p">)</span>
+    <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">json_url</span><span class="p">,</span> <span class="n">json_path</span><span class="p">)</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
@@ -8045,14 +8039,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1139</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1137</span>
+<span class="normal">1138</span>
+<span class="normal">1139</span>
 <span class="normal">1140</span>
 <span class="normal">1141</span>
 <span class="normal">1142</span>
 <span class="normal">1143</span>
-<span class="normal">1144</span>
-<span class="normal">1145</span>
-<span class="normal">1146</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1144</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes a Jupyter notebook and save output cells.</span>
 
 <span class="sd">    Args:</span>
@@ -8113,7 +8107,9 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1149</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1147</span>
+<span class="normal">1148</span>
+<span class="normal">1149</span>
 <span class="normal">1150</span>
 <span class="normal">1151</span>
 <span class="normal">1152</span>
@@ -8126,9 +8122,7 @@
 <span class="normal">1159</span>
 <span class="normal">1160</span>
 <span class="normal">1161</span>
-<span class="normal">1162</span>
-<span class="normal">1163</span>
-<span class="normal">1164</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1162</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes all notebooks in the given directory recursively and saves output cells.</span>
 
 <span class="sd">    Args:</span>
@@ -8716,7 +8710,8 @@
 <span class="normal">921</span>
 <span class="normal">922</span>
 <span class="normal">923</span>
-<span class="normal">924</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">924</span>
+<span class="normal">925</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets Earth Engine JavaScript examples from the geemap package.</span>
 
 <span class="sd">    Args:</span>
@@ -8733,6 +8728,7 @@
     <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out_dir</span> <span class="o">=</span> <span class="n">js_dir</span>
     <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span>
         <span class="n">out_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">file</span> <span class="ow">in</span> <span class="n">files</span><span class="p">:</span>
@@ -8793,7 +8789,7 @@ Defaults to False.</p>
                 <code>out_file</code>
             </td>
             <td>
-                  <code><span title="str">str</span> | None</code>
+                  <code><span title="pathlib.Path">Path</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -8833,8 +8829,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">927</span>
-<span class="normal">928</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">928</span>
 <span class="normal">929</span>
 <span class="normal">930</span>
 <span class="normal">931</span>
@@ -8868,8 +8863,9 @@ Defaults to False.</p>
 <span class="normal">959</span>
 <span class="normal">960</span>
 <span class="normal">961</span>
-<span class="normal">962</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span>
-    <span class="n">download_latest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+<span class="normal">962</span>
+<span class="normal">963</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span>
+    <span class="n">download_latest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the Earth Engine Jupyter notebook template.</span>
 
@@ -10540,8 +10536,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1009</span>
-<span class="normal">1010</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1010</span>
 <span class="normal">1011</span>
 <span class="normal">1012</span>
 <span class="normal">1013</span>
@@ -10619,9 +10614,7 @@ Defaults to False.</p>
 <span class="normal">1085</span>
 <span class="normal">1086</span>
 <span class="normal">1087</span>
-<span class="normal">1088</span>
-<span class="normal">1089</span>
-<span class="normal">1090</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
+<span class="normal">1088</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -10699,10 +10692,7 @@ Defaults to False.</p>
         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;pip install ipynb-py-convert&quot;</span><span class="p">)</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
 
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">out_py_file</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
-        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">out_py_file</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -10836,7 +10826,9 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1093</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1091</span>
+<span class="normal">1092</span>
+<span class="normal">1093</span>
 <span class="normal">1094</span>
 <span class="normal">1095</span>
 <span class="normal">1096</span>
@@ -10877,9 +10869,7 @@ Defaults to False.</p>
 <span class="normal">1131</span>
 <span class="normal">1132</span>
 <span class="normal">1133</span>
-<span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
+<span class="normal">1134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11245,8 +11235,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 987</span>
-<span class="normal"> 988</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 988</span>
 <span class="normal"> 989</span>
 <span class="normal"> 990</span>
 <span class="normal"> 991</span>
@@ -11264,7 +11253,8 @@ Defaults to False.</p>
 <span class="normal">1003</span>
 <span class="normal">1004</span>
 <span class="normal">1005</span>
-<span class="normal">1006</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">1006</span>
+<span class="normal">1007</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts footer from the notebook template.</span>
 
 <span class="sd">    Args:</span>
@@ -11360,8 +11350,7 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">965</span>
-<span class="normal">966</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">966</span>
 <span class="normal">967</span>
 <span class="normal">968</span>
 <span class="normal">969</span>
@@ -11379,7 +11368,8 @@ Defaults to False.</p>
 <span class="normal">981</span>
 <span class="normal">982</span>
 <span class="normal">983</span>
-<span class="normal">984</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">984</span>
+<span class="normal">985</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts header from the notebook template.</span>
 
 <span class="sd">    Args:</span>
@@ -11484,7 +11474,9 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1167</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1165</span>
+<span class="normal">1166</span>
+<span class="normal">1167</span>
 <span class="normal">1168</span>
 <span class="normal">1169</span>
 <span class="normal">1170</span>
@@ -11535,9 +11527,7 @@ Defaults to False.</p>
 <span class="normal">1215</span>
 <span class="normal">1216</span>
 <span class="normal">1217</span>
-<span class="normal">1218</span>
-<span class="normal">1219</span>
-<span class="normal">1220</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
+<span class="normal">1218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates notebook header (binder and Google Colab URLs).</span>
@@ -11676,7 +11666,9 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1223</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1221</span>
+<span class="normal">1222</span>
+<span class="normal">1223</span>
 <span class="normal">1224</span>
 <span class="normal">1225</span>
 <span class="normal">1226</span>
@@ -11694,9 +11686,7 @@ Defaults to False.</p>
 <span class="normal">1238</span>
 <span class="normal">1239</span>
 <span class="normal">1240</span>
-<span class="normal">1241</span>
-<span class="normal">1242</span>
-<span class="normal">1243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
+<span class="normal">1241</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates header (binder and Google Colab URLs) of all notebooks in a folder.</span>
