@@ -1247,8 +1247,8 @@ class Map(core.Map):
         attribution: str = "",
         opacity: float = 1.0,
         shown: bool = True,
-        bands: list[str] = None,
-        titiler_endpoint: str = None,
+        bands: list[str] | None = None,
+        titiler_endpoint: str | None = None,
         **kwargs,
     ):
         """Adds a COG TileLayer to the map.
@@ -5031,13 +5031,17 @@ def ts_inspector(
             split_control = ctrl
             break
 
-    def left_change(change):  # pytype: disable=attribute-error
+    def left_change(change):
+        # pytype: disable=attribute-error
         split_control.left_layer.url = layers_dict[left_dropdown.value].url
+        # pytype: enable=attribute-error
 
     left_dropdown.observe(left_change, "value")
 
-    def right_change(change):  # pytype: disable=attribute-error
+    def right_change(change):
+        # pytype: disable=attribute-error
         split_control.right_layer.url = layers_dict[right_dropdown.value].url
+        # pytype: enable=attribute-error
 
     right_dropdown.observe(right_change, "value")
 
