@@ -34,7 +34,7 @@ jobs:
         with:
           # Checkout the master branch (the base of the new development branch)
           ref: master
-          token: ${{ secrets.RUN_GITHUB_ACTION }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           fetch-depth: 0
 
       # FIX: Ensure the local master branch is updated to prevent non-fast-forward push errors.
@@ -101,7 +101,7 @@ jobs:
         if: ${{ steps.commit_check.outputs.skip_pr == 'false' }}
         env:
           # Use the token for gh CLI authentication
-          GH_TOKEN: ${{ secrets.RUN_GITHUB_ACTION }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           BRANCH="${{ steps.compute.outputs.new_branch_name }}"
           TITLE="chore: Sync master version to ${{ steps.compute.outputs.new_dev_version }}"
