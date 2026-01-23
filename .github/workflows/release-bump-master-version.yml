@@ -4,11 +4,25 @@ on:
   # Triggered only when a release is PUBLISHED
   release:
     types: [published]
+  # Allow manual trigger with inputs
+  workflow_dispatch:
+    inputs:
+      tag_name:
+        description: 'Release tag name (e.g., v0.36.7)'
+        required: true
+        type: string
+      is_prerelease:
+        description: 'Is this a prerelease?'
+        required: true
+        type: boolean
+        default: false
 
 jobs:
   bump-master-version:
     # CRITICAL: Only run if the published release is NOT a prerelease
-    if: github.event.release.prerelease == false
+    if: |
+      (github.event_name == 'release' && github.event.release.prerelease == false) ||
+      (github.event_name == 'workflow_dispatch' && inputs.is_prerelease == false)
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -42,7 +56,11 @@ jobs:
         id: compute
         run: |
           # 1. Get the stable version from the published release tag (e.g., v0.36.7)
-          STABLE_VERSION="${{ github.event.release.tag_name }}"
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            STABLE_VERSION="${{ inputs.tag_name }}"
+          else
+            STABLE_VERSION="${{ github.event.release.tag_name }}"
+          fi
 
           # 2. Strip the leading 'v' and append '.post0'
           BASE_VERSION=${STABLE_VERSION/v/}
