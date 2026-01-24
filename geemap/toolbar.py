@@ -28,6 +28,7 @@ import pandas as pd
 import traitlets
 
 from . import coreutils
+from . import geemap
 from . import map_widgets
 from .common import *
 from .conversion import js_snippet_to_py
@@ -2245,8 +2246,10 @@ def timelapse_gui(m=None, basemap: str = "HYBRID"):
             m.tool_control.cleanup()
 
     close_btn.on_click(
+        # pytype: disable=attribute-error
         lambda _: m.tool_control.cleanup()
-    )  # pytype: disable=attribute-error
+        # pytype: enable=attribute-error
+    )
     close_button.observe(close_btn_click, "value")
 
     toolbar_button.value = True
