@@ -6,7 +6,6 @@ from unittest import mock
 
 import geemap
 from geemap.toolbar import Toolbar, ToolbarItem, _cleanup_toolbar_item
-from tests import fake_map
 
 
 class TestToolbar(unittest.TestCase):
@@ -26,11 +25,6 @@ class TestToolbar(unittest.TestCase):
             callback=self.dummy_callback,
             reset=True,
         )
-
-    def tearDown(self):
-        # For fake_map.
-        mock.patch.stopall()
-        super().tearDown()
 
     def dummy_callback(self, m, selected, item):
         del m  # Unused.
@@ -116,8 +110,8 @@ class TestToolbar(unittest.TestCase):
         item = ToolbarItem(
             icon="info", tooltip="dummy item", callback=callback, reset=False
         )
-        map_fake = fake_map.FakeMap()
-        toolbar = Toolbar(map_fake, [item], [])
+        a_map = geemap.Map(ee_initialize=False)
+        toolbar = Toolbar(a_map, [item], [])
         toolbar.main_tools[0].active = True
         self.assertEqual(1, widget.selected_count)
         self.assertEqual(0, widget.cleanup_count)
