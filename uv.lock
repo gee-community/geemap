@@ -1406,7 +1406,7 @@ wheels = [
 
 [[package]]
 name = "geemap"
-version = "0.36.4"
+version = "0.37.1.post0"
 source = { editable = "." }
 dependencies = [
     { name = "anywidget" },
@@ -3243,7 +3243,7 @@ resolution-markers = [
 dependencies = [
     { name = "aiohttp", marker = "python_full_version >= '3.12'" },
     { name = "langchain-core", marker = "python_full_version >= '3.12'" },
-    { name = "langchain-text-splitters", version = "0.3.5", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
+    { name = "langchain-text-splitters", marker = "python_full_version >= '3.12'" },
     { name = "langsmith", version = "0.3.45", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
     { name = "numpy", marker = "python_full_version >= '3.12'" },
     { name = "pydantic", marker = "python_full_version >= '3.12'" },
@@ -3270,7 +3270,7 @@ resolution-markers = [
 dependencies = [
     { name = "async-timeout", marker = "python_full_version < '3.11'" },
     { name = "langchain-core", marker = "python_full_version < '3.12'" },
-    { name = "langchain-text-splitters", version = "0.3.11", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
+    { name = "langchain-text-splitters", marker = "python_full_version < '3.12'" },
     { name = "langsmith", version = "0.6.4", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.12'" },
     { name = "pydantic", marker = "python_full_version < '3.12'" },
     { name = "pyyaml", marker = "python_full_version < '3.12'" },
@@ -3378,40 +3378,14 @@ wheels = [
 
 [[package]]
 name = "langchain-text-splitters"
-version = "0.3.5"
+version = "0.3.9"
 source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version >= '3.13' and sys_platform != 'emscripten'",
-    "python_full_version >= '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.12.4' and python_full_version < '3.13' and sys_platform != 'emscripten'",
-    "python_full_version >= '3.12.4' and python_full_version < '3.13' and sys_platform == 'emscripten'",
-    "python_full_version >= '3.12' and python_full_version < '3.12.4' and sys_platform != 'emscripten'",
-    "python_full_version >= '3.12' and python_full_version < '3.12.4' and sys_platform == 'emscripten'",
-]
 dependencies = [
-    { name = "langchain-core", marker = "python_full_version >= '3.12'" },
+    { name = "langchain-core" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/10/35/a6f8d6b1bb0e6e8c00b49bce4d1a115f8b68368b1899f65bb34dbbb44160/langchain_text_splitters-0.3.5.tar.gz", hash = "sha256:11cb7ca3694e5bdd342bc16d3875b7f7381651d4a53cbb91d34f22412ae16443", size = 26318, upload-time = "2025-01-07T14:57:07.72Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/91/52/d43ad77acae169210cc476cbc1e4ab37a701017c950211a11ab500fe7d7e/langchain_text_splitters-0.3.9.tar.gz", hash = "sha256:7cd1e5a3aaf609979583eeca2eb34177622570b8fa8f586a605c6b1c34e7ebdb", size = 45260, upload-time = "2025-07-24T14:38:45.14Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/4b/83/f8081c3bea416bd9d9f0c26af795c74f42c24f9ad3c4fbf361b7d69de134/langchain_text_splitters-0.3.5-py3-none-any.whl", hash = "sha256:8c9b059827438c5fa8f327b4df857e307828a5ec815163c9b5c9569a3e82c8ee", size = 31620, upload-time = "2025-01-07T14:57:05.683Z" },
-]
-
-[[package]]
-name = "langchain-text-splitters"
-version = "0.3.11"
-source = { registry = "https://pypi.org/simple" }
-resolution-markers = [
-    "python_full_version == '3.11.*' and sys_platform != 'emscripten'",
-    "python_full_version == '3.11.*' and sys_platform == 'emscripten'",
-    "python_full_version < '3.11' and sys_platform != 'emscripten'",
-    "python_full_version < '3.11' and sys_platform == 'emscripten'",
-]
-dependencies = [
-    { name = "langchain-core", marker = "python_full_version < '3.12'" },
-]
-sdist = { url = "https://files.pythonhosted.org/packages/11/43/dcda8fd25f0b19cb2835f2f6bb67f26ad58634f04ac2d8eae00526b0fa55/langchain_text_splitters-0.3.11.tar.gz", hash = "sha256:7a50a04ada9a133bbabb80731df7f6ddac51bc9f1b9cab7fa09304d71d38a6cc", size = 46458, upload-time = "2025-08-31T23:02:58.316Z" }
-wheels = [
-    { url = "https://files.pythonhosted.org/packages/58/0d/41a51b40d24ff0384ec4f7ab8dd3dcea8353c05c973836b5e289f1465d4f/langchain_text_splitters-0.3.11-py3-none-any.whl", hash = "sha256:cf079131166a487f1372c8ab5d0bfaa6c0a4291733d9c43a34a16ac9bcd6a393", size = 33845, upload-time = "2025-08-31T23:02:57.195Z" },
+    { url = "https://files.pythonhosted.org/packages/e2/52/7638394b88bc15083fd2c3752a843784d9d2d110d68fed6437c8607fb749/langchain_text_splitters-0.3.9-py3-none-any.whl", hash = "sha256:cee0bb816211584ea79cc79927317c358543f40404bcfdd69e69ba3ccde54401", size = 33314, upload-time = "2025-07-24T14:38:43.953Z" },
 ]
 
 [[package]]
