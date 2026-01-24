@@ -396,7 +396,9 @@ def add_text_to_gif(
     """
     warnings.simplefilter("ignore")
 
+    # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
+    # pytype: enable=attribute-error
     default_font = os.path.join(pkg_dir, "data/fonts/arial.ttf")
 
     in_gif = os.path.abspath(in_gif)
@@ -2797,6 +2799,7 @@ def landsat_timelapse(
         step,
     )
 
+    # pytype: disable=attribute-error
     col = raw_col.select(bands).map(
         lambda img: img.visualize(**vis_params).set(
             {
@@ -2805,6 +2808,7 @@ def landsat_timelapse(
             }
         )
     )
+    # pytype: enable=attribute-error
     if overlay_data is not None:
         col = add_overlay(
             col, overlay_data, overlay_color, overlay_width, overlay_opacity
@@ -3072,6 +3076,7 @@ def landsat_timelapse_legacy(
         date_format,
     )
 
+    # pytype: disable=attribute-error
     col = raw_col.select(bands).map(
         lambda img: img.visualize(**vis_params).set(
             {
@@ -3080,6 +3085,7 @@ def landsat_timelapse_legacy(
             }
         )
     )
+    # pytype: enable=attribute-error
     if overlay_data is not None:
         col = add_overlay(
             col, overlay_data, overlay_color, overlay_width, overlay_opacity
@@ -3684,12 +3690,13 @@ def landsat_ts_norm_diff(collection, bands=["Green", "SWIR1"], threshold=0):
     Returns:
         ee.ImageCollection: An ImageCollection containing images with values greater than the specified threshold.
     """
-    nd_images = collection.map(
+    # pytype: disable=attribute-error
+    return collection.map(
         lambda img: img.normalizedDifference(bands)
         .gt(threshold)
         .copyProperties(img, img.propertyNames())
     )
-    return nd_images
+    # pytype: disable=attribute-error
 
 
 def landsat_ts_norm_diff_gif(
@@ -5576,7 +5583,9 @@ def sentinel1_timelapse_with_samples(
     if sample_points is None or len(sample_points) == 0:
         print("No sample points provided. Returning map-only timelapse.")
         if mp4:
+            # pytype: disable=attribute-error
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+            # pytype: enable=attribute-error
         return base_gif
 
     # Get the Sentinel-1 time series for sampling
@@ -5609,7 +5618,9 @@ def sentinel1_timelapse_with_samples(
             print("Warning: No Sentinel-1 images found for the specified parameters")
             # Return base gif without sampling
             if mp4:
+                # pytype: disable=attribute-error
                 gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+                # pytype: enable=attribute-error
             return base_gif
 
         print(f"Found {collection_size} Sentinel-1 images for sampling")
@@ -5634,7 +5645,9 @@ def sentinel1_timelapse_with_samples(
         if ts_size == 0:
             print("Warning: No time series data generated")
             if mp4:
+                # pytype: disable=attribute-error
                 gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+                # pytype: enable=attribute-error
             return base_gif
 
         print(f"Generated {ts_size} time series images")
@@ -5786,7 +5799,9 @@ def sentinel1_timelapse_with_samples(
 
     # Handle MP4 conversion
     if mp4:
+        # pytype: disable=attribute-error
         gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
+        # pytype: enable=attribute-error
 
     return final_gif
 
@@ -6659,7 +6674,9 @@ def sentinel2_timelapse_with_samples(
             )
 
             # Add indices to each image
+            # pytype: disable=attribute-error
             ts_collection = base_ts_collection.map(calculate_sentinel2_indices)
+            # pytype: enable=attribute-error
 
             # Select only the bands we need for sampling
             ts_collection = ts_collection.select(s2_sample_bands)
@@ -7779,7 +7796,9 @@ def landsat_timelapse_with_samples(
             )
 
             # Add indices to each image
+            # pytype: disable=attribute-error
             ts_collection = base_ts_collection.map(calculate_landsat_indices)
+            # pytype: enable=attribute-error
 
             # Select only the bands we need for sampling
             ts_collection = ts_collection.select(landsat_sample_bands)
@@ -8479,7 +8498,7 @@ def create_landsat_time_series_chart_frames(
                 else:  # Long time series - multi-year intervals.
                     format_str = "%Y"
                     year_interval = max(1, len(sorted_dates) // 15)
-                    locator = mdates.YearLocator(interval=year_interval)
+                    locator = mdates.YearLocator(base=year_interval)
             else:
                 # Use manual settings.
                 format_str = xlabel_format if xlabel_format != "auto" else "%Y"
