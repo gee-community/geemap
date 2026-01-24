@@ -17,7 +17,8 @@ jobs:
                     "3.10",
                     "3.11",
                     "3.12",
-                    "3.13"
+                    "3.13",
+                    "3.14",
                 ]
 
         env:
@@ -36,7 +37,9 @@ jobs:
               run: uv python install ${{ matrix.python-version }}
 
             - name: Install dependencies
-              run: uv sync --python ${{ matrix.python-version }}
+              run: |
+                  sudo apt-get install -y libjpeg-dev  # For Pillow w/ Python 3.14
+                  uv sync --python ${{ matrix.python-version }}
 
             - name: Install optional dependencies
               run: |
