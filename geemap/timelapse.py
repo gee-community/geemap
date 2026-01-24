@@ -89,10 +89,20 @@ def add_overlay(
             )
 
     try:
+        target_proj = collection.first().projection()
+        region_geom = None
         if region is not None:
-            overlay_data = overlay_data.filterBounds(region)
+            if isinstance(region, ee.Geometry):
+                region_geom = region
+            else:
+                region_geom = region.geometry()
 
-        empty = ee.Image().byte()
+        if region_geom is not None:
+            overlay_data = overlay_data.filterBounds(region_geom).map(
+                lambda feature: feature.intersection(region_geom, ee.ErrorMargin(1))
+            )
+
+        empty = ee.Image().byte().setDefaultProjection(target_proj)
         image = empty.paint(
             **{
                 "featureCollection": overlay_data,
@@ -100,10 +110,15 @@ def add_overlay(
                 "width": width,
             }
         ).visualize(**{"palette": coreutils.check_color(color), "opacity": opacity})
+        image = image.setDefaultProjection(target_proj)
+
+        if region_geom is not None:
+            image = image.clip(region_geom)
+
         blend_col = collection.map(
-            lambda img: img.blend(image).set(
-                "system:time_start", img.get("system:time_start")
-            )
+            lambda img: img.blend(image)
+            .setDefaultProjection(img.projection())
+            .set("system:time_start", img.get("system:time_start"))
         )
         return blend_col
     except Exception as e:
@@ -4047,19 +4062,6 @@ def goes_timelapse(
         "min": 0,
         "max": 0.8,
     }
-    col = goes_timeseries(start_date, end_date, data, scan, roi)
-    col = col.select(bands).map(
-        lambda img: img.visualize(**visParams).set(
-            {
-                "system:time_start": img.get("system:time_start"),
-            }
-        )
-    )
-    if overlay_data is not None:
-        col = add_overlay(
-            col, overlay_data, overlay_color, overlay_width, overlay_opacity
-        )
-
     if roi is None:
         roi = ee.Geometry.Polygon(
             [
@@ -4074,8 +4076,30 @@ def goes_timelapse(
             False,
         )
 
+    print("Generating GOES timelapse...")
+    col = goes_timeseries(start_date, end_date, data, scan, roi)
+    print(f"Number of images in the collection: {col.size().getInfo()}")
+    col = col.select(bands).map(
+        lambda img: img.visualize(**visParams)
+        .setDefaultProjection(img.projection())
+        .set(
+            {
+                "system:time_start": img.get("system:time_start"),
+            }
+        )
+    )
+    if overlay_data is not None:
+        col = add_overlay(
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity, roi
+        )
+
     if crs is None:
-        crs = col.first().projection()
+        if overlay_data is not None:
+            # Use EPSG:3857 when overlay_data is provided because the native
+            # GEOS projection doesn't work well with overlay during video rendering.
+            crs = "EPSG:3857"
+        else:
+            crs = col.first().projection()
 
     videoParams = {
         "bands": ["vis-red", "vis-green", "vis-blue"],
@@ -4199,7 +4223,7 @@ def goes_fire_timelapse(
     col = goes_fire_timeseries(start_date, end_date, data, scan, roi)
     if overlay_data is not None:
         col = add_overlay(
-            col, overlay_data, overlay_color, overlay_width, overlay_opacity
+            col, overlay_data, overlay_color, overlay_width, overlay_opacity, roi
         )
 
     # visParams = {
