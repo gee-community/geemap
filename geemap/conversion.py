@@ -922,7 +922,7 @@ def get_js_examples(out_dir: str | None = None) -> str:
             out_path = out_dir / file.name
             shutil.copyfile(file, out_path)
 
-    return out_dir
+    return str(out_dir)
 
 
 def get_nb_template(
