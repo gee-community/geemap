@@ -11,8 +11,8 @@ class TestToolbar(unittest.TestCase):
     """Tests for the Toolbar class in the `toolbar` module."""
 
     callback_calls: int
-    last_called_with_selected: bool
-    last_called_item: toolbar.ToolbarItem
+    last_called_with_selected: bool | None
+    last_called_item: toolbar.ToolbarItem | None
     item: toolbar.ToolbarItem
     reset_item: toolbar.ToolbarItem
 
