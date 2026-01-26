@@ -851,7 +851,7 @@ def ee_export_geojson(
     filename: str | None = None,
     selectors: list[str] | None = None,
     timeout: int = 300,
-    proxies: dict[str, None] = None,
+    proxies: dict[str, None] | None = None,
 ) -> str | None:
     """Exports Earth Engine FeatureCollection to geojson.
 
@@ -3936,16 +3936,18 @@ def search_ee_data(
         print(e)
 
 
-def ee_data_thumbnail(asset_id, timeout=300, proxies=None):
+def ee_data_thumbnail(
+    asset_id: str, timeout: int = 300, proxies: dict | None = None
+) -> str:
     """Retrieves the thumbnail URL of an Earth Engine asset.
 
     Args:
-        asset_id (str): An Earth Engine asset id.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
-        proxies (dict, optional): Proxy settings. Defaults to None.
+        asset_id An Earth Engine asset id.
+        timeout: Timeout in seconds. Defaults to 300.
+        proxies: Proxy settings. Defaults to None.
 
     Returns:
-        str: An http url of the thumbnail.
+        An http url of the thumbnail.
     """
     from bs4 import BeautifulSoup
 
@@ -3953,25 +3955,23 @@ def ee_data_thumbnail(asset_id, timeout=300, proxies=None):
     asset_url = "https://developers.google.com/earth-engine/datasets/catalog/{}".format(
         asset_uid
     )
+    # TODO(schwehr): Stop using mw for images.
     thumbnail_url = "https://mw1.google.com/ges/dd/images/{}_sample.png".format(
         asset_uid
     )
 
     r = requests.get(thumbnail_url, timeout=timeout, proxies=proxies)
 
-    try:
-        if r.status_code != 200:
-            html_page = urllib.request.urlopen(asset_url)
-            soup = BeautifulSoup(html_page, features="html.parser")
+    if r.status_code != 200:
+        html_page = urllib.request.urlopen(asset_url)
+        soup = BeautifulSoup(html_page, features="html.parser")
 
-            for img in soup.findAll("img"):
-                if "sample.png" in img.get("src"):
-                    thumbnail_url = img.get("src")
-                    return thumbnail_url
+        for img in soup.find_all("img"):
+            if "sample.png" in img.get("src"):
+                thumbnail_url = img.get("src")
+                return thumbnail_url
 
-        return thumbnail_url
-    except Exception as e:
-        print(e)
+    return thumbnail_url
 
 
 def ee_data_html(asset):
@@ -4062,7 +4062,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
         timeout (int, optional): Timeout in seconds. Defaults to 300.
         proxies (dict, optional): Proxy settings. Defaults to None.
     """
-    from bs4 import BeautifulSoup
+    import bs4
 
     # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
@@ -4086,12 +4086,8 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
 
     try:
         r = requests.get(url, timeout=timeout, proxies=proxies)
-        soup = BeautifulSoup(r.content, "html.parser")
+        soup = bs4.BeautifulSoup(r.content, "html.parser")
 
-        names = []
-        descriptions = []
-        functions = []
-        returns = []
         arguments = []
         types = []
         details = []
@@ -4102,7 +4098,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
         functions = [func_table.find("code").text for func_table in func_tables]
         returns = [func_table.find_all("td")[1].text for func_table in func_tables]
 
-        detail_tables = []
+        detail_tables: list[str | bs4.Tag] = []
         tables = soup.find_all("table", class_="blue")
 
         for table in tables:
@@ -4112,10 +4108,9 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
             else:
                 detail_tables.append("")
 
-        # pytype: disable=attribute-error
-        # Type trouble is in the item.text access.
         for detail_table in detail_tables:
             if detail_table != "":
+                assert isinstance(detail_table, bs4.Tag)  # For pytype.
                 items = [item.text for item in detail_table.find_all("code")]
             else:
                 items = ""
@@ -4123,6 +4118,7 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
 
         for detail_table in detail_tables:
             if detail_table != "":
+                assert isinstance(detail_table, bs4.Tag)  # For pytype.
                 items = [item.text for item in detail_table.find_all("td")]
                 items = items[1::3]
             else:
@@ -4131,11 +4127,11 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
 
         for detail_table in detail_tables:
             if detail_table != "":
+                assert isinstance(detail_table, bs4.Tag)  # For pytype.
                 items = [item.text for item in detail_table.find_all("p")]
             else:
                 items = ""
             details.append(items)
-        # pytype: enable=attribute-error
 
         with open(outfile, "w", encoding="utf-8") as csv_file:
             csv_writer = csv.writer(csv_file, delimiter="\t")
@@ -4583,9 +4579,10 @@ def build_asset_tree(limit=100):
     tree_dict[user_id] = root_node
     tree.add_node(root_node)
 
-    # pytype: disable=attribute-error
+    # pytype: disable=module-attr
+    # TODO: fparse is no longer in geeadd.
     collection_list, table_list, image_list, folder_paths = geeadd.fparse(user_path)
-    # pytype: enable=attribute-error
+    # pytype: enable=module-attr
     collection_list = collection_list[:limit]
     table_list = table_list[:limit]
     image_list = image_list[:limit]
@@ -4704,13 +4701,15 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
     if not os.path.exists(example_dir):
         clone_github_repo(URLs["Examples"], out_dir=example_dir)
 
-    left_widget, right_widget, tree_dict = file_browser(
+    result = file_browser(
         in_dir=repo_dir,
         add_root_node=False,
         search_description="Filter scripts...",
         use_import=True,
         return_sep_widgets=True,
     )
+    assert result is not None  # For pytype.
+    left_widget, right_widget, tree_dict = result
     info_widget.children = [right_widget]
 
     def handle_folder_click(event):
@@ -4763,23 +4762,27 @@ def build_repo_tree(out_dir=None, name="gee_repos"):
 
 
 def file_browser(
-    in_dir=None,
-    show_hidden=False,
-    add_root_node=True,
-    search_description=None,
-    use_import=False,
-    return_sep_widgets=False,
-    node_icon="file",
+    in_dir: str | None = None,
+    show_hidden: bool = False,
+    add_root_node: bool = True,
+    search_description: str | None = None,
+    use_import: bool = False,
+    return_sep_widgets: bool = False,
+    node_icon: str = "file",
 ):
     """Creates a simple file browser and text editor.
 
     Args:
-        in_dir (str, optional): The input directory. Defaults to None, which will use the current working directory.
-        show_hidden (bool, optional): Whether to show hidden files/folders. Defaults to False.
-        add_root_node (bool, optional): Whether to add the input directory as a root node. Defaults to True.
-        search_description (str, optional): The description of the search box. Defaults to None.
-        use_import (bool, optional): Whether to show the import button. Defaults to False.
-        return_sep_widgets (bool, optional): Whether to return the results as separate widgets. Defaults to False.
+        in_dir: The input directory. Defaults to None, which will use the current
+            working directory.
+        show_hidden: Whether to show hidden files/folders. Defaults to False.
+        add_root_node: Whether to add the input directory as a root node. Defaults to
+            True.
+        search_description: The description of the search box. Defaults to None.
+        use_import: Whether to show the import button. Defaults to False.
+        return_sep_widgets: Whether to return the results as separate widgets. Defaults
+            to False.
+        node_icon: TODO.
 
     Returns:
         object: An ipywidget.
@@ -15106,7 +15109,15 @@ def array_to_image(
 
     if output is None:
         return array_to_memory_file(
-            array, source, dtype, compress, transpose, cellsize, crs, driver, **kwargs
+            array,
+            source,
+            dtype,
+            compress,
+            transpose,
+            cellsize,
+            crs,
+            driver=driver,
+            **kwargs,
         )
 
     if isinstance(array, xr.DataArray):

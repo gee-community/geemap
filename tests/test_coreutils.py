@@ -93,6 +93,21 @@ class TestCoreUtils(unittest.TestCase):
 
 class TestHelpers(unittest.TestCase):
 
+    def test_hex_to_rgb(self):
+        """Tests hex_to_rgb."""
+        self.assertEqual(coreutils.hex_to_rgb(), (255, 255, 255))
+        self.assertEqual(coreutils.hex_to_rgb("FFFFFF"), (255, 255, 255))
+        self.assertEqual(coreutils.hex_to_rgb("#FFFFFF"), (255, 255, 255))
+        self.assertEqual(coreutils.hex_to_rgb("000000"), (0, 0, 0))
+        self.assertEqual(coreutils.hex_to_rgb("ff0000"), (255, 0, 0))
+        self.assertEqual(coreutils.hex_to_rgb("00ff00"), (0, 255, 0))
+        self.assertEqual(coreutils.hex_to_rgb("0000ff"), (0, 0, 255))
+        self.assertEqual(coreutils.hex_to_rgb("FFF"), (15, 15, 15))
+        self.assertEqual(coreutils.hex_to_rgb("#ABC"), (10, 11, 12))
+        self.assertEqual(coreutils.hex_to_rgb("000"), (0, 0, 0))
+        with self.assertRaises(ValueError):
+            coreutils.hex_to_rgb("garbage")
+
     def test_random_string(self):
         """Tests random_string."""
         s = coreutils.random_string()
