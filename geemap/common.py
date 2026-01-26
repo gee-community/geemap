@@ -4347,24 +4347,25 @@ def build_api_tree(api_dict, output_widget, layout_width="100%"):
     return tree, tree_dict
 
 
-def search_api_tree(keywords, api_tree):
-    """Search Earth Engine API and return functions containing the specified keywords
+def search_api_tree(keyword: str, api_tree: dict[str, Any]):
+    """Search Earth Engine API and return functions containing the specified keyword.
 
     Args:
-        keywords (str): The keywords to search for.
-        api_tree (dict): The dictionary containing the Earth Engine API tree.
+        keywords: The keyword to search for.
+        api_tree: The dictionary containing the Earth Engine API tree.
 
     Returns:
         object: An ipytree object/widget.
     """
-    from ipytree import Tree
+    import ipytree
 
     warnings.filterwarnings("ignore")
 
-    sub_tree = Tree()
+    sub_tree = ipytree.Tree()
 
-    for key in api_tree.keys():  # pytype: disable=attribute-error
-        if keywords.lower() in key.lower():
+    for key in api_tree.keys():
+        assert isinstance(key, str)  # For pytype
+        if keyword.lower() in key.lower():
             sub_tree.add_node(api_tree[key])
 
     return sub_tree
@@ -4901,6 +4902,7 @@ def file_browser(
         if event["new"]:
             cur_node = event["owner"]
             for key in tree_dict.keys():
+                assert isinstance(key, str)  # For pytype.
                 if (cur_node is tree_dict[key]) and (os.path.isfile(key)):
                     if key.endswith(".py"):
                         import_btn.disabled = False
