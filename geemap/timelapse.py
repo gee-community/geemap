@@ -3696,7 +3696,7 @@ def landsat_ts_norm_diff(collection, bands=["Green", "SWIR1"], threshold=0):
         .gt(threshold)
         .copyProperties(img, img.propertyNames())
     )
-    # pytype: disable=attribute-error
+    # pytype: enable=attribute-error
 
 
 def landsat_ts_norm_diff_gif(
