@@ -247,7 +247,7 @@ def get_info(
     layer_name: str = "",
     opened: bool = False,
     return_node: bool = False,
-) -> Union["Node", "Tree", None]:
+):
     """Print out the information for an Earth Engine object using a tree structure.
 
     The source code was adapted from https://github.com/google/earthengine-jupyter.
