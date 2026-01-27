@@ -32,7 +32,7 @@ except:
 
 
 def add_overlay(
-    collection: ee.ImageCollection,
+    collection: ee.ImageCollection,  # pytype: disable=annotation-type-mismatch
     overlay_data: str | ee.Geometry | ee.FeatureCollection,
     color: str = "black",
     width: int = 1,
