@@ -4347,11 +4347,11 @@ def build_api_tree(api_dict, output_widget, layout_width="100%"):
     return tree, tree_dict
 
 
-def search_api_tree(keyword: str, api_tree: dict[str, Any]):
+def search_api_tree(keywords: str, api_tree: dict[str, Any]):
     """Search Earth Engine API and return functions containing the specified keyword.
 
     Args:
-        keywords: The keyword to search for.
+        keywords: The keyword to search for. keywords should really be named keyword.
         api_tree: The dictionary containing the Earth Engine API tree.
 
     Returns:
@@ -4359,12 +4359,14 @@ def search_api_tree(keyword: str, api_tree: dict[str, Any]):
     """
     import ipytree
 
+    keyword = keywords
+
     warnings.filterwarnings("ignore")
 
     sub_tree = ipytree.Tree()
 
     for key in api_tree.keys():
-        assert isinstance(key, str)  # For pytype
+        assert isinstance(key, str)  # For pytype.
         if keyword.lower() in key.lower():
             sub_tree.add_node(api_tree[key])
 
