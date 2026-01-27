@@ -6643,7 +6643,9 @@ def sentinel2_timelapse_with_samples(
     if sample_points is None or len(sample_points) == 0:
         print("No sample points provided. Returning map-only timelapse.")
         if mp4:
+            # pytype: disable=attribute-error
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+            # pytype: enable=attribute-error
         return base_gif
 
     # Get the Sentinel-2 time series for sampling
