@@ -3729,7 +3729,7 @@ def landsat_ts_norm_diff_gif(
         mp4: If True, the output gif will be converted to mp4. Defaults to False.
 
     Returns:
-        The path to the output gif image pr the mp4 if that is requested.
+        The path to the output gif image or the mp4 if that is requested.
     """
     coordinates = ee.Image(collection.first()).get("coordinates")
     roi = ee.Geometry.Polygon(coordinates, None, False)
