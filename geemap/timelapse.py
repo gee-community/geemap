@@ -3707,7 +3707,7 @@ def landsat_ts_norm_diff(
 def landsat_ts_norm_diff_gif(
     collection,
     out_gif: str | None = None,
-    vis_params: dict[str, Any] = None,
+    vis_params: dict[str, Any] | None = None,
     palette: list[str] = ["black", "blue"],
     dimensions=768,
     frames_per_second: int = 10,
