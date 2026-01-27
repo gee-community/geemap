@@ -108,7 +108,10 @@ class Geometry:
         return self.geom_type
 
     def getInfo(self, *_, **__):
-        if self.type().value == "Polygon":
+        the_type = self.type()
+        assert the_type is not None
+        type_value = self.type().value
+        if type_value == "Polygon":
             return {
                 "geodesic": False,
                 "type": "Polygon",
@@ -116,19 +119,19 @@ class Geometry:
                     [[-178, -76], [179, -76], [179, 80], [-178, 80], [-178, -76]]
                 ],
             }
-        if self.type().value == "Point":
+        if type_value == "Point":
             return {
                 "geodesic": False,
                 "type": "Point",
                 "coordinates": [120, -70],
             }
-        if self.type().value == "BBox":
+        if type_value == "BBox":
             return {
                 "geodesic": False,
                 "type": "Polygon",
                 "coordinates": [[0, 1], [1, 2], [0, 1]],
             }
-        raise ValueError("Unexpected geometry type in test: ", self.type().value)
+        raise ValueError("Unexpected geometry type in test: ", type_value)
 
     def __eq__(self, other: object):
         return self.geometry == getattr(other, "geometry")
