@@ -14,6 +14,7 @@ import os
 import re
 import shutil
 import tempfile
+from typing import Any
 import warnings
 
 import ee
@@ -3679,16 +3680,20 @@ def sentinel2_timelapse(
         print(e)
 
 
-def landsat_ts_norm_diff(collection, bands=["Green", "SWIR1"], threshold=0):
+def landsat_ts_norm_diff(
+    collection, bands: list[str] = ["Green", "SWIR1"], threshold: float = 0.0
+):
     """Computes a normalized difference index based on a Landsat timeseries.
 
     Args:
         collection (ee.ImageCollection): A Landsat timeseries.
-        bands (list, optional): The bands to use for computing normalized difference. Defaults to ['Green', 'SWIR1'].
-        threshold (float, optional): The threshold to extract features. Defaults to 0.
+        bands: The bands to use for computing normalized difference. Defaults to
+            ['Green', 'SWIR1'].
+        threshold: The threshold to extract features. Defaults to 0.
 
     Returns:
-        ee.ImageCollection: An ImageCollection containing images with values greater than the specified threshold.
+        ee.ImageCollection: An ImageCollection containing images with values greater
+        than the specified threshold.
     """
     # pytype: disable=attribute-error
     return collection.map(
@@ -3701,26 +3706,27 @@ def landsat_ts_norm_diff(collection, bands=["Green", "SWIR1"], threshold=0):
 
 def landsat_ts_norm_diff_gif(
     collection,
-    out_gif=None,
-    vis_params=None,
-    palette=["black", "blue"],
+    out_gif: str | None = None,
+    vis_params: dict[str, Any] = None,
+    palette: list[str] = ["black", "blue"],
     dimensions=768,
-    frames_per_second=10,
-    mp4=False,
-):
+    frames_per_second: int = 10,
+    mp4: bool = False,
+) -> None:
     """[summary]
 
     Args:
         collection (ee.ImageCollection): The normalized difference Landsat timeseires.
-        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
-        vis_params (dict, optional): Visualization parameters. Defaults to None.
-        palette (list, optional): The palette to use for visualizing the timelapse. Defaults to ['black', 'blue']. The first color in the list is the background color.
-        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        out_gif: File path to the output animated GIF. Defaults to None.
+        vis_params: Visualization parameters. Defaults to None.
+        palette: The palette to use for visualizing the timelapse. Defaults to ['black',
+            'blue']. The first color in the list is the background color.
+        dimensions: A number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum
+            dimensions of the thumbnail to render, in pixels. If only one number is
+            passed, it is used as the maximum, and the other dimension is computed by
+            proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
-        mp4 (bool, optional): If True, the output gif will be converted to mp4. Defaults to False.
-
-    Returns:
-        str: File path to the output animated GIF.
+        mp4: If True, the output gif will be converted to mp4. Defaults to False.
     """
     coordinates = ee.Image(collection.first()).get("coordinates")
     roi = ee.Geometry.Polygon(coordinates, None, False)
@@ -3761,44 +3767,51 @@ _GOES_SATELLITES = [f"GOES-{sat}" for sat in range(16, 20)]
 
 
 def goes_timeseries(
-    start_date="2021-10-24T14:00:00",
-    end_date="2021-10-25T01:00:00",
-    data="GOES-17",
-    scan="full_disk",
+    start_date: str = "2021-10-24T14:00:00",
+    end_date: str = "2021-10-25T01:00:00",
+    data: str = "GOES-17",
+    scan: str = "full_disk",
     region=None,
     show_night=[False, "a_mode"],
 ):
-    """Create a time series of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
-    Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
+    """Create a time series of GOES data.
+
+    The code is adapted from Justin Braaten's code:
+
+    * https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4
+    * https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
 
     Args:
-        start_date (str, optional): The start date of the time series. Defaults to "2021-10-24T14:00:00".
-        end_date (str, optional): The end date of the time series. Defaults to "2021-10-25T01:00:00".
-        data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
-        scan (str, optional): The GOES scan to use. Defaults to "full_disk".
+        start_date: The start date of the time series. Defaults to
+            "2021-10-24T14:00:00".
+        end_date: The end date of the time series. Defaults to "2021-10-25T01:00:00".
+        data: The GOES satellite data to use. Defaults to "GOES-17".
+        scan: The GOES scan to use. Defaults to "full_disk".
         region (ee.Geometry, optional): The region of interest. Defaults to None.
-        show_night (list, optional): Show the clouds at night through [True, "a_mode"] o [True, "b_mode"].  Defaults to [False, "a_mode"]
+        show_night (list): Show the clouds at night through [True, "a_mode"] o [True,
+            "b_mode"].  Defaults to [False, "a_mode"]
+
     Raises:
-        ValueError: The data must be either GOES-16 or GOES-17.
+        ValueError: The data must be either GOES-16 ... GOES-20.
         ValueError: The scan must be either full_disk, conus, or mesoscale.
 
     Returns:
         ee.ImageCollection: GOES timeseries.
     """
-
     if data not in _GOES_SATELLITES:
         raise ValueError(
             f"data must be one of {', '.join(_GOES_SATELLITES[:-1])}, or {_GOES_SATELLITES[-1]}"
         )
-
-    if scan.lower() not in ["full_disk", "conus", "mesoscale"]:
-        raise ValueError("The scan must be either full_disk, conus, or mesoscale.")
 
     scan_types = {
         "full_disk": "MCMIPF",
         "conus": "MCMIPC",
         "mesoscale": "MCMIPM",
     }
+
+    # TODO: Test against scan_types.
+    if scan.lower() not in ["full_disk", "conus", "mesoscale"]:
+        raise ValueError("The scan must be either full_disk, conus, or mesoscale.")
 
     col = ee.ImageCollection(f"NOAA/GOES/{data[-2:]}/{scan_types[scan.lower()]}")
 
@@ -3909,26 +3922,31 @@ def goes_timeseries(
 
 
 def goes_fire_timeseries(
-    start_date="2020-09-05T15:00",
-    end_date="2020-09-06T02:00",
-    data="GOES-17",
-    scan="full_disk",
+    start_date: str = "2020-09-05T15:00",
+    end_date: str = "2020-09-06T02:00",
+    data: str = "GOES-17",
+    scan: str = "full_disk",
     region=None,
-    merge=True,
+    merge: bool = True,
 ):
-    """Create a time series of GOES Fire data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/8a083a7fb13b95ad4ba148ed9b65475e.
-    Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
+    """Create a time series of GOES Fire data.
+
+    The code is adapted from Justin Braaten's code:
+
+    * https://code.earthengine.google.com/8a083a7fb13b95ad4ba148ed9b65475e.
+    * https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
 
     Args:
-        start_date (str, optional): The start date of the time series. Defaults to "2020-09-05T15:00".
-        end_date (str, optional): The end date of the time series. Defaults to "2020-09-06T02:00".
-        data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
-        scan (str, optional): The GOES scan to use. Defaults to "full_disk".
+        start_date: The start date of the time series. Defaults to "2020-09-05T15:00".
+        end_date: The end date of the time series. Defaults to "2020-09-06T02:00".
+        data: The GOES satellite data to use. Defaults to "GOES-17".
+        scan: The GOES scan to use. Defaults to "full_disk".
         region (ee.Geometry, optional): The region of interest. Defaults to None.
-        merge (bool, optional): Whether to merge the fire timeseries with GOES CMI timeseries. Defaults to True.
+        merge: Whether to merge the fire timeseries with GOES CMI timeseries. Defaults
+            to True.
 
     Raises:
-        ValueError: The data must be either GOES-16 or GOES-17.
+        ValueError: The data must be either GOES-16 or GOES-20.
         ValueError: The scan must be either full_disk or conus.
 
     Returns:
@@ -3940,13 +3958,14 @@ def goes_fire_timeseries(
             f"data must be one of {', '.join(_GOES_SATELLITES[:-1])}, or {_GOES_SATELLITES[-1]}"
         )
 
-    if scan.lower() not in ["full_disk", "conus"]:
-        raise ValueError("The scan must be either full_disk or conus.")
-
     scan_types = {
         "full_disk": "FDCF",
         "conus": "FDCC",
     }
+
+    # TODO: Test against scan_types.
+    if scan.lower() not in ["full_disk", "conus"]:
+        raise ValueError("The scan must be either full_disk or conus.")
 
     if region is None:
         region = ee.Geometry.BBox(-123.17, 36.56, -118.22, 40.03)
@@ -3999,62 +4018,81 @@ def goes_fire_timeseries(
 
 def goes_timelapse(
     roi=None,
-    out_gif=None,
-    start_date="2021-10-24T14:00:00",
-    end_date="2021-10-25T01:00:00",
-    data="GOES-17",
-    scan="full_disk",
-    bands=["CMI_C02", "CMI_GREEN", "CMI_C01"],
+    out_gif: str | None = None,
+    start_date: str = "2021-10-24T14:00:00",
+    end_date: str = "2021-10-25T01:00:00",
+    data: str = "GOES-17",
+    scan: str = "full_disk",
+    bands: list[str] = ["CMI_C02", "CMI_GREEN", "CMI_C01"],
     dimensions=768,
-    framesPerSecond=10,
-    date_format="YYYY-MM-dd HH:mm",
+    framesPerSecond: int = 10,
+    date_format: str = "YYYY-MM-dd HH:mm",
     xy=("3%", "3%"),
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
-    font_color="#ffffff",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    loop=0,
-    crs=None,
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
+    font_color: str = "#ffffff",
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    loop: int = 0,
+    crs: str | None = None,
     overlay_data=None,
-    overlay_color="black",
-    overlay_width=1,
-    overlay_opacity=1.0,
-    mp4=False,
-    fading=False,
+    overlay_color: str = "black",
+    overlay_width: int = 1,
+    overlay_opacity: float = 1.0,
+    mp4: bool = False,
+    fading: bool | int = False,
     **kwargs,
 ):
-    """Create a timelapse of GOES data. The code is adapted from Justin Braaten's code: https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
-    Credits to Justin Braaten. See also https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
+    """Create a timelapse of GOES data.
+
+    The code is adapted from Justin Braaten's code:
+
+    * https://code.earthengine.google.com/57245f2d3d04233765c42fb5ef19c1f4.
+    * https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
 
     Args:
         roi (ee.Geometry, optional): The region of interest. Defaults to None.
-        out_gif (str): The file path to save the gif.
-        start_date (str, optional): The start date of the time series. Defaults to "2021-10-24T14:00:00".
-        end_date (str, optional): The end date of the time series. Defaults to "2021-10-25T01:00:00".
-        data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
-        scan (str, optional): The GOES scan to use. Defaults to "full_disk".
-        bands (list, optional): The bands to visualize. Defaults to ["CMI_C02", "CMI_GREEN", "CMI_C01"].
-        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 10.
-        date_format (str, optional): The date format to use. Defaults to "YYYY-MM-dd HH:mm".
-        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        crs (str, optional): The coordinate reference system to use, e.g., "EPSG:3857". Defaults to None.
-        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Line width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        mp4 (bool, optional): Whether to save the animation as an mp4 file. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        out_gif: The file path to save the gif.
+        start_date: Start date of the time series. Defaults to "2021-10-24T14:00:00".
+        end_date: End date of the time series. Defaults to "2021-10-25T01:00:00".
+        data: The GOES satellite data to use. Defaults to "GOES-17".
+        scan: The GOES scan to use. Defaults to "full_disk".
+        bands: The bands to visualize. Defaults to ["CMI_C02", "CMI_GREEN", "CMI_C01"].
+        dimensions: A number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum
+            dimensions of the thumbnail to render, in pixels. If only one number is
+            passed, it is used as the maximum, and the other dimension is computed by
+            proportional scaling. Defaults to 768.
+        frames_per_second: Animation speed. Defaults to 10.
+        date_format: The date format to use. Defaults to "YYYY-MM-dd HH:mm".
+        xy (tuple, optional): Top left corner of the text. It can be formatted like
+            this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer
+            number, a string, or a list of strings. Defaults to None.
+        font_type: Font type. Defaults to "arial.ttf".
+        font_size: Font size. Defaults to 20.
+        font_color: Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255,
+            127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar: Whether to add a progress bar at the bottom of the
+            GIF. Defaults to True.
+        progress_bar_color: Color for the progress bar. Defaults to 'white'.
+        progress_bar_height: Height of the progress bar. Defaults to 5.
+        loop: controls how many times the animation repeats. The default, 1, means that
+            the animation will play once and then stop (displaying the last frame). A
+            value of 0 means that the animation will repeat forever. Defaults to 0.
+        crs: Coordinate reference system to use, e.g., "EPSG:3857". Defaults to None.
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on
+            the timelapse. Defaults to None.
+        overlay_color: Color for the overlay data. Can be any color name or hex color
+            code. Defaults to 'black'.
+        overlay_width: Line width of the overlay. Defaults to 1.
+        overlay_opacity: Opacity of the overlay. Defaults to 1.0.
+        mp4: Whether to save the animation as an mp4 file. Defaults to False.
+        fading: If True, add fading effect to the timelapse. Defaults to False, no
+            fading. To add fading effect, set it to True (1 second fading duration) or
+            to an integer value (fading duration).
+
     Raises:
         Exception: Raise exception.
     """
@@ -4139,16 +4177,12 @@ def goes_timelapse(
             loop=loop,
         )
 
-        try:
-            reduce_gif_size(out_gif)
+        reduce_gif_size(out_gif)
 
-            if isinstance(fading, bool):
-                fading = int(fading)
-            if fading > 0:
-                gif_fading(out_gif, out_gif, duration=fading, verbose=False)
-
-        except Exception as _:
-            pass
+        if isinstance(fading, bool):
+            fading = int(fading)
+        if fading > 0:
+            gif_fading(out_gif, out_gif, duration=fading, verbose=False)
 
         if mp4:
             out_mp4 = out_gif.replace(".gif", ".mp4")
