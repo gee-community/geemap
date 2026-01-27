@@ -3712,11 +3712,11 @@ def landsat_ts_norm_diff_gif(
     dimensions=768,
     frames_per_second: int = 10,
     mp4: bool = False,
-) -> None:
-    """[summary]
+) -> str:
+    """TODO: [summary]
 
     Args:
-        collection (ee.ImageCollection): The normalized difference Landsat timeseires.
+        collection (ee.ImageCollection): The normalized difference Landsat timeseries.
         out_gif: File path to the output animated GIF. Defaults to None.
         vis_params: Visualization parameters. Defaults to None.
         palette: The palette to use for visualizing the timelapse. Defaults to ['black',
@@ -3725,8 +3725,11 @@ def landsat_ts_norm_diff_gif(
             dimensions of the thumbnail to render, in pixels. If only one number is
             passed, it is used as the maximum, and the other dimension is computed by
             proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 10.
+        frames_per_second: Animation speed. Defaults to 10.
         mp4: If True, the output gif will be converted to mp4. Defaults to False.
+
+    Returns:
+        The path to the output gif image pr the mp4 if that is requested.
     """
     coordinates = ee.Image(collection.first()).get("coordinates")
     roi = ee.Geometry.Polygon(coordinates, None, False)
@@ -3736,7 +3739,7 @@ def landsat_ts_norm_diff_gif(
         filename = "landsat_ts_nd_" + coreutils.random_string() + ".gif"
         out_gif = os.path.join(out_dir, filename)
     elif not out_gif.endswith(".gif"):
-        raise Exception("The output file must end with .gif")
+        raise ValueError("The output file must end with .gif")
 
     bands = ["nd"]
     if vis_params is None:
@@ -3761,6 +3764,9 @@ def landsat_ts_norm_diff_gif(
     if mp4:
         out_mp4 = out_gif.replace(".gif", ".mp4")
         gif_to_mp4(out_gif, out_mp4)
+        return out_mp4
+
+    return out_gif
 
 
 _GOES_SATELLITES = [f"GOES-{sat}" for sat in range(16, 20)]
@@ -3774,7 +3780,7 @@ def goes_timeseries(
     region=None,
     show_night=[False, "a_mode"],
 ):
-    """Create a time series of GOES data.
+    """Creates a time series of GOES data.
 
     The code is adapted from Justin Braaten's code:
 
@@ -3809,8 +3815,7 @@ def goes_timeseries(
         "mesoscale": "MCMIPM",
     }
 
-    # TODO: Test against scan_types.
-    if scan.lower() not in ["full_disk", "conus", "mesoscale"]:
+    if scan.lower() not in scan_types:
         raise ValueError("The scan must be either full_disk, conus, or mesoscale.")
 
     col = ee.ImageCollection(f"NOAA/GOES/{data[-2:]}/{scan_types[scan.lower()]}")
@@ -3963,8 +3968,7 @@ def goes_fire_timeseries(
         "conus": "FDCC",
     }
 
-    # TODO: Test against scan_types.
-    if scan.lower() not in ["full_disk", "conus"]:
+    if scan.lower() not in scan_types:
         raise ValueError("The scan must be either full_disk or conus.")
 
     if region is None:
@@ -4064,7 +4068,7 @@ def goes_timelapse(
             dimensions of the thumbnail to render, in pixels. If only one number is
             passed, it is used as the maximum, and the other dimension is computed by
             proportional scaling. Defaults to 768.
-        frames_per_second: Animation speed. Defaults to 10.
+        framesPerSecond: Animation speed. Defaults to 10.
         date_format: The date format to use. Defaults to "YYYY-MM-dd HH:mm".
         xy (tuple, optional): Top left corner of the text. It can be formatted like
             this: (10, 10) or ('15%', '25%'). Defaults to None.
@@ -6707,15 +6711,15 @@ def sentinel2_timelapse_with_samples(
                 1,
             )
 
-            # Add indices to each image
+            # Add indices to each image.
             # pytype: disable=attribute-error
             ts_collection = base_ts_collection.map(calculate_sentinel2_indices)
             # pytype: enable=attribute-error
 
-            # Select only the bands we need for sampling
+            # Select only the bands we need for sampling.
             ts_collection = ts_collection.select(s2_sample_bands)
         else:
-            # Standard time series without indices
+            # Standard time series without indices.
             ts_collection = sentinel2_timeseries(
                 roi,
                 start_year,
@@ -6733,24 +6737,28 @@ def sentinel2_timelapse_with_samples(
                 1,
             )
 
-        # Check if time series is empty
+        # Check if time series is empty.
         ts_size = ts_collection.size().getInfo()
         if ts_size == 0:
             print("Warning: No time series data generated")
             if mp4:
+                # pytype: disable=attribute-error
                 gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+                # pytype: enable=attribute-error
             return base_gif
 
         print(f"Generated {ts_size} time series images")
 
     except Exception as e:
         print(f"Error creating time series: {str(e)}")
-        # Return base gif without sampling
+        # Return base gif without sampling.
         if mp4:
+            # pytype: disable=attribute-error
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
+            # pytype: enable=attribute-error
         return base_gif
 
-    # Sample points from the time series
+    # Sample points from the time series.
     sample_data = {}
     point_geometries = []
 
@@ -6899,7 +6907,7 @@ def sentinel2_timelapse_with_samples(
         except Exception as e:
             print(f"Error adding markers to GIF: {str(e)}")
 
-    # Create the time series chart if we have sample data
+    # Create the time series chart if we have sample data.
     if sample_data and len(sample_data) > 0:
         try:
             chart_frames = create_s2_time_series_chart_frames(
@@ -6916,7 +6924,7 @@ def sentinel2_timelapse_with_samples(
                 chart_xlabel_interval,
             )
 
-            # Combine gif and chart
+            # Combine gif and chart.
             final_gif = combine_gif_with_chart(
                 base_gif,
                 chart_frames,
@@ -6938,7 +6946,9 @@ def sentinel2_timelapse_with_samples(
 
     # Handle MP4 conversion
     if mp4:
+        # pytype: disable=attribute-error
         gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
+        # pytype: enable=attribute-error
 
     return final_gif
 
@@ -8375,7 +8385,9 @@ def create_landsat_index_timelapse(
     )
 
     # Add indices to each image.
+    # pytype: disable=attribute-error
     ts_collection = base_ts_collection.map(calculate_landsat_indices)
+    # pytype: enable=attribute-error
 
     # Use create_timelapse with the index collection.
     start = f"{start_year}-{start_date}"
