@@ -2640,14 +2640,14 @@ class Map(MapWidget):
 
         This function creates and adds a 3D buildings layer to the map using
         fill-extrusion. The buildings' heights are determined by the 'render_height'
-        property, and their colors are interpolated based on specified values.  The
+        property, and their colors are interpolated based on specified values. The
         layer is only visible from a certain zoom level, specified by the 'min_zoom'
         parameter.
 
         Args:
             name: The name of the 3D buildings layer. Defaults to "buildings".
-            min_zoom (int): The minimum zoom level at which the 3D buildings will start
-                to be visible. Defaults to 15.
+            min_zoom: The minimum zoom level at which the 3D buildings will start to be
+                visible. Defaults to 15.
             values: A list of height values (in meters) used for color
                 interpolation. Defaults to [0, 200, 400].
             colors: A list of colors corresponding to the 'values' list. Each color is
