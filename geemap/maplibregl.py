@@ -2582,22 +2582,24 @@ class Map(MapWidget):
         position: str = "top-left",
         bg_layers: bool | list[str] | None = False,
     ) -> None:
-        """
-        Adds a layer control to the map.
+        """Adds a layer control to the map.
 
-        This function creates and adds a layer switcher control to the map, allowing users to toggle the visibility
-        of specified layers. The appearance and functionality of the layer control can be customized with parameters
-        such as theme, CSS styling, and position on the map.
+        This function creates and adds a layer switcher control to the map, allowing
+        users to toggle the visibility of specified layers. The appearance and
+        functionality of the layer control can be customized with parameters such as
+        theme, CSS styling, and position on the map.
 
         Args:
-            layer_ids (Optional[List[str]]): A list of layer IDs to include in the control. If None, all layers
-                in the map will be included. Defaults to None.
-            theme (str): The theme for the layer switcher control. Can be "default" or other custom themes. Defaults to "default".
-            css_text (Optional[str]): Custom CSS text for styling the layer control. If None, a default style will be applied.
-                Defaults to None.
-            position (str): The position of the layer control on the map. Can be "top-left", "top-right", "bottom-left",
-                or "bottom-right". Defaults to "top-left".
-            bg_layers (bool): If True, background layers will be included in the control. Defaults to False.
+            layer_ids: A list of layer IDs to include in the control. If None, all
+                layers in the map will be included. Defaults to None.
+            theme: The theme for the layer switcher control. Can be "default" or other
+                custom themes. Defaults to "default".
+            css_text: Custom CSS text for styling the layer control. If None, a default
+                style will be applied.  Defaults to None.
+            position: The position of the layer control on the map. Can be "top-left",
+                "top-right", "bottom-left", or "bottom-right". Defaults to "top-left".
+            bg_layers: If True, background layers will be included in the
+                control. Defaults to False.
 
         Returns:
             None
@@ -2634,27 +2636,27 @@ class Map(MapWidget):
         values: list[int] = [0, 200, 400],
         colors: list[str] = ["lightgray", "royalblue", "lightblue"],
     ) -> None:
-        """
-        Adds a 3D buildings layer to the map.
+        """Adds a 3D buildings layer to the map.
 
-        This function creates and adds a 3D buildings layer to the map using fill-extrusion. The buildings' heights
-        are determined by the 'render_height' property, and their colors are interpolated based on specified values.
-        The layer is only visible from a certain zoom level, specified by the 'min_zoom' parameter.
+        This function creates and adds a 3D buildings layer to the map using
+        fill-extrusion. The buildings' heights are determined by the 'render_height'
+        property, and their colors are interpolated based on specified values. The
+        layer is only visible from a certain zoom level, specified by the 'min_zoom'
+        parameter.
 
         Args:
-            name (str): The name of the 3D buildings layer. Defaults to "buildings".
-            min_zoom (int): The minimum zoom level at which the 3D buildings will start to be visible. Defaults to 15.
-            values (List[int]): A list of height values (in meters) used for color interpolation. Defaults to [0, 200, 400].
-            colors (List[str]): A list of colors corresponding to the 'values' list. Each color is applied to the
-                building height range defined by the 'values'. Defaults to ["lightgray", "royalblue", "lightblue"].
+            name: The name of the 3D buildings layer. Defaults to "buildings".
+            min_zoom: The minimum zoom level at which the 3D buildings will start to be
+                visible. Defaults to 15.
+            values: A list of height values (in meters) used for color
+                interpolation. Defaults to [0, 200, 400].
+            colors: A list of colors corresponding to the 'values' list. Each color is
+                applied to the building height range defined by the 'values'. Defaults
+                to ["lightgray", "royalblue", "lightblue"].
 
         Raises:
             ValueError: If the lengths of 'values' and 'colors' lists do not match.
-
-        Returns:
-            None
         """
-
         MAPTILER_KEY = coreutils.get_env_var("MAPTILER_KEY")
         source = {
             "url": f"https://api.maptiler.com/tiles/v3/tiles.json?key={MAPTILER_KEY}",
@@ -2709,25 +2711,22 @@ class Map(MapWidget):
         layer_id: str = "video",
         before_id: str | None = None,
     ) -> None:
-        """
-        Adds a video layer to the map.
+        """Adds a video layer to the map.
 
-        This method allows embedding a video into the map by specifying the video URLs and the geographical coordinates
-        that the video should cover. The video will be stretched and fitted into the specified coordinates.
+        This method allows embedding a video into the map by specifying the video URLs
+        and the geographical coordinates that the video should cover. The video will be
+        stretched and fitted into the specified coordinates.
 
         Args:
-            urls (Union[str, List[str]]): A single video URL or a list of video URLs. These URLs must be accessible
-                from the client's location.
-            coordinates (List[List[float]]): A list of four coordinates in [longitude, latitude] format, specifying
-                the corners of the video. The coordinates order should be top-left, top-right, bottom-right, bottom-left.
-            layer_id (str): The ID for the video layer. Defaults to "video".
-            before_id (Optional[str]): The ID of an existing layer to insert the new layer before. If None, the layer
-                will be added on top. Defaults to None.
-
-        Returns:
-            None
+            urls: A single video URL or a list of video URLs. These URLs must be
+                accessible from the client's location.
+            coordinates: A list of four coordinates in [longitude, latitude] format,
+                specifying the corners of the video. The coordinates order should be
+                top-left, top-right, bottom-right, bottom-left.
+            layer_id: The ID for the video layer. Defaults to "video".
+            before_id: The ID of an existing layer to insert the new layer before. If
+                None, the layer will be added on top. Defaults to None.
         """
-
         if isinstance(urls, str):
             urls = [urls]
         source = {
@@ -2747,22 +2746,21 @@ class Map(MapWidget):
 class Container(v.Container):
 
     def __init__(self, host_map=None, *args, **kwargs):
-
-        # Create the left column with the map
+        # Create the left column with the map.
         left_col_layout = v.Col(
-            cols=11, children=[], class_="pa-1"  # padding for consistent spacing
+            cols=11, children=[], class_="pa-1"  # Padding for consistent spacing.
         )
         if host_map is not None:
             left_col_layout.children = [host_map]
 
-        # Create the right column with some output
+        # Create the right column with some output.
         right_col_layout = v.Col(
             cols=1,
             children=[v.Card(children=[v.CardText(children=["Output Content"])])],
-            class_="pa-1",  # padding for consistent spacing
+            class_="pa-1",  # Padding for consistent spacing.
         )
 
-        # Create a toggle button with an icon
+        # Create a toggle button with an icon.
         btn = v.Btn(
             children=[
                 v.Icon(left=False, children=["mdi-layers"]),
@@ -2771,10 +2769,10 @@ class Container(v.Container):
             v_model=False,
         )
 
-        # Create the button toggle
+        # Create the button toggle.
         toggle = v.BtnToggle(v_model="toggle_exclusive", children=[btn])
 
-        # Function to change column widths
+        # Function to change column widths.
         def change_column_widths(*args, **kwargs):
             if toggle.v_model == 0:
                 left_col_layout.cols = 10
@@ -2783,10 +2781,10 @@ class Container(v.Container):
                 left_col_layout.cols = 11
                 right_col_layout.cols = 1
 
-        # Observe changes in the v_model of the toggle button
+        # Observe changes in the v_model of the toggle button.
         toggle.on_event("change", change_column_widths)
 
-        # Update the right column to include the toggle button
+        # Update the right column to include the toggle button.
         right_col_layout.children = [toggle]
         row = v.Row(
             class_="d-flex flex-wrap",
@@ -2798,22 +2796,23 @@ class Container(v.Container):
 
 
 def construct_maptiler_style(style: str, api_key: str | None = None) -> str:
-    """
-    Constructs a URL for a MapTiler style with an optional API key.
+    """Constructs a URL for a MapTiler style with an optional API key.
 
-    This function generates a URL for accessing a specific MapTiler map style. If an API key is not provided,
-    it attempts to retrieve one using a predefined method. If the request to MapTiler fails, it defaults to
-    a "dark-matter" style.
+    This function generates a URL for accessing a specific MapTiler map style. If an API
+    key is not provided, it attempts to retrieve one using a predefined method. If the
+    request to MapTiler fails, it defaults to a "dark-matter" style.
 
     Args:
-        style (str): The name of the MapTiler style to be accessed. It can be one of the following:
-            aquarelle, backdrop, basic, bright, dataviz, landscape, ocean, openstreetmap, outdoor,
-            satellite, streets, toner, topo, winter, etc.
-        api_key (Optional[str]): An optional API key for accessing MapTiler services. If None, the function
-            attempts to retrieve the API key using a predefined method. Defaults to None.
+        style: The name of the MapTiler style to be accessed. It can be one of the
+            following: aquarelle, backdrop, basic, bright, dataviz, landscape, ocean,
+            openstreetmap, outdoor, satellite, streets, toner, topo, winter, etc.
+        api_key: An optional API key for accessing MapTiler services. If None, the
+            function attempts to retrieve the API key using a predefined
+            method. Defaults to None.
 
     Returns:
-        str: The URL for the requested MapTiler style. If the request fails, returns a URL for the "dark-matter" style.
+        The URL for the requested MapTiler style. If the request fails, returns a URL
+        for the "dark-matter" style.
 
     Raises:
         requests.exceptions.RequestException: If the request to the MapTiler API fails.
@@ -2835,37 +2834,37 @@ def construct_maptiler_style(style: str, api_key: str | None = None) -> str:
 
 
 def maptiler_3d_style(
-    style="satellite",
-    exaggeration: float = 1,
+    style: str = "satellite",
+    exaggeration: float = 1.0,
     tile_size: int = 512,
-    tile_type: str = None,
+    tile_type: str | None = None,
     max_zoom: int = 24,
     hillshade: bool = True,
     token: str = "MAPTILER_KEY",
     api_key: str | None = None,
 ) -> dict[str, Any]:
-    """
-    Get the 3D terrain style for the map.
+    """Get the 3D terrain style for the map.
 
-    This function generates a style dictionary for the map that includes 3D terrain features.
-    The terrain exaggeration and API key can be specified. If the API key is not provided,
-    it will be retrieved using the specified token.
+    This function generates a style dictionary for the map that includes 3D terrain
+    features.  The terrain exaggeration and API key can be specified. If the API key is
+    not provided, it will be retrieved using the specified token.
 
     Args:
-        style (str): The name of the MapTiler style to be accessed. It can be one of the following:
-            aquarelle, backdrop, basic, bright, dataviz, hillshade, landscape, ocean, openstreetmap, outdoor,
-            satellite, streets, toner, topo, winter, etc.
-        exaggeration (float, optional): The terrain exaggeration. Defaults to 1.
-        tile_size (int, optional): The size of the tiles. Defaults to 512.
-        tile_type (str, optional): The type of the tiles. It can be one of the following:
-            webp, png, jpg. Defaults to None.
-        max_zoom (int, optional): The maximum zoom level. Defaults to 24.
-        hillshade (bool, optional): Whether to include hillshade. Defaults to True.
-        token (str, optional): The token to use to retrieve the API key. Defaults to "MAPTILER_KEY".
-        api_key (Optional[str], optional): The API key. If not provided, it will be retrieved using the token.
+        style: The name of the MapTiler style to be accessed. It can be one of the
+            following: aquarelle, backdrop, basic, bright, dataviz, hillshade,
+            landscape, ocean, openstreetmap, outdoor, satellite, streets, toner, topo,
+            winter, etc.
+        exaggeration: The terrain exaggeration. Defaults to 1.
+        tile_size: The size of the tiles. Defaults to 512.
+        tile_type: The type of the tiles. It can be one of the following: webp, png,
+            jpg. Defaults to None.
+        max_zoom: The maximum zoom level. Defaults to 24.
+        hillshade: Whether to include hillshade. Defaults to True.
+        token: The token to use to retrieve the API key. Defaults to "MAPTILER_KEY".
+        api_key: The API key. If not provided, it will be retrieved using the token.
 
     Returns:
-        Dict[str, Any]: The style dictionary for the map.
+        The style dictionary for the map.
 
     Raises:
         ValueError: If the API key is not provided and cannot be retrieved using the token.
