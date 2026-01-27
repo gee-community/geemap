@@ -24,7 +24,9 @@ import traitlets
 
 from . import common
 from . import conversion
+from . import core
 from . import coreutils
+from . import geemap
 
 
 class TypedTuple(traitlets.Container):
