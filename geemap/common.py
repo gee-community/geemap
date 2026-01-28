@@ -1989,11 +1989,8 @@ def show_html(html: str) -> widgets.HTML:
         widget = widgets.HTML(value=content)
         return widget
     else:
-        try:
-            widget = widgets.HTML(value=html)
-            return widget
-        except Exception as e:
-            raise Exception(e)
+        widget = widgets.HTML(value=html)
+        return widget
 
 
 def has_transparency(img) -> bool:
@@ -2330,23 +2327,19 @@ def csv_to_shp(
         in_csv = coreutils.github_raw_url(in_csv)
         in_csv = coreutils.download_file(in_csv, quiet=True, overwrite=True)
 
-    try:
-        points = shp.Writer(out_shp, shapeType=shp.POINT)
-        with open(in_csv, encoding=encoding) as csvfile:
-            csvreader = csv.DictReader(csvfile)
-            header = csvreader.fieldnames
-            [points.field(field) for field in header]
-            for row in csvreader:
-                points.point((float(row[longitude])), (float(row[latitude])))
-                points.record(*tuple([row[f] for f in header]))
+    points = shp.Writer(out_shp, shapeType=shp.POINT)
+    with open(in_csv, encoding=encoding) as csvfile:
+        csvreader = csv.DictReader(csvfile)
+        header = csvreader.fieldnames
+        [points.field(field) for field in header]
+        for row in csvreader:
+            points.point((float(row[longitude])), (float(row[latitude])))
+            points.record(*tuple([row[f] for f in header]))
 
-        out_prj = out_shp.replace(".shp", ".prj")
-        with open(out_prj, "w") as f:
-            prj_str = 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]] '
-            f.write(prj_str)
-
-    except Exception as e:
-        raise Exception(e)
+    out_prj = out_shp.replace(".shp", ".prj")
+    with open(out_prj, "w") as f:
+        prj_str = 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]] '
+        f.write(prj_str)
 
 
 def csv_to_geojson(
@@ -3052,12 +3045,9 @@ def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
     if bands is not None:
         kwargs["bandIds"] = bands
 
-    try:
-        struct_array = ee.data.computePixels(kwargs)
-        array = np.dstack([struct_array[band] for band in struct_array.dtype.names])
-        return array
-    except Exception as e:
-        raise Exception(e)
+    struct_array = ee.data.computePixels(kwargs)
+    array = np.dstack([struct_array[band] for band in struct_array.dtype.names])
+    return array
 
 
 def ee_to_xarray(
@@ -3714,21 +3704,18 @@ def minimum_bounding_box(geojson):
         tuple: Returns a tuple containing the minimum bounding box in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
     """
     coordinates = []
-    try:
-        if "geometry" in geojson.keys():
-            coordinates = geojson["geometry"]["coordinates"][0]
-        else:
-            coordinates = geojson["coordinates"][0]
-        lower_left = min([x[1] for x in coordinates]), min(
-            [x[0] for x in coordinates]
-        )  # (lat, lon)
-        upper_right = max([x[1] for x in coordinates]), max(
-            [x[0] for x in coordinates]
-        )  # (lat, lon)
-        bounds = (lower_left, upper_right)
-        return bounds
-    except Exception as e:
-        raise Exception(e)
+    if "geometry" in geojson.keys():
+        coordinates = geojson["geometry"]["coordinates"][0]
+    else:
+        coordinates = geojson["coordinates"][0]
+    lower_left = min([x[1] for x in coordinates]), min(
+        [x[0] for x in coordinates]
+    )  # (lat, lon)
+    upper_right = max([x[1] for x in coordinates]), max(
+        [x[0] for x in coordinates]
+    )  # (lat, lon)
+    bounds = (lower_left, upper_right)
+    return bounds
 
 
 def geocode(location, max_rows=10, reverse=False):
@@ -5338,40 +5325,36 @@ def cog_mosaic(
     if layername is None:
         layername = "layer_" + coreutils.random_string(5)
 
-    try:
-        if verbose:
-            print("Creating COG masaic ...")
+    if verbose:
+        print("Creating COG masaic ...")
 
-        # Create token
-        r = requests.post(
-            f"{titiler_endpoint}/tokens/create",
-            json={"username": username, "scope": ["mosaic:read", "mosaic:create"]},
-        ).json()
-        token = r["token"]
+    # Create token
+    r = requests.post(
+        f"{titiler_endpoint}/tokens/create",
+        json={"username": username, "scope": ["mosaic:read", "mosaic:create"]},
+    ).json()
+    token = r["token"]
 
-        # Create mosaic
-        requests.post(
-            f"{titiler_endpoint}/mosaicjson/create",
-            json={
-                "username": username,
-                "layername": layername,
-                "files": links,
-                # "overwrite": overwrite
-            },
-            params={
-                "access_token": token,
-            },
-        ).json()
+    # Create mosaic
+    requests.post(
+        f"{titiler_endpoint}/mosaicjson/create",
+        json={
+            "username": username,
+            "layername": layername,
+            "files": links,
+            # "overwrite": overwrite
+        },
+        params={
+            "access_token": token,
+        },
+    ).json()
 
-        r2 = requests.get(
-            f"{titiler_endpoint}/mosaicjson/{username}.{layername}/tilejson.json",
-            timeout=timeout,
-        ).json()
+    r2 = requests.get(
+        f"{titiler_endpoint}/mosaicjson/{username}.{layername}/tilejson.json",
+        timeout=timeout,
+    ).json()
 
-        return r2["tiles"][0]
-
-    except Exception as e:
-        raise Exception(e)
+    return r2["tiles"][0]
 
 
 def cog_mosaic_from_file(
@@ -6697,22 +6680,19 @@ def zonal_stats(
     if scale is None:
         scale = in_value_raster.projection().nominalScale().multiply(10)
 
-    try:
-        if verbose:
-            print("Computing statistics ...")
-        result = in_value_raster.reduceRegions(
-            collection=in_zone_vector,
-            reducer=reducer,
-            scale=scale,
-            crs=crs,
-            tileScale=tile_scale,
-        )
-        if return_fc:
-            return result
-        else:
-            ee_export_vector(result, filename, timeout=timeout, proxies=proxies)
-    except Exception as e:
-        raise Exception(e)
+    if verbose:
+        print("Computing statistics ...")
+    result = in_value_raster.reduceRegions(
+        collection=in_zone_vector,
+        reducer=reducer,
+        scale=scale,
+        crs=crs,
+        tileScale=tile_scale,
+    )
+    if return_fc:
+        return result
+    else:
+        ee_export_vector(result, filename, timeout=timeout, proxies=proxies)
 
 
 zonal_statistics = zonal_stats
@@ -6821,101 +6801,97 @@ def zonal_stats_by_group(
     if scale is None:
         scale = in_value_raster.projection().nominalScale().multiply(10)
 
-    try:
-        if verbose:
-            print("Computing ... ")
-        geometry = in_zone_vector.geometry()
+    if verbose:
+        print("Computing ... ")
+    geometry = in_zone_vector.geometry()
 
-        hist = in_value_raster.reduceRegion(
-            ee.Reducer.frequencyHistogram(),
-            geometry=geometry,
-            scale=scale,
-            crs=crs,
-            crsTransform=crs_transform,
-            bestEffort=best_effort,
-            maxPixels=max_pixels,
-            tileScale=tile_scale,
-        )
-        class_values = (
-            ee.Dictionary(hist.get(band_name))
-            .keys()
-            .map(lambda v: ee.Number.parse(v))
-            .sort()
-        )
+    hist = in_value_raster.reduceRegion(
+        ee.Reducer.frequencyHistogram(),
+        geometry=geometry,
+        scale=scale,
+        crs=crs,
+        crsTransform=crs_transform,
+        bestEffort=best_effort,
+        maxPixels=max_pixels,
+        tileScale=tile_scale,
+    )
+    class_values = (
+        ee.Dictionary(hist.get(band_name))
+        .keys()
+        .map(lambda v: ee.Number.parse(v))
+        .sort()
+    )
 
-        class_names = class_values.map(
-            lambda c: ee.String("Class_").cat(ee.Number(c).format())
-        )
+    class_names = class_values.map(
+        lambda c: ee.String("Class_").cat(ee.Number(c).format())
+    )
 
-        # class_count = class_values.size().getInfo()
-        dataset = ee.Image.pixelArea().divide(denominator).addBands(in_value_raster)
+    # class_count = class_values.size().getInfo()
+    dataset = ee.Image.pixelArea().divide(denominator).addBands(in_value_raster)
 
-        init_result = dataset.reduceRegions(
-            **{
-                "collection": in_zone_vector,
-                "reducer": ee.Reducer.sum().group(
-                    **{
-                        "groupField": 1,
-                        "groupName": "group",
-                    }
-                ),
-                "scale": scale,
-            }
-        )
+    init_result = dataset.reduceRegions(
+        **{
+            "collection": in_zone_vector,
+            "reducer": ee.Reducer.sum().group(
+                **{
+                    "groupField": 1,
+                    "groupName": "group",
+                }
+            ),
+            "scale": scale,
+        }
+    )
 
-        # def build_dict(input_list):
+    # def build_dict(input_list):
 
-        #     decimal_format = '%.{}f'.format(decimal_places)
-        #     in_dict = input_list.map(lambda x: ee.Dictionary().set(ee.String('Class_').cat(
-        #         ee.Number(ee.Dictionary(x).get('group')).format()), ee.Number.parse(ee.Number(ee.Dictionary(x).get('sum')).format(decimal_format))))
-        #     return in_dict
+    #     decimal_format = '%.{}f'.format(decimal_places)
+    #     in_dict = input_list.map(lambda x: ee.Dictionary().set(ee.String('Class_').cat(
+    #         ee.Number(ee.Dictionary(x).get('group')).format()), ee.Number.parse(ee.Number(ee.Dictionary(x).get('sum')).format(decimal_format))))
+    #     return in_dict
 
-        def get_keys(input_list):
-            return input_list.map(
-                lambda x: ee.String("Class_").cat(
-                    ee.Number(ee.Dictionary(x).get("group")).format()
-                )
+    def get_keys(input_list):
+        return input_list.map(
+            lambda x: ee.String("Class_").cat(
+                ee.Number(ee.Dictionary(x).get("group")).format()
             )
+        )
 
-        def get_values(input_list):
-            decimal_format = f"%.{decimal_places}f"
-            return input_list.map(
-                lambda x: ee.Number.parse(
-                    ee.Number(ee.Dictionary(x).get("sum")).format(decimal_format)
-                )
+    def get_values(input_list):
+        decimal_format = f"%.{decimal_places}f"
+        return input_list.map(
+            lambda x: ee.Number.parse(
+                ee.Number(ee.Dictionary(x).get("sum")).format(decimal_format)
             )
+        )
 
-        def set_attribute(f):
-            groups = ee.List(f.get("groups"))
-            keys = get_keys(groups)
-            values = get_values(groups)
-            total_area = ee.List(values).reduce(ee.Reducer.sum())
+    def set_attribute(f):
+        groups = ee.List(f.get("groups"))
+        keys = get_keys(groups)
+        values = get_values(groups)
+        total_area = ee.List(values).reduce(ee.Reducer.sum())
 
-            def get_class_values(x):
-                cls_value = ee.Algorithms.If(
-                    keys.contains(x), values.get(keys.indexOf(x)), 0
-                )
-                cls_value = ee.Algorithms.If(
-                    ee.String(stat_type).compareTo(ee.String("SUM")),
-                    ee.Number(cls_value).divide(ee.Number(total_area)),
-                    cls_value,
-                )
-                return cls_value
+        def get_class_values(x):
+            cls_value = ee.Algorithms.If(
+                keys.contains(x), values.get(keys.indexOf(x)), 0
+            )
+            cls_value = ee.Algorithms.If(
+                ee.String(stat_type).compareTo(ee.String("SUM")),
+                ee.Number(cls_value).divide(ee.Number(total_area)),
+                cls_value,
+            )
+            return cls_value
 
-            full_values = class_names.map(lambda x: get_class_values(x))
-            attr_dict = ee.Dictionary.fromLists(class_names, full_values)
-            attr_dict = attr_dict.set("Class_sum", total_area)
+        full_values = class_names.map(lambda x: get_class_values(x))
+        attr_dict = ee.Dictionary.fromLists(class_names, full_values)
+        attr_dict = attr_dict.set("Class_sum", total_area)
 
-            return f.set(attr_dict).set("groups", None)
+        return f.set(attr_dict).set("groups", None)
 
-        final_result = init_result.map(set_attribute)
-        if return_fc:
-            return final_result
-        else:
-            ee_export_vector(final_result, filename, timeout=timeout, proxies=proxies)
-
-    except Exception as e:
-        raise Exception(e)
+    final_result = init_result.map(set_attribute)
+    if return_fc:
+        return final_result
+    else:
+        ee_export_vector(final_result, filename, timeout=timeout, proxies=proxies)
 
 
 zonal_statistics_by_group = zonal_stats_by_group
@@ -7376,24 +7352,21 @@ def image_histogram(
         if y_label is not None:
             labels["value"] = y_label
 
-        try:
-            fig = px.bar(
-                data,
-                x="key",
-                y="value",
-                labels=labels,
-                title=title,
-                width=width,
-                height=height,
-                **plot_args,
-            )
+        fig = px.bar(
+            data,
+            x="key",
+            y="value",
+            labels=labels,
+            title=title,
+            width=width,
+            height=height,
+            **plot_args,
+        )
 
-            if isinstance(layout_args, dict):
-                fig.update_layout(**layout_args)
+        if isinstance(layout_args, dict):
+            fig.update_layout(**layout_args)
 
-            return fig
-        except Exception as e:
-            raise Exception(e)
+        return fig
 
 
 def image_stats_by_zone(
@@ -8768,10 +8741,7 @@ def csv_to_df(in_csv, **kwargs):
     """
     in_csv = coreutils.github_raw_url(in_csv)
 
-    try:
-        return pd.read_csv(in_csv, **kwargs)
-    except Exception as e:
-        raise Exception(e)
+    return pd.read_csv(in_csv, **kwargs)
 
 
 def ee_to_df(
@@ -8802,31 +8772,28 @@ def ee_to_df(
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
-    try:
-        if remove_geom:
-            data = ee_object.map(
-                lambda f: ee.Feature(None, f.toDictionary(f.propertyNames().sort()))
-            )
-        else:
-            data = ee_object
+    if remove_geom:
+        data = ee_object.map(
+            lambda f: ee.Feature(None, f.toDictionary(f.propertyNames().sort()))
+        )
+    else:
+        data = ee_object
 
-        kwargs["expression"] = data
-        kwargs["fileFormat"] = "PANDAS_DATAFRAME"
+    kwargs["expression"] = data
+    kwargs["fileFormat"] = "PANDAS_DATAFRAME"
 
-        df = ee.data.computeFeatures(kwargs)
+    df = ee.data.computeFeatures(kwargs)
 
-        if isinstance(columns, list):
-            df = df[columns]
+    if isinstance(columns, list):
+        df = df[columns]
 
-        if remove_geom and ("geo" in df.columns):
-            df = df.drop(columns=["geo"], axis=1)
+    if remove_geom and ("geo" in df.columns):
+        df = df.drop(columns=["geo"], axis=1)
 
-        if sort_columns:
-            df = df.reindex(sorted(df.columns), axis=1)
+    if sort_columns:
+        df = df.reindex(sorted(df.columns), axis=1)
 
-        return df
-    except Exception as e:
-        raise Exception(e)
+    return df
 
 
 def shp_to_gdf(in_shp, **kwargs):
@@ -8849,10 +8816,7 @@ def shp_to_gdf(in_shp, **kwargs):
     if not os.path.exists(in_shp):
         raise FileNotFoundError("The provided shp could not be found.")
 
-    try:
-        return gpd.read_file(in_shp, **kwargs)
-    except Exception as e:
-        raise Exception(e)
+    return gpd.read_file(in_shp, **kwargs)
 
 
 shp_to_geopandas = shp_to_gdf
@@ -8884,23 +8848,20 @@ def ee_to_gdf(
     if not isinstance(ee_object, ee.FeatureCollection):
         raise TypeError("ee_object must be an ee.FeatureCollection")
 
-    try:
-        kwargs["expression"] = ee_object
-        kwargs["fileFormat"] = "GEOPANDAS_GEODATAFRAME"
+    kwargs["expression"] = ee_object
+    kwargs["fileFormat"] = "GEOPANDAS_GEODATAFRAME"
 
-        crs = ee_object.first().geometry().projection().crs().getInfo()
-        gdf = ee.data.computeFeatures(kwargs)
+    crs = ee_object.first().geometry().projection().crs().getInfo()
+    gdf = ee.data.computeFeatures(kwargs)
 
-        if isinstance(columns, list):
-            gdf = gdf[columns]
+    if isinstance(columns, list):
+        gdf = gdf[columns]
 
-        if sort_columns:
-            gdf = gdf.reindex(sorted(gdf.columns), axis=1)
+    if sort_columns:
+        gdf = gdf.reindex(sorted(gdf.columns), axis=1)
 
-        gdf.crs = crs
-        return gdf
-    except Exception as e:
-        raise Exception(e)
+    gdf.crs = crs
+    return gdf
 
 
 def delete_shp(in_shp, verbose=False):
@@ -8980,15 +8941,12 @@ def gdf_to_ee(gdf, geodesic=True, date=None, date_format="YYYY-MM-dd"):
     fc = coreutils.geojson_to_ee(out_json, geodesic=geodesic)
 
     if date is not None:
-        try:
-            fc = fc.map(
-                lambda x: x.set(
-                    "system:time_start",
-                    ee.Date.parse(date_format, x.get(date)).millis(),
-                )
+        fc = fc.map(
+            lambda x: x.set(
+                "system:time_start",
+                ee.Date.parse(date_format, x.get(date)).millis(),
             )
-        except Exception as e:
-            raise Exception(e)
+        )
 
     os.remove(out_json)
 
@@ -9186,48 +9144,44 @@ def extract_transect(
     Returns:
         ee.FeatureCollection: The FeatureCollection containing the transect with distance and reducer values.
     """
-    try:
-        geom_type = line.type().getInfo()
-        if geom_type != "LineString":
-            raise TypeError("The geometry type must be LineString.")
+    geom_type = line.type().getInfo()
+    if geom_type != "LineString":
+        raise TypeError("The geometry type must be LineString.")
 
-        reducer = eval("ee.Reducer." + reducer + "()")
-        maxError = image.projection().nominalScale().divide(5)
+    reducer = eval("ee.Reducer." + reducer + "()")
+    maxError = image.projection().nominalScale().divide(5)
 
-        length = line.length(maxError)
-        if dist_interval is None:
-            dist_interval = length.divide(n_segments)
+    length = line.length(maxError)
+    if dist_interval is None:
+        dist_interval = length.divide(n_segments)
 
-        distances = ee.List.sequence(0, length, dist_interval)
-        lines = line.cutLines(distances, maxError).geometries()
+    distances = ee.List.sequence(0, length, dist_interval)
+    lines = line.cutLines(distances, maxError).geometries()
 
-        def set_dist_attr(l):
-            l = ee.List(l)
-            geom = ee.Geometry(l.get(0))
-            distance = ee.Number(l.get(1))
-            geom = ee.Geometry.LineString(geom.coordinates())
-            return ee.Feature(geom, {"distance": distance})
+    def set_dist_attr(l):
+        l = ee.List(l)
+        geom = ee.Geometry(l.get(0))
+        distance = ee.Number(l.get(1))
+        geom = ee.Geometry.LineString(geom.coordinates())
+        return ee.Feature(geom, {"distance": distance})
 
-        lines = lines.zip(distances).map(set_dist_attr)
-        lines = ee.FeatureCollection(lines)
+    lines = lines.zip(distances).map(set_dist_attr)
+    lines = ee.FeatureCollection(lines)
 
-        transect = image.reduceRegions(
-            **{
-                "collection": ee.FeatureCollection(lines),
-                "reducer": reducer,
-                "scale": scale,
-                "crs": crs,
-                "crsTransform": crsTransform,
-                "tileScale": tileScale,
-            }
-        )
+    transect = image.reduceRegions(
+        **{
+            "collection": ee.FeatureCollection(lines),
+            "reducer": reducer,
+            "scale": scale,
+            "crs": crs,
+            "crsTransform": crsTransform,
+            "tileScale": tileScale,
+        }
+    )
 
-        if to_pandas:
-            return ee_to_df(transect)
-        return transect
-
-    except Exception as e:
-        raise Exception(e)
+    if to_pandas:
+        return ee_to_df(transect)
+    return transect
 
 
 def random_sampling(
