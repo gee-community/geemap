@@ -144,12 +144,7 @@ def ee_export_image(
     if format != "ZIPPED_GEO_TIFF":
         params["format"] = format
 
-    try:
-        url = ee_object.getDownloadURL(params)
-    except Exception as e:
-        print("An error occurred while downloading.")
-        print(e)
-        return
+    url = ee_object.getDownloadURL(params)
 
     if verbose:
         print(f"Downloading data from {url}\nPlease wait ...")
@@ -243,51 +238,47 @@ def ee_export_image_collection(
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-    try:
-        count = int(ee_object.size().getInfo())
+    count = int(ee_object.size().getInfo())
+    if verbose:
+        print(f"Total number of images: {count}\n")
+
+    if filenames is None:
+        filenames = ee_object.aggregate_array("system:index").getInfo()
+    elif isinstance(filenames, int):
+        filenames = [str(f + filenames) for f in range(0, count)]
+
+    if len(filenames) != count:
+        raise Exception(
+            "The number of filenames must be equal to the number of images."
+        )
+
+    filenames = [str(f) + ".tif" for f in filenames if not str(f).endswith(".tif")]
+
+    for i in range(0, count):
+        image = ee.Image(ee_object.toList(count).get(i))
+        filename = os.path.join(out_dir, filenames[i])
         if verbose:
-            print(f"Total number of images: {count}\n")
-
-        if filenames is None:
-            filenames = ee_object.aggregate_array("system:index").getInfo()
-        elif isinstance(filenames, int):
-            filenames = [str(f + filenames) for f in range(0, count)]
-
-        if len(filenames) != count:
-            raise Exception(
-                "The number of filenames must be equal to the number of images."
-            )
-
-        filenames = [str(f) + ".tif" for f in filenames if not str(f).endswith(".tif")]
-
-        for i in range(0, count):
-            image = ee.Image(ee_object.toList(count).get(i))
-            filename = os.path.join(out_dir, filenames[i])
-            if verbose:
-                print(f"Exporting {i + 1}/{count}: {filename}")
-            ee_export_image(
-                image,
-                filename=filename,
-                scale=scale,
-                crs=crs,
-                crs_transform=crs_transform,
-                region=region,
-                dimensions=dimensions,
-                file_per_band=file_per_band,
-                format=format,
-                unmask_value=unmask_value,
-                timeout=timeout,
-                proxies=proxies,
-            )
-            print("\n")
-
-    except Exception as e:
-        print(e)
+            print(f"Exporting {i + 1}/{count}: {filename}")
+        ee_export_image(
+            image,
+            filename=filename,
+            scale=scale,
+            crs=crs,
+            crs_transform=crs_transform,
+            region=region,
+            dimensions=dimensions,
+            file_per_band=file_per_band,
+            format=format,
+            unmask_value=unmask_value,
+            timeout=timeout,
+            proxies=proxies,
+        )
+        print("\n")
 
 
 def ee_export_image_to_drive(
     image,
-    description="myExportImageTask",
+    description: str = "myExportImageTask",
     folder=None,
     fileNamePrefix=None,
     dimensions=None,
@@ -375,7 +366,7 @@ def ee_export_image_to_drive(
 
 def ee_export_image_to_asset(
     image,
-    description="myExportImageTask",
+    description: str = "myExportImageTask",
     assetId=None,
     pyramidingPolicy=None,
     dimensions=None,
@@ -513,28 +504,25 @@ def ee_export_image_to_cloud_storage(
     if not isinstance(image, ee.Image):
         raise ValueError("Input image must be an instance of ee.Image")
 
-    try:
-        task = ee.batch.Export.image.toCloudStorage(
-            image,
-            description,
-            bucket,
-            fileNamePrefix,
-            dimensions,
-            region,
-            scale,
-            crs,
-            crsTransform,
-            maxPixels,
-            shardSize,
-            fileDimensions,
-            skipEmptyTiles,
-            fileFormat,
-            formatOptions,
-            **kwargs,
-        )
-        task.start()
-    except Exception as e:
-        print(e)
+    task = ee.batch.Export.image.toCloudStorage(
+        image,
+        description,
+        bucket,
+        fileNamePrefix,
+        dimensions,
+        region,
+        scale,
+        crs,
+        crsTransform,
+        maxPixels,
+        shardSize,
+        fileDimensions,
+        skipEmptyTiles,
+        fileFormat,
+        formatOptions,
+        **kwargs,
+    )
+    task.start()
 
 
 def ee_export_image_collection_to_drive(
@@ -604,47 +592,43 @@ def ee_export_image_collection_to_drive(
     if not isinstance(ee_object, ee.ImageCollection):
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
-    try:
-        count = int(ee_object.size().getInfo())
-        print(f"Total number of images: {count}\n")
+    count = int(ee_object.size().getInfo())
+    print(f"Total number of images: {count}\n")
 
-        if (descriptions is not None) and (len(descriptions) != count):
-            raise ValueError(
-                "The number of descriptions is not equal to the number of images."
-            )
+    if (descriptions is not None) and (len(descriptions) != count):
+        raise ValueError(
+            "The number of descriptions is not equal to the number of images."
+        )
 
-        if descriptions is None:
-            descriptions = ee_object.aggregate_array("system:index").getInfo()
+    if descriptions is None:
+        descriptions = ee_object.aggregate_array("system:index").getInfo()
 
-        images = ee_object.toList(count)
+    images = ee_object.toList(count)
 
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
+    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
+        return
 
-        for i in range(0, count):
-            image = ee.Image(images.get(i))
-            description = descriptions[i]
-            ee_export_image_to_drive(
-                image,
-                description,
-                folder,
-                fileNamePrefix,
-                dimensions,
-                region,
-                scale,  # pytype: disable=attribute-error
-                crs,
-                crsTransform,
-                maxPixels,
-                shardSize,
-                fileDimensions,
-                skipEmptyTiles,
-                fileFormat,
-                formatOptions,
-                **kwargs,
-            )
-
-    except Exception as e:
-        print(e)
+    for i in range(0, count):
+        image = ee.Image(images.get(i))
+        description = descriptions[i]
+        ee_export_image_to_drive(
+            image,
+            description,
+            folder,
+            fileNamePrefix,
+            dimensions,
+            region,
+            scale,  # pytype: disable=attribute-error
+            crs,
+            crsTransform,
+            maxPixels,
+            shardSize,
+            fileDimensions,
+            skipEmptyTiles,
+            fileFormat,
+            formatOptions,
+            **kwargs,
+        )
 
 
 def ee_export_image_collection_to_asset(
@@ -697,45 +681,41 @@ def ee_export_image_collection_to_asset(
     if not isinstance(ee_object, ee.ImageCollection):
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
-    try:
-        count = int(ee_object.size().getInfo())
-        print(f"Total number of images: {count}\n")
+    count = int(ee_object.size().getInfo())
+    print(f"Total number of images: {count}\n")
 
-        if (descriptions is not None) and (len(descriptions) != count):
-            print("The number of descriptions is not equal to the number of images.")
-            return
+    if (descriptions is not None) and (len(descriptions) != count):
+        print("The number of descriptions is not equal to the number of images.")
+        return
 
-        if descriptions is None:
-            descriptions = ee_object.aggregate_array("system:index").getInfo()
+    if descriptions is None:
+        descriptions = ee_object.aggregate_array("system:index").getInfo()
 
-        if assetIds is None:
-            assetIds = descriptions
+    if assetIds is None:
+        assetIds = descriptions
 
-        images = ee_object.toList(count)
+    images = ee_object.toList(count)
 
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
+    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
+        return
 
-        for i in range(0, count):
-            image = ee.Image(images.get(i))
-            description = descriptions[i]
-            assetId = assetIds[i]
-            ee_export_image_to_asset(
-                image,
-                description,
-                assetId,
-                pyramidingPolicy,
-                dimensions,
-                region,
-                scale,
-                crs,
-                crsTransform,
-                maxPixels,
-                **kwargs,
-            )
-
-    except Exception as e:
-        print(e)
+    for i in range(0, count):
+        image = ee.Image(images.get(i))
+        description = descriptions[i]
+        assetId = assetIds[i]
+        ee_export_image_to_asset(
+            image,
+            description,
+            assetId,
+            pyramidingPolicy,
+            dimensions,
+            region,
+            scale,
+            crs,
+            crsTransform,
+            maxPixels,
+            **kwargs,
+        )
 
 
 def ee_export_image_collection_to_cloud_storage(
@@ -804,46 +784,42 @@ def ee_export_image_collection_to_cloud_storage(
     if not isinstance(ee_object, ee.ImageCollection):
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
-    try:
-        count = int(ee_object.size().getInfo())
-        print(f"Total number of images: {count}\n")
+    count = int(ee_object.size().getInfo())
+    print(f"Total number of images: {count}\n")
 
-        if (descriptions is not None) and (len(descriptions) != count):
-            print("The number of descriptions is not equal to the number of images.")
-            return
+    if (descriptions is not None) and (len(descriptions) != count):
+        print("The number of descriptions is not equal to the number of images.")
+        return
 
-        if descriptions is None:
-            descriptions = ee_object.aggregate_array("system:index").getInfo()
+    if descriptions is None:
+        descriptions = ee_object.aggregate_array("system:index").getInfo()
 
-        images = ee_object.toList(count)
+    images = ee_object.toList(count)
 
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
+    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
+        return
 
-        for i in range(0, count):
-            image = ee.Image(images.get(i))
-            description = descriptions[i]
-            ee_export_image_to_cloud_storage(
-                image,
-                description,
-                bucket,
-                fileNamePrefix,
-                dimensions,
-                region,
-                scale,
-                crs,
-                crsTransform,
-                maxPixels,
-                shardSize,
-                fileDimensions,
-                skipEmptyTiles,
-                fileFormat,
-                formatOptions,
-                **kwargs,
-            )
-
-    except Exception as e:
-        print(e)
+    for i in range(0, count):
+        image = ee.Image(images.get(i))
+        description = descriptions[i]
+        ee_export_image_to_cloud_storage(
+            image,
+            description,
+            bucket,
+            fileNamePrefix,
+            dimensions,
+            region,
+            scale,
+            crs,
+            crsTransform,
+            maxPixels,
+            shardSize,
+            fileDimensions,
+            skipEmptyTiles,
+            fileFormat,
+            formatOptions,
+            **kwargs,
+        )
 
 
 def ee_export_geojson(
@@ -899,26 +875,20 @@ def ee_export_geojson(
                 return
 
     try:
-        # print('Generating URL ...')
         url = ee_object.getDownloadURL(
             filetype=filetype, selectors=selectors, filename=name
         )
-        # print('Downloading data from {}\nPlease wait ...'.format(url))
-        r = None
         r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         if r.status_code != 200:
             print("An error occurred while downloading. \n Retrying ...")
-            try:
-                new_ee_object = ee_object.map(filter_polygons)
-                print("Generating URL ...")
-                url = new_ee_object.getDownloadURL(
-                    filetype=filetype, selectors=selectors, filename=name
-                )
-                print(f"Downloading data from {url}\nPlease wait ...")
-                r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
-            except Exception as e:
-                print(e)
+            new_ee_object = ee_object.map(filter_polygons)
+            print("Generating URL ...")
+            url = new_ee_object.getDownloadURL(
+                filetype=filetype, selectors=selectors, filename=name
+            )
+            print(f"Downloading data from {url}\nPlease wait ...")
+            r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         with open(filename, "wb") as fd:
             for chunk in r.iter_content(chunk_size=1024):
@@ -1013,17 +983,13 @@ def ee_export_vector(
 
         if r.status_code != 200:
             print("An error occurred while downloading. \n Retrying ...")
-            try:
-                new_ee_object = ee_object.map(filter_polygons)
-                print("Generating URL ...")
-                url = new_ee_object.getDownloadURL(
-                    filetype=filetype, selectors=selectors, filename=name
-                )
-                print(f"Downloading data from {url}\nPlease wait ...")
-                r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
-            except Exception as e:
-                print(e)
-                raise ValueError
+            new_ee_object = ee_object.map(filter_polygons)
+            print("Generating URL ...")
+            url = new_ee_object.getDownloadURL(
+                filetype=filetype, selectors=selectors, filename=name
+            )
+            print(f"Downloading data from {url}\nPlease wait ...")
+            r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
         with open(filename, "wb") as fd:
             for chunk in r.iter_content(chunk_size=1024):
@@ -1034,17 +1000,14 @@ def ee_export_vector(
             print(r.json()["error"]["message"])
         raise ValueError(e)
 
-    try:
-        if filetype == "shp":
-            with zipfile.ZipFile(filename) as z:
-                z.extractall(os.path.dirname(filename))
-            if not keep_zip:
-                os.remove(filename)
-            filename = filename.replace(".zip", ".shp")
-        if verbose:
-            print(f"Data downloaded to {filename}")
-    except Exception as e:
-        raise ValueError(e)
+    if filetype == "shp":
+        with zipfile.ZipFile(filename) as z:
+            z.extractall(os.path.dirname(filename))
+        if not keep_zip:
+            os.remove(filename)
+        filename = filename.replace(".zip", ".shp")
+    if verbose:
+        print(f"Data downloaded to {filename}")
 
 
 def ee_export_vector_to_drive(
@@ -1931,13 +1894,10 @@ def open_image_from_url(
     """
     from PIL import Image
 
-    try:
-        url = get_direct_url(url)
-        response = requests.get(url, timeout=timeout, proxies=proxies)
-        img = Image.open(io.BytesIO(response.content))
-        return img
-    except Exception as e:
-        print(e)
+    url = get_direct_url(url)
+    response = requests.get(url, timeout=timeout, proxies=proxies)
+    img = Image.open(io.BytesIO(response.content))
+    return img
 
 
 def show_image(img_path: str, width: int | None = None, height: int | None = None):
@@ -1948,26 +1908,23 @@ def show_image(img_path: str, width: int | None = None, height: int | None = Non
         width: Width of the image in pixels. Defaults to None.
         height: Height of the image in pixels. Defaults to None.
     """
-    try:
-        out = widgets.Output()
-        out.outputs = ()
-        display(out)
-        with out:
-            if isinstance(img_path, str) and img_path.startswith("http"):
-                file_path = coreutils.download_file(img_path)
-            else:
-                file_path = img_path
-            file = open(file_path, "rb")
-            image = file.read()
-            if (width is None) and (height is None):
-                display(widgets.Image(value=image))
-            elif (width is not None) and (height is not None):
-                display(widgets.Image(value=image, width=width, height=height))
-            else:
-                print("You need set both width and height.")
-                return
-    except Exception as e:
-        print(e)
+    out = widgets.Output()
+    out.outputs = ()
+    display(out)
+    with out:
+        if isinstance(img_path, str) and img_path.startswith("http"):
+            file_path = coreutils.download_file(img_path)
+        else:
+            file_path = img_path
+        file = open(file_path, "rb")
+        image = file.read()
+        if (width is None) and (height is None):
+            display(widgets.Image(value=image))
+        elif (width is not None) and (height is not None):
+            display(widgets.Image(value=image, width=width, height=height))
+        else:
+            print("You need set both width and height.")
+            return
 
 
 def show_html(html: str) -> widgets.HTML:
@@ -1989,11 +1946,8 @@ def show_html(html: str) -> widgets.HTML:
         widget = widgets.HTML(value=content)
         return widget
     else:
-        try:
-            widget = widgets.HTML(value=html)
-            return widget
-        except Exception as e:
-            raise Exception(e)
+        widget = widgets.HTML(value=html)
+        return widget
 
 
 def has_transparency(img) -> bool:
@@ -2330,40 +2284,42 @@ def csv_to_shp(
         in_csv = coreutils.github_raw_url(in_csv)
         in_csv = coreutils.download_file(in_csv, quiet=True, overwrite=True)
 
-    try:
-        points = shp.Writer(out_shp, shapeType=shp.POINT)
-        with open(in_csv, encoding=encoding) as csvfile:
-            csvreader = csv.DictReader(csvfile)
-            header = csvreader.fieldnames
-            [points.field(field) for field in header]
-            for row in csvreader:
-                points.point((float(row[longitude])), (float(row[latitude])))
-                points.record(*tuple([row[f] for f in header]))
+    points = shp.Writer(out_shp, shapeType=shp.POINT)
+    with open(in_csv, encoding=encoding) as csvfile:
+        csvreader = csv.DictReader(csvfile)
+        header = csvreader.fieldnames
+        [points.field(field) for field in header]
+        for row in csvreader:
+            points.point((float(row[longitude])), (float(row[latitude])))
+            points.record(*tuple([row[f] for f in header]))
 
-        out_prj = out_shp.replace(".shp", ".prj")
-        with open(out_prj, "w") as f:
-            prj_str = 'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",SPHEROID["WGS_1984",6378137,298.257223563]],PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]] '
-            f.write(prj_str)
-
-    except Exception as e:
-        raise Exception(e)
+    out_prj = out_shp.replace(".shp", ".prj")
+    with open(out_prj, "w") as f:
+        prj_str = (
+            'GEOGCS["GCS_WGS_1984",DATUM["D_WGS_1984",'
+            'SPHEROID["WGS_1984",6378137,298.257223563]],'
+            'PRIMEM["Greenwich",0],UNIT["Degree",0.0174532925199433]] '
+        )
+        f.write(prj_str)
 
 
 def csv_to_geojson(
-    in_csv,
-    out_geojson=None,
-    latitude="latitude",
-    longitude="longitude",
-    encoding="utf-8",
+    in_csv: str,
+    out_geojson: str | None = None,
+    latitude: str = "latitude",
+    longitude: str = "longitude",
+    encoding: str = "utf-8",
 ):
     """Creates points for a CSV file and exports data as a GeoJSON.
 
     Args:
-        in_csv (str): The file path to the input CSV file.
-        out_geojson (str): The file path to the exported GeoJSON. Default to None.
-        latitude (str, optional): The name of the column containing latitude coordinates. Defaults to "latitude".
-        longitude (str, optional): The name of the column containing longitude coordinates. Defaults to "longitude".
-        encoding (str, optional): The encoding of characters. Defaults to "utf-8".
+        in_csv: The file path to the input CSV file.
+        out_geojson: The file path to the exported GeoJSON. Default to None.
+        latitude: The name of the column containing latitude coordinates. Defaults to
+            "latitude".
+        longitude: The name of the column containing longitude coordinates. Defaults to
+            "longitude".
+        encoding: The encoding of characters. Defaults to "utf-8".
     """
     in_csv = coreutils.github_raw_url(in_csv)
 
@@ -2626,16 +2582,12 @@ def shp_to_ee(in_shp, **kwargs):
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
-    # coreutils.ee_initialize()
-    try:
-        if "encoding" in kwargs:
-            json_data = shp_to_geojson(in_shp, encoding=kwargs.pop("encoding"))
-        else:
-            json_data = shp_to_geojson(in_shp)
-        ee_object = coreutils.geojson_to_ee(json_data)
-        return ee_object
-    except Exception as e:
-        print(e)
+    if "encoding" in kwargs:
+        json_data = shp_to_geojson(in_shp, encoding=kwargs.pop("encoding"))
+    else:
+        json_data = shp_to_geojson(in_shp)
+    ee_object = coreutils.geojson_to_ee(json_data)
+    return ee_object
 
 
 ########################################
@@ -2652,7 +2604,6 @@ def filter_polygons(ftr):
     Returns:
         object: ee.Feature
     """
-    # coreutils.ee_initialize()
     geometries = ftr.geometry().geometries()
     geometries = geometries.map(
         lambda geo: ee.Feature(ee.Geometry(geo)).set("geoType", ee.Geometry(geo).type())
@@ -2668,29 +2619,25 @@ def filter_polygons(ftr):
 
 def ee_to_shp(
     ee_object,
-    filename,
+    filename: str,
     columns=None,
-    sort_columns=False,
+    sort_columns: bool = False,
     **kwargs,
 ):
     """Downloads an ee.FeatureCollection as a shapefile.
 
     Args:
         ee_object (object): ee.FeatureCollection
-        filename (str): The output filepath of the shapefile.
+        filename: The output filepath of the shapefile.
         columns (list, optional): A list of attributes to export. Defaults to None.
-        sort_columns (bool, optional): Whether to sort the columns alphabetically. Defaults to False.
+        sort_columns: Whether to sort the columns alphabetically. Defaults to False.
         kwargs: Additional arguments passed to ee_to_gdf().
-
     """
-    try:
-        if filename.lower().endswith(".shp"):
-            gdf = ee_to_gdf(ee_object, columns, sort_columns, **kwargs)
-            gdf.to_file(filename)
-        else:
-            print("The filename must end with .shp")
-    except Exception as e:
-        print(e)
+    if filename.lower().endswith(".shp"):
+        gdf = ee_to_gdf(ee_object, columns, sort_columns, **kwargs)
+        gdf.to_file(filename)
+    else:
+        print("The filename must end with .shp")
 
 
 def ee_to_csv(
@@ -2711,14 +2658,11 @@ def ee_to_csv(
         sort_columns (bool, optional): Whether to sort the columns alphabetically. Defaults to False.
         kwargs: Additional arguments passed to ee_to_df().
     """
-    try:
-        if filename.lower().endswith(".csv"):
-            df = ee_to_df(ee_object, columns, remove_geom, sort_columns, **kwargs)
-            df.to_csv(filename, index=False)
-        else:
-            print("The filename must end with .csv")
-    except Exception as e:
-        print(e)
+    if filename.lower().endswith(".csv"):
+        df = ee_to_df(ee_object, columns, remove_geom, sort_columns, **kwargs)
+        df.to_csv(filename, index=False)
+    else:
+        print("The filename must end with .csv")
 
 
 def dict_to_csv(data_dict, out_csv, by_row=False, timeout=300, proxies=None):
@@ -2792,16 +2736,11 @@ def get_image_thumbnail(
     vis_params["crs"] = crs
     url = ee_object.getThumbURL(vis_params)
 
-    try:
-        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
-    except Exception as e:
-        print("An error occurred while downloading.")
-        print(e)
+    r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
     if r.status_code != 200:
         print("An error occurred while downloading.")
         print(r.json()["error"]["message"])
-
     else:
         with open(out_img, "wb") as fd:
             for chunk in r.iter_content(chunk_size=1024):
@@ -2844,43 +2783,39 @@ def get_image_collection_thumbnails(
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
 
-    try:
-        count = int(ee_object.size().getInfo())
+    count = int(ee_object.size().getInfo())
+    if verbose:
+        print(f"Total number of images: {count}\n")
+
+    if (names is not None) and (len(names) != count):
+        print("The number of names is not equal to the number of images.")
+        return
+
+    if names is None:
+        names = ee_object.aggregate_array("system:index").getInfo()
+
+    images = ee_object.toList(count)
+
+    for i in range(0, count):
+        image = ee.Image(images.get(i))
+        name = str(names[i])
+        ext = os.path.splitext(name)[1][1:]
+        if ext != format:
+            name = name + "." + format
+        out_img = os.path.join(out_dir, name)
         if verbose:
-            print(f"Total number of images: {count}\n")
+            print(f"Downloading {i+1}/{count}: {name} ...")
 
-        if (names is not None) and (len(names) != count):
-            print("The number of names is not equal to the number of images.")
-            return
-
-        if names is None:
-            names = ee_object.aggregate_array("system:index").getInfo()
-
-        images = ee_object.toList(count)
-
-        for i in range(0, count):
-            image = ee.Image(images.get(i))
-            name = str(names[i])
-            ext = os.path.splitext(name)[1][1:]
-            if ext != format:
-                name = name + "." + format
-            out_img = os.path.join(out_dir, name)
-            if verbose:
-                print(f"Downloading {i+1}/{count}: {name} ...")
-
-            get_image_thumbnail(
-                image,
-                out_img,
-                vis_params,
-                dimensions,
-                region,
-                format,
-                timeout=timeout,
-                proxies=proxies,
-            )
-
-    except Exception as e:
-        print(e)
+        get_image_thumbnail(
+            image,
+            out_img,
+            vis_params,
+            dimensions,
+            region,
+            format,
+            timeout=timeout,
+            proxies=proxies,
+        )
 
 
 def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat", decimal=2):
@@ -2994,42 +2929,38 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         print("Band names must be a str or list")
         return
 
-    try:
-        projection = ee.Projection(crs, transform, transformWkt)
-        coords = ee.Image.pixelCoordinates(projection).floor().int32()
-        x = coords.select("x")
-        y = coords.select("y")
-        s = np_array.shape
-        if len(s) < 3:
-            dimx = s[0]
-            dimy = s[1]
-        else:
-            dimx = s[1]
-            dimy = s[2]
-            dimz = s[0]
+    projection = ee.Projection(crs, transform, transformWkt)
+    coords = ee.Image.pixelCoordinates(projection).floor().int32()
+    x = coords.select("x")
+    y = coords.select("y")
+    s = np_array.shape
+    if len(s) < 3:
+        dimx = s[0]
+        dimy = s[1]
+    else:
+        dimx = s[1]
+        dimy = s[2]
+        dimz = s[0]
 
-        coord_mask = x.gte(0).And(y.gte(0)).And(x.lt(dimx)).And(y.lt(dimy))
-        coords = coords.updateMask(coord_mask)
+    coord_mask = x.gte(0).And(y.gte(0)).And(x.lt(dimx)).And(y.lt(dimy))
+    coords = coords.updateMask(coord_mask)
 
-        def list_to_ee(a_list):
-            ee_data = ee.Array(a_list)
-            image = ee.Image(ee_data).arrayGet(coords)
-            return image
-
-        if len(s) < 3:
-            image = list_to_ee(np_array.tolist())
-        else:
-            image = list_to_ee(np_array[0].tolist())
-            for z in np.arange(1, dimz):
-                image = image.addBands(list_to_ee(np_array[z].tolist()))
-
-        if band_names:
-            image = image.rename(band_names)
-
+    def list_to_ee(a_list):
+        ee_data = ee.Array(a_list)
+        image = ee.Image(ee_data).arrayGet(coords)
         return image
 
-    except Exception as e:
-        print(e)
+    if len(s) < 3:
+        image = list_to_ee(np_array.tolist())
+    else:
+        image = list_to_ee(np_array[0].tolist())
+        for z in np.arange(1, dimz):
+            image = image.addBands(list_to_ee(np_array[z].tolist()))
+
+    if band_names:
+        image = image.rename(band_names)
+
+    return image
 
 
 def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
@@ -3052,12 +2983,9 @@ def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
     if bands is not None:
         kwargs["bandIds"] = bands
 
-    try:
-        struct_array = ee.data.computePixels(kwargs)
-        array = np.dstack([struct_array[band] for band in struct_array.dtype.names])
-        return array
-    except Exception as e:
-        raise Exception(e)
+    struct_array = ee.data.computePixels(kwargs)
+    array = np.dstack([struct_array[band] for band in struct_array.dtype.names])
+    return array
 
 
 def ee_to_xarray(
@@ -3195,12 +3123,15 @@ def ee_to_xarray(
             # If already initialized, get the current project and reinitialize
             # to switch to high-volume endpoint (or custom opt_url)
             try:
+                # TODO: Stop using a private interface.
                 state = ee.data._get_state()
                 current_project = getattr(state, "cloud_api_user_project", None)
             except Exception as e:
                 raise RuntimeError(
-                    f"Failed to access Earth Engine internal state for current project: {e}\n"
-                    "Please provide the 'project' parameter explicitly or ensure Earth Engine is properly initialized."
+                    "Failed to access Earth Engine internal state for "
+                    f"current project: {e}\n"
+                    "Please provide the 'project' parameter explicitly or "
+                    "ensure Earth Engine is properly initialized."
                 )
 
             # Use current_project if available, otherwise use provided project
@@ -3277,35 +3208,27 @@ def download_ee_video(collection, video_args, out_gif, timeout=300, proxies=None
         roi = video_args["region"]
 
         if not isinstance(roi, ee.Geometry):
-            try:
-                roi = roi.geometry()
-            except Exception as e:
-                print("Could not convert the provided roi to ee.Geometry")
-                print(e)
-                return
+            roi = roi.geometry()
 
         video_args["region"] = roi
     if "dimensions" not in video_args:
         video_args["dimensions"] = 768
 
-    try:
-        print("Generating URL...")
-        url = collection.getVideoThumbURL(video_args)
+    print("Generating URL...")
+    url = collection.getVideoThumbURL(video_args)
 
-        print(f"Downloading GIF image from {url}\nPlease wait ...")
-        r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
+    print(f"Downloading GIF image from {url}\nPlease wait ...")
+    r = requests.get(url, stream=True, timeout=timeout, proxies=proxies)
 
-        if r.status_code != 200:
-            print("An error occurred while downloading.")
-            print(r.json()["error"]["message"])
-            return
-        else:
-            with open(out_gif, "wb") as fd:
-                for chunk in r.iter_content(chunk_size=1024):
-                    fd.write(chunk)
-            print(f"The GIF image has been saved to: {out_gif}")
-    except Exception as e:
-        print(e)
+    if r.status_code != 200:
+        print("An error occurred while downloading.")
+        print(r.json()["error"]["message"])
+        return
+    else:
+        with open(out_gif, "wb") as fd:
+            for chunk in r.iter_content(chunk_size=1024):
+                fd.write(chunk)
+        print(f"The GIF image has been saved to: {out_gif}")
 
 
 def screen_capture(filename, monitor=1):
@@ -3325,13 +3248,9 @@ def screen_capture(filename, monitor=1):
         print("The monitor number must be an integer.")
         return
 
-    try:
-        with mss() as sct:
-            sct.shot(output=filename, mon=monitor)
-            return filename
-
-    except Exception as e:
-        print(e)
+    with mss() as sct:
+        sct.shot(output=filename, mon=monitor)
+        return filename
 
 
 ########################################
@@ -3339,31 +3258,27 @@ def screen_capture(filename, monitor=1):
 ########################################
 
 
-def api_docs():
+def api_docs() -> None:
     """Open a browser and navigate to the geemap API documentation."""
     url = "https://geemap.org/geemap"
     webbrowser.open_new_tab(url)
 
 
-def show_youtube(id="h0pz3S6Tvx0"):
+def show_youtube(id: str = "h0pz3S6Tvx0") -> None:
     """Displays a YouTube video within Jupyter notebooks.
 
     Args:
-        id (str, optional): Unique ID of the video. Defaults to 'h0pz3S6Tvx0'.
+        id: Unique ID of the video. Defaults to 'h0pz3S6Tvx0'.
 
     """
     if "/" in id:
         id = id.split("/")[-1]
 
-    try:
-        out = widgets.Output(layout={"width": "815px"})
-        # layout={'border': '1px solid black', 'width': '815px'})
-        out.outputs = ()
-        display(out)
-        with out:
-            display(YouTubeVideo(id, width=800, height=450))
-    except Exception as e:
-        print(e)
+    out = widgets.Output(layout={"width": "815px"})
+    out.outputs = ()
+    display(out)
+    with out:
+        display(YouTubeVideo(id, width=800, height=450))
 
 
 def create_colorbar(
@@ -3714,21 +3629,18 @@ def minimum_bounding_box(geojson):
         tuple: Returns a tuple containing the minimum bounding box in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
     """
     coordinates = []
-    try:
-        if "geometry" in geojson.keys():
-            coordinates = geojson["geometry"]["coordinates"][0]
-        else:
-            coordinates = geojson["coordinates"][0]
-        lower_left = min([x[1] for x in coordinates]), min(
-            [x[0] for x in coordinates]
-        )  # (lat, lon)
-        upper_right = max([x[1] for x in coordinates]), max(
-            [x[0] for x in coordinates]
-        )  # (lat, lon)
-        bounds = (lower_left, upper_right)
-        return bounds
-    except Exception as e:
-        raise Exception(e)
+    if "geometry" in geojson.keys():
+        coordinates = geojson["geometry"]["coordinates"][0]
+    else:
+        coordinates = geojson["coordinates"][0]
+    lower_left = min([x[1] for x in coordinates]), min(
+        [x[0] for x in coordinates]
+    )  # (lat, lon)
+    upper_right = max([x[1] for x in coordinates]), max(
+        [x[0] for x in coordinates]
+    )  # (lat, lon)
+    bounds = (lower_left, upper_right)
+    return bounds
 
 
 def geocode(location, max_rows=10, reverse=False):
@@ -3764,41 +3676,36 @@ def geocode(location, max_rows=10, reverse=False):
             return None
 
     else:
-        try:
-            if "," in location:
-                latlon = [float(x) for x in location.split(",")]
-            elif " " in location:
-                latlon = [float(x) for x in location.split(" ")]
-            else:
-                return
-            g = geocoder.arcgis(latlon, method="reverse")
-            locations = []
-            addresses = set()
+        if "," in location:
+            latlon = [float(x) for x in location.split(",")]
+        elif " " in location:
+            latlon = [float(x) for x in location.split(" ")]
+        else:
+            return
+        g = geocoder.arcgis(latlon, method="reverse")
+        locations = []
+        addresses = set()
 
-            for result in g:
-                address = result.address
-                if address not in addresses:
-                    addresses.add(address)
-                    locations.append(result)
+        for result in g:
+            address = result.address
+            if address not in addresses:
+                addresses.add(address)
+                locations.append(result)
 
-            if len(locations) > 0:
-                return locations
-            else:
-                return None
-
-        except Exception as e:
-            print(e)
+        if len(locations) > 0:
+            return locations
+        else:
             return None
 
 
-def is_latlon_valid(location):
+def is_latlon_valid(location: str) -> bool:
     """Checks whether a pair of coordinates is valid.
 
     Args:
-        location (str): A pair of latlon coordinates separated by comma or space.
+        location: A pair of latlon coordinates separated by comma or space.
 
     Returns:
-        bool: Returns True if valid.
+        Returns True if valid.
     """
     latlon = []
     if "," in location:
@@ -3807,18 +3714,20 @@ def is_latlon_valid(location):
         latlon = [float(x) for x in location.split(" ")]
     else:
         print(
-            "The coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3"
+            "The coordinates should be numbers only and separated by comma or space, "
+            "such as 40.2, -100.3"
         )
         return False
 
     try:
         lat, lon = float(latlon[0]), float(latlon[1])
-        if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
-            return True
-        else:
-            return False
-    except Exception as e:
+    except ValueError as e:
         print(e)
+        return False
+
+    if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
+        return True
+    else:
         return False
 
 
