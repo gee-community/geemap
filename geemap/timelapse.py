@@ -1293,9 +1293,7 @@ def naip_timelapse(
         end_year: The end year of the timeseries. It must be formatted like this:
             'YYYY'. Defaults to None, which will use the current year.
         out_gif: The output gif file path. Defaults to None.
-
-        bands (list, optional): A list of band names to use in the timelapse. Defaults
-            to None.
+        bands: A list of band names to use in the timelapse. Defaults to None.
         palette (list, optional): A list of colors to render a single-band image in the
             timelapse. Defaults to None.
         vis_params (dict, optional): A dictionary of visualization parameters to use in
@@ -1317,7 +1315,7 @@ def naip_timelapse(
         title_xy (tuple, optional): Lower left corner of the title. It can be formatted
             like this: (10, 10) or ('15%', '25%'). Defaults to None.
         add_text: Whether to add animated text to the timelapse. Defaults to True.
-        title_xy (tuple, optional): Lower left corner of the text sequency. It can be
+        text_xy (tuple, optional): Lower left corner of the text sequency. It can be
             formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         text_sequence (int, str, list, optional): Text to be drawn. It can be an integer
             number, a string, or a list of strings. Defaults to None.
