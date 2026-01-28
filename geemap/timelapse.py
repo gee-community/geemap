@@ -370,30 +370,39 @@ def add_text_to_gif(
     out_gif: str,
     xy=None,
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
-    font_color="#000000",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    duration=100,
-    loop=0,
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
+    font_color: str = "#000000",
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    duration: float = 100,
+    loop: int = 0,
 ) -> None:
     """Adds animated text to a GIF image.
 
     Args:
         in_gif: The file path to the input GIF image.
         out_gif: The file path to the output GIF image.
-        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        duration (int, optional): controls how long each frame will be displayed for, in milliseconds. It is the inverse of the frame rate. Setting it to 100 milliseconds gives 10 frames per second. You can decrease the duration to give a smoother animation. Defaults to 100.
-        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like
+            this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer
+            number, a string, or a list of strings. Defaults to None.
+        font_type: Font type. Defaults to "arial.ttf".
+        font_size: Font size. Defaults to 20.
+        font_color: Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255,
+            127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar: Whether to add a progress bar at the bottom of the
+            GIF. Defaults to True.
+        progress_bar_color: Color for the progress bar. Defaults to 'white'.
+        progress_bar_height: Height of the progress bar. Defaults to 5.
+        duration: controls how long each frame will be displayed for, in
+            milliseconds. It is the inverse of the frame rate. Setting it to 100
+            milliseconds gives 10 frames per second. You can decrease the duration to
+            give a smoother animation. Defaults to 100.
+        loop: controls how many times the animation repeats. The default, 1, means that
+            the animation will play once and then stop (displaying the last frame). A
+            value of 0 means that the animation will repeat forever. Defaults to 0.
     """
     warnings.simplefilter("ignore")
 
@@ -1245,67 +1254,90 @@ def naip_timeseries(
 
 def naip_timelapse(
     roi,
-    start_year=2003,
-    end_year=None,
-    out_gif=None,
-    bands=None,
+    start_year: int | str = 2003,
+    end_year: int | str | None = None,
+    out_gif: str | None = None,
+    bands: list[str] | None = None,
     palette=None,
     vis_params=None,
     dimensions=768,
-    frames_per_second=3,
-    crs="EPSG:3857",
+    frames_per_second: int = 3,
+    crs: str = "EPSG:3857",
     overlay_data=None,
-    overlay_color="black",
-    overlay_width=1,
-    overlay_opacity=1.0,
-    title=None,
+    overlay_color: str = "black",
+    overlay_width: int = 1,
+    overlay_opacity: float = 1.0,
+    title: str | None = None,
     title_xy=("2%", "90%"),
-    add_text=True,
+    add_text: bool = True,
     text_xy=("2%", "2%"),
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
     font_color="white",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    loop=0,
-    mp4=False,
-    fading=False,
-    step=1,
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    loop: int | None = 0,
+    mp4: bool = False,
+    fading: bool | int = False,
+    step: int = 1,
 ):
     """Create a timelapse from NAIP imagery.
 
     Args:
-        roi (ee.Geometry): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
-        start_year (int | str, optional): The start year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to 2003.
-        end_year (int | str, optional): The end year of the timeseries. It must be formatted like this: 'YYYY'. Defaults to None, which will use the current year.
-        out_gif (str): The output gif file path. Defaults to None.
-        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
-        palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
-        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
+        roi (ee.Geometry): The region to use to filter the collection of images. It must
+            be an ee.Geometry object. Defaults to None.
+        start_year: The start year of the timeseries. It must be formatted like this:
+            'YYYY'. Defaults to 2003.
+        end_year: The end year of the timeseries. It must be formatted like this:
+            'YYYY'. Defaults to None, which will use the current year.
+        out_gif: The output gif file path. Defaults to None.
+
+        bands (list, optional): A list of band names to use in the timelapse. Defaults
+            to None.
+        palette (list, optional): A list of colors to render a single-band image in the
+            timelapse. Defaults to None.
+        vis_params (dict, optional): A dictionary of visualization parameters to use in
+            the timelapse. Defaults to None. See more at
+            https://developers.google.com/earth-engine/guides/image_visualization.
+        dimensions (int, optional): a number or pair of numbers (in format
+            'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If
+            only one number is passed, it is used as the maximum, and the other
+            dimension is computed by proportional scaling. Defaults to 768.
         frames_per_second (int, optional): Animation speed. Defaults to 10.
-        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
-        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        title (str, optional): The title of the timelapse. Defaults to None.
-        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
-        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
-        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
+        crs: The coordinate reference system to use. Defaults to "EPSG:3857".
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on
+            the timelapse. Defaults to None.
+        overlay_color: Color for the overlay data. Can be any color name or hex color
+            code. Defaults to 'black'.
+        overlay_width: Width of the overlay. Defaults to 1.
+        overlay_opacity: Opacity of the overlay. Defaults to 1.0.
+        title: The title of the timelapse. Defaults to None.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted
+            like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        add_text: Whether to add animated text to the timelapse. Defaults to True.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be
+            formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer
+            number, a string, or a list of strings. Defaults to None.
+        font_type: Font type. Defaults to "arial.ttf".
+        font_size: Font size. Defaults to 20.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb
+            tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to
+            '#000000'.
+        add_progress_bar: Whether to add a progress bar at the bottom of the
+            GIF. Defaults to True.
+        progress_bar_color: Color for the progress bar. Defaults to 'white'.
+        progress_bar_height: Height of the progress bar. Defaults to 5.
+        loop: Controls how many times the animation repeats. The default, 1, means that
+            the animation will play once and then stop (displaying the last frame). A
+            value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4: Whether to create an mp4 file. Defaults to False.
+        fading: If True, add fading effect to the timelapse. Defaults to False, no
+            fading. To add fading effect, set it to True (1 second fading duration) or
+            to an integer value (fading duration).
+        step: The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
         str: File path to the timelapse gif.
