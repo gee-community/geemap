@@ -3698,14 +3698,14 @@ def geocode(location, max_rows=10, reverse=False):
             return None
 
 
-def is_latlon_valid(location: str) -> bool:
+def is_latlon_valid(location):
     """Checks whether a pair of coordinates is valid.
 
     Args:
-        location: A pair of latlon coordinates separated by comma or space.
+        location (str): A pair of latlon coordinates separated by comma or space.
 
     Returns:
-        Returns True if valid.
+        bool: Returns True if valid.
     """
     latlon = []
     if "," in location:
@@ -3714,20 +3714,18 @@ def is_latlon_valid(location: str) -> bool:
         latlon = [float(x) for x in location.split(" ")]
     else:
         print(
-            "The coordinates should be numbers only and separated by comma or space, "
-            "such as 40.2, -100.3"
+            "The coordinates should be numbers only and separated by comma or space, such as 40.2, -100.3"
         )
         return False
 
     try:
         lat, lon = float(latlon[0]), float(latlon[1])
-    except ValueError as e:
+        if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
+            return True
+        else:
+            return False
+    except Exception as e:
         print(e)
-        return False
-
-    if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
-        return True
-    else:
         return False
 
 
