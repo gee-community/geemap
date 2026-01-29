@@ -3711,8 +3711,8 @@ def minimum_bounding_box(geojson):
     upper_right = max([x[1] for x in coordinates]), max(
         [x[0] for x in coordinates]
     )  # (lat, lon)
-    bounds = (lower_left, upper_right)
-    return bounds
+
+    return lower_left, upper_right
 
 
 def geocode(location, max_rows=10, reverse=False):
