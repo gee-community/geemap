@@ -1986,11 +1986,9 @@ def show_html(html: str) -> widgets.HTML:
         with open(html) as f:
             content = f.read()
 
-        widget = widgets.HTML(value=content)
-        return widget
+        return widgets.HTML(value=content)
     else:
-        widget = widgets.HTML(value=html)
-        return widget
+        return widgets.HTML(value=html)
 
 
 def has_transparency(img) -> bool:
@@ -3046,8 +3044,7 @@ def ee_to_numpy(ee_object, region=None, scale=None, bands=None, **kwargs):
         kwargs["bandIds"] = bands
 
     struct_array = ee.data.computePixels(kwargs)
-    array = np.dstack([struct_array[band] for band in struct_array.dtype.names])
-    return array
+    return np.dstack([struct_array[band] for band in struct_array.dtype.names])
 
 
 def ee_to_xarray(
