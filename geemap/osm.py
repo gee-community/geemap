@@ -13,6 +13,12 @@ found at https://wiki.openstreetmap.org/wiki/Map_features
 # *******************************************************************************#
 
 from typing import Any
+import webbrowser
+
+try:
+    import osmnx as ox
+except ImportError:
+    pass
 
 
 def osm_gdf_from_address(address: str, tags: dict[str, Any], dist: int = 1000):
@@ -36,10 +42,7 @@ def osm_gdf_from_address(address: str, tags: dict[str, Any], dist: int = 1000):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    import osmnx as ox
-
-    gdf = ox.features.features_from_address(address, tags, dist)
-    return gdf
+    return ox.features.features_from_address(address, tags, dist)
 
 
 def osm_shp_from_address(
@@ -120,15 +123,14 @@ def osm_gdf_from_place(query, tags: dict[str, Any], which_result: int | None = N
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    import osmnx as ox
-
     ox.config(use_cache=True, log_console=True)  # pytype: disable=module-attr
 
-    gdf = ox.features.features_from_place(query, tags, which_result=which_result)
-    return gdf
+    return ox.features.features_from_place(query, tags, which_result=which_result)
 
 
-def osm_shp_from_place(query, tags, filepath, which_result=None):
+def osm_shp_from_place(
+    query, tags: dict[str, Any], filepath: str, which_result: int | None = None
+) -> None:
     """Download OSM entities within boundaries of geocodable place(s) as a shapefile.
 
     Args:
@@ -153,12 +155,17 @@ def osm_shp_from_place(query, tags, filepath, which_result=None):
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_place(query, tags, filepath=None, which_result=None):
+def osm_geojson_from_place(
+    query,
+    tags: dict[str, Any],
+    filepath: str | None = None,
+    which_result: int | None = None,
+):
     """Download OSM entities within boundaries of geocodable place(s) as a GeoJSON.
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -168,8 +175,8 @@ def osm_geojson_from_place(query, tags, filepath=None, which_result=None):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath (str): File path to the output shapefile.
-        which_result (int, optional): Which geocoding result to use. if None,
+        filepath: File path to the output shapefile.
+        which_result: Which geocoding result to use. if None,
             auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
             one. to get the top match regardless of geometry type, set
             which_result=1. Defaults to None.
@@ -177,7 +184,6 @@ def osm_geojson_from_place(query, tags, filepath=None, which_result=None):
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
     """
-
     gdf = osm_gdf_from_place(query, tags, which_result)
     if filepath is not None:
         gdf.to_file(filepath, driver="GeoJSON")
@@ -185,12 +191,14 @@ def osm_geojson_from_place(query, tags, filepath=None, which_result=None):
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_point(center_point, tags, dist=1000):
+def osm_gdf_from_point(
+    center_point: tuple[float, float], tags: dict[str, Any], dist: int = 1000
+):
     """Create GeoDataFrame of OSM entities within some distance N, S, E, W of a point.
 
     Args:
         center_point (tuple): The (lat, lng) center point around which to get the geometries.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -200,15 +208,12 @@ def osm_gdf_from_point(center_point, tags, dist=1000):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        dist (int, optional): Distance in meters. Defaults to 1000.
+        dist: Distance in meters. Defaults to 1000.
 
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    import osmnx as ox
-
-    gdf = ox.features.features_from_point(center_point, tags, dist)
-    return gdf
+    return ox.features.features_from_point(center_point, tags, dist)
 
 
 def osm_shp_from_point(
@@ -238,13 +243,17 @@ def osm_shp_from_point(
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_point(center_point, tags, filepath=None, dist=1000):
+def osm_geojson_from_point(
+    center_point: tuple[float, float],
+    tags: dict[str, Any],
+    filepath: str | None = None,
+    dist: int = 1000,
+):
     """Download OSM entities within some distance N, S, E, W of point as a GeoJSON.
 
     Args:
-        center_point (tuple): The (lat, lng) center point around which to get the
-            geometries.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        center_point: The (lat, lng) center point around which to get the geometries.
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -254,8 +263,8 @@ def osm_geojson_from_point(center_point, tags, filepath=None, dist=1000):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath (str): File path to the output shapefile.
-        dist (int, optional): Distance in meters. Defaults to 1000.
+        filepath: File path to the output shapefile.
+        dist: Distance in meters. Defaults to 1000.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
@@ -267,7 +276,7 @@ def osm_geojson_from_point(center_point, tags, filepath=None, dist=1000):
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_polygon(polygon, tags):
+def osm_gdf_from_polygon(polygon, tags: dict[str, Any]):
     """Create GeoDataFrame of OSM entities within boundaries of a (multi)polygon.
 
     Args:
@@ -287,19 +296,16 @@ def osm_gdf_from_polygon(polygon, tags):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    import osmnx as ox
-
-    gdf = ox.features.features_from_polygon(polygon, tags)
-    return gdf
+    return ox.features.features_from_polygon(polygon, tags)
 
 
-def osm_shp_from_polygon(polygon, tags, filepath):
+def osm_shp_from_polygon(polygon, tags: dict[str, Any], filepath: str) -> None:
     """Download OSM entities within boundaries of a (multi)polygon as a shapefile.
 
     Args:
         polygon (shapely.geometry.Polygon | shapely.geometry.MultiPolygon): Geographic
             boundaries to fetch geometries within
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -309,19 +315,21 @@ def osm_shp_from_polygon(polygon, tags, filepath):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath (str): File path to the output shapefile.
+        filepath: File path to the output shapefile.
     """
     gdf = osm_gdf_from_polygon(polygon, tags)
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_polygon(polygon, tags, filepath=None):
+def osm_geojson_from_polygon(
+    polygon, tags: dict[str, Any], filepath: str | None = None
+):
     """Download OSM entities within boundaries of a (multi)polygon as a GeoJSON.
 
     Args:
         polygon (shapely.geometry.Polygon | shapely.geometry.MultiPolygon): Geographic
             boundaries to fetch geometries within
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -331,7 +339,7 @@ def osm_geojson_from_polygon(polygon, tags, filepath=None):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath (str, optional): File path to the output GeoJSON.
+        filepath: File path to the output GeoJSON.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
@@ -343,15 +351,17 @@ def osm_geojson_from_polygon(polygon, tags, filepath=None):
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_bbox(north, south, east, west, tags):
+def osm_gdf_from_bbox(
+    north: float, south: float, east: float, west: float, tags: dict[str, Any]
+):
     """Create a GeoDataFrame of OSM entities within a N, S, E, W bounding box.
 
     Args:
-        north (float): Northern latitude of bounding box.
-        south (float): Southern latitude of bounding box.
-        east (float): Eastern longitude of bounding box.
-        west (float): Western longitude of bounding box.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        north: Northern latitude of bounding box.
+        south: Southern latitude of bounding box.
+        east: Eastern longitude of bounding box.
+        west: Western longitude of bounding box.
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -365,38 +375,56 @@ def osm_gdf_from_bbox(north, south, east, west, tags):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    import osmnx as ox
-
-    gdf = ox.features.features_from_bbox(
-        north, south, east, west, tags
-    )  # pytype: disable=wrong-arg-count
-    return gdf
+    return ox.features.features_from_bbox((north, south, east, west), tags)
 
 
-def osm_shp_from_bbox(north, south, east, west, tags, filepath):
+def osm_shp_from_bbox(
+    north: float,
+    south: float,
+    east: float,
+    west: float,
+    tags: dict[str, Any],
+    filepath: str,
+) -> None:
     """Download OSM entities within a N, S, E, W bounding box as a shapefile.
 
     Args:
-        north (float): Northern latitude of bounding box.
-        south (float): Southern latitude of bounding box.
-        east (float): Eastern longitude of bounding box.
-        west (float): Western longitude of bounding box.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath (str): File path to the output shapefile.
+        north: Northern latitude of bounding box.
+        south: Southern latitude of bounding box.
+        east: Eastern longitude of bounding box.
+        west: Western longitude of bounding box.
+        tags: Dict of tags used for finding objects in the selected area. Results
+            returned are the union, not intersection of each individual tag. Each result
+            matches at least one given tag. The dict keys should be OSM tags, (e.g.,
+            building, landuse, highway, etc) and the dict values should be either True
+            to retrieve all items with the given tag, or a string to get a single
+            tag-value combination, or a list of strings to get multiple values for the
+            given tag. For example, tags = {‘building’: True} would return all building
+            footprints in the area. tags = {‘amenity’: True, ‘landuse’: [‘retail’,
+            ’commercial’], ‘highway’: ’bus_stop’} would return all amenities,
+            landuse=retail, landuse=commercial, and highway=bus_stop.
+        filepath: File path to the output shapefile.
     """
     gdf = osm_gdf_from_bbox(north, south, east, west, tags)
     gdf.to_file(filepath)
 
 
-def osm_geojson_from_bbox(north, south, east, west, tags, filepath=None):
+def osm_geojson_from_bbox(
+    north: float,
+    south: float,
+    east: float,
+    west: float,
+    tags: dict[str, Any],
+    filepath: str | None = None,
+):
     """Download OSM entities within a N, S, E, W bounding box as a GeoJSON.
 
     Args:
-        north (float): Northern latitude of bounding box.
-        south (float): Southern latitude of bounding box.
-        east (float): Eastern longitude of bounding box.
-        west (float): Western longitude of bounding box.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        north): Northern latitude of bounding box.
+        south: Southern latitude of bounding box.
+        east: Eastern longitude of bounding box.
+        west: Western longitude of bounding box.
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -406,7 +434,7 @@ def osm_geojson_from_bbox(north, south, east, west, tags, filepath=None):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath (str, optional): File path to the output GeoJSON.
+        filepath: File path to the output GeoJSON.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
@@ -418,14 +446,14 @@ def osm_geojson_from_bbox(north, south, east, west, tags, filepath=None):
         return gdf.__geo_interface__
 
 
-def osm_gdf_from_xml(filepath, polygon=None, tags=None):
+def osm_gdf_from_xml(filepath: str, polygon=None, tags: dict[str, Any] | None = None):
     """Create a GeoDataFrame of OSM entities in an OSM-formatted XML file.
 
     Args:
-        filepath (str): File path to file containing OSM XML data
+        filepath: File path to file containing OSM XML data
         polygon (shapely.geometry.Polygon, optional): Optional geographic boundary to
             filter objects. Defaults to None.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -439,58 +467,49 @@ def osm_gdf_from_xml(filepath, polygon=None, tags=None):
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    import osmnx as ox
-
-    gdf = ox.features.features_from_xml(
-        filepath, polygon, tags
-    )  # pytype: disable=wrong-arg-count
-    return gdf
+    return ox.features.features_from_xml(filepath, polygon=polygon, tags=tags)
 
 
 def osm_gdf_from_geocode(
     query,
-    which_result=None,
-    by_osmid=False,
+    which_result: int | None = None,
+    by_osmid: bool = False,
 ):
     """Retrieves place(s) by name or ID from the Nominatim API as a GeoDataFrame.
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        which_result (int, optional): Which geocoding result to use. if None,
+        which_result: Which geocoding result to use. if None,
             auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
             one. to get the top match regardless of geometry type, set
             which_result=1. Defaults to None.
-        by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather
+        by_osmid: If True, handle query as an OSM ID for lookup rather
             than text search. Defaults to False.
 
     Returns:
         GeoDataFrame: A GeoPandas GeoDataFrame.
     """
-    import osmnx as ox
-
-    gdf = ox.geocoder.geocode_to_gdf(
+    return ox.geocoder.geocode_to_gdf(
         query, which_result=which_result, by_osmid=by_osmid
     )
-    return gdf
 
 
 def osm_shp_from_geocode(
     query,
-    filepath,
-    which_result=None,
-    by_osmid=False,
-):
+    filepath: str,
+    which_result: int | None = None,
+    by_osmid: bool = False,
+) -> None:
     """Download place(s) by name or ID from the Nominatim API as a shapefile.
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        filepath (str): File path to the output shapefile.
-        which_result (int, optional): Which geocoding result to use. if None,
-            auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
-            one. to get the top match regardless of geometry type, set
-            which_result=1. Defaults to None.
-        by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather
-            than text search. Defaults to False.
+        filepath: File path to the output shapefile.
+        which_result: Which geocoding result to use. if None, auto-select the first
+            (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
+            match regardless of geometry type, set which_result=1. Defaults to None.
+        by_osmid: If True, handle query as an OSM ID for lookup rather than text
+            search. Defaults to False.
     """
     gdf = osm_gdf_from_geocode(query, which_result, by_osmid)
     gdf.to_file(filepath)
@@ -498,21 +517,20 @@ def osm_shp_from_geocode(
 
 def osm_geojson_from_geocode(
     query,
-    filepath=None,
-    which_result=None,
-    by_osmid=False,
+    filepath: str | None = None,
+    which_result: int | None = None,
+    by_osmid: bool = False,
 ):
     """Download place(s) by name or ID from the Nominatim API as a GeoJSON.
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        filepath (str): File path to the output GeoJSON.
-        which_result (int, optional): Which geocoding result to use. if None,
-            auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
-            one. to get the top match regardless of geometry type, set
-            which_result=1. Defaults to None.
-        by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather
-            than text search. Defaults to False.
+        filepath: File path to the output GeoJSON.
+        which_result: Which geocoding result to use. if None, auto-select the first
+            (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
+            match regardless of geometry type, set which_result=1. Defaults to None.
+        by_osmid: If True, handle query as an OSM ID for lookup rather than text
+            search. Defaults to False.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
@@ -526,6 +544,4 @@ def osm_geojson_from_geocode(
 
 def osm_tags_list() -> None:
     """Open a browser to see all tags of OSM features."""
-    import webbrowser
-
     webbrowser.open_new_tab("https://wiki.openstreetmap.org/wiki/Map_features")
