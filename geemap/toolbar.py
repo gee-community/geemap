@@ -774,7 +774,7 @@ SearchDataGUI = map_widgets.SearchBar
 # ******************************************************************************#
 
 
-def tool_template(m: geemap.Map | None = None, opened: bool = True) -> None:
+def tool_template(m: geemap.Map | None = None, opened: bool = True):
     """Create a toolbar widget.
 
     Args:
