@@ -9,6 +9,7 @@
 
 import base64
 import collections
+from collections.abc import Sequence
 import concurrent.futures
 import contextlib
 import copy
@@ -3715,13 +3716,13 @@ def minimum_bounding_box(geojson):
     return lower_left, upper_right
 
 
-def geocode(location, max_rows=10, reverse=False):
+def geocode(location: str, max_rows: int = 10, reverse: bool = False):
     """Search location by address and lat/lon coordinates.
 
     Args:
-        location (str): Place name or address
-        max_rows (int, optional): Maximum number of records to return. Defaults to 10.
-        reverse (bool, optional): Search place based on coordinates. Defaults to False.
+        location: Place name or address.
+        max_rows: Maximum number of records to return. Defaults to 10.
+        reverse: Search place based on coordinates. Defaults to False.
     Returns:
         list: Returns a list of locations.
     """
@@ -3775,14 +3776,14 @@ def geocode(location, max_rows=10, reverse=False):
             return None
 
 
-def is_latlon_valid(location):
+def is_latlon_valid(location: str) -> bool:
     """Checks whether a pair of coordinates is valid.
 
     Args:
-        location (str): A pair of latlon coordinates separated by comma or space.
+        location: A pair of latlon coordinates separated by comma or space.
 
     Returns:
-        bool: Returns True if valid.
+        Returns True if valid.
     """
     latlon = []
     if "," in location:
@@ -3806,14 +3807,14 @@ def is_latlon_valid(location):
         return False
 
 
-def latlon_from_text(location):
+def latlon_from_text(location: str) -> tuple[float, float] | None:
     """Extracts latlon from text.
 
     Args:
-        location (str): A pair of latlon coordinates separated by comma or space.
+        location: A pair of latlon coordinates separated by comma or space.
 
     Returns:
-        bool: Returns (lat, lon) if valid.
+        Returns (lat, lon) if valid.
     """
     latlon = []
     try:
@@ -3843,19 +3844,23 @@ def latlon_from_text(location):
 
 def search_ee_data(
     keywords,
-    regex=False,
-    source="ee",
+    regex: bool = False,
+    source: str = "ee",
     types=None,
-    keys=["id", "provider", "tags", "title"],
+    keys: list[str] = ["id", "provider", "tags", "title"],
 ):
     """Searches Earth Engine data catalog.
 
     Args:
-        keywords (str | list): Keywords to search for can be id, provider, tag and so on. Split by space if string, e.g. "1 2" becomes ['1','2'].
-        regex (bool, optional): Allow searching for regular expressions. Defaults to false.
-        source (str, optional): Can be 'ee', 'community' or 'all'. Defaults to 'ee'. For more details, see https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
-        types (list, optional): List of valid collection types. Defaults to None so no filter is applied. A possible filter ['image_collection']
-        keys (list, optional): List of metadata fields to search from.  Defaults to ['id','provider','tags','title']
+        keywords (str | list): Keywords to search for can be id, provider, tag and so
+            on. Split by space if string, e.g. "1 2" becomes ['1','2'].
+        regex: Allow searching for regular expressions. Defaults to false.
+        source: Can be 'ee', 'community', or 'all'. Defaults to 'ee'. For more, see
+            https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json.
+        types (list, optional): List of valid collection types. Defaults to None so no
+            filter is applied. A possible filter ['image_collection']
+        keys: List of metadata fields to search from. Defaults to
+            ['id','provider','tags','title']
 
     Returns:
         list: Returns a list of assets.
@@ -3958,11 +3963,11 @@ def ee_data_thumbnail(
     return thumbnail_url
 
 
-def ee_data_html(asset):
+def ee_data_html(asset: dict[str, Any]) -> str | None:
     """Generates HTML from an asset to be used in the HTML widget.
 
     Args:
-        asset (dict): A dictionary containing an Earth Engine asset.
+        asset: A dictionary containing an Earth Engine asset.
 
     Returns:
         str: A string containing HTML.
@@ -4038,13 +4043,17 @@ def ee_data_html(asset):
         print(e)
 
 
-def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
-    """Extracts Earth Engine API documentation from https://developers.google.com/earth-engine/api_docs as a csv file.
+def ee_api_to_csv(
+    outfile: str | None = None, timeout: int = 300, proxies: dict | None = None
+) -> None:
+    """Extracts Earth Engine API documentation.
+
+    Fetches from https://developers.google.com/earth-engine/api_docs as a csv file.
 
     Args:
-        outfile (str, optional): The output file path to a csv file. Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
-        proxies (dict, optional): Proxy settings. Defaults to None.
+        outfile: The output file path to a csv file. Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
+        proxies: Proxy settings. Defaults to None.
     """
     import bs4
 
@@ -4157,11 +4166,11 @@ def ee_api_to_csv(outfile=None, timeout=300, proxies=None):
         print(e)
 
 
-def read_api_csv():
-    """Extracts Earth Engine API from a csv file and returns a dictionary containing information about each function.
+def read_api_csv() -> dict[str, Any]:
+    """Extracts Earth Engine API from a csv file.
 
     Returns:
-        dict: The dictionary containing information about each function, including name,
+        The dictionary containing information about each function, including name,
             description, function form, return type, arguments, html.
     """
     # pytype: disable=attribute-error
@@ -4251,14 +4260,17 @@ def read_api_csv():
     return api_dict
 
 
-def ee_function_tree(name):
-    """Construct the tree structure based on an Earth Engine function. For example, the function "ee.Algorithms.FMask.matchClouds" will return a list ["ee.Algorithms", "ee.Algorithms.FMask", "ee.Algorithms.FMask.matchClouds"]
+def ee_function_tree(name: str) -> list[str] | None:
+    """Construct the tree structure based on an Earth Engine function.
+
+    For example, the function "ee.Algorithms.FMask.matchClouds" will return a list
+    ["ee.Algorithms", "ee.Algorithms.FMask", "ee.Algorithms.FMask.matchClouds"]
 
     Args:
-        name (str): The name of the Earth Engine function
+        name: The name of the Earth Engine function
 
     Returns:
-        list: The list for parent functions.
+        The list for parent functions.
     """
     func_list = []
     try:
@@ -4276,16 +4288,18 @@ def ee_function_tree(name):
         print("The provided function name is invalid.")
 
 
-def build_api_tree(api_dict, output_widget, layout_width="100%"):
+def build_api_tree(api_dict: dict, output_widget, layout_width: str = "100%"):
     """Builds an Earth Engine API tree view.
 
     Args:
-        api_dict (dict): The dictionary containing information about each Earth Engine API function.
+        api_dict: The dictionary containing information about each Earth Engine API
+            function.
         output_widget (object): An Output widget.
-        layout_width (str, optional): The percentage width of the widget. Defaults to '100%'.
+        layout_width: The percentage width of the widget. Defaults to '100%'.
 
     Returns:
-        tuple: Returns a tuple containing two items: a tree Output widget and a tree dictionary.
+        tuple: Returns a tuple containing two items: a tree Output widget and a tree
+        dictionary.
     """
     from ipytree import Node, Tree
 
@@ -4472,7 +4486,7 @@ def ee_search(asset_limit: int = 100):
 
     search_type.observe(search_type_changed, names="value")
 
-    def search_box_callback(text):
+    def search_box_callback(text) -> None:
         if search_type.value == "Docs":
             with tree_widget:
                 if text.value == "":
@@ -4501,13 +4515,12 @@ def ee_search(asset_limit: int = 100):
     search_box.on_submit(search_box_callback)
 
 
-def ee_user_id():
+def ee_user_id() -> str | None:
     """Gets Earth Engine account user id.
 
     Returns:
-        str: A string containing the user id.
+        A string containing the user id.
     """
-    # coreutils.ee_initialize()
     roots = ee.data.getAssetRoots()
     if len(roots) == 0:
         return None
@@ -4517,13 +4530,11 @@ def ee_user_id():
         return user_id
 
 
-def build_asset_tree(limit=100):
+def build_asset_tree(limit: int = 100):
     from ipytree import Node, Tree
     import geeadd.ee_report as geeadd
 
     warnings.filterwarnings("ignore")
-
-    # coreutils.ee_initialize()
 
     tree = Tree(multiple_selection=False)
     tree_dict = {}
@@ -4587,7 +4598,7 @@ def build_asset_tree(limit=100):
             tree_dict[folder] = node
             asset_types[folder] = asset_type
 
-    def import_btn_clicked(b):
+    def import_btn_clicked(b) -> None:
         if path_widget.value != "":
             dataset_uid = "dataset_" + coreutils.random_string(string_length=3)
             layer_name = path_widget.value.split("/")[-1][:-2:]
@@ -4637,17 +4648,17 @@ def build_asset_tree(limit=100):
     return tree, info_widget, tree_dict
 
 
-def build_repo_tree(out_dir=None, name="gee_repos"):
+def build_repo_tree(out_dir: str | None = None, name: str = "gee_repos"):
     """Builds a repo tree for GEE account.
 
     Args:
-        out_dir (str): The output directory for the repos. Defaults to None.
-        name (str, optional): The output name for the repo directory. Defaults to 'gee_repos'.
+        out_dir: The output directory for the repos. Defaults to None.
+        name: The output name for the repo directory. Defaults to 'gee_repos'.
 
     Returns:
-        tuple: Returns a tuple containing a tree widget, an output widget, and a tree dictionary containing nodes.
+        tuple: Returns a tuple containing a tree widget, an output widget, and a tree
+        dictionary containing nodes.
     """
-
     warnings.filterwarnings("ignore")
 
     if out_dir is None:
@@ -4863,13 +4874,13 @@ def file_browser(
 
     save_widget.on_click(on_button_clicked)
 
-    def import_btn_clicked(b):
+    def import_btn_clicked(b) -> None:
         if (text_widget.value != "") and (path_widget.value.endswith(".py")):
             coreutils.create_code_cell(text_widget.value)
 
     import_btn.on_click(import_btn_clicked)
 
-    def search_box_callback(text):
+    def search_box_callback(text) -> None:
         with tree_widget:
             if text.value == "":
                 print("Loading...")
@@ -4884,7 +4895,7 @@ def file_browser(
 
     search_box.on_submit(search_box_callback)
 
-    def handle_file_click(event):
+    def handle_file_click(event) -> None:
         if event["new"]:
             cur_node = event["owner"]
             for key in tree_dict.keys():
@@ -4913,7 +4924,7 @@ def file_browser(
                         return
                     break
 
-    def handle_folder_click(event):
+    def handle_folder_click(event) -> None:
         if event["new"]:
             full_widget.children = [left_widget]
             text_widget.value = ""
@@ -4984,24 +4995,29 @@ def file_browser(
 ########################################
 
 
-def date_sequence(start, end, unit, date_format="YYYY-MM-dd", step=1):
+def date_sequence(
+    start: str, end: str, unit: str, date_format: str = "YYYY-MM-dd", step: int = 1
+):
     """Creates a date sequence.
 
     Args:
-        start (str): The start date, e.g., '2000-01-01'.
-        end (str): The end date, e.g., '2000-12-31'.
-        unit (str): One of 'year', 'quarter', 'month' 'week', 'day', 'hour', 'minute', or 'second'.
-        date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
-        step (int, optional): The step size. Defaults to 1.
+        start: The start date, e.g., '2000-01-01'.
+        end: The end date, e.g., '2000-12-31'.
+        unit: One of 'year', 'quarter', 'month' 'week', 'day', 'hour', 'minute', or
+            'second'.
+        date_format: A pattern, as described at
+            http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults
+            to 'YYYY-MM-dd'.
+        step: The step size. Defaults to 1.
 
     Returns:
         ee.List: A list of date sequence.
     """
 
-    def get_quarter(d):
+    def get_quarter(d: str) -> str:
         return str((int(d[5:7]) - 1) // 3 * 3 + 1).zfill(2)
 
-    def get_monday(d):
+    def get_monday(d: str) -> str:
         date_obj = datetime.datetime.strptime(d, "%Y-%m-%d")
         start_of_week = date_obj - datetime.timedelta(days=date_obj.weekday())
         return start_of_week.strftime("%Y-%m-%d")
@@ -5038,15 +5054,17 @@ def date_sequence(start, end, unit, date_format="YYYY-MM-dd", step=1):
     return date_seq
 
 
-def legend_from_ee(ee_class_table):
-    """Extract legend from an Earth Engine class table on the Earth Engine Data Catalog page
-    such as https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
+def legend_from_ee(ee_class_table: str) -> dict | None:
+    """Extract legend from an Earth Engine class table.
+
+    From the Earth Engine Data Catalog page such as
+    https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1.
 
     Args:
-        ee_class_table (str): An Earth Engine class table with triple quotes.
+        ee_class_table: An Earth Engine class table with triple quotes.
 
     Returns:
-        dict: Returns a legend dictionary that can be used to create a legend.
+        Returns a legend dictionary that can be used to create a legend.
     """
     try:
         ee_class_table = ee_class_table.strip()
@@ -5069,13 +5087,15 @@ def legend_from_ee(ee_class_table):
         print(e)
 
 
-def vis_to_qml(ee_class_table, out_qml):
-    """Create a QGIS Layer Style (.qml) based on an Earth Engine class table from the Earth Engine Data Catalog page
-    such as https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
+def vis_to_qml(ee_class_table: str, out_qml: str) -> None:
+    """Create a QGIS Layer Style (.qml).
+
+    Based on an Earth Engine class table from the Earth Engine Data Catalog page such as
+    https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1.
 
     Args:
-        ee_class_table (str): An Earth Engine class table with triple quotes.
-        out_qml (str): File path to the output QGIS Layer Style (.qml).
+        ee_class_table: An Earth Engine class table with triple quotes.
+        out_qml: File path to the output QGIS Layer Style (.qml).
     """
     # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
@@ -5121,11 +5141,11 @@ def vis_to_qml(ee_class_table, out_qml):
         print(e)
 
 
-def create_nlcd_qml(out_qml):
-    """Create a QGIS Layer Style (.qml) for NLCD data
+def create_nlcd_qml(out_qml: str) -> None:
+    """Create a QGIS Layer Style (.qml) for NLCD data.
 
     Args:
-        out_qml (str): File path to the output qml.
+        out_qml: File path to the output qml.
     """
     # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
@@ -5142,19 +5162,21 @@ def create_nlcd_qml(out_qml):
     shutil.copyfile(qml_template, out_qml)
 
 
-def load_GeoTIFF(URL):
-    """Loads a Cloud Optimized GeoTIFF (COG) as an Image. Only Google Cloud Storage is supported. The URL can be one of the following formats:
+def load_GeoTIFF(URL: str) -> ee.Image:
+    """Loads a Cloud Optimized GeoTIFF (COG) as an Image.
+
+    Only Google Cloud Storage is supported. The URL can be one of the following formats:
+
     Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
 
     Args:
-        URL (str): The Cloud Storage URL of the GeoTIFF to load.
+        URL: The Cloud Storage URL of the GeoTIFF to load.
 
     Returns:
-        ee.Image: an Earth Engine image.
+        An Earth Engine image.
     """
-
     uri = URL.strip()
 
     if uri.startswith("http"):
@@ -5175,23 +5197,23 @@ def load_GeoTIFF(URL):
             f'Invalid GCS URL: {uri}. Expected something of the form "gs://bucket/path/to/object.tif".'
         )
 
-    cloud_image = ee.Image.loadGeoTIFF(uri)
-    return cloud_image
+    return ee.Image.loadGeoTIFF(uri)
 
 
-def load_GeoTIFFs(URLs):
-    """Loads a list of Cloud Optimized GeoTIFFs (COG) as an ImageCollection. URLs is a list of URL, which can be one of the following formats:
+def load_GeoTIFFs(URLs: Sequence[str]) -> ee.ImageCollection:
+    """Loads a list of Cloud Optimized GeoTIFFs (COG) as an ImageCollection.
+
+    URLs is a list of URL, which can be one of the following formats:
     Option 1: gs://pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 2: https://storage.googleapis.com/pdd-stac/disasters/hurricane-harvey/0831/20170831_172754_101c_3B_AnalyticMS.tif
     Option 3: https://storage.cloud.google.com/gcp-public-data-landsat/LC08/01/044/034/LC08_L1TP_044034_20131228_20170307_01_T1/LC08_L1TP_044034_20131228_20170307_01_T1_B5.TIF
 
     Args:
-        URLs (list): A list of Cloud Storage URL of the GeoTIFF to load.
+        URLs: A list of Cloud Storage URL of the GeoTIFF to load.
 
     Returns:
-        ee.ImageCollection: An Earth Engine ImageCollection.
+        An Earth Engine ImageCollection.
     """
-
     if not isinstance(URLs, list):
         raise Exception("The URLs argument must be a list.")
 
@@ -5225,26 +5247,30 @@ def load_GeoTIFFs(URLs):
 
 
 def cog_tile(
-    url,
-    bands=None,
-    titiler_endpoint=None,
-    timeout=300,
-    proxies=None,
+    url: str,
+    bands: list[str] | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
+    proxies: dict | None = None,
     **kwargs,
 ):
     """Get a tile layer from a Cloud Optimized GeoTIFF (COG).
-        Source code adapted from https://developmentseed.org/titiler/examples/notebooks/Working_with_CloudOptimizedGeoTIFF_simple/
+
+    Source code adapted from
+    https://developmentseed.org/titiler/examples/notebooks/Working_with_CloudOptimizedGeoTIFF_simple/
 
     Args:
-        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
-        proxies (dict, optional): Proxies to use. Defaults to None.
+        url: HTTP URL to a COG, e.g.,
+            https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        bands: A list of band names.
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
+        timeout: Timeout in seconds. Defaults to 300.
+        proxies: Proxies to use. Defaults to None.
 
     Returns:
         tuple: Returns the COG Tile layer URL and bounds.
     """
-
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
 
@@ -5291,32 +5317,34 @@ def cog_tile(
 
 
 def cog_mosaic(
-    links,
-    titiler_endpoint=None,
-    username="anonymous",
+    links: list[str],
+    titiler_endpoint: str | None = None,
+    username: str = "anonymous",
     layername=None,
-    overwrite=False,
-    verbose=True,
-    timeout=300,
-    **kwargs,
-):
+    overwrite: bool = False,
+    verbose: bool = True,
+    timeout: int = 300,
+    **unused_kwargs,
+) -> str:
     """Creates a COG mosaic from a list of COG URLs.
 
     Args:
-        links (list): A list containing COG HTTP URLs.
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-        username (str, optional): User name for the titiler endpoint. Defaults to "anonymous".
+        links: A list containing COG HTTP URLs.
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
+        username: User name for the titiler endpoint. Defaults to "anonymous".
         layername ([type], optional): Layer name to use. Defaults to None.
-        overwrite (bool, optional): Whether to overwrite the layer name if existing. Defaults to False.
-        verbose (bool, optional): Whether to print out descriptive information. Defaults to True.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        overwrite: Whether to overwrite the layer name if existing. Defaults to False.
+        verbose: Whether to print out descriptive information. Defaults to True.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Raises:
         Exception: If the COG mosaic fails to create.
 
     Returns:
-        str: The tile URL for the COG mosaic.
+        The tile URL for the COG mosaic.
     """
+    del overwrite  # Unused.
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     if layername is None:
@@ -5325,14 +5353,12 @@ def cog_mosaic(
     if verbose:
         print("Creating COG masaic ...")
 
-    # Create token
     r = requests.post(
         f"{titiler_endpoint}/tokens/create",
         json={"username": username, "scope": ["mosaic:read", "mosaic:create"]},
     ).json()
     token = r["token"]
 
-    # Create mosaic
     requests.post(
         f"{titiler_endpoint}/mosaicjson/create",
         json={
@@ -5355,28 +5381,29 @@ def cog_mosaic(
 
 
 def cog_mosaic_from_file(
-    filepath,
-    skip_rows=0,
-    titiler_endpoint=None,
-    username="anonymous",
+    filepath: str,
+    skip_rows: int = 0,
+    titiler_endpoint: str | None = None,
+    username: str = "anonymous",
     layername=None,
-    overwrite=False,
-    verbose=True,
+    overwrite: bool = False,
+    verbose: bool = True,
     **kwargs,
-):
+) -> str:
     """Creates a COG mosaic from a csv/txt file stored locally for through HTTP URL.
 
     Args:
-        filepath (str): Local path or HTTP URL to the csv/txt file containing COG URLs.
-        skip_rows (int, optional): The number of rows to skip in the file. Defaults to 0.
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-        username (str, optional): User name for the titiler endpoint. Defaults to "anonymous".
+        filepath: Local path or HTTP URL to the csv/txt file containing COG URLs.
+        skip_rows: The number of rows to skip in the file. Defaults to 0.
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
+        username: User name for the titiler endpoint. Defaults to "anonymous".
         layername ([type], optional): Layer name to use. Defaults to None.
-        overwrite (bool, optional): Whether to overwrite the layer name if existing. Defaults to False.
-        verbose (bool, optional): Whether to print out descriptive information. Defaults to True.
+        overwrite: Whether to overwrite the layer name if existing. Defaults to False.
+        verbose: Whether to print out descriptive information. Defaults to True.
 
     Returns:
-        str: The tile URL for the COG mosaic.
+        The tile URL for the COG mosaic.
     """
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     links = []
@@ -5397,13 +5424,15 @@ def cog_mosaic_from_file(
     return mosaic
 
 
-def cog_bounds(url, titiler_endpoint=None, timeout=300):
+def cog_bounds(url: str, titiler_endpoint: str | None = None, timeout: int = 300):
     """Get the bounding box of a Cloud Optimized GeoTIFF (COG).
 
     Args:
-        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a COG, e.g.,
+            https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of values representing [left, bottom, right, top]
@@ -5423,36 +5452,39 @@ def cog_bounds(url, titiler_endpoint=None, timeout=300):
     return bounds
 
 
-def cog_center(url, titiler_endpoint=None):
+def cog_center(url: str, titiler_endpoint: str | None = None):
     """Get the centroid of a Cloud Optimized GeoTIFF (COG).
 
     Args:
-        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
+        url: HTTP URL to a COG, e.g.,
+            https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
 
     Returns:
         tuple: A tuple representing (longitude, latitude)
     """
-
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     bounds = cog_bounds(url, titiler_endpoint)
-    center = ((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
-    return center
+
+    # lat, lon
+    return (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2
 
 
-def cog_bands(url, titiler_endpoint=None, timeout=300):
+def cog_bands(url: str, titiler_endpoint: str | None = None, timeout: int = 300):
     """Get band names of a Cloud Optimized GeoTIFF (COG).
 
     Args:
-        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a COG, e.g.,
+            https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of band names
     """
-
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     r = requests.get(
@@ -5463,25 +5495,25 @@ def cog_bands(url, titiler_endpoint=None, timeout=300):
         timeout=timeout,
     ).json()
 
-    bands = [b[0] for b in r["band_descriptions"]]
-    return bands
+    return [b[0] for b in r["band_descriptions"]]
 
 
-def cog_stats(url, titiler_endpoint=None, timeout=300):
+def cog_stats(url: str, titiler_endpoint: str | None = None, timeout: int = 300):
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
     Args:
-        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a COG, e.g.,
+            https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band statistics.
     """
-
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
-    r = requests.get(
+    return requests.get(
         f"{titiler_endpoint}/cog/statistics",
         params={
             "url": url,
@@ -5489,28 +5521,33 @@ def cog_stats(url, titiler_endpoint=None, timeout=300):
         timeout=timeout,
     ).json()
 
-    return r
 
-
-def cog_info(url, titiler_endpoint=None, return_geojson=False, timeout=300):
+def cog_info(
+    url: str,
+    titiler_endpoint: str | None = None,
+    return_geojson: bool = False,
+    timeout: int = 300,
+):
     """Get band statistics of a Cloud Optimized GeoTIFF (COG).
 
     Args:
-        url (str): HTTP URL to a COG, e.g., https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
-        titiler_endpoint (str, optional): Titiler endpoint. Defaults to "https://giswqs-titiler-endpoint.hf.space".
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a COG, e.g.,
+            https://opendata.digitalglobe.com/events/mauritius-oil-spill/post-event/2020-08-12/105001001F1B5B00/105001001F1B5B00.tif
+        titiler_endpoint: Titiler endpoint. Defaults to
+            "https://giswqs-titiler-endpoint.hf.space".
+        return_geojson: TODO.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band info.
     """
-
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     info = "info"
     if return_geojson:
         info = "info.geojson"
 
-    r = requests.get(
+    return requests.get(
         f"{titiler_endpoint}/cog/{info}",
         params={
             "url": url,
@@ -5518,32 +5555,32 @@ def cog_info(url, titiler_endpoint=None, return_geojson=False, timeout=300):
         timeout=timeout,
     ).json()
 
-    return r
-
 
 def cog_pixel_value(
-    lon,
-    lat,
-    url,
-    bidx=None,
-    titiler_endpoint=None,
-    timeout=300,
+    lon: float,
+    lat: float,
+    url: str,
+    bidx: str | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
     **kwargs,
 ):
     """Get pixel value from COG.
 
     Args:
-        lon (float): Longitude of the pixel.
-        lat (float): Latitude of the pixel.
-        url (str): HTTP URL to a COG, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
-        bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        lon: Longitude of the pixel.
+        lat: Latitude of the pixel.
+        url: HTTP URL to a COG, e.g.,
+            'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
+        bidx: Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+            "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band info.
     """
-
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     url = get_direct_url(url)
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
@@ -5555,12 +5592,6 @@ def cog_pixel_value(
         f"{titiler_endpoint}/cog/point/{lon},{lat}", params=kwargs, timeout=timeout
     ).json()
     bands = cog_bands(url, titiler_endpoint)
-    # if isinstance(titiler_endpoint, str):
-    #     r = requests.get(f"{titiler_endpoint}/cog/point/{lon},{lat}", params=kwargs).json()
-    # else:
-    #     r = requests.get(
-    #         titiler_endpoint.url_for_stac_pixel_value(lon, lat), params=kwargs
-    #     ).json()
 
     if "detail" in r:
         print(r["detail"])
@@ -5572,30 +5603,36 @@ def cog_pixel_value(
 
 
 def stac_tile(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    bands=None,
-    titiler_endpoint=None,
-    timeout=300,
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    assets: str | list[str] | None = None,
+    bands: list[str] | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
     **kwargs,
 ):
     """Get a tile layer from a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5",
+            "SR_B4"].
+        bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space",
+            "https://planetarycomputer.microsoft.com/api/data/v1", "planetary-computer",
+            "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         str: Returns the STAC Tile layer URL.
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -5636,28 +5673,6 @@ def stac_tile(
             kwargs["bidx"] = bands
 
         kwargs["assets"] = assets
-
-        # if ("expression" in kwargs) and ("rescale" not in kwargs):
-        #     stats = stac_stats(
-        #         collection=collection,
-        #         item=item,
-        #         expression=kwargs["expression"],
-        #         titiler_endpoint=titiler_endpoint,
-        #     )
-        #     kwargs[
-        #         "rescale"
-        #     ] = f"{stats[0]['percentile_2']},{stats[0]['percentile_98']}"
-
-        # if ("asset_expression" in kwargs) and ("rescale" not in kwargs):
-        #     stats = stac_stats(
-        #         collection=collection,
-        #         item=item,
-        #         expression=kwargs["asset_expression"],
-        #         titiler_endpoint=titiler_endpoint,
-        #     )
-        #     kwargs[
-        #         "rescale"
-        #     ] = f"{stats[0]['percentile_2']},{stats[0]['percentile_98']}"
 
         if (
             (assets is not None)
@@ -5726,21 +5741,30 @@ def stac_tile(
 
 
 def stac_bounds(
-    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
+    **kwargs,
 ):
     """Get the bounding box of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+            "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of values representing [left, bottom, right, top]
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -15388,25 +15412,27 @@ def pmtiles_style(
     """Generates a Mapbox style JSON for rendering PMTiles data.
 
     Args:
-        url (str): The URL of the PMTiles file.
-        layers (str or list[str], optional): The layers to include in the style. If None, all layers will be included.
-            Defaults to None.
-        cmap (str, optional): The color map to use for styling the layers. Defaults to "Set3".
-        n_class (int, optional): The number of classes to use for styling. If None, the number of classes will be
-            determined automatically based on the color map. Defaults to None.
-        opacity (float, optional): The fill opacity for polygon layers. Defaults to 0.5.
-        circle_radius (int, optional): The circle radius for point layers. Defaults to 5.
-        line_width (int, optional): The line width for line layers. Defaults to 1.
-        attribution (str, optional): The attribution text for the data source. Defaults to "PMTiles".
+        url: The URL of the PMTiles file.
+        layers: The layers to include in the style. If None, all
+            layers will be included.  Defaults to None.
+        cmap: Color map to use for styling layers. Defaults to "Set3".
+        n_class: The number of classes to use for styling. If None,
+            the number of classes will be determined automatically
+            based on the color map. Defaults to None.
+        opacity: The fill opacity for polygon layers. Defaults to 0.5.
+        circle_radius: Circle radius for point layers. Defaults to 5.
+        line_width: The line width for line layers. Defaults to 1.
+        attribution: The attribution text for the data
+            source. Defaults to "PMTiles".
 
     Returns:
         dict: The Mapbox style JSON.
 
     Raises:
         ValueError: If the layers argument is not a string or a list.
-        ValueError: If a layer specified in the layers argument does not exist in the PMTiles file.
+        ValueError: If a layer specified in the layers argument does
+            not exist in the PMTiles file.
     """
-
     if cmap == "Set3":
         palette = [
             "#8dd3c7",
