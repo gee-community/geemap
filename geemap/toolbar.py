@@ -1,5 +1,7 @@
 """Module for dealing with interactive GUIs."""
 
+from __future__ import annotations
+
 # *******************************************************************************#
 # This module contains core features and extra features of the geemap package.   #
 # The Earth Engine team and the geemap community will maintain the core features.#
@@ -8,7 +10,6 @@
 # *******************************************************************************#
 
 from collections.abc import Callable
-from dataclasses import dataclass
 import importlib.resources
 import os
 import pathlib
@@ -52,8 +53,8 @@ class ToolbarItem(anywidget.AnyWidget):
         tooltip: str,
         callback: Callable[[Any, bool, Any], None],
         control: widgets.Widget | None = None,
-        reset=False,
-        active=False,
+        reset: bool = False,
+        active: bool = False,
     ):
         """A togglable, toolbar item.
 
@@ -117,7 +118,7 @@ class Toolbar(anywidget.AnyWidget):
 
     def __init__(
         self,
-        host_map: "geemap.Map",
+        host_map: geemap.Map,
         main_tools: list[ToolbarItem],
         extra_tools: list[ToolbarItem],
     ):
@@ -158,11 +159,11 @@ class Toolbar(anywidget.AnyWidget):
             self.toggle_widget.icon = self._TOGGLE_EXPAND_ICON
 
 
-def inspector_gui(m=None):
+def inspector_gui(m: geemap.Map | None = None):
     """Generates a tool GUI template using ipywidgets.
 
     Args:
-        m (geemap.Map, optional): The leaflet Map object. Defaults to None.
+        m: The leaflet Map object. Defaults to None.
 
     Returns:
         ipywidgets: The tool GUI widget.
@@ -773,11 +774,11 @@ SearchDataGUI = map_widgets.SearchBar
 # ******************************************************************************#
 
 
-def tool_template(m=None, opened: bool = True) -> None:
+def tool_template(m: geemap.Map | None = None, opened: bool = True) -> None:
     """Create a toolbar widget.
 
     Args:
-        m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
+        m: The geemap.Map instance. Defaults to None.
         opened: Whether to open the toolbar. Defaults to True.
     """
 
@@ -950,11 +951,13 @@ def tool_template(m=None, opened: bool = True) -> None:
         return toolbar_widget
 
 
-def tool_header_template(m=None, opened: bool = True, show_close_button: bool = True):
+def tool_header_template(
+    m: geemap.Map | None = None, opened: bool = True, show_close_button: bool = True
+):
     """Create a toolbar widget.
 
     Args:
-        m (geemap.Map, optional): The geemap.Map instance. Defaults to None.
+        m: The geemap.Map instance. Defaults to None.
         opened: Whether to open the toolbar. Defaults to True.
         show_close_button Whether to show the close button. Defaults to True.
     """
@@ -1809,17 +1812,17 @@ def build_toolbox(tools_dict, max_width: str = "1080px", max_height: str = "600p
     return full_widget
 
 
-def timelapse_gui(m=None, basemap: str = "HYBRID"):
+def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     """Creates timelapse animations.
 
     Args:
-        m (geemap.Map, optional): A geemap Map instance. Defaults to None.
+        m: A geemap Map instance. Defaults to None.
         basemap: The basemap to use. Defaults to "HYBRID".
 
     Returns:
         ipywidgets: The interactive GUI.
     """
-    if m is not None and (basemap is not None):
+    if m is not None and basemap is not None:
         m.add_basemap(basemap)
 
     widget_width = "350px"
@@ -2265,11 +2268,11 @@ def timelapse_gui(m=None, basemap: str = "HYBRID"):
         return toolbar_widget
 
 
-def time_slider(m=None):
+def time_slider(m: geemap.Map | None = None):
     """Creates a time slider for visualizing any ee.ImageCollection.
 
     Args:
-        m (geemap.Map, optional): A geemap Map instance. Defaults to None.
+        m: A geemap Map instance. Defaults to None.
 
     Returns:
         ipywidgets: The interactive GUI.
