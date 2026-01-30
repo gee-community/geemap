@@ -3720,7 +3720,7 @@ def geocode(location: str, max_rows: int = 10, reverse: bool = False):
     """Search location by address and lat/lon coordinates.
 
     Args:
-        location: Place name or address
+        location: Place name or address.
         max_rows: Maximum number of records to return. Defaults to 10.
         reverse: Search place based on coordinates. Defaults to False.
     Returns:
@@ -3856,10 +3856,10 @@ def search_ee_data(
             on. Split by space if string, e.g. "1 2" becomes ['1','2'].
         regex: Allow searching for regular expressions. Defaults to false.
         source: Can be 'ee', 'community', or 'all'. Defaults to 'ee'. For more, see
-            https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
+            https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json.
         types (list, optional): List of valid collection types. Defaults to None so no
             filter is applied. A possible filter ['image_collection']
-        keys: List of metadata fields to search from.  Defaults to
+        keys: List of metadata fields to search from. Defaults to
             ['id','provider','tags','title']
 
     Returns:
@@ -4653,7 +4653,7 @@ def build_repo_tree(out_dir: str | None = None, name: str = "gee_repos"):
 
     Args:
         out_dir: The output directory for the repos. Defaults to None.
-        name): The output name for the repo directory. Defaults to 'gee_repos'.
+        name: The output name for the repo directory. Defaults to 'gee_repos'.
 
     Returns:
         tuple: Returns a tuple containing a tree widget, an output widget, and a tree
@@ -5058,13 +5058,13 @@ def legend_from_ee(ee_class_table: str) -> dict | None:
     """Extract legend from an Earth Engine class table.
 
     From the Earth Engine Data Catalog page such as
-    https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
+    https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1.
 
     Args:
         ee_class_table: An Earth Engine class table with triple quotes.
 
     Returns:
-        dict: Returns a legend dictionary that can be used to create a legend.
+        Returns a legend dictionary that can be used to create a legend.
     """
     try:
         ee_class_table = ee_class_table.strip()
@@ -5091,7 +5091,7 @@ def vis_to_qml(ee_class_table: str, out_qml: str) -> None:
     """Create a QGIS Layer Style (.qml).
 
     Based on an Earth Engine class table from the Earth Engine Data Catalog page such as
-    https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1
+    https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1.
 
     Args:
         ee_class_table: An Earth Engine class table with triple quotes.
@@ -5436,7 +5436,6 @@ def cog_bounds(url: str, titiler_endpoint: str | None = None, timeout: int = 300
 
     Returns:
         list: A list of values representing [left, bottom, right, top]
-
     """
 
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
@@ -5469,7 +5468,7 @@ def cog_center(url: str, titiler_endpoint: str | None = None):
     url = get_direct_url(url)
     bounds = cog_bounds(url, titiler_endpoint)
 
-    # (lat, lon)
+    # lat, lon
     return (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2
 
 
