@@ -301,9 +301,77 @@ class CommonTest(unittest.TestCase):
     # TODO: test_local_tile_pixel_value
     # TODO: test_local_tile_vmin_vmax
     # TODO: test_local_tile_bands
-    # TODO: test_bbox_to_geojson
-    # TODO: test_coords_to_geojson
-    # TODO: test_explode
+    def test_bbox_to_geojson(self):
+        """Tests bbox_to_geojson."""
+        bounds = [-10, -20, 10, 20]
+        expected_geojson = {
+            "geometry": {
+                "type": "Polygon",
+                "coordinates": [
+                    [
+                        [-10, 20],
+                        [-10, -20],
+                        [10, -20],
+                        [10, 20],
+                        [-10, 20],
+                    ]
+                ],
+            },
+            "type": "Feature",
+        }
+        self.assertEqual(common.bbox_to_geojson(bounds), expected_geojson)
+        self.assertEqual(common.bbox_to_geojson(tuple(bounds)), expected_geojson)
+
+    def test_coords_to_geojson(self):
+        """Tests coords_to_geojson."""
+        coords = [[-10, -20, 10, 20], [-100, -80, 100, 80]]
+        expected_geojson = {
+            "type": "FeatureCollection",
+            "features": [
+                {
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [-10, 20],
+                                [-10, -20],
+                                [10, -20],
+                                [10, 20],
+                                [-10, 20],
+                            ]
+                        ],
+                    },
+                    "type": "Feature",
+                },
+                {
+                    "geometry": {
+                        "type": "Polygon",
+                        "coordinates": [
+                            [
+                                [-100, 80],
+                                [-100, -80],
+                                [100, -80],
+                                [100, 80],
+                                [-100, 80],
+                            ]
+                        ],
+                    },
+                    "type": "Feature",
+                },
+            ],
+        }
+        self.assertEqual(common.coords_to_geojson(coords), expected_geojson)
+
+    def test_explode(self):
+        """Tests explode."""
+        self.assertEqual(list(common.explode([1.0, 2.0])), [[1.0, 2.0]])
+        self.assertEqual(
+            list(common.explode([[1.0, 2.0], [3.0, 4.0]])), [[1.0, 2.0], [3.0, 4.0]]
+        )
+        self.assertEqual(
+            list(common.explode([[[1.0, 2.0], [3.0, 4.0]]])), [[1.0, 2.0], [3.0, 4.0]]
+        )
+
     # TODO: test_get_bounds
     # TODO: test_get_center
     # TODO: test_image_props
