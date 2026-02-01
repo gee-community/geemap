@@ -135,7 +135,8 @@ def osm_shp_from_place(
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -145,11 +146,12 @@ def osm_shp_from_place(
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath (str): File path to the output shapefile.
-        which_result (int, optional): Which geocoding result to use. if None,
-            auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
-            one. to get the top match regardless of geometry type, set
-            which_result=1. Defaults to None.
+
+        filepath: File path to the output shapefile.
+
+        which_result: Which geocoding result to use. if None, auto-select the first
+            (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
+            match regardless of geometry type, set which_result=1. Defaults to None.
     """
     gdf = osm_gdf_from_place(query, tags, which_result)
     gdf.to_file(filepath)
@@ -197,7 +199,7 @@ def osm_gdf_from_point(
     """Create GeoDataFrame of OSM entities within some distance N, S, E, W of a point.
 
     Args:
-        center_point (tuple): The (lat, lng) center point around which to get the geometries.
+        center_point: The (lat, lng) center point around which to get the geometries.
         tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
@@ -282,7 +284,8 @@ def osm_gdf_from_polygon(polygon, tags: dict[str, Any]):
     Args:
         polygon (shapely.geometry.Polygon | shapely.geometry.MultiPolygon): Geographic
           boundaries to fetch geometries within
-        tags (dict): Dict of tags used for finding objects in the selected area. Results
+
+        tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
             building, landuse, highway, etc) and the dict values should be either True
@@ -420,7 +423,7 @@ def osm_geojson_from_bbox(
     """Download OSM entities within a N, S, E, W bounding box as a GeoJSON.
 
     Args:
-        north): Northern latitude of bounding box.
+        north: Northern latitude of bounding box.
         south: Southern latitude of bounding box.
         east: Eastern longitude of bounding box.
         west: Western longitude of bounding box.
