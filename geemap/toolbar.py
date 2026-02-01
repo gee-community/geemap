@@ -959,7 +959,7 @@ def tool_header_template(
     Args:
         m: The geemap.Map instance. Defaults to None.
         opened: Whether to open the toolbar. Defaults to True.
-        show_close_button Whether to show the close button. Defaults to True.
+        show_close_button: Whether to show the close button. Defaults to True.
     """
 
     widget_width = "250px"
