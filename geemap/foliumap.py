@@ -29,7 +29,7 @@ import numpy as np
 import pandas as pd
 import requests
 
-from . import basemaps
+from . import basemaps as basemaps_module
 from . import common
 from .common import *
 from .conversion import *
@@ -44,7 +44,7 @@ if not coreutils.in_colab_shell():
     from .plot import *
 
 
-basemaps = box.Box(basemaps.xyz_to_folium(), frozen_box=True)
+basemaps = box.Box(basemaps_module.xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
