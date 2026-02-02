@@ -1,5 +1,3 @@
-# pytype: disable=import-error
-
 """This module contains some common functions for both folium and ipyleaflet to interact with the Earth Engine Python API."""
 
 # *******************************************************************************#
