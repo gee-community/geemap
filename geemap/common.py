@@ -1,3 +1,5 @@
+# pytype: disable=import-error
+
 """This module contains some common functions for both folium and ipyleaflet to interact with the Earth Engine Python API."""
 
 # *******************************************************************************#
@@ -25,6 +27,7 @@ import json
 import math
 import os
 import pathlib
+import platform
 import re
 import shutil
 import subprocess
@@ -32,8 +35,7 @@ import sys
 import tarfile
 import tempfile
 import time
-import platform
-from typing import Any
+from typing import Any, Iterator
 import urllib
 import warnings
 import webbrowser
@@ -4710,7 +4712,7 @@ def build_repo_tree(out_dir: str | None = None, name: str = "gee_repos"):
     left_widget, right_widget, tree_dict = result
     info_widget.children = [right_widget]
 
-    def handle_folder_click(event):
+    def handle_folder_click(event) -> None:
         if event["new"]:
             url = ""
             selected = event["owner"]
@@ -5408,9 +5410,9 @@ def cog_mosaic_from_file(
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     links = []
     if filepath.startswith("http"):
-        data = urllib.request.urlopen(filepath)
-        for line in data:
-            links.append(line.decode("utf-8").strip())
+        with urllib.request.urlopen(filepath) as data:
+            for line in data:
+                links.append(line.decode("utf-8").strip())
 
     else:
         with open(filepath) as f:
@@ -5564,7 +5566,7 @@ def cog_pixel_value(
     titiler_endpoint: str | None = None,
     timeout: int = 300,
     **kwargs,
-):
+) -> dict[str, float] | None:
     """Get pixel value from COG.
 
     Args:
@@ -5598,8 +5600,7 @@ def cog_pixel_value(
         return None
     else:
         values = r["values"]
-        result = dict(zip(bands, values))
-        return result
+        return dict(zip(bands, values))
 
 
 def stac_tile(
@@ -5795,19 +5796,29 @@ def stac_bounds(
     return bounds
 
 
-def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **kwargs):
+def stac_center(
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    titiler_endpoint: str | None = None,
+    **kwargs,
+):
     """Get the centroid of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json.
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+            "pc". Defaults to None.
 
     Returns:
         tuple: A tuple representing (longitude, latitude)
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -5819,16 +5830,21 @@ def stac_center(url=None, collection=None, item=None, titiler_endpoint=None, **k
 
 
 def stac_bands(
-    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
+    **kwargs,
 ):
     """Get band names of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
+        titiler_endpoint: Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of band names
@@ -5864,28 +5880,33 @@ def stac_bands(
 
 
 def stac_stats(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    timeout=300,
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    assets: str | list[str] | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
     **kwargs,
 ):
     """Get band statistics of a STAC item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json.
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5",
+            "SR_B4"].
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+            "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band statistics.
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -5918,28 +5939,33 @@ def stac_stats(
 
 
 def stac_info(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    timeout=300,
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    assets: str | list[str] | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
     **kwargs,
 ):
     """Get band info of a STAC item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json.
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5",
+            "SR_B4"].
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+            "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band info.
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -5972,28 +5998,34 @@ def stac_info(
 
 
 def stac_info_geojson(
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    timeout=300,
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    assets: str | list[str] | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
     **kwargs,
 ):
     """Get band info of a STAC item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json.
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5",
+            "SR_B4"].
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+            "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of band info.
-    """
 
+    """
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -6026,21 +6058,30 @@ def stac_info_geojson(
 
 
 def stac_assets(
-    url=None, collection=None, item=None, titiler_endpoint=None, timeout=300, **kwargs
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    titiler_endpoint: str | None = None,
+    timeout: int = 300,
+    **kwargs,
 ):
     """Get all assets of a STAC item.
 
     Args:
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        titiler_endpoint: Titiler endpoint, e.g.,
+            "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
+            "pc". Defaults to None.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A list of assets.
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -6071,34 +6112,39 @@ def stac_assets(
 
 
 def stac_pixel_value(
-    lon,
-    lat,
-    url=None,
-    collection=None,
-    item=None,
-    assets=None,
-    titiler_endpoint=None,
-    verbose=True,
-    timeout=300,
+    lon: float,
+    lat: float,
+    url: str | None = None,
+    collection: str | None = None,
+    item: str | None = None,
+    assets: str | list[str] | None = None,
+    titiler_endpoint: str | None = None,
+    verbose: bool = True,
+    timeout: int = 300,
     **kwargs,
 ):
     """Get pixel value from STAC assets.
 
     Args:
-        lon (float): Longitude of the pixel.
-        lat (float): Latitude of the pixel.
-        url (str): HTTP URL to a STAC item, e.g., https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json
-        collection (str): The Microsoft Planetary Computer STAC collection ID, e.g., landsat-8-c2-l2.
-        item (str): The Microsoft Planetary Computer STAC item ID, e.g., LC08_L2SP_047027_20201204_02_T1.
-        assets (str | list): The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        verbose (bool, optional): Print out the error message. Defaults to True.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
+        lon: Longitude of the pixel.
+        lat: Latitude of the pixel.
+        url: HTTP URL to a STAC item, e.g.,
+            https://canada-spot-ortho.s3.amazonaws.com/canada_spot_orthoimages/canada_spot5_orthoimages/S5_2007/S5_11055_6057_20070622/S5_11055_6057_20070622.json.
+        collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+            landsat-8-c2-l2.
+        item: The Microsoft Planetary Computer STAC item ID, e.g.,
+            LC08_L2SP_047027_20201204_02_T1.
+        assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7", "SR_B5",
+            "SR_B4"].
+        titiler_endpoint: Titiler endpoint, e.g.,
+          "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults
+          to None.
+        verbose: Print out the error message. Defaults to True.
+        timeout: Timeout in seconds. Defaults to 300.
 
     Returns:
         list: A dictionary of pixel values for each asset.
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -6143,38 +6189,37 @@ def stac_pixel_value(
         return None
     else:
         values = [v[0] for v in r["values"]]
-        result = dict(zip(assets.split(","), values))
-        return result
+        assert isinstance(assets, str)  # For pytype.
+        return dict(zip(assets.split(","), values))
 
 
 def local_tile_pixel_value(
-    lon,
-    lat,
+    lon: float,
+    lat: float,
     tile_client,
-    verbose=True,
+    verbose: bool = True,
     **kwargs,
 ):
     """Get pixel value from COG.
 
     Args:
-        lon (float): Longitude of the pixel.
-        lat (float): Latitude of the pixel.
-        url (str): HTTP URL to a COG, e.g., 'https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif'
-        bidx (str, optional): Dataset band indexes (e.g bidx=1, bidx=1&bidx=2&bidx=3). Defaults to None.
-        titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc". Defaults to None.
-        verbose (bool, optional): Print status messages. Defaults to True.
+        lon: Longitude of the pixel.
+        lat: Latitude of the pixel.
+        tile_client: TODO.
+        verbose: Print status messages. Defaults to True.
 
     Returns:
         PointData: rio-tiler point data.
     """
+    del verbose  # Unused.
     return tile_client.point(lon, lat, coord_crs="EPSG:4326", **kwargs)
 
 
 def local_tile_vmin_vmax(
     source,
-    bands=None,
+    bands: str | list[str] | None = None,
     **kwargs,
-):
+) -> tuple[float, float]:
     """Get vmin and vmax from COG.
 
     Args:
@@ -6188,6 +6233,8 @@ def local_tile_vmin_vmax(
         tuple: A tuple of vmin and vmax.
     """
     from localtileserver import TileClient
+
+    del kwargs  # Unused.
 
     if isinstance(source, str):
         tile_client = TileClient(source)
@@ -6236,14 +6283,14 @@ def local_tile_bands(source):
     return tile_client.band_names
 
 
-def bbox_to_geojson(bounds):
+def bbox_to_geojson(bounds: Sequence[float]) -> dict[str, Any]:
     """Convert coordinates of a bounding box to a geojson.
 
     Args:
-        bounds (list): A list of coordinates representing [left, bottom, right, top].
+        bounds: A list of coordinates representing [left, bottom, right, top].
 
     Returns:
-        dict: A geojson feature.
+        A geojson feature.
     """
     return {
         "geometry": {
@@ -6262,14 +6309,14 @@ def bbox_to_geojson(bounds):
     }
 
 
-def coords_to_geojson(coords):
+def coords_to_geojson(coords: Sequence[Sequence[float]]) -> dict[str, Any]:
     """Convert a list of bbox coordinates representing [left, bottom, right, top] to geojson FeatureCollection.
 
     Args:
-        coords (list): A list of bbox coordinates representing [left, bottom, right, top].
+        coords: A list of bbox coordinates representing [left, bottom, right, top].
 
     Returns:
-        dict: A geojson FeatureCollection.
+        A geojson FeatureCollection.
     """
 
     features = []
@@ -6278,18 +6325,18 @@ def coords_to_geojson(coords):
     return {"type": "FeatureCollection", "features": features}
 
 
-def explode(coords):
-    """Explode a GeoJSON geometry's coordinates object and yield
-    coordinate tuples. As long as the input is conforming, the type of
-    the geometry doesn't matter.  From Fiona 1.4.8
+def explode(coords: Sequence[Any]) -> Iterator[Any]:
+    """Explode a GeoJSON geometry's coordinates object and yield coordinate tuples.
+
+    As long as the input is conforming, the type of the geometry doesn't matter.  From
+    Fiona 1.4.8.
 
     Args:
-        coords (list): A list of coordinates.
+        coords: A list of coordinates.
 
     Yields:
         [type]: [description]
     """
-
     for e in coords:
         if isinstance(e, (float, int)):
             yield coords
@@ -6298,28 +6345,30 @@ def explode(coords):
             yield from explode(e)
 
 
-def get_bounds(geometry, north_up=True, transform=None):
+def get_bounds(geometry: dict, north_up: bool = True, transform=None):
     """Bounding box of a GeoJSON geometry, GeometryCollection, or FeatureCollection.
+
     left, bottom, right, top
+
     *not* xmin, ymin, xmax, ymax
+
     If not north_up, y will be switched to guarantee the above.
     Source code adapted from https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
 
     Args:
-        geometry (dict): A GeoJSON dict.
-        north_up (bool, optional): . Defaults to True.
+        geometry: A GeoJSON dict.
+        north_up: . Defaults to True.
         transform ([type], optional): . Defaults to None.
 
     Returns:
         list: A list of coordinates representing [left, bottom, right, top]
     """
-
     if "bbox" in geometry:
         return tuple(geometry["bbox"])
 
     geometry = geometry.get("geometry") or geometry
 
-    # geometry must be a geometry, GeometryCollection, or FeatureCollection
+    # geometry must be a geometry, GeometryCollection, or FeatureCollection.
     if not (
         "coordinates" in geometry or "geometries" in geometry or "features" in geometry
     ):
@@ -6329,7 +6378,7 @@ def get_bounds(geometry, north_up=True, transform=None):
         )
 
     if "features" in geometry:
-        # Input is a FeatureCollection
+        # Input is a FeatureCollection.
         xmins = []
         ymins = []
         xmaxs = []
@@ -6346,7 +6395,7 @@ def get_bounds(geometry, north_up=True, transform=None):
             return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
 
     elif "geometries" in geometry:
-        # Input is a geometry collection
+        # Input is a geometry collection.
         xmins = []
         ymins = []
         xmaxs = []
@@ -6383,28 +6432,25 @@ def get_bounds(geometry, north_up=True, transform=None):
     )
 
 
-def get_center(geometry, north_up=True, transform=None):
-    """Get the centroid of a GeoJSON.
+def get_center(geometry, north_up: bool = True, transform=None) -> tuple[float, float]:
+    """Returns the lat, lon of the centroid of a GeoJSON.
 
     Args:
         geometry (dict): A GeoJSON dict.
-        north_up (bool, optional): . Defaults to True.
+        north_up: . Defaults to True.
         transform ([type], optional): . Defaults to None.
-
-    Returns:
-        list: [lon, lat]
     """
     bounds = get_bounds(geometry, north_up, transform)
-    center = ((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lat, lon)
-    return center
+
+    return (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2  # lat, lon.
 
 
-def image_props(img, date_format="YYYY-MM-dd"):
+def image_props(img, date_format: str = "YYYY-MM-dd"):
     """Gets image properties.
 
     Args:
         img (ee.Image): The input image.
-        date_format (str, optional): The output date format. Defaults to 'YYYY-MM-dd HH:mm:ss'.
+        date_format: The output date format. Defaults to 'YYYY-MM-dd HH:mm:ss'.
 
     Returns:
         dd.Dictionary: The dictionary containing image properties.
@@ -6455,13 +6501,13 @@ def image_props(img, date_format="YYYY-MM-dd"):
     return props
 
 
-def image_stats(img, region=None, scale=None):
+def image_stats(img, region=None, scale: float | None = None):
     """Gets image descriptive statistics.
 
     Args:
         img (ee.Image): The input image to calculate descriptive statistics.
         region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
-        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
+        scale: A nominal scale in meters of the projection to work in. Defaults to None.
 
     Returns:
         ee.Dictionary: A dictionary containing the description statistics of the input image.
@@ -6568,33 +6614,45 @@ def adjust_longitude(in_fc):
 def zonal_stats(
     in_value_raster,
     in_zone_vector,
-    out_file_path=None,
-    stat_type="MEAN",
-    scale=None,
-    crs=None,
-    tile_scale=1.0,
-    return_fc=False,
-    verbose=True,
-    timeout=300,
-    proxies=None,
+    out_file_path: str | None = None,
+    stat_type: str = "MEAN",
+    scale: float | None = None,
+    crs: str | None = None,
+    tile_scale: float = 1.0,
+    return_fc: bool = False,
+    verbose: bool = True,
+    timeout: int = 300,
+    proxies: dict[str, str] | None = None,
     **kwargs,
 ):
-    """Summarizes the values of a raster within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
+    """Summarizes the values of a raster within the zones of another dataset.
+
+    Exports the results as a csv, shp, json, kml, or kmz.
 
     Args:
-        in_value_raster (object): An ee.Image or ee.ImageCollection that contains the values on which to calculate a statistic.
+        in_value_raster (object): An ee.Image or ee.ImageCollection that contains the
+            values on which to calculate a statistic.
         in_zone_vector (object): An ee.FeatureCollection that defines the zones.
-        out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
-        stat_type (str, optional): Statistical type to be calculated. Defaults to 'MEAN'. For 'HIST', you can provide three parameters: max_buckets, min_bucket_width, and max_raw. For 'FIXED_HIST', you must provide three parameters: hist_min, hist_max, and hist_steps.
-        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
-        crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
-        tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
-        verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
-        return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
-        timeout (int, optional): Timeout in seconds. Default to 300.
-        proxies (dict, optional): A dictionary of proxy servers to use for the request. Default to None.
+        out_file_path: Output file path that will contain the summary of the values in
+            each zone. The file type can be: csv, shp, json, kml, kmz
+        stat_type: Statistical type to be calculated. Defaults to 'MEAN'. For 'HIST',
+            you can provide three parameters: max_buckets, min_bucket_width, and
+            max_raw. For 'FIXED_HIST', you must provide three parameters: hist_min,
+            hist_max, and hist_steps.
+        scale: A nominal scale in meters of the projection to work in. Defaults to None.
+        crs: The projection to work in. If unspecified, the projection of the image's
+            first band is used. If specified in addition to scale, rescaled to the specified
+            scale. Defaults to None.
+        tile_scale: A scaling factor used to reduce aggregation tile size; using a
+            larger tileScale (e.g. 2 or 4) may enable computations that run out of
+            memory with the default. Defaults to 1.0.
+        verbose: Whether to print descriptive text when the programming is
+            running. Default to True.
+        return_fc: Whether to return the results as an ee.FeatureCollection. Defaults to
+            False.
+        timeout: Timeout in seconds. Default to 300.
+        proxies: A dictionary of proxy servers to use for the request. Default to None.
     """
-
     if isinstance(in_value_raster, ee.ImageCollection):
         in_value_raster = in_value_raster.toBands()
 
@@ -6615,7 +6673,6 @@ def zonal_stats(
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
     filename = os.path.abspath(out_file_path)
     basename = os.path.basename(filename)
-    # name = os.path.splitext(basename)[0]
     filetype = os.path.splitext(basename)[1][1:].lower()
 
     if not (filetype in allowed_formats):
@@ -6626,7 +6683,7 @@ def zonal_stats(
         )
         return
 
-    # Parameters for histogram
+    # Parameters for histogram.
     # The maximum number of buckets to use when building a histogram; will be rounded up to a power of 2.
     max_buckets = None
     # The minimum histogram bucket width, or null to allow any power of 2.
@@ -6722,44 +6779,57 @@ zonal_statistics = zonal_stats
 def zonal_stats_by_group(
     in_value_raster,
     in_zone_vector,
-    out_file_path=None,
-    stat_type="SUM",
-    decimal_places=0,
-    denominator=1.0,
-    scale=None,
-    crs=None,
-    crs_transform=None,
-    best_effort=True,
-    max_pixels=1e7,
-    tile_scale=1.0,
-    return_fc=False,
-    verbose=True,
-    timeout=300,
-    proxies=None,
+    out_file_path: str | None = None,
+    stat_type: str = "SUM",
+    decimal_places: int = 0,
+    denominator: float = 1.0,
+    scale: float | None = None,
+    crs: str | None = None,
+    crs_transform: list[float] | None = None,
+    best_effort: bool = True,
+    # TODO: The original doc string said int, but the default is a float.
+    max_pixels: float = 1e7,
+    tile_scale: float = 1.0,
+    return_fc: bool = False,
+    verbose: bool = True,
+    timeout: int = 300,
+    proxies: dict[str, str] | None = None,
     **kwargs,
 ):
-    """Summarizes the area or percentage of a raster by group within the zones of another dataset and exports the results as a csv, shp, json, kml, or kmz.
+    """Summarizes the area or percentage of a raster by group within the zones of another dataset.
+
+    Exports the results as a csv, shp, json, kml, or kmz.
 
     Args:
-        in_value_raster (object): An integer Image that contains the values on which to calculate area/percentage.
+        in_value_raster (object): An integer Image that contains the values on which to
+            calculate area/percentage.
         in_zone_vector (object): An ee.FeatureCollection that defines the zones.
-        out_file_path (str): Output file path that will contain the summary of the values in each zone. The file type can be: csv, shp, json, kml, kmz
-        stat_type (str, optional): Can be either 'SUM' or 'PERCENTAGE' . Defaults to 'SUM'.
-        decimal_places (int, optional): The number of decimal places to use. Defaults to 0.
-        denominator (float, optional): To convert area units (e.g., from square meters to square kilometers). Defaults to 1.0.
-        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
-        crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
-        crs_transform (list, optional): The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and replaces any transform already set on the projection.
-        best_effort (bool, optional): If the polygon would contain too many pixels at the given scale, compute and use a larger scale which would allow the operation to succeed.
-        max_pixels (int, optional): The maximum number of pixels to reduce. Defaults to 1e7.
-        tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.0.
-        verbose (bool, optional): Whether to print descriptive text when the programming is running. Default to True.
-        return_fc (bool, optional): Whether to return the results as an ee.FeatureCollection. Defaults to False.
-        timeout (int, optional): Timeout in seconds. Defaults to 300.
-        proxies (dict, optional): A dictionary of proxies to use. Defaults to None.
-
+        out_file_path: Output file path that will contain the summary of the values in
+            each zone. The file type can be: csv, shp, json, kml, kmz
+        stat_type: Can be either 'SUM' or 'PERCENTAGE' . Defaults to 'SUM'.
+        decimal_places: The number of decimal places to use. Defaults to 0.
+        denominator: To convert area units (e.g., from square meters to square
+            kilometers). Defaults to 1.0.
+        scale: A nominal scale in meters of the projection to work in. Defaults to None.
+        crs: The projection to work in. If unspecified, the projection of the image's
+            first band is used. If specified in addition to scale, rescaled to the
+            specified scale. Defaults to None.
+        crs_transform: The list of CRS transform values. This is a row-major ordering of
+            the 3x2 transform matrix. This option is mutually exclusive with 'scale',
+            and replaces any transform already set on the projection.
+        best_effort: If the polygon would contain too many pixels at the given scale,
+            compute and use a larger scale which would allow the operation to succeed.
+        max_pixels: The maximum number of pixels to reduce. Defaults to 1e7.
+        tile_scale: A scaling factor used to reduce aggregation tile size; using a
+            larger tileScale (e.g. 2 or 4) may enable computations that run out of
+            memory with the default. Defaults to 1.0.
+        verbose: Whether to print descriptive text when the programming is
+            running. Default to True.
+        return_fc: Whether to return the results as an ee.FeatureCollection. Defaults to
+            False.
+        timeout: Timeout in seconds. Defaults to 300.
+        proxies: A dictionary of proxies to use. Defaults to None.
     """
-
     if isinstance(in_value_raster, ee.ImageCollection):
         in_value_raster = in_value_raster.toBands()
 
@@ -6775,7 +6845,6 @@ def zonal_stats_by_group(
 
     band_count = in_value_raster.bandNames().size().getInfo()
 
-    band_name = ""
     if band_count == 1:
         band_name = in_value_raster.bandNames().get(0)
     else:
@@ -6795,7 +6864,6 @@ def zonal_stats_by_group(
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp"]
     filename = os.path.abspath(out_file_path)
     basename = os.path.basename(filename)
-    # name = os.path.splitext(basename)[0]
     filetype = os.path.splitext(basename)[1][1:]
 
     if not (filetype.lower() in allowed_formats):
@@ -6847,7 +6915,6 @@ def zonal_stats_by_group(
         lambda c: ee.String("Class_").cat(ee.Number(c).format())
     )
 
-    # class_count = class_values.size().getInfo()
     dataset = ee.Image.pixelArea().divide(denominator).addBands(in_value_raster)
 
     init_result = dataset.reduceRegions(
@@ -6862,13 +6929,6 @@ def zonal_stats_by_group(
             "scale": scale,
         }
     )
-
-    # def build_dict(input_list):
-
-    #     decimal_format = '%.{}f'.format(decimal_places)
-    #     in_dict = input_list.map(lambda x: ee.Dictionary().set(ee.String('Class_').cat(
-    #         ee.Number(ee.Dictionary(x).get('group')).format()), ee.Number.parse(ee.Number(ee.Dictionary(x).get('sum')).format(decimal_format))))
-    #     return in_dict
 
     def get_keys(input_list):
         return input_list.map(
@@ -7006,9 +7066,6 @@ def image_scale(img):
     Returns:
         float: The nominal scale in meters.
     """
-    # bands = img.bandNames()
-    # scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
-    # scale = ee.Algorithms.If(scales.distinct().size().gt(1), ee.Dictionary.fromLists(bands.getInfo(), scales), scales.get(0))
     return img.select(0).projection().nominalScale()
 
 
@@ -7486,22 +7543,28 @@ def image_stats_by_zone(
         return df
 
 
-def latitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
+def latitude_grid(
+    step: float = 1.0,
+    west: float = -180,
+    east: float = 180,
+    south: float = -85,
+    north: float = 85,
+) -> ee.FeatureCollection:
     """Create a latitude grid.
 
     Args:
-        step (float, optional): The step size in degrees. Defaults to 1.0.
-        west (int, optional): The west boundary in degrees. Defaults to -180.
-        east (int, optional): The east boundary in degrees. Defaults to 180.
-        south (int, optional): The south boundary in degrees. Defaults to -85.
-        north (int, optional): The north boundary in degrees. Defaults to 85.
+        step: The step size in degrees. Defaults to 1.0.
+        west: The west boundary in degrees. Defaults to -180.
+        east: The east boundary in degrees. Defaults to 180.
+        south: The south boundary in degrees. Defaults to -85.
+        north: The north boundary in degrees. Defaults to 85.
 
     Returns:
         ee.FeatureCollection: A feature collection of latitude grids.
     """
     values = ee.List.sequence(south, north - step, step)
 
-    def create_feature(lat):
+    def create_feature(lat) -> ee.Feature:
         return ee.Feature(
             ee.Geometry.BBox(west, lat, east, ee.Number(lat).add(step))
         ).set(
@@ -7513,19 +7576,24 @@ def latitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
             }
         )
 
-    features = ee.FeatureCollection(values.map(create_feature))
-    return features
+    return ee.FeatureCollection(values.map(create_feature))
 
 
-def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
+def longitude_grid(
+    step: float = 1.0,
+    west: float = -180,
+    east: float = 180,
+    south: float = -85,
+    north: float = 85,
+) -> ee.FeatureCollection:
     """Create a longitude grid.
 
     Args:
-        step (float, optional): The step size in degrees. Defaults to 1.0.
-        west (int, optional): The west boundary in degrees. Defaults to -180.
-        east (int, optional): The east boundary in degrees. Defaults to 180.
-        south (int, optional): The south boundary in degrees. Defaults to -85.
-        north (int, optional): The north boundary in degrees. Defaults to 85.
+        step: The step size in degrees. Defaults to 1.0.
+        west: The west boundary in degrees. Defaults to -180.
+        east: The east boundary in degrees. Defaults to 180.
+        south: The south boundary in degrees. Defaults to -85.
+        north: The north boundary in degrees. Defaults to 85.
 
     Returns:
         ee.FeatureCollection: A feature collection of longitude grids.
@@ -7533,7 +7601,7 @@ def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
 
     values = ee.List.sequence(west, east - step, step)
 
-    def create_feature(lon):
+    def create_feature(lon) -> ee.Feature:
         return ee.Feature(
             ee.Geometry.BBox(lon, south, ee.Number(lon).add(step), north)
         ).set(
@@ -7545,11 +7613,17 @@ def longitude_grid(step=1.0, west=-180, east=180, south=-85, north=85):
             }
         )
 
-    features = ee.FeatureCollection(values.map(create_feature))
-    return features
+    return ee.FeatureCollection(values.map(create_feature))
 
 
-def latlon_grid(lat_step=1.0, lon_step=1.0, west=-180, east=180, south=-85, north=85):
+def latlon_grid(
+    lat_step: float = 1.0,
+    lon_step: float = 1.0,
+    west: float = -180,
+    east: float = 180,
+    south: float = -85,
+    north: float = 85,
+) -> ee.FeatureCollection:
     """Create a rectangular grid of latitude and longitude.
 
     Args:
@@ -8385,7 +8459,9 @@ def column_stats(collection, column, stats_type):
     return stats
 
 
-def ee_num_round(num, decimal=2):
+def ee_num_round(
+    num: ee.Number | ee.ComputedObject | float, decimal: int = 2
+) -> ee.Number:
     """Rounds a number to a specified number of decimal places.
 
     Args:
@@ -8662,7 +8738,7 @@ def kml_to_shp(in_kml, out_shp, **kwargs):
     df.to_file(out_shp, **kwargs)
 
 
-def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
+def kml_to_geojson(in_kml: str, out_geojson: str | None = None, **kwargs):
     """Converts a KML to GeoJSON.
 
     Args:
@@ -8699,11 +8775,11 @@ def kml_to_geojson(in_kml, out_geojson=None, **kwargs):
         return gdf.__geo_interface__
 
 
-def kml_to_ee(in_kml, **kwargs):
+def kml_to_ee(in_kml: str, **kwargs):
     """Converts a KML to ee.FeatureCollection.
 
     Args:
-        in_kml (str): The file path to the input KML.
+        in_kml: The file path to the input KML.
 
     Raises:
         FileNotFoundError: The input KML could not be found.
@@ -8725,11 +8801,11 @@ def kml_to_ee(in_kml, **kwargs):
     return ee_object
 
 
-def kmz_to_ee(in_kmz, **kwargs):
+def kmz_to_ee(in_kmz: str, **kwargs):
     """Converts a KMZ to ee.FeatureCollection.
 
     Args:
-        in_kmz (str): The file path to the input KMZ.
+        in_kmz: The file path to the input KMZ.
 
     Raises:
         FileNotFoundError: The input KMZ could not be found.
@@ -8817,11 +8893,11 @@ def ee_to_df(
     return df
 
 
-def shp_to_gdf(in_shp, **kwargs):
+def shp_to_gdf(in_shp: str, **kwargs):
     """Converts a shapefile to Geopandas dataframe.
 
     Args:
-        in_shp (str): File path to the input shapefile.
+        in_shp: File path to the input shapefile.
 
     Raises:
         FileNotFoundError: The provided shp could not be found.
@@ -8885,12 +8961,12 @@ def ee_to_gdf(
     return gdf
 
 
-def delete_shp(in_shp, verbose=False):
+def delete_shp(in_shp: str, verbose: bool = False) -> None:
     """Deletes a shapefile.
 
     Args:
-        in_shp (str): The input shapefile to delete.
-        verbose (bool, optional): Whether to print out descriptive text. Defaults to False.
+        in_shp: The input shapefile to delete.
+        verbose: Whether to print out descriptive text. Defaults to False.
     """
     in_shp = os.path.abspath(in_shp)
     in_dir = os.path.dirname(in_shp)
