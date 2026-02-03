@@ -1003,7 +1003,7 @@ class Map(MapWidget):
         visibility, and fit bounds.
 
         Args:
-            url: HTTP URL to a STAC item, e.g., https://bit.ly/3VlttGm.  Defaults to
+            url: HTTP URL to a STAC item, e.g., https://bit.ly/3VlttGm. Defaults to
                 None.
             collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
                 landsat-8-c2-l2. Defaults to None.
@@ -1314,7 +1314,7 @@ class Map(MapWidget):
         super().set_visibility(name, visible)
         self.layer_dict[name]["visible"] = visible
 
-    def layer_interact(self, name: str = None):
+    def layer_interact(self, name: str | None = None):
         """Create a layer widget for changing the visibility and opacity of a layer.
 
         Args:
@@ -1397,7 +1397,7 @@ class Map(MapWidget):
 
         return hbox
 
-    def style_layer_interact(self, id: str = None):
+    def style_layer_interact(self, id: str | None = None):
         """Create a layer widget for changing the visibility and opacity of a style layer.
 
         Args:
@@ -1513,7 +1513,7 @@ class Map(MapWidget):
 
         return hbox
 
-    def _basemap_widget(self, name: str = None):
+    def _basemap_widget(self, name: str | None = None):
         """Create a layer widget for changing the visibility and opacity of a layer.
 
         Args:
@@ -2014,7 +2014,7 @@ class Map(MapWidget):
         """Jumps the map to a specified location.
 
         This function jumps the map to the specified location with the specified
-        options.  Additional keyword arguments can be provided to control the jump. For
+        options. Additional keyword arguments can be provided to control the jump. For
         more information, see
         https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#jumpto
 
@@ -2034,7 +2034,7 @@ class Map(MapWidget):
         """Get the 3D terrain style for the map.
 
         This function generates a style dictionary for the map that includes 3D terrain
-        features.  The terrain exaggeration and API key can be specified. If the API key
+        features. The terrain exaggeration and API key can be specified. If the API key
         is not provided, it will be retrieved using the specified token.
 
         Args:
@@ -2277,8 +2277,8 @@ class Map(MapWidget):
             labels: A list of legend labels. Defaults to None.
             colors: A list of colors corresponding to the labels. Defaults to None.
             fontsize: The font size of the legend text. Defaults to 15.
-            bg_color: The background color of the legend. Defaults to "white".  To make
-                the background transparent, set this to "transparent".  To make the
+            bg_color: The background color of the legend. Defaults to "white". To make
+                the background transparent, set this to "transparent". To make the
                 background half transparent, set this to "rgba(255, 255, 255, 0.5)".
             position: The position of the legend on the map. Can be one of "top-left",
                 "top-right", "bottom-left", "bottom-right". Defaults to "bottom-right".
