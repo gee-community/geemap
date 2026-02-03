@@ -4,7 +4,7 @@ from collections.abc import Callable, Sequence
 import enum
 import logging
 import math
-from typing import Any, TypedDict, Type
+from typing import Any, TypedDict
 
 import ee
 import ipyleaflet
@@ -315,7 +315,7 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
 
         Args:
             host_map (geemap.Map): The geemap.Map object that the control will be added to.
-            **kwargs (Any): Additional keyword arguments for the DrawControl.
+            **kwargs: Additional keyword arguments for the DrawControl.
         """
         super().__init__(host_map=host_map, **kwargs)
 
@@ -326,7 +326,7 @@ class MapDrawControl(ipyleaflet.DrawControl, AbstractDrawControl):
     def _bind_to_draw_control(self) -> None:
         """Set up draw control event handling like create, edit, and delete."""
 
-        # Handles draw events
+        # Handles draw events.
         def handle_draw(_, action: str, geo_json: dict[str, Any]) -> None:
             """Handles draw events.
 
