@@ -6326,7 +6326,7 @@ def coords_to_geojson(coords: Sequence[Sequence[float]]) -> dict[str, Any]:
 def explode(coords: Sequence[Any]) -> Iterator[Any]:
     """Explode a GeoJSON geometry's coordinates object and yield coordinate tuples.
 
-    As long as the input is conforming, the type of the geometry doesn't matter.  From
+    As long as the input is conforming, the type of the geometry doesn't matter. From
     Fiona 1.4.8.
 
     Args:
@@ -6350,16 +6350,17 @@ def get_bounds(geometry: dict, north_up: bool = True, transform=None):
 
     *not* xmin, ymin, xmax, ymax
 
-    If not north_up, y will be switched to guarantee the above.
-    Source code adapted from https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
+    If not north_up, y will be switched to guarantee the above.  Source code adapted
+    from https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
 
     Args:
         geometry: A GeoJSON dict.
-        north_up: . Defaults to True.
-        transform ([type], optional): . Defaults to None.
+        north_up: Defaults to True.
+        transform ([type], optional): Defaults to None.
 
     Returns:
         list: A list of coordinates representing [left, bottom, right, top]
+
     """
     if "bbox" in geometry:
         return tuple(geometry["bbox"])
@@ -6435,8 +6436,8 @@ def get_center(geometry, north_up: bool = True, transform=None) -> tuple[float, 
 
     Args:
         geometry (dict): A GeoJSON dict.
-        north_up: . Defaults to True.
-        transform ([type], optional): . Defaults to None.
+        north_up: Defaults to True.
+        transform ([type], optional): Defaults to None.
     """
     bounds = get_bounds(geometry, north_up, transform)
 
