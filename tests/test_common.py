@@ -374,7 +374,20 @@ class CommonTest(unittest.TestCase):
     # TODO: test_ee_to_df
     # TODO: test_shp_to_gdf
     # TODO: test_ee_to_gdf
-    # TODO: test_delete_shp
+
+    def test_delete_shp(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            shp_path = os.path.join(tmpdir, "test.shp")
+            extensions = [".shp", ".shx", ".dbf", ".prj"]
+            for ext in extensions:
+                with open(os.path.join(tmpdir, "test" + ext), "w") as f:
+                    f.write("test")
+
+            common.delete_shp(shp_path)
+
+            for ext in extensions:
+                self.assertFalse(os.path.exists(os.path.join(tmpdir, "test" + ext)))
+
     # TODO: test_df_to_ee
     # TODO: test_gdf_to_ee
     # TODO: test_vector_to_geojson
