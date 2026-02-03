@@ -361,7 +361,12 @@ class CommonTest(unittest.TestCase):
     # TODO: test_summary_stats
     # TODO: test_column_stats
     # TODO: test_ee_num_round
-    # TODO: test_num_round
+
+    def test_num_round(self):
+        self.assertEqual(common.num_round(1.2345), 1.23)
+        self.assertEqual(common.num_round(1.2345, 3), 1.234)
+        self.assertEqual(common.num_round(-1.2, 3), -1.2)
+
     # TODO: test_png_to_gif
     # TODO: test_jpg_to_gif
     # TODO: test_vector_styling
