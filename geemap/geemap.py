@@ -39,7 +39,6 @@ from .conversion import *
 from .ee_tile_layers import *
 from . import core
 from . import coreutils
-from . import examples
 from . import map_widgets
 from .plot import *
 from .timelapse import *
@@ -620,7 +619,6 @@ class Map(core.Map):
             shown (bool, optional): A flag indicating whether the layer should
                 be on by default. Defaults to True.
         """
-
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 100
         if "max_native_zoom" not in kwargs:
@@ -1092,7 +1090,7 @@ class Map(core.Map):
                 "plot", and "timelapse".
             position: The position of the GUI. Defaults to "topright".
             opened: Whether the GUI is opened. Defaults to True.
-            show_close_button: Whether to show the close button.  Defaults to True.
+            show_close_button: Whether to show the close button. Defaults to True.
             **kwargs: Additional keyword arguments.
         """
         name = name.lower()
@@ -1269,7 +1267,6 @@ class Map(core.Map):
                 https://cogeotiff.github.io/rio-tiler/colormap/. To select a certain
                 bands, use bidx=[1, 2, 3]
         """
-
         tile_url = cog_tile(url, bands, titiler_endpoint, **kwargs)
         bounds = cog_bounds(url, titiler_endpoint)
         self.add_tile_layer(tile_url, name, attribution, opacity, shown)
@@ -2891,7 +2888,6 @@ class Map(core.Map):
         Raises:
             FileNotFoundError: The provided KML file could not be found.
         """
-
         if isinstance(in_kml, str) and in_kml.startswith("http"):
             in_kml = coreutils.github_raw_url(in_kml)
             in_kml = coreutils.download_file(in_kml)
@@ -4083,13 +4079,18 @@ class Map(core.Map):
 
         self.default_style = {"cursor": "default"}
 
-    def add_census_data(self, wms, layer, census_dict=None, **kwargs):
+    def add_census_data(
+        self, wms: str, layer: str, census_dict: dict | None = None, **kwargs
+    ) -> None:
         """Adds a census data layer to the map.
 
         Args:
-            wms (str): The wms to use. For example, "Current", "ACS 2021", "Census 2020".  See the complete list at https://tigerweb.geo.census.gov/tigerwebmain/TIGERweb_wms.html
-            layer (str): The layer name to add to the map.
-            census_dict (dict, optional): A dictionary containing census data. Defaults to None. It can be obtained from the get_census_dict() function.
+            wms: The wms to use. For example, "Current", "ACS 2021", "Census 2020". See
+                the complete list at
+                https://tigerweb.geo.census.gov/tigerwebmain/TIGERweb_wms.html
+            layer: The layer name to add to the map.
+            census_dict: A dictionary containing census data. Defaults to None. It can
+                be obtained from the get_census_dict() function.
         """
         if census_dict is None:
             census_dict = get_census_dict()
@@ -4115,11 +4116,12 @@ class Map(core.Map):
 
         self.add_wms_layer(url, layer, **kwargs)
 
-    def add_xyz_service(self, provider, **kwargs):
+    def add_xyz_service(self, provider: str, **kwargs) -> None:
         """Add a XYZ tile layer to the map.
 
         Args:
-            provider (str): A tile layer name starts with xyz or qms. For example, xyz.OpenTopoMap,
+            provider: A tile layer name starts with xyz or qms. For example,
+                xyz.OpenTopoMap,
 
         Raises:
             ValueError: The provider is not valid. It must start with xyz or qms.
@@ -4211,7 +4213,6 @@ class Map(core.Map):
             y (str, optional): The column name of the latitude. Defaults to "latitude".
             draggable (bool, optional): Whether the labels are draggable. Defaults to True.
             layer_name (str, optional): Layer name to use. Defaults to "Labels".
-
         """
         warnings.filterwarnings("ignore")
 
@@ -4268,7 +4269,7 @@ class Map(core.Map):
         self.add(layer_group)
         self.labels = layer_group
 
-    def remove_labels(self):
+    def remove_labels(self) -> None:
         """Removes all labels from the map."""
         if hasattr(self, "labels"):
             self.remove_layer(self.labels)
@@ -4276,39 +4277,48 @@ class Map(core.Map):
 
     def add_netcdf(
         self,
-        filename,
+        filename: str,
         variables=None,
         palette=None,
-        vmin=None,
-        vmax=None,
-        nodata=None,
-        attribution=None,
-        layer_name="NetCDF layer",
-        shift_lon=True,
-        lat="lat",
-        lon="lon",
+        vmin: float | None = None,
+        vmax: float | None = None,
+        nodata: float | None = None,
+        attribution: str | None = None,
+        layer_name: str = "NetCDF layer",
+        shift_lon: bool = True,
+        lat: str = "lat",
+        lon: str = "lon",
         **kwargs,
     ):
         """Generate an ipyleaflet/folium TileLayer from a netCDF file.
-            If you are using this function in JupyterHub on a remote server (e.g., Binder, Microsoft Planetary Computer),
-            try adding to following two lines to the beginning of the notebook if the raster does not render properly.
 
-            import os
-            os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
+        If you are using this function in JupyterHub on a remote server (e.g., Binder,
+        Microsoft Planetary Computer), try adding to following two lines to the
+        beginning of the notebook if the raster does not render properly.
+
+        import os
+        os.environ['LOCALTILESERVER_CLIENT_PREFIX'] = f'{os.environ['JUPYTERHUB_SERVICE_PREFIX'].lstrip('/')}/proxy/{{port}}'
 
         Args:
-            filename (str): File path or HTTP URL to the netCDF file.
-            variables (int, optional): The variable/band names to extract data from the netCDF file. Defaults to None. If None, all variables will be extracted.
-            port (str, optional): The port to use for the server. Defaults to "default".
-            palette (str, optional): The name of the color palette from `palettable` to use when plotting a single band. See https://jiffyclub.github.io/palettable. Default is greyscale
-            vmin (float, optional): The minimum value to use when colormapping the palette when plotting a single band. Defaults to None.
-            vmax (float, optional): The maximum value to use when colormapping the palette when plotting a single band. Defaults to None.
-            nodata (float, optional): The value from the band to use to interpret as not valid data. Defaults to None.
-            attribution (str, optional): Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to "netCDF layer".
-            shift_lon (bool, optional): Flag to shift longitude values from [0, 360] to the range [-180, 180]. Defaults to True.
-            lat (str, optional): Name of the latitude variable. Defaults to 'lat'.
-            lon (str, optional): Name of the longitude variable. Defaults to 'lon'.
+            filename: File path or HTTP URL to the netCDF file.
+            variables (int, optional): The variable/band names to extract data from the
+                netCDF file. Defaults to None. If None, all variables will be extracted.
+            palette (str, optional): The name of the color palette from `palettable` to
+                use when plotting a single band. See
+                https://jiffyclub.github.io/palettable. Default is greyscale.
+            vmin: The minimum value to use when colormapping the palette when plotting a
+                single band. Defaults to None.
+            vmax: The maximum value to use when colormapping the palette when plotting a
+                single band. Defaults to None.
+            nodata: The value from the band to use to interpret as not valid
+                data. Defaults to None.
+            attribution: Attribution for the source raster. This defaults to a message
+                about it being a local file. Defaults to None.
+            layer_name: The layer name to use. Defaults to "netCDF layer".
+            shift_lon: Flag to shift longitude values from [0, 360] to the range [-180,
+                180]. Defaults to True.
+            lat: Name of the latitude variable. Defaults to 'lat'.
+            lon: Name of the longitude variable. Defaults to 'lon'.
         """
         tif, vars = netcdf_to_tif(
             filename, shift_lon=shift_lon, lat=lat, lon=lon, return_vars=True
@@ -4340,48 +4350,49 @@ class Map(core.Map):
     def add_velocity(
         self,
         data,
-        zonal_speed,
-        meridional_speed,
-        latitude_dimension="lat",
-        longitude_dimension="lon",
-        level_dimension="lev",
-        level_index=0,
-        time_index=0,
-        velocity_scale=0.01,
-        max_velocity=20,
-        display_options={},
-        name="Velocity",
-    ):
+        zonal_speed: str,
+        meridional_speed: str,
+        latitude_dimension: str = "lat",
+        longitude_dimension: str = "lon",
+        level_dimension: str = "lev",
+        level_index: int = 0,
+        time_index: int = 0,
+        velocity_scale: float = 0.01,
+        max_velocity: int = 20,
+        display_options: dict = {},
+        name: str = "Velocity",
+    ) -> None:
         """Add a velocity layer to the map.
 
         Args:
-            data (str | xr.Dataset): The data to use for the velocity layer. It can be a file path to a NetCDF file or an xarray Dataset.
-            zonal_speed (str): Name of the zonal speed in the dataset. See https://en.wikipedia.org/wiki/Zonal_and_meridional_flow.
-            meridional_speed (str): Name of the meridional speed in the dataset. See https://en.wikipedia.org/wiki/Zonal_and_meridional_flow.
-            latitude_dimension (str, optional): Name of the latitude dimension in the dataset. Defaults to 'lat'.
-            longitude_dimension (str, optional): Name of the longitude dimension in the dataset. Defaults to 'lon'.
-            level_dimension (str, optional): Name of the level dimension in the dataset. Defaults to 'lev'.
-            level_index (int, optional): The index of the level dimension to display. Defaults to 0.
-            time_index (int, optional): The index of the time dimension to display. Defaults to 0.
-            velocity_scale (float, optional): The scale of the velocity. Defaults to 0.01.
-            max_velocity (int, optional): The maximum velocity to display. Defaults to 20.
-            display_options (dict, optional): The display options for the velocity layer. Defaults to {}. See https://bit.ly/3uf8t6w.
-            name (str, optional): Layer name to use . Defaults to 'Velocity'.
+            data (str | xr.Dataset): The data to use for the velocity layer. It can be a
+                file path to a NetCDF file or an xarray Dataset.
+            zonal_speed: Name of the zonal speed in the dataset. See
+                https://en.wikipedia.org/wiki/Zonal_and_meridional_flow.
+            meridional_speed: Name of the meridional speed in the dataset. See
+                https://en.wikipedia.org/wiki/Zonal_and_meridional_flow.
+            latitude_dimension: Name of the latitude dimension in the dataset. Defaults
+                to 'lat'.
+            longitude_dimension: Name of the longitude dimension in the
+                dataset. Defaults to 'lon'.
+            level_dimension: Name of the level dimension in the dataset. Defaults to
+                'lev'.
+            level_index: The index of the level dimension to display. Defaults to 0.
+            time_index: The index of the time dimension to display. Defaults to 0.
+            velocity_scale: The scale of the velocity. Defaults to 0.01.
+            max_velocity: The maximum velocity to display. Defaults to 20.
+            display_options: The display options for the velocity layer. Defaults to
+                {}. See https://bit.ly/3uf8t6w.
+            name: Layer name to use. Defaults to 'Velocity'.
 
         Raises:
             ImportError: If the xarray package is not installed.
             ValueError: If the data is not a NetCDF file or an xarray Dataset.
         """
-        try:
-            import xarray as xr
+        import xarray as xr
 
-            # Velocity depends on traittypes Dataset that needs xarray.
-            from ipyleaflet.velocity import Velocity
-        except ImportError:
-            raise ImportError(
-                "The xarray package is required to add a velocity layer. "
-                "Please install it with `pip install xarray`."
-            )
+        # Velocity depends on traittypes Dataset that needs xarray.
+        from ipyleaflet.velocity import Velocity
 
         if isinstance(data, str):
             if data.startswith("http"):
@@ -4395,7 +4406,7 @@ class Map(core.Map):
 
         coords = list(ds.coords.keys())
 
-        # Rasterio does not handle time or levels. So we must drop them
+        # Rasterio does not handle time or levels, so we must drop them.
         if "time" in coords:
             ds = ds.isel(time=time_index, drop=True)
 
@@ -4744,17 +4755,18 @@ class Map(core.Map):
         vis_params: dict | None = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Converts a specific layer from Earth Engine to an image file.
+        """Converts a specific layer from Earth Engine to an image file.
 
         Args:
-            layer_name (str): The name of the layer to convert.
-            output (str): The output file path for the image. Defaults to None.
-            crs (str, optional): The coordinate reference system (CRS) of the output image. Defaults to "EPSG:3857".
-            scale (int, optional): The scale of the output image. Defaults to None.
-            region (ee.Geometry, optional): The region of interest for the conversion. Defaults to None.
-            vis_params (dict, optional): The visualization parameters. Defaults to None.
-            **kwargs: Additional keyword arguments to pass to the `download_ee_image` function.
+            layer_name: The name of the layer to convert.
+            output: The output file path for the image. Defaults to None.
+            crs: The coordinate reference system (CRS) of the output image. Defaults to
+                "EPSG:3857".
+            scale: The scale of the output image. Defaults to None.
+            region: The region of interest for the conversion. Defaults to None.
+            vis_params: The visualization parameters. Defaults to None.
+            **kwargs: Additional keyword arguments to pass to the `download_ee_image`
+              function.
         """
         if region is None:
             b = self.bounds
@@ -4839,16 +4851,22 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
 
 
 def ee_tile_layer(
-    ee_object, vis_params={}, name="Layer untitled", shown=True, opacity=1.0
+    ee_object,
+    vis_params={},
+    name: str = "Layer untitled",
+    shown: bool = True,
+    opacity: float = 1.0,
 ):
     """Converts and Earth Engine layer to ipyleaflet TileLayer.
 
     Args:
         ee_object (Collection|Feature|Image|MapId): The object to add to the map.
         vis_params (dict, optional): The visualization parameters. Defaults to {}.
-        name (str, optional): The name of the layer. Defaults to 'Layer untitled'.
-        shown (bool, optional): A flag indicating whether the layer should be on by default. Defaults to True.
-        opacity (float, optional): The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+        name: The name of the layer. Defaults to 'Layer untitled'.
+        shown: A flag indicating whether the layer should be on by default. Defaults to
+            True.
+        opacity: The layer's opacity represented as a number between 0 and 1. Defaults
+            to 1.
     """
     return EELeafletTileLayer(ee_object, vis_params, name, shown, opacity)
 
