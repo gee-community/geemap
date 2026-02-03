@@ -10,6 +10,7 @@ from unittest import mock
 
 try:
     from maplibre.ipywidget import MapWidget
+
     MAPLIBRE_AVAILABLE = True
 except ImportError:
     MAPLIBRE_AVAILABLE = False
@@ -27,6 +28,7 @@ def get_maplibregl():
     try:
         with mock.patch("geemap.coreutils.ee_initialize"):
             from geemap import maplibregl
+
             MAPLIBREGL_MODULE = maplibregl
             return maplibregl
     except Exception as e:
@@ -50,6 +52,7 @@ class MaplibreglTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         import shutil
+
         shutil.rmtree(cls.temp_dir, ignore_errors=True)
 
     def setUp(self) -> None:
@@ -175,7 +178,7 @@ class TestAddTileLayer(MaplibreglTestCase):
             m.add_tile_layer(
                 url="https://tile.example.com/{z}/{x}/{y}.png",
                 name="Test Layer",
-                attribution="Test"
+                attribution="Test",
             )
 
 

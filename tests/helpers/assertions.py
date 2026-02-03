@@ -50,12 +50,8 @@ def assert_valid_rgb_color(
 ) -> None:
     test_case.assertEqual(len(color), 3, "RGB color must have 3 components")
     for i, component in enumerate(color):
-        test_case.assertGreaterEqual(
-            component, 0, f"RGB component {i} must be >= 0"
-        )
-        test_case.assertLessEqual(
-            component, 255, f"RGB component {i} must be <= 255"
-        )
+        test_case.assertGreaterEqual(component, 0, f"RGB component {i} must be >= 0")
+        test_case.assertLessEqual(component, 255, f"RGB component {i} must be <= 255")
 
 
 def assert_valid_bbox(

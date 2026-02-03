@@ -64,7 +64,9 @@ def mock_features_from_bbox(
 ) -> MockGeoDataFrame:
     west, south, east, north = bbox
     return MockGeoDataFrame(
-        geometry=[Polygon([(west, south), (east, south), (east, north), (west, north)])],
+        geometry=[
+            Polygon([(west, south), (east, south), (east, north), (west, north)])
+        ],
         data={"name": ["Test BBox Feature"]},
     )
 

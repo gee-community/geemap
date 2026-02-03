@@ -279,9 +279,7 @@ class TestAddTextToGif(unittest.TestCase):
 class TestReduceGifSize(unittest.TestCase):
 
     @mock.patch("geemap.timelapse.is_tool", return_value=False)
-    def test_reduce_gif_size_no_gifsicle_raises(
-        self, mock_is_tool: mock.Mock
-    ) -> None:
+    def test_reduce_gif_size_no_gifsicle_raises(self, mock_is_tool: mock.Mock) -> None:
         from geemap import timelapse
 
         with self.assertRaises(Exception):
@@ -374,9 +372,7 @@ class TestCreateTimeseries(unittest.TestCase):
 
     @mock.patch("geemap.timelapse.ee", mock_ee)
     @mock.patch("geemap.timelapse.date_sequence")
-    def test_create_timeseries_with_bands(
-        self, mock_date_seq: mock.Mock
-    ) -> None:
+    def test_create_timeseries_with_bands(self, mock_date_seq: mock.Mock) -> None:
         from geemap import timelapse
 
         mock_dates = mock_ee.List(["2020-01-01"])

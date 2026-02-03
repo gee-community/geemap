@@ -10,6 +10,7 @@ from unittest import mock
 
 try:
     import pydeck as pdk
+
     PYDECK_AVAILABLE = True
 except ImportError:
     PYDECK_AVAILABLE = False
@@ -27,6 +28,7 @@ def get_deck():
     try:
         with mock.patch("geemap.coreutils.ee_initialize"):
             from geemap import deck
+
             DECK_MODULE = deck
             return deck
     except Exception as e:
@@ -50,6 +52,7 @@ class DeckTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         import shutil
+
         shutil.rmtree(cls.temp_dir, ignore_errors=True)
 
     def setUp(self) -> None:
@@ -68,9 +71,7 @@ class TestLayerInit(DeckTestCase):
     def test_layer_init_with_data(self) -> None:
         with mock.patch("geemap.coreutils.ee_initialize"):
             layer = self.deck.Layer(
-                "ScatterplotLayer",
-                data=[{"position": [0, 0]}],
-                id="test_layer"
+                "ScatterplotLayer", data=[{"position": [0, 0]}], id="test_layer"
             )
             self.assertIsInstance(layer, pdk.Layer)
 

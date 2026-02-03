@@ -12,6 +12,7 @@ import pandas as pd
 
 try:
     import folium
+
     FOLIUM_AVAILABLE = True
 except ImportError:
     FOLIUM_AVAILABLE = False
@@ -29,6 +30,7 @@ def get_foliumap():
     try:
         with mock.patch("geemap.coreutils.ee_initialize"):
             from geemap import foliumap
+
             FOLIUMAP_MODULE = foliumap
             return foliumap
     except Exception as e:
@@ -52,6 +54,7 @@ class FoliumapTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         import shutil
+
         shutil.rmtree(cls.temp_dir, ignore_errors=True)
 
     def setUp(self) -> None:
@@ -240,7 +243,11 @@ class TestAddHeatmap(FoliumapTestCase):
         with mock.patch("geemap.coreutils.ee_initialize"):
             m = self.foliumap.Map(ee_initialize=False)
             df = pd.DataFrame(
-                {"latitude": [37.8, 37.7], "longitude": [-122.4, -122.3], "value": [1.0, 0.5]}
+                {
+                    "latitude": [37.8, 37.7],
+                    "longitude": [-122.4, -122.3],
+                    "value": [1.0, 0.5],
+                }
             )
             m.add_heatmap(data=df, name="Test Heatmap")
 

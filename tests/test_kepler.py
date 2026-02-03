@@ -12,6 +12,7 @@ import pandas as pd
 
 try:
     import keplergl
+
     KEPLERGL_AVAILABLE = True
 except ImportError:
     KEPLERGL_AVAILABLE = False
@@ -29,6 +30,7 @@ def get_kepler():
     try:
         with mock.patch("geemap.coreutils.ee_initialize"):
             from geemap import kepler
+
             KEPLER_MODULE = kepler
             return kepler
     except Exception as e:
@@ -52,6 +54,7 @@ class KeplerTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         import shutil
+
         shutil.rmtree(cls.temp_dir, ignore_errors=True)
 
     def setUp(self) -> None:
@@ -177,11 +180,13 @@ class TestAddDf(KeplerTestCase):
     def test_add_df_valid(self) -> None:
         with mock.patch("geemap.coreutils.ee_initialize"):
             m = self.kepler.Map()
-            df = pd.DataFrame({
-                "latitude": [37.8, 37.7],
-                "longitude": [-122.4, -122.3],
-                "value": [1.0, 0.5]
-            })
+            df = pd.DataFrame(
+                {
+                    "latitude": [37.8, 37.7],
+                    "longitude": [-122.4, -122.3],
+                    "value": [1.0, 0.5],
+                }
+            )
             m.add_df(df, layer_name="Test DataFrame")
 
 
@@ -190,11 +195,13 @@ class TestAddCsv(KeplerTestCase):
 
     def test_add_csv_valid(self) -> None:
         with mock.patch("geemap.coreutils.ee_initialize"):
-            df = pd.DataFrame({
-                "latitude": [37.8, 37.7],
-                "longitude": [-122.4, -122.3],
-                "value": [1.0, 0.5]
-            })
+            df = pd.DataFrame(
+                {
+                    "latitude": [37.8, 37.7],
+                    "longitude": [-122.4, -122.3],
+                    "value": [1.0, 0.5],
+                }
+            )
             temp_path = os.path.join(self.temp_dir, "test.csv")
             df.to_csv(temp_path, index=False)
 

@@ -11,6 +11,7 @@ import pandas as pd
 
 try:
     import plotly.graph_objects as go
+
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
@@ -28,6 +29,7 @@ def get_plotlymap():
     try:
         with mock.patch("geemap.coreutils.ee_initialize"):
             from geemap import plotlymap
+
             PLOTLYMAP_MODULE = plotlymap
             return plotlymap
     except Exception as e:
@@ -51,6 +53,7 @@ class PlotlymapTestCase(unittest.TestCase):
     @classmethod
     def tearDownClass(cls) -> None:
         import shutil
+
         shutil.rmtree(cls.temp_dir, ignore_errors=True)
 
     def setUp(self) -> None:
@@ -156,7 +159,7 @@ class TestAddTileLayer(PlotlymapTestCase):
             m.add_tile_layer(
                 url="https://tile.example.com/{z}/{x}/{y}.png",
                 name="Test Layer",
-                attribution="Test"
+                attribution="Test",
             )
 
 
@@ -214,11 +217,13 @@ class TestAddHeatmap(PlotlymapTestCase):
     def test_add_heatmap_dataframe(self) -> None:
         with mock.patch("geemap.coreutils.ee_initialize"):
             m = self.plotlymap.Map(ee_initialize=False)
-            df = pd.DataFrame({
-                "latitude": [37.8, 37.7],
-                "longitude": [-122.4, -122.3],
-                "value": [1.0, 0.5]
-            })
+            df = pd.DataFrame(
+                {
+                    "latitude": [37.8, 37.7],
+                    "longitude": [-122.4, -122.3],
+                    "value": [1.0, 0.5],
+                }
+            )
             m.add_heatmap(df)
 
     def test_add_heatmap_invalid_data_raises(self) -> None:

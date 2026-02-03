@@ -100,10 +100,12 @@ def create_sample_geojson(
         else:
             coordinates = [i, i]
 
-        features.append({
-            "type": "Feature",
-            "properties": {"id": i, "name": f"feature_{i}"},
-            "geometry": {"type": geom_type, "coordinates": coordinates},
-        })
+        features.append(
+            {
+                "type": "Feature",
+                "properties": {"id": i, "name": f"feature_{i}"},
+                "geometry": {"type": geom_type, "coordinates": coordinates},
+            }
+        )
 
     return {"type": "FeatureCollection", "features": features}

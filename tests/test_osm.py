@@ -51,9 +51,7 @@ class TestOsmGdfFromAddress(unittest.TestCase):
 class TestOsmShpFromAddress(unittest.TestCase):
 
     @mock.patch("geemap.osm.osm_gdf_from_address")
-    def test_osm_shp_from_address_creates_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_shp_from_address_creates_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -67,7 +65,9 @@ class TestOsmShpFromAddress(unittest.TestCase):
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
-        osm.osm_shp_from_address("Tokyo", {"building": True}, "/tmp/test.shp", dist=2000)
+        osm.osm_shp_from_address(
+            "Tokyo", {"building": True}, "/tmp/test.shp", dist=2000
+        )
         mock_gdf_func.assert_called_once_with("Tokyo", {"building": True}, 2000)
 
 
@@ -130,9 +130,7 @@ class TestOsmGdfFromPlace(unittest.TestCase):
 class TestOsmShpFromPlace(unittest.TestCase):
 
     @mock.patch("geemap.osm.osm_gdf_from_place")
-    def test_osm_shp_from_place_creates_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_shp_from_place_creates_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -152,9 +150,7 @@ class TestOsmGeojsonFromPlace(unittest.TestCase):
         self.assertIsInstance(result, dict)
 
     @mock.patch("geemap.osm.osm_gdf_from_place")
-    def test_osm_geojson_from_place_writes_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_geojson_from_place_writes_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -196,9 +192,7 @@ class TestOsmGdfFromPoint(unittest.TestCase):
 class TestOsmShpFromPoint(unittest.TestCase):
 
     @mock.patch("geemap.osm.osm_gdf_from_point")
-    def test_osm_shp_from_point_creates_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_shp_from_point_creates_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -218,9 +212,7 @@ class TestOsmGeojsonFromPoint(unittest.TestCase):
         self.assertIsInstance(result, dict)
 
     @mock.patch("geemap.osm.osm_gdf_from_point")
-    def test_osm_geojson_from_point_writes_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_geojson_from_point_writes_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -257,9 +249,7 @@ class TestOsmGdfFromPolygon(unittest.TestCase):
 class TestOsmShpFromPolygon(unittest.TestCase):
 
     @mock.patch("geemap.osm.osm_gdf_from_polygon")
-    def test_osm_shp_from_polygon_creates_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_shp_from_polygon_creates_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -318,33 +308,27 @@ class TestOsmGdfFromBbox(unittest.TestCase):
 class TestOsmShpFromBbox(unittest.TestCase):
 
     @mock.patch("geemap.osm.osm_gdf_from_bbox")
-    def test_osm_shp_from_bbox_creates_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_shp_from_bbox_creates_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
-        osm.osm_shp_from_bbox(40.8, 40.7, -73.9, -74.0, {"building": True}, "/tmp/test.shp")
+        osm.osm_shp_from_bbox(
+            40.8, 40.7, -73.9, -74.0, {"building": True}, "/tmp/test.shp"
+        )
         mock_gdf.to_file.assert_called_once_with("/tmp/test.shp")
 
 
 class TestOsmGeojsonFromBbox(unittest.TestCase):
 
     @mock.patch("geemap.osm.osm_gdf_from_bbox")
-    def test_osm_geojson_from_bbox_returns_dict(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_geojson_from_bbox_returns_dict(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf_func.return_value = mock_gdf
-        result = osm.osm_geojson_from_bbox(
-            40.8, 40.7, -73.9, -74.0, {"building": True}
-        )
+        result = osm.osm_geojson_from_bbox(40.8, 40.7, -73.9, -74.0, {"building": True})
         self.assertIsInstance(result, dict)
 
     @mock.patch("geemap.osm.osm_gdf_from_bbox")
-    def test_osm_geojson_from_bbox_writes_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_geojson_from_bbox_writes_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -421,9 +405,7 @@ class TestOsmGdfFromGeocode(unittest.TestCase):
 class TestOsmShpFromGeocode(unittest.TestCase):
 
     @mock.patch("geemap.osm.osm_gdf_from_geocode")
-    def test_osm_shp_from_geocode_creates_file(
-        self, mock_gdf_func: mock.Mock
-    ) -> None:
+    def test_osm_shp_from_geocode_creates_file(self, mock_gdf_func: mock.Mock) -> None:
         mock_gdf = MockGeoDataFrame()
         mock_gdf.to_file = mock.Mock()
         mock_gdf_func.return_value = mock_gdf
@@ -456,9 +438,7 @@ class TestOsmGeojsonFromGeocode(unittest.TestCase):
 class TestOsmTagsList(unittest.TestCase):
 
     @mock.patch("geemap.osm.webbrowser.open_new_tab")
-    def test_osm_tags_list_opens_browser(
-        self, mock_open: mock.Mock
-    ) -> None:
+    def test_osm_tags_list_opens_browser(self, mock_open: mock.Mock) -> None:
         osm.osm_tags_list()
         mock_open.assert_called_once_with(
             "https://wiki.openstreetmap.org/wiki/Map_features"

@@ -30,7 +30,9 @@ class Image:
 
     def select(self, *args, **__) -> "Image":
         if args:
-            self._bands = list(args[0]) if isinstance(args[0], (list, tuple)) else [args[0]]
+            self._bands = (
+                list(args[0]) if isinstance(args[0], (list, tuple)) else [args[0]]
+            )
         return self
 
     def clip(self, *_, **__) -> "Image":
@@ -38,7 +40,9 @@ class Image:
 
     def rename(self, *args, **__) -> "Image":
         if args:
-            self._bands = list(args[0]) if isinstance(args[0], (list, tuple)) else [args[0]]
+            self._bands = (
+                list(args[0]) if isinstance(args[0], (list, tuple)) else [args[0]]
+            )
         return self
 
     def multiply(self, *_, **__) -> "Image":
@@ -311,7 +315,9 @@ class FeatureCollection:
     def getInfo(self, *_, **__) -> dict:
         return {
             "type": "FeatureCollection",
-            "features": [f.getInfo() if hasattr(f, "getInfo") else f for f in self.features],
+            "features": [
+                f.getInfo() if hasattr(f, "getInfo") else f for f in self.features
+            ],
         }
 
     def __eq__(self, other: object) -> bool:

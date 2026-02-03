@@ -77,7 +77,9 @@ class FakeMap:
                 mock_ee.Image,
             ),
         ):
-            layer = FakeEeTileLayer(name=name or "layer", visible=shown, opacity=opacity)
+            layer = FakeEeTileLayer(
+                name=name or "layer", visible=shown, opacity=opacity
+            )
             self.ee_layers[name] = {
                 "ee_object": ee_object,
                 "ee_layer": layer,

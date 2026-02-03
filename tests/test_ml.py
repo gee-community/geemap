@@ -29,15 +29,17 @@ class MockTree:
         self.threshold = np.array([0.5, 0.3, -2.0, -2.0, 0.7, -2.0, -2.0])
 
         if is_classifier:
-            self.value = np.array([
-                [[50, 50]],
-                [[40, 20]],
-                [[30, 0]],
-                [[10, 20]],
-                [[10, 30]],
-                [[5, 15]],
-                [[5, 15]],
-            ])
+            self.value = np.array(
+                [
+                    [[50, 50]],
+                    [[40, 20]],
+                    [[30, 0]],
+                    [[10, 20]],
+                    [[10, 30]],
+                    [[5, 15]],
+                    [[5, 15]],
+                ]
+            )
         else:
             self.value = np.array([0.5, 0.4, 0.3, 0.5, 0.6, 0.7, 0.8])
 
@@ -113,9 +115,7 @@ class TestTreeToString(unittest.TestCase):
         estimator = MockDecisionTreeClassifier()
         feature_names = ["band1", "band2"]
 
-        result = ml.tree_to_string(
-            estimator, feature_names, output_mode="PROBABILITY"
-        )
+        result = ml.tree_to_string(estimator, feature_names, output_mode="PROBABILITY")
 
         self.assertIsInstance(result, str)
         self.assertIn("root", result)
@@ -161,9 +161,7 @@ class TestTreeToString(unittest.TestCase):
         feature_names = ["band1", "band2"]
 
         with self.assertRaises(NotImplementedError):
-            ml.tree_to_string(
-                estimator, feature_names, output_mode="MULTIPROBABILITY"
-            )
+            ml.tree_to_string(estimator, feature_names, output_mode="MULTIPROBABILITY")
 
     def test_tree_to_string_invalid_mode_raises(self) -> None:
         from geemap import ml

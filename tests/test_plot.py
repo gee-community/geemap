@@ -21,11 +21,13 @@ class MockFigure:
 
 
 def create_sample_dataframe() -> pd.DataFrame:
-    return pd.DataFrame({
-        "category": ["A", "B", "C", "D", "E"],
-        "value": [10, 20, 15, 25, 5],
-        "count": [100, 200, 150, 250, 50],
-    })
+    return pd.DataFrame(
+        {
+            "category": ["A", "B", "C", "D", "E"],
+            "value": [10, 20, 15, 25, 5],
+            "count": [100, 200, 150, 250, 50],
+        }
+    )
 
 
 class TestBarChart(unittest.TestCase):
@@ -78,9 +80,7 @@ class TestBarChart(unittest.TestCase):
     @mock.patch("geemap.plot.px.bar")
     def test_bar_chart_x_label_applied(self, mock_bar: mock.Mock) -> None:
         mock_bar.return_value = MockFigure()
-        plot.bar_chart(
-            data=self.df, x="category", y="value", x_label="Category Label"
-        )
+        plot.bar_chart(data=self.df, x="category", y="value", x_label="Category Label")
         call_args = mock_bar.call_args
         labels = call_args[1].get("labels", {})
         self.assertEqual(labels.get("category"), "Category Label")
@@ -88,9 +88,7 @@ class TestBarChart(unittest.TestCase):
     @mock.patch("geemap.plot.px.bar")
     def test_bar_chart_y_label_applied(self, mock_bar: mock.Mock) -> None:
         mock_bar.return_value = MockFigure()
-        plot.bar_chart(
-            data=self.df, x="category", y="value", y_label="Value Label"
-        )
+        plot.bar_chart(data=self.df, x="category", y="value", y_label="Value Label")
         call_args = mock_bar.call_args
         labels = call_args[1].get("labels", {})
         self.assertEqual(labels.get("value"), "Value Label")
@@ -99,9 +97,7 @@ class TestBarChart(unittest.TestCase):
     def test_bar_chart_legend_title_applied(self, mock_bar: mock.Mock) -> None:
         mock_fig = MockFigure()
         mock_bar.return_value = mock_fig
-        plot.bar_chart(
-            data=self.df, x="category", y="value", legend_title="My Legend"
-        )
+        plot.bar_chart(data=self.df, x="category", y="value", legend_title="My Legend")
         legend = mock_fig.layout_updates.get("legend", {})
         self.assertEqual(legend.get("title"), "My Legend")
 
@@ -210,9 +206,7 @@ class TestLineChart(unittest.TestCase):
     def test_line_chart_legend_title_applied(self, mock_line: mock.Mock) -> None:
         mock_fig = MockFigure()
         mock_line.return_value = mock_fig
-        plot.line_chart(
-            data=self.df, x="category", y="value", legend_title="Legend"
-        )
+        plot.line_chart(data=self.df, x="category", y="value", legend_title="Legend")
         legend = mock_fig.layout_updates.get("legend", {})
         self.assertEqual(legend.get("title"), "Legend")
 
@@ -305,10 +299,12 @@ class TestHistogram(unittest.TestCase):
 class TestPieChart(unittest.TestCase):
 
     def setUp(self) -> None:
-        self.df = pd.DataFrame({
-            "fruit": ["Apple", "Banana", "Cherry", "Date", "Elderberry"],
-            "quantity": [30, 20, 15, 25, 10],
-        })
+        self.df = pd.DataFrame(
+            {
+                "fruit": ["Apple", "Banana", "Cherry", "Date", "Elderberry"],
+                "quantity": [30, 20, 15, 25, 10],
+            }
+        )
 
     @mock.patch("geemap.plot.px.pie")
     def test_pie_chart_valid_dataframe(self, mock_pie: mock.Mock) -> None:
@@ -334,10 +330,12 @@ class TestPieChart(unittest.TestCase):
     @mock.patch("geemap.plot.px.pie")
     def test_pie_chart_max_rows_with_other(self, mock_pie: mock.Mock) -> None:
         mock_pie.return_value = MockFigure()
-        df = pd.DataFrame({
-            "fruit": ["A", "B", "C", "D", "E", "F"],
-            "quantity": [100, 80, 60, 40, 20, 10],
-        })
+        df = pd.DataFrame(
+            {
+                "fruit": ["A", "B", "C", "D", "E", "F"],
+                "quantity": [100, 80, 60, 40, 20, 10],
+            }
+        )
         plot.pie_chart(data=df, names="fruit", values="quantity", max_rows=4)
         call_args = mock_pie.call_args
         data_passed = call_args[1].get("data_frame")
@@ -346,10 +344,12 @@ class TestPieChart(unittest.TestCase):
     @mock.patch("geemap.plot.px.pie")
     def test_pie_chart_custom_other_label(self, mock_pie: mock.Mock) -> None:
         mock_pie.return_value = MockFigure()
-        df = pd.DataFrame({
-            "fruit": ["A", "B", "C", "D", "E"],
-            "quantity": [100, 80, 60, 40, 20],
-        })
+        df = pd.DataFrame(
+            {
+                "fruit": ["A", "B", "C", "D", "E"],
+                "quantity": [100, 80, 60, 40, 20],
+            }
+        )
         plot.pie_chart(
             data=df,
             names="fruit",
@@ -364,9 +364,7 @@ class TestPieChart(unittest.TestCase):
     @mock.patch("geemap.plot.px.pie")
     def test_pie_chart_donut_hole(self, mock_pie: mock.Mock) -> None:
         mock_pie.return_value = MockFigure()
-        plot.pie_chart(
-            data=self.df, names="fruit", values="quantity", hole=0.4
-        )
+        plot.pie_chart(data=self.df, names="fruit", values="quantity", hole=0.4)
         call_args = mock_pie.call_args
         self.assertEqual(call_args[1].get("hole"), 0.4)
 
@@ -407,9 +405,7 @@ class TestPieChart(unittest.TestCase):
     @mock.patch("geemap.plot.px.pie")
     def test_pie_chart_opacity_passed(self, mock_pie: mock.Mock) -> None:
         mock_pie.return_value = MockFigure()
-        plot.pie_chart(
-            data=self.df, names="fruit", values="quantity", opacity=0.8
-        )
+        plot.pie_chart(data=self.df, names="fruit", values="quantity", opacity=0.8)
         call_args = mock_pie.call_args
         self.assertEqual(call_args[1].get("opacity"), 0.8)
 

@@ -7,8 +7,7 @@ import unittest
 
 from tests.conftest import GeemapTestCase
 from tests.helpers import assertions, factories
-from tests.mocks import (mock_ee, mock_map, mock_osmnx, mock_plotly,
-                         mock_requests)
+from tests.mocks import mock_ee, mock_map, mock_osmnx, mock_plotly, mock_requests
 
 
 class TestMockEe(unittest.TestCase):
