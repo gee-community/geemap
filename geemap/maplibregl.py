@@ -1,5 +1,7 @@
 """Map class for creating interactive maps using the maplibre.ipywidget module."""
 
+from __future__ import annotations
+
 import base64
 import glob
 import importlib.resources
@@ -11,6 +13,7 @@ import webbrowser
 import box
 import geopandas as gpd
 import ipyvuetify as v
+import ipywidgets as widgets
 import numpy as np
 import pandas as pd
 import requests
@@ -194,7 +197,7 @@ class Map(MapWidget):
                     reverse_aliases[map_name] = alias
         return reverse_aliases.get(basemap_name, basemap_name)
 
-    def show(self) -> None:
+    def show(self) -> Container:
         """Displays the map."""
         return Container(self)
 
@@ -927,14 +930,13 @@ class Map(MapWidget):
         opacity: float = 1.0,
         visible: bool = True,
         bands: list[int] | None = None,
-        nodata: int | float | None = 0,
+        nodata: float | None = 0,
         titiler_endpoint: str = None,
         fit_bounds: bool = True,
         before_id: str | None = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a Cloud Optimized Geotiff (COG) TileLayer to the map.
+        """Adds a Cloud Optimized Geotiff (COG) TileLayer to the map.
 
         This method adds a COG TileLayer to the map. The COG TileLayer is created
         from the specified URL, and it is added to the map with the specified name,
@@ -963,8 +965,6 @@ class Map(MapWidget):
                     To select a certain bands, use bidx=[1, 2, 3]. apply a
                         rescaling to multiple bands, use something like
                         `rescale=["164,223","130,211","99,212"]`.
-        Returns:
-            None
         """
 
         if name is None:
@@ -985,7 +985,7 @@ class Map(MapWidget):
         item: str | None = None,
         assets: str | list[str] | None = None,
         bands: list[str] | None = None,
-        nodata: int | float | None = 0,
+        nodata: float | None = 0,
         titiler_endpoint: str | None = None,
         name: str = "STAC Layer",
         attribution: str = "",
@@ -995,8 +995,7 @@ class Map(MapWidget):
         before_id: str | None = None,
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a STAC TileLayer to the map.
+        """Adds a STAC TileLayer to the map.
 
         This method adds a STAC TileLayer to the map. The STAC TileLayer is
         created from the specified URL, collection, item, assets, and bands, and
@@ -1004,40 +1003,37 @@ class Map(MapWidget):
         visibility, and fit bounds.
 
         Args:
-            url (str, optional): HTTP URL to a STAC item, e.g., https://bit.ly/3VlttGm.
-                Defaults to None.
-            collection (str, optional): The Microsoft Planetary Computer STAC
-                collection ID, e.g., landsat-8-c2-l2. Defaults to None.
-            item (str, optional): The Microsoft Planetary Computer STAC item ID, e.g.,
+            url: HTTP URL to a STAC item, e.g., https://bit.ly/3VlttGm. Defaults to
+                None.
+            collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
+                landsat-8-c2-l2. Defaults to None.
+            item: The Microsoft Planetary Computer STAC item ID, e.g.,
                 LC08_L2SP_047027_20201204_02_T1. Defaults to None.
-            assets (str | list, optional): The Microsoft Planetary Computer STAC asset ID,
-                e.g., ["SR_B7", "SR_B5", "SR_B4"]. Defaults to None.
-            bands (list, optional): A list of band names, e.g.,
-                ["SR_B7", "SR_B5", "SR_B4"]. Defaults to None.
-            no_data (int | float, optional): The nodata value to use for the layer.
-            titiler_endpoint (str, optional): Titiler endpoint, e.g., "https://giswqs-titiler-endpoint.hf.space",
+            assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7",
+                "SR_B5", "SR_B4"]. Defaults to None.
+            bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]. Defaults to
+                None.
+            no_data: The nodata value to use for the layer.
+            titiler_endpoint: Titiler endpoint, e.g.,
+                "https://giswqs-titiler-endpoint.hf.space",
                 "https://planetarycomputer.microsoft.com/api/data/v1",
                 "planetary-computer", "pc". Defaults to None.
-            name (str, optional): The layer name to use for the layer. Defaults to 'STAC Layer'.
-            attribution (str, optional): The attribution to use. Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.
-            visible (bool, optional): A flag indicating whether the layer should
-                be on by default. Defaults to True.
-            fit_bounds (bool, optional): A flag indicating whether the map should
-                be zoomed to the layer extent. Defaults to True.
-            before_id (str, optional): The ID of an existing layer before which
-                the new layer should be inserted.
+            name: The layer name to use for the layer. Defaults to 'STAC Layer'.
+            attribution: The attribution to use. Defaults to ''.
+            opacity: The opacity of the layer. Defaults to 1.
+            visible: A flag indicating whether the layer should be on by
+                default. Defaults to True.
+            fit_bounds: A flag indicating whether the map should be zoomed to the layer
+                extent. Defaults to True.
+            before_id: The ID of an existing layer before which the new layer should be
+                inserted.
             **kwargs: Arbitrary keyword arguments, including bidx, expression,
                 nodata, unscale, resampling, rescale, color_formula, colormap,
                 colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/
                 and https://cogeotiff.github.io/rio-tiler/colormap/. To select
                 a certain bands, use bidx=[1, 2, 3]. apply a rescaling to multiple
                 bands, use something like `rescale=["164,223","130,211","99,212"]`.
-
-        Returns:
-            None
         """
-
         if "colormap_name" in kwargs and kwargs["colormap_name"] is None:
             kwargs.pop("colormap_name")
 
@@ -1164,20 +1160,19 @@ class Map(MapWidget):
         """Render the map to an HTML page.
 
         Args:
-            output (str, optional): The output HTML file. If None, the HTML content
-                is returned as a string. Defaults
-            title (str, optional): The title of the HTML page. Defaults to 'My Awesome Map'.
-            width (str, optional): The width of the map. Defaults to '100%'.
-            height (str, optional): The height of the map. Defaults to '100%'.
-            replace_key (bool, optional): Whether to replace the API key in the HTML.
-                If True, the API key is replaced with the public API key.
-                The API key is read from the environment variable `MAPTILER_KEY`.
-                The public API key is read from the environment variable `MAPTILER_KEY_PUBLIC`.
-                Defaults to False.
-            remove_port (bool, optional): Whether to remove the port number from the HTML.
-            preview (bool, optional): Whether to preview the HTML file in a web browser.
-                Defaults to False.
-            overwrite (bool, optional): Whether to overwrite the output file if it already exists.
+            output: The output HTML file. If None, the HTML content is returned as a
+                string. Defaults
+            title: The title of the HTML page. Defaults to 'My Awesome Map'.
+            width: The width of the map. Defaults to '100%'.
+            height: The height of the map. Defaults to '100%'.
+            replace_key: Whether to replace the API key in the HTML.  If True, the API
+                key is replaced with the public API key.  The API key is read from the
+                environment variable `MAPTILER_KEY`.  The public API key is read from
+                the environment variable `MAPTILER_KEY_PUBLIC`.  Defaults to False.
+            remove_port: Whether to remove the port number from the HTML.
+            preview: Whether to preview the HTML file in a web browser.  Defaults to
+                False.
+            overwrite: Whether to overwrite the output file if it already exists.
             **kwargs: Additional keyword arguments that are passed to the
                 `maplibre.ipywidget.MapWidget.to_html()` method.
 
@@ -1237,17 +1232,13 @@ class Map(MapWidget):
             return html
 
     def set_paint_property(self, name: str, prop: str, value: Any) -> None:
-        """
-        Set the opacity of a layer.
+        """Set the opacity of a layer.
 
         This method sets the opacity of the specified layer to the specified value.
 
         Args:
-            name (str): The name of the layer.
-            opacity (float): The opacity value to set.
-
-        Returns:
-            None
+            name: The name of the layer.
+            opacity: The opacity value to set.
         """
         super().set_paint_property(name, prop, value)
 
@@ -1259,18 +1250,14 @@ class Map(MapWidget):
                 layer["paint"][prop] = value
 
     def set_layout_property(self, name: str, prop: str, value: Any) -> None:
-        """
-        Set the layout property of a layer.
+        """Set the layout property of a layer.
 
         This method sets the layout property of the specified layer to the specified value.
 
         Args:
-            name (str): The name of the layer.
-            prop (str): The layout property to set.
-            value (Any): The value to set.
-
-        Returns:
-            None
+            name: The name of the layer.
+            prop: The layout property to set.
+            value: The value to set.
         """
         super().set_layout_property(name, prop, value)
 
@@ -1280,17 +1267,13 @@ class Map(MapWidget):
                 layer["layout"][prop] = value
 
     def set_color(self, name: str, color: str) -> None:
-        """
-        Set the color of a layer.
+        """Set the color of a layer.
 
         This method sets the color of the specified layer to the specified value.
 
         Args:
-            name (str): The name of the layer.
-            color (str): The color value to set.
-
-        Returns:
-            None
+            name: The name of the layer.
+            color: The color value to set.
         """
         color = coreutils.check_color(color)
         super().set_paint_property(
@@ -1299,19 +1282,14 @@ class Map(MapWidget):
         self.layer_dict[name]["color"] = color
 
     def set_opacity(self, name: str, opacity: float) -> None:
-        """
-        Set the opacity of a layer.
+        """Set the opacity of a layer.
 
         This method sets the opacity of the specified layer to the specified value.
 
         Args:
-            name (str): The name of the layer.
-            opacity (float): The opacity value to set.
-
-        Returns:
-            None
+            name: The name of the layer.
+            opacity: The opacity value to set.
         """
-
         if name in self.layer_dict:
             layer_type = self.layer_dict[name]["layer"].to_dict()["type"]
             prop_name = f"{layer_type}-opacity"
@@ -1325,33 +1303,26 @@ class Map(MapWidget):
         super().set_paint_property(name, prop_name, opacity)
 
     def set_visibility(self, name: str, visible: bool) -> None:
-        """
-        Set the visibility of a layer.
+        """Set the visibility of a layer.
 
         This method sets the visibility of the specified layer to the specified value.
 
         Args:
-            name (str): The name of the layer.
-            visible (bool): The visibility value to set.
-
-        Returns:
-            None
+            name: The name of the layer.
+            visible: The visibility value to set.
         """
         super().set_visibility(name, visible)
         self.layer_dict[name]["visible"] = visible
 
-    def layer_interact(self, name=None):
+    def layer_interact(self, name: str | None = None):
         """Create a layer widget for changing the visibility and opacity of a layer.
 
         Args:
-            name (str): The name of the layer.
+            name: The name of the layer.
 
         Returns:
             ipywidgets.Widget: The layer widget.
         """
-
-        import ipywidgets as widgets
-
         layer_names = list(self.layer_dict.keys())
         if name is None:
             name = layer_names[-1]
@@ -1426,18 +1397,15 @@ class Map(MapWidget):
 
         return hbox
 
-    def style_layer_interact(self, id=None):
+    def style_layer_interact(self, id: str | None = None):
         """Create a layer widget for changing the visibility and opacity of a style layer.
 
         Args:
-            id (str): The is of the layer.
+            id: The is of the layer.
 
         Returns:
             ipywidgets.Widget: The layer widget.
         """
-
-        import ipywidgets as widgets
-
         layer_ids = list(self.style_dict.keys())
         layer_ids.sort()
         if id is None:
@@ -1545,18 +1513,15 @@ class Map(MapWidget):
 
         return hbox
 
-    def _basemap_widget(self, name=None):
+    def _basemap_widget(self, name: str | None = None):
         """Create a layer widget for changing the visibility and opacity of a layer.
 
         Args:
-            name (str): The name of the layer.
+            name: The name of the layer.
 
         Returns:
             ipywidgets.Widget: The layer widget.
         """
-
-        import ipywidgets as widgets
-
         layer_names = [
             basemaps[basemap]["name"]
             for basemap in basemaps.keys()
@@ -1647,29 +1612,24 @@ class Map(MapWidget):
         fit_bounds: bool = True,
         **kwargs: Any,
     ) -> None:
-        """
-        Adds a PMTiles layer to the map.
+        """Adds a PMTiles layer to the map.
 
         Args:
-            url (str): The URL of the PMTiles file.
-            style (dict, optional): The CSS style to apply to the layer. Defaults to None.
-                See https://docs.mapbox.com/style-spec/reference/layers/ for more info.
-            visible (bool, optional): Whether the layer should be shown initially. Defaults to True.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.0.
-            exclude_mask (bool, optional): Whether to exclude the mask layer. Defaults to False.
-            tooltip (bool, optional): Whether to show tooltips on the layer. Defaults to True.
-            properties (dict, optional): The properties to use for the tooltips. Defaults to None.
-            template (str, optional): The template to use for the tooltips. Defaults to None.
-            attribution (str, optional): The attribution to use for the layer. Defaults to 'PMTiles'.
-            fit_bounds (bool, optional): Whether to zoom to the layer extent. Defaults to True.
-            **kwargs: Additional keyword arguments to pass to the PMTilesLayer constructor.
-
-        Returns:
-            None
+            url: The URL of the PMTiles file.
+            style: The CSS style to apply to the layer. Defaults to None.  See
+                https://docs.mapbox.com/style-spec/reference/layers/ for more info.
+            visible: Whether the layer should be shown initially. Defaults to True.
+            opacity: The opacity of the layer. Defaults to 1.0.
+            exclude_mask: Whether to exclude the mask layer. Defaults to False.
+            tooltip: Whether to show tooltips on the layer. Defaults to True.
+            properties: The properties to use for the tooltips. Defaults to None.
+            template: The template to use for the tooltips. Defaults to None.
+            attribution: The attribution to use for the layer. Defaults to 'PMTiles'.
+            fit_bounds: Whether to zoom to the layer extent. Defaults to True.
+            **kwargs: Additional keyword arguments to pass to the PMTilesLayer
+                constructor.
         """
-
         try:
-
             if "sources" in kwargs:
                 del kwargs["sources"]
 
@@ -1724,20 +1684,15 @@ class Map(MapWidget):
         popup: dict | None = {},
         options: dict | None = {},
     ) -> None:
-        """
-        Adds a marker to the map.
+        """Adds a marker to the map.
 
         Args:
-            marker (Marker, optional): A Marker object. Defaults to None.
-            lng_lat (List[Union[float, float]]): A list of two floats
-                representing the longitude and latitude of the marker.
-            popup (Optional[str], optional): The text to display in a popup when
-                the marker is clicked. Defaults to None.
-            options (Optional[Dict], optional): A dictionary of options to
-                customize the marker. Defaults to None.
-
-        Returns:
-            None
+            marker: A Marker object. Defaults to None.
+            lng_lat: A list of two floats representing the longitude and latitude of the
+                marker.
+            popup: The text to display in a popup when the marker is clicked. Defaults
+                to None.
+            options: A dictionary of options to customize the marker. Defaults to None.
         """
 
         if marker is None:
@@ -1753,24 +1708,17 @@ class Map(MapWidget):
         essential: bool = True,
         **kwargs: Any,
     ) -> None:
-        """
-        Makes the map fly to a specified location.
+        """Makes the map fly to a specified location.
 
         Args:
-            lon (float): The longitude of the location to fly to.
-            lat (float): The latitude of the location to fly to.
-            zoom (Optional[float], optional): The zoom level to use when flying
-                to the location. Defaults to None.
-            speed (Optional[float], optional): The speed of the fly animation.
-                Defaults to None.
-            essential (bool, optional): Whether the flyTo animation is considered
-                essential and not affected by prefers-reduced-motion. Defaults to True.
+            lon: The longitude of the location to fly to.
+            lat: The latitude of the location to fly to.
+            zoom: The zoom level to use when flying to the location. Defaults to None.
+            speed: The speed of the fly animation.  Defaults to None.
+            essential: Whether the flyTo animation is considered essential and not
+                affected by prefers-reduced-motion. Defaults to True.
             **kwargs: Additional keyword arguments to pass to the flyTo function.
-
-        Returns:
-            None
         """
-
         center = [lon, lat]
         kwargs["center"] = center
         if zoom is not None:
@@ -1783,20 +1731,17 @@ class Map(MapWidget):
         super().add_call("flyTo", kwargs)
 
     def _read_image(self, image: str) -> dict[str, int | list[int]]:
-        """
-        Reads an image from a URL or a local file path and returns a dictionary
-            with the image data.
+        """Reads image from a URL or local file path and returns a dict with the image.
 
         Args:
-            image (str): The URL or local file path to the image.
+            image: The URL or local file path to the image.
 
         Returns:
-            Dict[str, Union[int, List[int]]]: A dictionary with the image width,
-                height, and flattened data.
+            A dictionary with the image width, height, and flattened data.
 
         Raises:
-            ValueError: If the image argument is not a string representing a URL
-                or a local file path.
+            ValueError: If the image argument is not a string representing a URL or a
+                local file path.
         """
         from PIL import Image
 
@@ -1814,33 +1759,33 @@ class Map(MapWidget):
                     raise ValueError("The image file does not exist.")
 
                 width, height = img.size
-                # Convert image to numpy array and then flatten it
+                # Convert image to numpy array and then flatten it.
                 img_data = np.array(img, dtype="uint8")
                 if len(img_data.shape) == 3 and img_data.shape[2] == 2:
-                    # Split the grayscale and alpha channels
+                    # Split the grayscale and alpha channels.
                     gray_channel = img_data[:, :, 0]
                     alpha_channel = img_data[:, :, 1]
 
-                    # Create the R, G, and B channels by duplicating the grayscale channel
+                    # Create R, G, and B channels by duplicating the grayscale channel.
                     R_channel = gray_channel
                     G_channel = gray_channel
                     B_channel = gray_channel
 
-                    # Combine the channels into an RGBA image
+                    # Combine the channels into an RGBA image.
                     RGBA_image_data = np.stack(
                         (R_channel, G_channel, B_channel, alpha_channel), axis=-1
                     )
 
-                    # Update img_data to the new RGBA image data
+                    # Update img_data to the new RGBA image data.
                     img_data = RGBA_image_data
 
                 flat_img_data = img_data.flatten()
 
-                # Create the image dictionary with the flattened data
+                # Create the image dictionary with the flattened data.
                 image_dict = {
                     "width": width,
                     "height": height,
-                    "data": flat_img_data.tolist(),  # Convert to list if necessary
+                    "data": flat_img_data.tolist(),  # Convert to list if necessary.
                 }
 
                 return image_dict
@@ -1864,20 +1809,17 @@ class Map(MapWidget):
         """Add an image to the map.
 
         Args:
-            id (str): The layer ID of the image.
+            id: The layer ID of the image.
+            # TODO: Disagrees with the type annotations.
             image (Union[str, Dict, np.ndarray]): The URL or local file path to
                 the image, or a dictionary containing image data, or a numpy
                 array representing the image.
-            width (int, optional): The width of the image. Defaults to None.
-            height (int, optional): The height of the image. Defaults to None.
-            coordinates (List[float], optional): The longitude and latitude
-                coordinates to place the image.
-            position (str, optional): The position of the image. Defaults to None.
-                Can be one of 'top-right', 'top-left', 'bottom-right', 'bottom-left'.
-            icon_size (float, optional): The size of the icon. Defaults to 1.0.
-
-        Returns:
-            None
+            width: The width of the image. Defaults to None.
+            height: The height of the image. Defaults to None.
+            coordinates: The longitude and latitude coordinates to place the image.
+            position: The position of the image. Defaults to None.  Can be one of
+                'top-right', 'top-left', 'bottom-right', 'bottom-left'.
+            icon_size: The size of the icon. Defaults to 1.0.
         """
         if id is None:
             id = "image"
@@ -1951,25 +1893,21 @@ class Map(MapWidget):
         scrolling: bool | None = False,
         **kwargs: Any,
     ) -> Any:
-        """
-        Convert the map to a Streamlit component.
+        """Convert the map to a Streamlit component.
 
-        This function converts the map to a Streamlit component by encoding the
-        HTML representation of the map as base64 and embedding it in an iframe.
-        The width, height, and scrolling parameters control the appearance of
-        the iframe.
+        This function converts the map to a Streamlit component by encoding the HTML
+        representation of the map as base64 and embedding it in an iframe.  The width,
+        height, and scrolling parameters control the appearance of the iframe.
 
         Args:
-            width (Optional[int]): The width of the iframe. If None, the width
-                will be determined by Streamlit.
-            height (Optional[int]): The height of the iframe. Default is 600.
-            scrolling (Optional[bool]): Whether the iframe should be scrollable.
-                Default is False.
-            **kwargs (Any): Additional arguments to pass to the Streamlit iframe
-                function.
+            width: The width of the iframe. If None, the width will be determined by
+                Streamlit.
+            height: The height of the iframe. Default is 600.
+            scrolling: Whether the iframe should be scrollable.  Default is False.
+            **kwargs: Additional arguments to pass to the Streamlit iframe function.
 
         Returns:
-            Any: The Streamlit component.
+            The Streamlit component.
 
         Raises:
             Exception: If there is an error in creating the Streamlit component.
@@ -1993,28 +1931,26 @@ class Map(MapWidget):
     def rotate_to(
         self, bearing: float, options: dict[str, Any] = {}, **kwargs: Any
     ) -> None:
-        """
-        Rotate the map to a specified bearing.
+        """Rotate the map to a specified bearing.
 
-        This function rotates the map to a specified bearing. The bearing is specified in degrees
-        counter-clockwise from true north. If the bearing is not specified, the map will rotate to
-        true north. Additional options and keyword arguments can be provided to control the rotation.
-        For more information, see https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#rotateto
+        This function rotates the map to a specified bearing. The bearing is specified
+        in degrees counter-clockwise from true north. If the bearing is not specified,
+        the map will rotate to true north. Additional options and keyword arguments can
+        be provided to control the rotation.  For more information, see
+        https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#rotateto
 
         Args:
-            bearing (float): The bearing to rotate to, in degrees counter-clockwise from true north.
-            options (Dict[str, Any], optional): Additional options to control the rotation. Defaults to {}.
-            **kwargs (Any): Additional keyword arguments to control the rotation.
-
-        Returns:
-            None
+            bearing: The bearing to rotate to, in degrees counter-clockwise from true
+                north.
+            options: Additional options to control the rotation. Defaults to {}.
+            **kwargs: Additional keyword arguments to control the rotation.
         """
         super().add_call("rotateTo", bearing, options, **kwargs)
 
     def open_geojson(self, **kwargs: Any) -> "widgets.FileUpload":
-        """
-        Creates a file uploader widget to upload a GeoJSON file. When a file is
-        uploaded, it is written to a temporary file and added to the map.
+        """Creates a file uploader widget to upload a GeoJSON file.
+
+        When a file is uploaded, it is written to a temporary file and added to the map.
 
         Args:
             **kwargs: Additional keyword arguments to pass to the add_geojson method.
@@ -2022,9 +1958,6 @@ class Map(MapWidget):
         Returns:
             widgets.FileUpload: The file uploader widget.
         """
-
-        import ipywidgets as widgets
-
         uploader = widgets.FileUpload(
             accept=".geojson",  # Accept GeoJSON files
             multiple=False,  # Only single file upload
@@ -2048,84 +1981,75 @@ class Map(MapWidget):
         options: dict[str, Any] = {},
         **kwargs: Any,
     ) -> None:
-        """
-        Pans the map to a specified location.
+        """Pans the map to a specified location.
 
         This function pans the map to the specified longitude and latitude coordinates.
         Additional options and keyword arguments can be provided to control the panning.
-        For more information, see https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#panto
+        For more information, see
+        https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#panto
 
         Args:
-            lnglat (List[float, float]): The longitude and latitude coordinates to pan to.
-            options (Dict[str, Any], optional): Additional options to control the panning. Defaults to {}.
-            **kwargs (Any): Additional keyword arguments to control the panning.
-
-        Returns:
-            None
+            lnglat: The longitude and latitude coordinates to pan to.
+            options: Additional options to control the panning. Defaults to {}.
+            **kwargs: Additional keyword arguments to control the panning.
         """
         super().add_call("panTo", lnglat, options, **kwargs)
 
     def set_pitch(self, pitch: float, **kwargs: Any) -> None:
-        """
-        Sets the pitch of the map.
+        """Sets the pitch of the map.
 
         This function sets the pitch of the map to the specified value. The pitch is the
-        angle of the camera measured in degrees where 0 is looking straight down, and 60 is
-        looking towards the horizon. Additional keyword arguments can be provided to control
-        the pitch. For more information, see https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#setpitch
+        angle of the camera measured in degrees where 0 is looking straight down, and 60
+        is looking towards the horizon. Additional keyword arguments can be provided to
+        control the pitch. For more information, see
+        https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#setpitch
 
         Args:
-            pitch (float): The pitch value to set.
-            **kwargs (Any): Additional keyword arguments to control the pitch.
-
-        Returns:
-            None
+            pitch: The pitch value to set.
+            **kwargs: Additional keyword arguments to control the pitch.
         """
         super().add_call("setPitch", pitch, **kwargs)
 
     def jump_to(self, options: dict[str, Any] = {}, **kwargs: Any) -> None:
-        """
-        Jumps the map to a specified location.
+        """Jumps the map to a specified location.
 
-        This function jumps the map to the specified location with the specified options.
-        Additional keyword arguments can be provided to control the jump. For more information,
-        see https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#jumpto
+        This function jumps the map to the specified location with the specified
+        options. Additional keyword arguments can be provided to control the jump. For
+        more information, see
+        https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#jumpto
 
         Args:
-            options (Dict[str, Any], optional): Additional options to control the jump. Defaults to {}.
-            **kwargs (Any): Additional keyword arguments to control the jump.
-
-        Returns:
-            None
+            options: Additional options to control the jump. Defaults to {}.
+            **kwargs: Additional keyword arguments to control the jump.
         """
         super().add_call("jumpTo", options, **kwargs)
 
     def _get_3d_terrain_style(
         self,
-        satellite=True,
+        satellite: bool = True,
         exaggeration: float = 1,
         token: str = "MAPTILER_KEY",
         api_key: str | None = None,
     ) -> dict[str, Any]:
-        """
-        Get the 3D terrain style for the map.
+        """Get the 3D terrain style for the map.
 
-        This function generates a style dictionary for the map that includes 3D terrain features.
-        The terrain exaggeration and API key can be specified. If the API key is not provided,
-        it will be retrieved using the specified token.
+        This function generates a style dictionary for the map that includes 3D terrain
+        features. The terrain exaggeration and API key can be specified. If the API key
+        is not provided, it will be retrieved using the specified token.
 
         Args:
-            exaggeration (float, optional): The terrain exaggeration. Defaults to 1.
-            token (str, optional): The token to use to retrieve the API key. Defaults to "MAPTILER_KEY".
-            api_key (Optional[str], optional): The API key. If not provided, it will be retrieved using the token.
+            satellite: TODO.
+            exaggeration: The terrain exaggeration. Defaults to 1.
+            token: The token to use to retrieve the API key. Defaults to "MAPTILER_KEY".
+            api_key: The API key. If not provided, it will be retrieved using the token.
 
         Returns:
-            Dict[str, Any]: The style dictionary for the map.
+            The style dictionary for the map.
 
         Raises:
-            ValueError: If the API key is not provided and cannot be retrieved using the token.
+            ValueError: If the API key is not provided and cannot be retrieved using the
+                token.
         """
-
         if api_key is None:
             api_key = coreutils.get_env_var(token)
 
@@ -2179,8 +2103,7 @@ class Map(MapWidget):
         return style
 
     def get_style(self):
-        """
-        Get the style of the map.
+        """Get the style of the map.
 
         Returns:
             Dict: The style of the map.
@@ -2196,11 +2119,10 @@ class Map(MapWidget):
             return {}
 
     def get_style_layers(self, return_ids=False, sorted=True) -> list[str]:
-        """
-        Get the names of the basemap layers.
+        """Get the names of the basemap layers.
 
         Returns:
-            List[str]: The names of the basemap layers.
+            The names of the basemap layers.
         """
         style = self.get_style()
         if "layers" in style:
@@ -2217,14 +2139,13 @@ class Map(MapWidget):
             return []
 
     def find_style_layer(self, id: str) -> dict | None:
-        """
-        Searches for a style layer in the map's current style by its ID and returns it if found.
+        """Searches for a style layer in the map's current style by ID and returns it.
 
         Args:
-            id (str): The ID of the style layer to find.
+            id: The ID of the style layer to find.
 
         Returns:
-            Optional[Dict]: The style layer as a dictionary if found, otherwise None.
+            The style layer as a dictionary if found, otherwise None.
         """
         layers = self.get_style_layers()
         for layer in layers:
@@ -2233,29 +2154,24 @@ class Map(MapWidget):
         return None
 
     def zoom_to(self, zoom: float, options: dict[str, Any] = {}, **kwargs: Any) -> None:
-        """
-        Zooms the map to a specified zoom level.
+        """Zooms the map to a specified zoom level.
 
         This function zooms the map to the specified zoom level. Additional options and keyword
         arguments can be provided to control the zoom. For more information, see
         https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#zoomto
 
         Args:
-            zoom (float): The zoom level to zoom to.
-            options (Dict[str, Any], optional): Additional options to control the zoom. Defaults to {}.
-            **kwargs (Any): Additional keyword arguments to control the zoom.
-
-        Returns:
-            None
+            zoom: The zoom level to zoom to.
+            options: Additional options to control the zoom. Defaults to {}.
+            **kwargs: Additional keyword arguments to control the zoom.
         """
         super().add_call("zoomTo", zoom, options, **kwargs)
 
     def find_first_symbol_layer(self) -> dict | None:
-        """
-        Find the first symbol layer in the map's current style.
+        """Find the first symbol layer in the map's current style.
 
         Returns:
-            Optional[Dict]: The first symbol layer as a dictionary if found, otherwise None.
+            The first symbol layer as a dictionary if found, otherwise None.
         """
         layers = self.get_style_layers()
         for layer in layers:
@@ -2275,28 +2191,24 @@ class Map(MapWidget):
         position: str = "bottom-right",
         **kwargs: Any,
     ) -> None:
-        """
-        Adds text to the map with customizable styling.
+        """Adds text to the map with customizable styling.
 
-        This method allows adding a text widget to the map with various styling options such as font size, color,
-        background color, and more. The text's appearance can be further customized using additional CSS properties
-        passed through kwargs.
+        This method allows adding a text widget to the map with various styling options
+        such as font size, color, background color, and more. The text's appearance can
+        be further customized using additional CSS properties passed through kwargs.
 
         Args:
-            text (str): The text to add to the map.
-            fontsize (int, optional): The font size of the text. Defaults to 20.
-            fontcolor (str, optional): The color of the text. Defaults to "black".
-            bold (bool, optional): If True, the text will be bold. Defaults to False.
-            padding (str, optional): The padding around the text. Defaults to "5px".
-            bg_color (str, optional): The background color of the text widget. Defaults to "white".
+            text: The text to add to the map.
+            fontsize: The font size of the text. Defaults to 20.
+            fontcolor: The color of the text. Defaults to "black".
+            bold: If True, the text will be bold. Defaults to False.
+            padding: The padding around the text. Defaults to "5px".
+            bg_color: The background color of the text widget. Defaults to "white".
                 To make the background transparent, set this to "transparent".
                 To make the background half transparent, set this to "rgba(255, 255, 255, 0.5)".
-            border_radius (str, optional): The border radius of the text widget. Defaults to "5px".
-            position (str, optional): The position of the text widget on the map. Defaults to "bottom-right".
-            **kwargs (Any): Additional CSS properties to apply to the text widget.
-
-        Returns:
-            None
+            border_radius: The border radius of the text widget. Defaults to "5px".
+            position: The position of the text widget on the map. Defaults to "bottom-right".
+            **kwargs: Additional CSS properties to apply to the text widget.
         """
         from maplibre.controls import InfoBoxControl
 
@@ -2318,25 +2230,23 @@ class Map(MapWidget):
         html: str,
         bg_color: str = "white",
         position: str = "bottom-right",
-        **kwargs: str | int | float,
+        **kwargs,
     ) -> None:
-        """
-        Add HTML content to the map.
+        """Add HTML content to the map.
 
-        This method allows for the addition of arbitrary HTML content to the map, which can be used to display
-        custom information or controls. The background color and position of the HTML content can be customized.
+        This method allows for the addition of arbitrary HTML content to the map, which
+        can be used to display custom information or controls. The background color and
+        position of the HTML content can be customized.
 
         Args:
-            html (str): The HTML content to add.
-            bg_color (str, optional): The background color of the HTML content. Defaults to "white".
-                To make the background transparent, set this to "transparent".
-                To make the background half transparent, set this to "rgba(255, 255, 255, 0.5)".
-            position (str, optional): The position of the HTML content on the map. Can be one of "top-left",
-                "top-right", "bottom-left", "bottom-right". Defaults to "bottom-right".
+            html: The HTML content to add.
+            bg_color: The background color of the HTML content. Defaults to "white".  To
+                make the background transparent, set this to "transparent".  To make the
+                background half transparent, set this to "rgba(255, 255, 255, 0.5)".
+            position: The position of the HTML content on the map. Can be one of
+                "top-left", "top-right", "bottom-left", "bottom-right". Defaults to
+                "bottom-right".
             **kwargs: Additional keyword arguments for future use.
-
-        Returns:
-            None
         """
         # Check if an HTML string contains local images and convert them to base64.
         html = check_html_string(html)
@@ -2352,31 +2262,28 @@ class Map(MapWidget):
         bg_color: str = "white",
         position: str = "bottom-right",
         builtin_legend: str | None = None,
-        **kwargs: str | int | float,
+        **kwargs,
     ) -> None:
-        """
-        Adds a legend to the map.
+        """Adds a legend to the map.
 
-        This method allows for the addition of a legend to the map. The legend can be customized with a title,
-        labels, colors, and more. A built-in legend can also be specified.
+        This method allows for the addition of a legend to the map. The legend can be
+        customized with a title, labels, colors, and more. A built-in legend can also be
+        specified.
 
         Args:
-            title (str, optional): The title of the legend. Defaults to "Legend".
-            legend_dict (Optional[Dict[str, str]], optional): A dictionary with legend items as keys and colors as values.
+            title: The title of the legend. Defaults to "Legend".
+            legend_dict: A dictionary with legend items as keys and colors as values.
                 If provided, `labels` and `colors` will be ignored. Defaults to None.
-            labels (Optional[List[str]], optional): A list of legend labels. Defaults to None.
-            colors (Optional[List[str]], optional): A list of colors corresponding to the labels. Defaults to None.
-            fontsize (int, optional): The font size of the legend text. Defaults to 15.
-            bg_color (str, optional): The background color of the legend. Defaults to "white".
-                To make the background transparent, set this to "transparent".
-                To make the background half transparent, set this to "rgba(255, 255, 255, 0.5)".
-            position (str, optional): The position of the legend on the map. Can be one of "top-left",
+            labels: A list of legend labels. Defaults to None.
+            colors: A list of colors corresponding to the labels. Defaults to None.
+            fontsize: The font size of the legend text. Defaults to 15.
+            bg_color: The background color of the legend. Defaults to "white". To make
+                the background transparent, set this to "transparent". To make the
+                background half transparent, set this to "rgba(255, 255, 255, 0.5)".
+            position: The position of the legend on the map. Can be one of "top-left",
                 "top-right", "bottom-left", "bottom-right". Defaults to "bottom-right".
-            builtin_legend (Optional[str], optional): The name of a built-in legend to use. Defaults to None.
+            builtin_legend: The name of a built-in legend to use. Defaults to None.
             **kwargs: Additional keyword arguments for future use.
-
-        Returns:
-            None
         """
         from .legends import builtin_legends
 
@@ -2515,37 +2422,38 @@ class Map(MapWidget):
         position: str = "bottom-right",
         **kwargs,
     ) -> str:
-        """
-        Add a colorbar to the map.
+        """Add a colorbar to the map.
 
         This function uses matplotlib to generate a colorbar, saves it as a PNG file, and adds it to the map using
         the Map.add_html() method. The colorbar can be customized in various ways including its size, color palette,
         label, and orientation.
 
         Args:
-            width (Optional[float]): Width of the colorbar in inches. Defaults to 3.0.
-            height (Optional[float]): Height of the colorbar in inches. Defaults to 0.2.
-            vmin (Optional[float]): Minimum value of the colorbar. Defaults to 0.
-            vmax (Optional[float]): Maximum value of the colorbar. Defaults to 1.0.
-            palette (Optional[List[str]]): List of colors or a colormap name for the colorbar. Defaults to None.
-            vis_params (Optional[Dict[str, Union[str, float, int]]]): Visualization parameters as a dictionary.
-            cmap (Optional[str]): Matplotlib colormap name. Defaults to "gray".
-            discrete (Optional[bool]): Whether to create a discrete colorbar. Defaults to False.
-            label (Optional[str]): Label for the colorbar. Defaults to None.
-            label_size (Optional[int]): Font size for the colorbar label. Defaults to 10.
-            label_weight (Optional[str]): Font weight for the colorbar label. Defaults to "normal".
-            tick_size (Optional[int]): Font size for the colorbar tick labels. Defaults to 8.
-            bg_color (Optional[str]): Background color for the colorbar. Defaults to "white".
-            orientation (Optional[str]): Orientation of the colorbar ("vertical" or "horizontal"). Defaults to "horizontal".
-            dpi (Optional[Union[str, float]]): Resolution in dots per inch. If 'figure', uses the figure's dpi value. Defaults to "figure".
-            transparent (Optional[bool]): Whether the background is transparent. Defaults to False.
-            position (str): Position of the colorbar on the map. Defaults to "bottom-right".
+            width: Width of the colorbar in inches. Defaults to 3.0.
+            height: Height of the colorbar in inches. Defaults to 0.2.
+            vmin: Minimum value of the colorbar. Defaults to 0.
+            vmax: Maximum value of the colorbar. Defaults to 1.0.
+            palette: List of colors or a colormap name for the colorbar. Defaults to
+                None.
+            vis_params: Visualization parameters as a dictionary.
+            cmap: Matplotlib colormap name. Defaults to "gray".
+            discrete: Whether to create a discrete colorbar. Defaults to False.
+            label: Label for the colorbar. Defaults to None.
+            label_size: Font size for the colorbar label. Defaults to 10.
+            label_weight: Font weight for the colorbar label. Defaults to "normal".
+            tick_size: Font size for the colorbar tick labels. Defaults to 8.
+            bg_color: Background color for the colorbar. Defaults to "white".
+            orientation: Orientation of the colorbar ("vertical" or
+                "horizontal"). Defaults to "horizontal".
+            dpi: Resolution in dots per inch. If 'figure', uses the figure's dpi
+                value. Defaults to "figure".
+            transparent: Whether the background is transparent. Defaults to False.
+            position: Position of the colorbar on the map. Defaults to "bottom-right".
             **kwargs: Additional keyword arguments passed to matplotlib.pyplot.savefig().
 
         Returns:
-            str: Path to the generated colorbar image.
+            Path to the generated colorbar image.
         """
-
         if transparent:
             bg_color = "transparent"
 
@@ -2600,9 +2508,6 @@ class Map(MapWidget):
                 "top-right", "bottom-left", or "bottom-right". Defaults to "top-left".
             bg_layers: If True, background layers will be included in the
                 control. Defaults to False.
-
-        Returns:
-            None
         """
         from maplibre.controls import LayerSwitcherControl
 
@@ -2817,7 +2722,6 @@ def construct_maptiler_style(style: str, api_key: str | None = None) -> str:
     Raises:
         requests.exceptions.RequestException: If the request to the MapTiler API fails.
     """
-
     if api_key is None:
         api_key = coreutils.get_env_var("MAPTILER_KEY")
 
@@ -2869,7 +2773,6 @@ def maptiler_3d_style(
     Raises:
         ValueError: If the API key is not provided and cannot be retrieved using the token.
     """
-
     if api_key is None:
         api_key = coreutils.get_env_var(token)
 
