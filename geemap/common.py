@@ -3663,14 +3663,17 @@ def save_colorbar(
     return out_fig
 
 
-def minimum_bounding_box(geojson) -> tuple[tuple[float, float], tuple[float, float]]:
+def minimum_bounding_box(
+    geojson: dict,
+) -> tuple[tuple[float, float], tuple[float, float]]:
     """Gets the minimum bounding box for a geojson polygon.
 
     Args:
-        geojson (dict): A geojson dictionary.
+        geojson: A geojson dictionary.
 
     Returns:
-        tuple: Returns a tuple containing the minimum bounding box in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
+        Returns a tuple containing the minimum bounding box in the format of
+        (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
     """
     if "geometry" in geojson.keys():
         coordinates = geojson["geometry"]["coordinates"][0]
@@ -3694,6 +3697,7 @@ def geocode(location: str, max_rows: int = 10, reverse: bool = False):
         location: Place name or address.
         max_rows: Maximum number of records to return. Defaults to 10.
         reverse: Search place based on coordinates. Defaults to False.
+
     Returns:
         list: Returns a list of locations.
     """
@@ -6411,7 +6415,7 @@ def get_center(
     return (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2  # lat, lon.
 
 
-def image_props(img: ee.Image, date_format: str = "YYYY-MM-dd") -> ee.Dictionary:
+def image_props(img: ee.Image, date_format: str = "YYYY-MM-dd") -> ee.Dictionary | None:
     """Gets image properties.
 
     Args:
