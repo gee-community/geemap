@@ -12671,7 +12671,7 @@ the draw control.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            host_map (geemap.Map): The geemap.Map object that the control will be added to.</span>
-<span class="sd">            **kwargs (Any): Additional keyword arguments for the DrawControl.</span>
+<span class="sd">            **kwargs: Additional keyword arguments for the DrawControl.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host_map</span><span class="o">=</span><span class="n">host_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 
@@ -12682,7 +12682,7 @@ the draw control.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">_bind_to_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set up draw control event handling like create, edit, and delete.&quot;&quot;&quot;</span>
 
-        <span class="c1"># Handles draw events</span>
+        <span class="c1"># Handles draw events.</span>
         <span class="k">def</span><span class="w"> </span><span class="nf">handle_draw</span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">action</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">geo_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Handles draw events.</span>
 
@@ -12822,7 +12822,7 @@ the draw control.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        host_map (geemap.Map): The geemap.Map object that the control will be added to.</span>
-<span class="sd">        **kwargs (Any): Additional keyword arguments for the DrawControl.</span>
+<span class="sd">        **kwargs: Additional keyword arguments for the DrawControl.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">host_map</span><span class="o">=</span><span class="n">host_map</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
