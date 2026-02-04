@@ -1619,15 +1619,14 @@ class PlanetaryComputerEndpoint(TitilerEndpoint):
         return f"{self.endpoint}/mosaic/{searchid}/{lon},{lat}/assets"
 
 
-def check_titiler_endpoint(titiler_endpoint=None):
-    """Returns the default titiler endpoint.
-
-    Returns:
-        object: A titiler endpoint.
-    """
+def check_titiler_endpoint(
+    titiler_endpoint: str | None = None,
+) -> str | TitilerEndpoint:
+    """Returns the default titiler endpoint."""
     if titiler_endpoint is None:
         if os.environ.get("TITILER_ENDPOINT") is not None:
             titiler_endpoint = os.environ.get("TITILER_ENDPOINT")
+            assert titiler_endpoint is not None  # For pytype.
 
             if titiler_endpoint == "planetary-computer":
                 titiler_endpoint = PlanetaryComputerEndpoint()
@@ -1670,19 +1669,13 @@ def set_proxy(
 def is_drive_mounted() -> bool:
     """Returns True if Google Drive is mounted, False otherwise."""
     drive_path = "/content/drive/My Drive"
-    if os.path.exists(drive_path):
-        return True
-    else:
-        return False
+    return os.path.exists(drive_path)
 
 
 def credentials_in_drive() -> bool:
     """Returns True if Google Drive is mounted, False otherwise."""
     credentials_path = "/content/drive/My Drive/.config/earthengine/credentials"
-    if os.path.exists(credentials_path):
-        return True
-    else:
-        return False
+    return os.path.exists(credentials_path)
 
 
 def credentials_in_colab() -> bool:
@@ -1692,10 +1685,7 @@ def credentials_in_colab() -> bool:
         Returns True if Google Drive is mounted, False otherwise.
     """
     credentials_path = "/root/.config/earthengine/credentials"
-    if os.path.exists(credentials_path):
-        return True
-    else:
-        return False
+    return os.path.exists(credentials_path)
 
 
 def copy_credentials_to_drive() -> None:
@@ -2432,8 +2422,8 @@ def csv_to_ee(
     geojson = csv_to_geojson(
         in_csv, latitude=latitude, longitude=longitude, encoding=encoding
     )
-    fc = coreutils.geojson_to_ee(geojson, geodesic=geodesic)
-    return fc
+
+    return coreutils.geojson_to_ee(geojson, geodesic=geodesic)
 
 
 def csv_to_gdf(in_csv, latitude="latitude", longitude="longitude", encoding="utf-8"):
@@ -2510,7 +2500,7 @@ def ee_to_geojson(ee_object, filename: str | None = None, indent: int = 2, **kwa
         print("Could not convert the Earth Engine object to geojson")
 
 
-def ee_to_bbox(ee_object):
+def ee_to_bbox(ee_object) -> list[float]:
     """Get the bounding box of an Earth Engine object as a list in the format [xmin, ymin, xmax, ymax].
 
     Args:
@@ -2537,8 +2527,7 @@ def ee_to_bbox(ee_object):
     ymin = bounds[0][1]
     xmax = bounds[1][0]
     ymax = bounds[2][1]
-    bbox = [xmin, ymin, xmax, ymax]
-    return bbox
+    return [xmin, ymin, xmax, ymax]
 
 
 def shp_to_geojson(in_shp, filename=None, **kwargs):
@@ -2578,29 +2567,6 @@ def shp_to_geojson(in_shp, filename=None, **kwargs):
     else:
         reader = shapefile.Reader(in_shp)
     out_dict = reader.__geo_interface__
-    # fields = reader.fields[1:]
-    # field_names = [field[0] for field in fields]
-    # # pyShp returns dates as `datetime.date` or as `bytes` when they are empty
-    # # This is not JSON compatible, so we keep track of them to convert them to str
-    # date_fields_names = [field[0] for field in fields if field[1] == "D"]
-    # buffer = []
-    # for sr in reader.shapeRecords():
-    #     atr = dict(zip(field_names, sr.record))
-    #     for date_field in date_fields_names:
-    #         value = atr[date_field]
-    #         # convert date to string, similar to pyShp writing
-    #         # https://github.com/GeospatialPython/pyshp/blob/69c60f6d07c329f7d3ac2cba79bc03643bd424d8/shapefile.py#L1814
-    #         if isinstance(value, date):
-    #             value = "{:04d}{:02d}{:02d}".format(
-    #                 value.year, value.month, value.day
-    #             )
-    #         elif not value:  # empty bytes string
-    #             value = "0" * 8  # QGIS NULL for date type
-    #         atr[date_field] = value
-    #     geom = sr.shape.__geo_interface__
-    #     buffer.append(dict(type="Feature", geometry=geom, properties=atr))
-
-    # out_dict = {"type": "FeatureCollection", "features": buffer}
 
     if filename is not None:
         with open(filename, "w") as geojson:
@@ -2618,14 +2584,13 @@ def shp_to_ee(in_shp, **kwargs):
     Returns:
         object: Earth Engine objects representing the shapefile.
     """
-    # coreutils.ee_initialize()
     try:
         if "encoding" in kwargs:
             json_data = shp_to_geojson(in_shp, encoding=kwargs.pop("encoding"))
         else:
             json_data = shp_to_geojson(in_shp)
-        ee_object = coreutils.geojson_to_ee(json_data)
-        return ee_object
+
+        return coreutils.geojson_to_ee(json_data)
     except Exception as e:
         print(e)
 
@@ -2635,7 +2600,7 @@ def shp_to_ee(in_shp, **kwargs):
 ########################################
 
 
-def filter_polygons(ftr):
+def filter_polygons(ftr) -> ee.Feature:
     """Converts GeometryCollection to Polygon/MultiPolygon
 
     Args:
@@ -2644,7 +2609,6 @@ def filter_polygons(ftr):
     Returns:
         object: ee.Feature
     """
-    # coreutils.ee_initialize()
     geometries = ftr.geometry().geometries()
     geometries = geometries.map(
         lambda geo: ee.Feature(ee.Geometry(geo)).set("geoType", ee.Geometry(geo).type())
@@ -3005,8 +2969,7 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
 
         def list_to_ee(a_list):
             ee_data = ee.Array(a_list)
-            image = ee.Image(ee_data).arrayGet(coords)
-            return image
+            return ee.Image(ee_data).arrayGet(coords)
 
         if len(s) < 3:
             image = list_to_ee(np_array.tolist())
@@ -3097,20 +3060,20 @@ def ee_to_xarray(
             decode_time.
         use_cftime (optional): Only relevant if encoded dates come from a standard
             calendar (e.g. "gregorian", "proleptic_gregorian", "standard", or not
-            specified).  If None (default), attempt to decode times to
-            ``np.datetime64[ns]`` objects; if this is not possible, decode times to
-            ``cftime.datetime`` objects. If True, always decode times to
-            ``cftime.datetime`` objects, regardless of whether or not they can be
-            represented using ``np.datetime64[ns]`` objects.  If False, always
-            decode times to ``np.datetime64[ns]`` objects; if this is not possible
+            specified). If None (default), attempt to decode times to
+            `np.datetime64[ns]` objects; if this is not possible, decode times to
+            `cftime.datetime` objects. If True, always decode times to
+            `cftime.datetime` objects, regardless of whether or not they can be
+            represented using `np.datetime64[ns]` objects. If False, always
+            decode times to `np.datetime64[ns]` objects; if this is not possible
             raise an error.
         concat_characters (optional): Should character arrays be concatenated to
             strings, for example: ["h", "e", "l", "l", "o"] -> "hello"
         decode_coords (optional): bool or {"coordinates", "all"}, Controls which
             variables are set as coordinate variables: - "coordinates" or True: Set
-            variables referred to in the ``'coordinates'`` attribute of the datasets
+            variables referred to in the `'coordinates'` attribute of the datasets
             or individual variables as coordinate variables. - "all": Set variables
-            referred to in  ``'grid_mapping'``, ``'bounds'`` and other attributes as
+            referred to in  `'grid_mapping'`, `'bounds'` and other attributes as
             coordinate variables.
         crs (optional): The coordinate reference system (a CRS code or WKT
             string). This defines the frame of reference to coalesce all variables
@@ -3431,10 +3394,10 @@ def create_colorbar(
         pair = [item, rgb_colors[index]]
         heatmap.append(pair)
 
-    def gaussian(x, a, b, c, d=0):
+    def gaussian(x: float, a: float, b: float, c: float, d: float = 0) -> float:
         return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
-    def pixel(x, width=100, map=[], spread=1):
+    def pixel(x, width=100, map=[], spread=1) -> tuple[float, float, float]:
         width = float(width)
         r = sum(
             [
@@ -3568,51 +3531,59 @@ def create_colorbar(
 
 
 def save_colorbar(
-    out_fig=None,
-    width=4.0,
-    height=0.3,
-    vmin=0,
-    vmax=1.0,
+    out_fig: str | None = None,
+    width: float = 4.0,
+    height: float = 0.3,
+    vmin: float = 0,
+    vmax: float = 1.0,
     palette=None,
     vis_params=None,
-    cmap="gray",
-    discrete=False,
-    label=None,
-    label_size=10,
-    label_weight="normal",
-    tick_size=8,
-    bg_color="white",
-    orientation="horizontal",
-    dpi="figure",
-    transparent=False,
-    show_colorbar=True,
+    cmap: str = "gray",
+    discrete: bool = False,
+    label: str | None = None,
+    label_size: int = 10,
+    label_weight: str = "normal",
+    tick_size: int = 8,
+    bg_color: str = "white",
+    orientation: str = "horizontal",
+    dpi: float | str = "figure",
+    transparent: bool = False,
+    show_colorbar: bool = True,
     **kwargs,
-):
+) -> str:
     """Create a standalone colorbar and save it as an image.
 
     Args:
-        out_fig (str): Path to the output image.
-        width (float): Width of the colorbar in inches. Default is 4.0.
-        height (float): Height of the colorbar in inches. Default is 0.3.
-        vmin (float): Minimum value of the colorbar. Default is 0.
-        vmax (float): Maximum value of the colorbar. Default is 1.0.
-        palette (list): List of colors to use for the colorbar. It can also be a cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
-        vis_params (dict): Visualization parameters as a dictionary. See https://developers.google.com/earth-engine/guides/image_visualization for options.
-        cmap (str, optional): Matplotlib colormap. Defaults to "gray". See https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py for options.
-        discrete (bool, optional): Whether to create a discrete colorbar. Defaults to False.
-        label (str, optional): Label for the colorbar. Defaults to None.
-        label_size (int, optional): Font size for the colorbar label. Defaults to 12.
-        label_weight (str, optional): Font weight for the colorbar label, can be "normal", "bold", etc. Defaults to "normal".
-        tick_size (int, optional): Font size for the colorbar tick labels. Defaults to 10.
-        bg_color (str, optional): Background color for the colorbar. Defaults to "white".
-        orientation (str, optional): Orientation of the colorbar, such as "vertical" and "horizontal". Defaults to "horizontal".
-        dpi (float | str, optional): The resolution in dots per inch.  If 'figure', use the figure's dpi value. Defaults to "figure".
-        transparent (bool, optional): Whether to make the background transparent. Defaults to False.
-        show_colorbar (bool, optional): Whether to show the colorbar. Defaults to True.
+        out_fig: Path to the output image.
+        width: Width of the colorbar in inches. Default is 4.0.
+        height: Height of the colorbar in inches. Default is 0.3.
+        vmin: Minimum value of the colorbar. Default is 0.
+        vmax: Maximum value of the colorbar. Default is 1.0.
+        palette (list): List of colors to use for the colorbar. It can also be a cmap
+            name, such as ndvi, ndwi, dem, coolwarm. Default is None.
+        vis_params (dict): Visualization parameters as a dictionary. See
+            https://developers.google.com/earth-engine/guides/image_visualization for
+            options.
+        cmap: Matplotlib colormap. Defaults to "gray". See
+            https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py
+            for options.
+        discrete: Whether to create a discrete colorbar. Defaults to False.
+        label: Label for the colorbar. Defaults to None.
+        label_size: Font size for the colorbar label. Defaults to 12.
+        label_weight: Font weight for the colorbar label, can be "normal", "bold",
+            etc. Defaults to "normal".
+        tick_size: Font size for the colorbar tick labels. Defaults to 10.
+        bg_color: Background color for the colorbar. Defaults to "white".
+        orientation: Orientation of the colorbar, such as "vertical" and
+            "horizontal". Defaults to "horizontal".
+        dpi: The resolution in dots per inch. If 'figure', use the figure's dpi
+            value. Defaults to "figure".
+        transparent: Whether to make the background transparent. Defaults to False.
+        show_colorbar: Whether to show the colorbar. Defaults to True.
         **kwargs: Other keyword arguments to pass to matplotlib.pyplot.savefig().
 
     Returns:
-        str: Path to the output image.
+        Path to the output image.
     """
     from .colormaps import palettes, get_palette
 
@@ -3692,20 +3663,23 @@ def save_colorbar(
     return out_fig
 
 
-def minimum_bounding_box(geojson):
+def minimum_bounding_box(
+    geojson: dict,
+) -> tuple[tuple[float, float], tuple[float, float]]:
     """Gets the minimum bounding box for a geojson polygon.
 
     Args:
-        geojson (dict): A geojson dictionary.
+        geojson: A geojson dictionary.
 
     Returns:
-        tuple: Returns a tuple containing the minimum bounding box in the format of (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
+        Returns a tuple containing the minimum bounding box in the format of
+        (lower_left(lat, lon), upper_right(lat, lon)), such as ((13, -130), (32, -120)).
     """
-    coordinates = []
     if "geometry" in geojson.keys():
         coordinates = geojson["geometry"]["coordinates"][0]
     else:
         coordinates = geojson["coordinates"][0]
+
     lower_left = min([x[1] for x in coordinates]), min(
         [x[0] for x in coordinates]
     )  # (lat, lon)
@@ -3723,6 +3697,7 @@ def geocode(location: str, max_rows: int = 10, reverse: bool = False):
         location: Place name or address.
         max_rows: Maximum number of records to return. Defaults to 10.
         reverse: Search place based on coordinates. Defaults to False.
+
     Returns:
         list: Returns a list of locations.
     """
@@ -3785,7 +3760,6 @@ def is_latlon_valid(location: str) -> bool:
     Returns:
         Returns True if valid.
     """
-    latlon = []
     if "," in location:
         latlon = [float(x) for x in location.split(",")]
     elif " " in location:
@@ -3816,7 +3790,6 @@ def latlon_from_text(location: str) -> tuple[float, float] | None:
     Returns:
         Returns (lat, lon) if valid.
     """
-    latlon = []
     try:
         if "," in location:
             latlon = [float(x) for x in location.split(",")]
@@ -3938,7 +3911,7 @@ def ee_data_thumbnail(
     Returns:
         An http url of the thumbnail.
     """
-    from bs4 import BeautifulSoup
+    import bs4
 
     asset_uid = asset_id.replace("/", "_")
     asset_url = "https://developers.google.com/earth-engine/datasets/catalog/{}".format(
@@ -3953,12 +3926,11 @@ def ee_data_thumbnail(
 
     if r.status_code != 200:
         html_page = urllib.request.urlopen(asset_url)
-        soup = BeautifulSoup(html_page, features="html.parser")
+        soup = bs4.BeautifulSoup(html_page, features="html.parser")
 
         for img in soup.find_all("img"):
             if "sample.png" in img.get("src"):
-                thumbnail_url = img.get("src")
-                return thumbnail_url
+                return img.get("src")
 
     return thumbnail_url
 
@@ -3994,7 +3966,7 @@ def ee_data_html(asset: dict[str, Any]) -> str | None:
         else:
             coder_url = code_url
 
-        ## ee datasets always have a asset_url, and should have a thumbnail
+        # ee datasets always have a asset_url, and should have a thumbnail.
         catalog = (
             bool(asset_url)
             * f"""
@@ -4012,7 +3984,7 @@ def ee_data_html(asset: dict[str, Any]) -> str | None:
                     <img src="{thumbnail_url}">
                     """
         )
-        ## only community datasets have a code_url
+        # Only community datasets have a code_url.
         alternative = (
             bool(code_url)
             * f"""
@@ -4023,7 +3995,7 @@ def ee_data_html(asset: dict[str, Any]) -> str | None:
                     """
         )
 
-        template = f"""
+        return f"""
             <html>
             <body>
                 <h3>{asset_title}</h3>
@@ -4037,7 +4009,6 @@ def ee_data_html(asset: dict[str, Any]) -> str | None:
             </body>
             </html>
         """
-        return template
 
     except Exception as e:
         print(e)
@@ -5417,11 +5388,10 @@ def cog_mosaic_from_file(
             links = [line.strip() for line in f.readlines()]
 
     links = links[skip_rows:]
-    # print(links)
-    mosaic = cog_mosaic(
+
+    return cog_mosaic(
         links, titiler_endpoint, username, layername, overwrite, verbose, **kwargs
     )
-    return mosaic
 
 
 def cog_bounds(url: str, titiler_endpoint: str | None = None, timeout: int = 300):
@@ -5790,8 +5760,7 @@ def stac_bounds(
         ).json()
         # pytype: enable=attribute-error
 
-    bounds = r["bounds"]
-    return bounds
+    return r["bounds"]
 
 
 def stac_center(
@@ -5800,7 +5769,7 @@ def stac_center(
     item: str | None = None,
     titiler_endpoint: str | None = None,
     **kwargs,
-):
+) -> tuple[float, float]:
     """Get the centroid of a single SpatialTemporal Asset Catalog (STAC) item.
 
     Args:
@@ -5815,7 +5784,7 @@ def stac_center(
             "pc". Defaults to None.
 
     Returns:
-        tuple: A tuple representing (longitude, latitude)
+        A tuple with longitude, latitude
     """
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
@@ -5823,8 +5792,8 @@ def stac_center(
     if isinstance(url, str):
         url = get_direct_url(url)
     bounds = stac_bounds(url, collection, item, titiler_endpoint, **kwargs)
-    center = ((bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2)  # (lon, lat)
-    return center
+
+    return (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3] / 2)  # (lon, lat)
 
 
 def stac_bands(
@@ -5847,7 +5816,6 @@ def stac_bands(
     Returns:
         list: A list of band names
     """
-
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
 
@@ -6022,7 +5990,6 @@ def stac_info_geojson(
 
     Returns:
         list: A dictionary of band info.
-
     """
     if url is None and collection is None:
         raise ValueError("Either url or collection must be specified.")
@@ -6203,7 +6170,7 @@ def local_tile_pixel_value(
     Args:
         lon: Longitude of the pixel.
         lat: Latitude of the pixel.
-        tile_client: TODO.
+        tile_client: A localtileserver.TileClient.
         verbose: Print status messages. Defaults to True.
 
     Returns:
@@ -6222,13 +6189,13 @@ def local_tile_vmin_vmax(
 
     Args:
         source (str | TileClient): A local COG file path or TileClient object.
-        bands (str | list, optional): A list of band names. Defaults to None.
+        bands: A list of band names. Defaults to None.
 
     Raises:
         ValueError: If source is not a TileClient object or a local COG file path.
 
     Returns:
-        tuple: A tuple of vmin and vmax.
+        A tuple of vmin and vmax.
     """
     from localtileserver import TileClient
 
@@ -6343,15 +6310,18 @@ def explode(coords: Sequence[Any]) -> Iterator[Any]:
             yield from explode(e)
 
 
-def get_bounds(geometry: dict, north_up: bool = True, transform=None):
+def get_bounds(
+    geometry: dict, north_up: bool = True, transform=None
+) -> tuple[float, float, float, float]:
     """Bounding box of a GeoJSON geometry, GeometryCollection, or FeatureCollection.
 
     left, bottom, right, top
 
     *not* xmin, ymin, xmax, ymax
 
-    If not north_up, y will be switched to guarantee the above.  Source code adapted
-    from https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
+    If not north_up, y will be switched to guarantee the above. Adapted from:
+
+    https://github.com/mapbox/rasterio/blob/master/rasterio/features.py#L361
 
     Args:
         geometry: A GeoJSON dict.
@@ -6359,8 +6329,7 @@ def get_bounds(geometry: dict, north_up: bool = True, transform=None):
         transform ([type], optional): Defaults to None.
 
     Returns:
-        list: A list of coordinates representing [left, bottom, right, top]
-
+        A tuple of coordinates representing left, bottom, right, top.
     """
     if "bbox" in geometry:
         return tuple(geometry["bbox"])
@@ -6431,11 +6400,13 @@ def get_bounds(geometry: dict, north_up: bool = True, transform=None):
     )
 
 
-def get_center(geometry, north_up: bool = True, transform=None) -> tuple[float, float]:
+def get_center(
+    geometry: dict, north_up: bool = True, transform=None
+) -> tuple[float, float]:
     """Returns the lat, lon of the centroid of a GeoJSON.
 
     Args:
-        geometry (dict): A GeoJSON dict.
+        geometry: A GeoJSON dict.
         north_up: Defaults to True.
         transform ([type], optional): Defaults to None.
     """
@@ -6444,18 +6415,18 @@ def get_center(geometry, north_up: bool = True, transform=None) -> tuple[float, 
     return (bounds[0] + bounds[2]) / 2, (bounds[1] + bounds[3]) / 2  # lat, lon.
 
 
-def image_props(img, date_format: str = "YYYY-MM-dd"):
+def image_props(img: ee.Image, date_format: str = "YYYY-MM-dd") -> ee.Dictionary | None:
     """Gets image properties.
 
     Args:
-        img (ee.Image): The input image.
+        img: The input image.
         date_format: The output date format. Defaults to 'YYYY-MM-dd HH:mm:ss'.
 
     Returns:
-        dd.Dictionary: The dictionary containing image properties.
+        A dictionary containing image properties.
     """
     if not isinstance(img, ee.Image):
-        print("The input object must be an ee.Image")
+        print("The input object must be an ee.Image.")
         return
 
     keys = img.propertyNames().remove("system:footprint").remove("system:bands")
@@ -6477,7 +6448,6 @@ def image_props(img, date_format: str = "YYYY-MM-dd"):
     if "system:time_start" in names:
         image_date = ee.Date(img.get("system:time_start")).format(date_format)
         time_start = ee.Date(img.get("system:time_start")).format("YYYY-MM-dd HH:mm:ss")
-        # time_end = ee.Date(img.get('system:time_end')).format('YYYY-MM-dd HH:mm:ss')
         time_end = ee.Algorithms.If(
             ee.List(img.propertyNames()).contains("system:time_end"),
             ee.Date(img.get("system:time_end")).format("YYYY-MM-dd HH:mm:ss"),
@@ -6500,11 +6470,13 @@ def image_props(img, date_format: str = "YYYY-MM-dd"):
     return props
 
 
-def image_stats(img, region=None, scale: float | None = None):
+def image_stats(
+    img: ee.Image, region=None, scale: float | None = None
+) -> ee.Dictionary:
     """Gets image descriptive statistics.
 
     Args:
-        img (ee.Image): The input image to calculate descriptive statistics.
+        img: The input image to calculate descriptive statistics.
         region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
         scale: A nominal scale in meters of the projection to work in. Defaults to None.
 
@@ -6526,9 +6498,7 @@ def image_stats(img, region=None, scale: float | None = None):
 
     stat_results = ee.List([image_min, image_max, image_mean, image_std, image_sum])
 
-    stats = ee.Dictionary.fromLists(stat_types, stat_results)
-
-    return stats
+    return ee.Dictionary.fromLists(stat_types, stat_results)
 
 
 def adjust_longitude(in_fc):
@@ -6954,12 +6924,11 @@ def zonal_stats_by_group(
             cls_value = ee.Algorithms.If(
                 keys.contains(x), values.get(keys.indexOf(x)), 0
             )
-            cls_value = ee.Algorithms.If(
+            return ee.Algorithms.If(
                 ee.String(stat_type).compareTo(ee.String("SUM")),
                 ee.Number(cls_value).divide(ee.Number(total_area)),
                 cls_value,
             )
-            return cls_value
 
         full_values = class_names.map(lambda x: get_class_values(x))
         attr_dict = ee.Dictionary.fromLists(class_names, full_values)
@@ -7048,12 +7017,12 @@ def image_cell_size(img):
     """
     bands = img.bandNames()
     scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
-    scale = ee.Algorithms.If(
+
+    return ee.Algorithms.If(
         scales.distinct().size().gt(1),
         ee.Dictionary.fromLists(bands.getInfo(), scales),
         scales.get(0),
     )
-    return scale
 
 
 def image_scale(img):
@@ -7104,8 +7073,8 @@ def image_dates(img_col, date_format="YYYY-MM-dd"):
         object: ee.List
     """
     dates = img_col.aggregate_array("system:time_start")
-    new_dates = dates.map(lambda d: ee.Date(d).format(date_format))
-    return new_dates
+
+    return dates.map(lambda d: ee.Date(d).format(date_format))
 
 
 def image_area(img, region=None, scale=None, denominator=1.0):
@@ -7129,7 +7098,8 @@ def image_area(img, region=None, scale=None, denominator=1.0):
     pixel_area = (
         img.unmask().neq(ee.Image(0)).multiply(ee.Image.pixelArea()).divide(denominator)
     )
-    img_area = pixel_area.reduceRegion(
+
+    return pixel_area.reduceRegion(
         **{
             "geometry": region,
             "reducer": ee.Reducer.sum(),
@@ -7137,7 +7107,6 @@ def image_area(img, region=None, scale=None, denominator=1.0):
             "maxPixels": 1e12,
         }
     )
-    return img_area
 
 
 def image_area_by_group(
@@ -7145,27 +7114,27 @@ def image_area_by_group(
     groups=None,
     region=None,
     scale=None,
-    denominator=1.0,
-    out_csv=None,
+    denominator: float = 1.0,
+    out_csv: str | None = None,
     labels=None,
-    decimal_places=4,
-    verbose=True,
-):
+    decimal_places: int = 4,
+    verbose: bool = True,
+) -> pd.DataFrame | None:
     """Calculates the area of each class of an image.
 
     Args:
         img (object): ee.Image
         groups (object, optional): The groups to use for the area calculation. Defaults to None.
         region (object, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
-        scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
-        denominator (float, optional): The denominator to use for converting size from square meters to other units. Defaults to 1.0.
-        out_csv (str, optional): The path to the output CSV file. Defaults to None.
+        scale: A nominal scale in meters of the projection to work in. Defaults to None.
+        denominator: The denominator to use for converting size from square meters to other units. Defaults to 1.0.
+        out_csv: The path to the output CSV file. Defaults to None.
         labels (object, optional): The class labels to use in the output CSV file. Defaults to None.
-        decimal_places (int, optional): The number of decimal places to use for the output. Defaults to 2.
-        verbose (bool, optional): If True, print the progress. Defaults to True.
+        decimal_places: The number of decimal places to use for the output. Defaults to 2.
+        verbose: If True, print the progress. Defaults to True.
 
     Returns:
-        object: pandas.DataFrame
+        pandas.DataFrame or none if out_csv is not None.
     """
     values = []
     if region is None:
@@ -7199,7 +7168,9 @@ def image_area_by_group(
         return df
 
 
-def image_max_value(img, region=None, scale=None):
+def image_max_value(
+    img: ee.Image, region=None, scale: float | None = None
+) -> ee.Dictionary:
     """Retrieves the maximum value of an image.
 
     Args:
@@ -7216,7 +7187,7 @@ def image_max_value(img, region=None, scale=None):
     if scale is None:
         scale = image_scale(img)
 
-    max_value = img.reduceRegion(
+    return img.reduceRegion(
         **{
             "reducer": ee.Reducer.max(),
             "geometry": region,
@@ -7225,7 +7196,6 @@ def image_max_value(img, region=None, scale=None):
             "bestEffort": True,
         }
     )
-    return max_value
 
 
 def image_min_value(img, region=None, scale=None):
@@ -7245,7 +7215,7 @@ def image_min_value(img, region=None, scale=None):
     if scale is None:
         scale = image_scale(img)
 
-    min_value = img.reduceRegion(
+    return img.reduceRegion(
         **{
             "reducer": ee.Reducer.min(),
             "geometry": region,
@@ -7254,7 +7224,6 @@ def image_min_value(img, region=None, scale=None):
             "bestEffort": True,
         }
     )
-    return min_value
 
 
 def image_mean_value(img, region=None, scale=None):
@@ -7274,7 +7243,7 @@ def image_mean_value(img, region=None, scale=None):
     if scale is None:
         scale = image_scale(img)
 
-    mean_value = img.reduceRegion(
+    return img.reduceRegion(
         **{
             "reducer": ee.Reducer.mean(),
             "geometry": region,
@@ -7283,7 +7252,6 @@ def image_mean_value(img, region=None, scale=None):
             "bestEffort": True,
         }
     )
-    return mean_value
 
 
 def image_std_value(img, region=None, scale=None):
@@ -7303,7 +7271,7 @@ def image_std_value(img, region=None, scale=None):
     if scale is None:
         scale = image_scale(img)
 
-    std_value = img.reduceRegion(
+    return img.reduceRegion(
         **{
             "reducer": ee.Reducer.stdDev(),
             "geometry": region,
@@ -7312,7 +7280,6 @@ def image_std_value(img, region=None, scale=None):
             "bestEffort": True,
         }
     )
-    return std_value
 
 
 def image_sum_value(img, region=None, scale=None):
@@ -7332,7 +7299,7 @@ def image_sum_value(img, region=None, scale=None):
     if scale is None:
         scale = image_scale(img)
 
-    sum_value = img.reduceRegion(
+    return img.reduceRegion(
         **{
             "reducer": ee.Reducer.sum(),
             "geometry": region,
@@ -7341,7 +7308,6 @@ def image_sum_value(img, region=None, scale=None):
             "bestEffort": True,
         }
     )
-    return sum_value
 
 
 def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
@@ -7386,14 +7352,14 @@ def image_histogram(
     img,
     region=None,
     scale=None,
-    x_label=None,
-    y_label=None,
-    title=None,
-    width=None,
-    height=500,
+    x_label: str | None = None,
+    y_label: str | None = None,
+    title: str | None = None,
+    width: int | None = None,
+    height: int = 500,
     plot_args={},
     layout_args={},
-    return_df=False,
+    return_df: bool = False,
     **kwargs,
 ):
     """Create a histogram of an image.
@@ -7402,13 +7368,13 @@ def image_histogram(
         img (ee.Image): The image to calculate the histogram.
         region (ee.Geometry | ee.FeatureCollection, optional): The region over which to reduce data. Defaults to the footprint of the image's first band.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
-        x_label (str, optional): Label for the x axis. Defaults to None.
-        y_label (str, optional): Label for the y axis. Defaults to None.
-        title (str, optional): Title for the plot. Defaults to None.
-        width (int, optional): Width of the plot in pixels. Defaults to None.
-        height (int, optional): Height of the plot in pixels. Defaults to 500.
+        x_label: Label for the x axis. Defaults to None.
+        y_label: Label for the y axis. Defaults to None.
+        title: Title for the plot. Defaults to None.
+        width: Width of the plot in pixels. Defaults to None.
+        height: Height of the plot in pixels. Defaults to 500.
         layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
-        return_df (bool, optional): If True, return a pandas dataframe. Defaults to False.
+        return_df: If True, return a pandas dataframe. Defaults to False.
 
     Returns:
         pandas DataFrame | plotly figure object: A dataframe or plotly figure object.
@@ -7421,56 +7387,56 @@ def image_histogram(
 
     if return_df:
         return data
-    else:
-        labels = {}
 
-        if x_label is not None:
-            labels["key"] = x_label
-        if y_label is not None:
-            labels["value"] = y_label
+    labels = {}
 
-        fig = px.bar(
-            data,
-            x="key",
-            y="value",
-            labels=labels,
-            title=title,
-            width=width,
-            height=height,
-            **plot_args,
-        )
+    if x_label is not None:
+        labels["key"] = x_label
+    if y_label is not None:
+        labels["value"] = y_label
 
-        if isinstance(layout_args, dict):
-            fig.update_layout(**layout_args)
+    fig = px.bar(
+        data,
+        x="key",
+        y="value",
+        labels=labels,
+        title=title,
+        width=width,
+        height=height,
+        **plot_args,
+    )
 
-        return fig
+    if isinstance(layout_args, dict):
+        fig.update_layout(**layout_args)
+
+    return fig
 
 
 def image_stats_by_zone(
     image,
     zones,
-    out_csv=None,
-    labels=None,
+    out_csv: str | None = None,
+    labels: list[str] | None = None,
     region=None,
     scale=None,
-    reducer="MEAN",
-    bestEffort=True,
+    reducer: str | ee.Reducer = "MEAN",
+    bestEffort: bool = True,
     **kwargs,
-):
+) -> str | pd.DataFrame:
     """Calculate statistics for an image by zone.
 
     Args:
         image (ee.Image): The image to calculate statistics for.
         zones (ee.Image): The zones to calculate statistics for.
-        out_csv (str, optional): The path to the output CSV file. Defaults to None.
-        labels (list, optional): The list of zone labels to use for the output CSV. Defaults to None.
+        out_csv: The path to the output CSV file. Defaults to None.
+        labels: The list of zone labels to use for the output CSV. Defaults to None.
         region (ee.Geometry, optional): The region over which to reduce data. Defaults to the footprint of zone image.
         scale (float, optional): A nominal scale in meters of the projection to work in. Defaults to None.
-        reducer (str | ee.Reducer, optional): The reducer to use. It can be one of MEAN, MAXIMUM, MINIMUM, MODE, STD, MIN_MAX, SUM, VARIANCE. Defaults to MEAN.
-        bestEffort (bool, optional): If the polygon would contain too many pixels at the given scale, compute and use a larger scale which would allow the operation to succeed. Defaults to True.
+        reducer: The reducer to use. It can be one of MEAN, MAXIMUM, MINIMUM, MODE, STD, MIN_MAX, SUM, VARIANCE. Defaults to MEAN.
+        bestEffort: If the polygon would contain too many pixels at the given scale, compute and use a larger scale which would allow the operation to succeed. Defaults to True.
 
     Returns:
-        str | pd.DataFrame: The path to the output CSV file or a pandas DataFrame.
+        The path to the output CSV file or a pandas DataFrame.
     """
     if region is not None:
         if isinstance(region, ee.Geometry):
@@ -7661,30 +7627,29 @@ def latlon_grid(
 
 def fishnet(
     data,
-    h_interval=1.0,
-    v_interval=1.0,
-    rows=None,
-    cols=None,
-    delta=1.0,
-    intersect=True,
-    output=None,
+    h_interval: float = 1.0,
+    v_interval: float = 1.0,
+    rows: int | None = None,
+    cols: int | None = None,
+    delta: float = 1.0,
+    intersect: bool = True,
+    output: str | None = None,
     **kwargs,
-):
+) -> ee.FeatureCollection | None:
     """Create a fishnet (i.e., rectangular grid) based on an input vector dataset.
 
     Args:
         data (str | ee.Geometry | ee.Feature | ee.FeatureCollection): The input vector dataset. It can be a file path, HTTP URL, ee.Geometry, ee.Feature, or ee.FeatureCollection.
-        h_interval (float, optional): The horizontal interval in degrees. It will be ignored if rows and cols are specified. Defaults to 1.0.
-        v_interval (float, optional): The vertical interval in degrees. It will be ignored if rows and cols are specified. Defaults to 1.0.
-        rows (int, optional): The number of rows. Defaults to None.
-        cols (int, optional): The number of columns. Defaults to None.
-        delta (float, optional): The buffer distance in degrees. Defaults to 1.0.
-        intersect (bool, optional): If True, the output will be a feature collection of intersecting polygons. Defaults to True.
-        output (str, optional): The output file path. Defaults to None.
-
+        h_interval: The horizontal interval in degrees. It will be ignored if rows and cols are specified. Defaults to 1.0.
+        v_interval: The vertical interval in degrees. It will be ignored if rows and cols are specified. Defaults to 1.0.
+        rows: The number of rows. Defaults to None.
+        cols: The number of columns. Defaults to None.
+        delta: The buffer distance in degrees. Defaults to 1.0.
+        intersect: If True, the output will be a feature collection of intersecting polygons. Defaults to True.
+        output: The output file path. Defaults to None.
 
     Returns:
-        ee.FeatureCollection: The fishnet as an ee.FeatureCollection.
+        The fishnet as an ee.FeatureCollection if output is None.
     """
     if isinstance(data, str):
         data = vector_to_ee(data, **kwargs)
@@ -7709,9 +7674,7 @@ def fishnet(
         v_interval = (north - south) / rows
         h_interval = (east - west) / cols
 
-    # west = west - delta * h_interval
     east = east + delta * h_interval
-    # south = south - delta * v_interval
     north = north + delta * v_interval
 
     grids = latlon_grid(v_interval, h_interval, west, east, south, north)
@@ -7721,7 +7684,6 @@ def fishnet(
 
     if output is not None:
         ee_export_vector(grids, output)
-
     else:
         return grids
 
@@ -7817,7 +7779,7 @@ def extract_timeseries_to_point(
     crs=None,
     crsTransform=None,
     out_csv=None,
-):
+) -> pd.DataFrame | None:
     """
     Extracts pixel time series from an ee.ImageCollection at a point.
 
@@ -7834,7 +7796,7 @@ def extract_timeseries_to_point(
         out_csv (str, optional): File path to save CSV. If None, returns a DataFrame.
 
     Returns:
-        pd.DataFrame or None: Time series data if not exporting to CSV.
+        Time series data if not exporting to CSV.
     """
     if not isinstance(image_collection, ee.ImageCollection):
         raise ValueError("image_collection must be an instance of ee.ImageCollection.")
@@ -7927,7 +7889,7 @@ def rename_bands(img, in_band_names, out_band_names):
     return img.select(in_band_names, out_band_names)
 
 
-def bands_to_image_collection(img):
+def bands_to_image_collection(img) -> ee.ImageCollection:
     """Converts all bands in an image to an image collection.
 
     Args:
@@ -7936,40 +7898,34 @@ def bands_to_image_collection(img):
     Returns:
         object: ee.ImageCollection
     """
-    collection = ee.ImageCollection(img.bandNames().map(lambda b: img.select([b])))
-    return collection
+    return ee.ImageCollection(img.bandNames().map(lambda b: img.select([b])))
 
 
-def find_landsat_by_path_row(landsat_col, path_num, row_num):
-    """Finds Landsat images by WRS path number and row number.
+def find_landsat_by_path_row(
+    landsat_col: str, path_num: int, row_num: int
+) -> ee.ImageCollection | None:
+    """Returns an image collection of Landsat images by WRS path number and row number.
 
     Args:
-        landsat_col (str): The image collection id of Landsat.
-        path_num (int): The WRS path number.
-        row_num (int): the WRS row number.
-
-    Returns:
-        object: ee.ImageCollection
+        landsat_col: The image collection id of Landsat.
+        path_num: The WRS path number.
+        row_num: the WRS row number.
     """
     try:
-        if isinstance(landsat_col, str):
+        if isinstance(landsat_col, str):  # TODO: Convert to raise ValueError.
             landsat_col = ee.ImageCollection(landsat_col)
-            collection = landsat_col.filter(ee.Filter.eq("WRS_PATH", path_num)).filter(
+            return landsat_col.filter(ee.Filter.eq("WRS_PATH", path_num)).filter(
                 ee.Filter.eq("WRS_ROW", row_num)
             )
-            return collection
     except Exception as e:
         print(e)
 
 
-def str_to_num(in_str):
-    """Converts a string to an ee.Number.
+def str_to_num(in_str: str) -> ee.Number:
+    """Returns an ee.Number from a string.
 
     Args:
-        in_str (str): The string to convert to a number.
-
-    Returns:
-        object: ee.Number
+        in_str: The string to convert to a number.
     """
     return ee.Number.parse(str)
 
@@ -8216,8 +8172,8 @@ def filter_HUC08(region):
     """
 
     USGS_HUC08 = ee.FeatureCollection("USGS/WBD/2017/HUC08")  # Subbasins
-    HUC08 = USGS_HUC08.filterBounds(region)
-    return HUC08
+
+    return USGS_HUC08.filterBounds(region)
 
 
 # Find HUC10 intersecting a geometry
@@ -8232,8 +8188,8 @@ def filter_HUC10(region):
     """
 
     USGS_HUC10 = ee.FeatureCollection("USGS/WBD/2017/HUC10")  # Watersheds
-    HUC10 = USGS_HUC10.filterBounds(region)
-    return HUC10
+
+    return USGS_HUC10.filterBounds(region)
 
 
 def find_HUC08(HUC08_Id):
@@ -8247,8 +8203,8 @@ def find_HUC08(HUC08_Id):
     """
 
     USGS_HUC08 = ee.FeatureCollection("USGS/WBD/2017/HUC08")  # Subbasins
-    HUC08 = USGS_HUC08.filter(ee.Filter.eq("huc8", HUC08_Id))
-    return HUC08
+
+    return USGS_HUC08.filter(ee.Filter.eq("huc8", HUC08_Id))
 
 
 def find_HUC10(HUC10_Id):
@@ -8262,8 +8218,8 @@ def find_HUC10(HUC10_Id):
     """
 
     USGS_HUC10 = ee.FeatureCollection("USGS/WBD/2017/HUC10")  # Watersheds
-    HUC10 = USGS_HUC10.filter(ee.Filter.eq("huc10", HUC10_Id))
-    return HUC10
+
+    return USGS_HUC10.filter(ee.Filter.eq("huc10", HUC10_Id))
 
 
 # find NWI by HUC08
@@ -8322,16 +8278,14 @@ def nwi_add_color(fc):
         emergent.merge(forested).merge(pond).merge(lake).merge(riverine)
     )
 
-    #   base = ee.Image(0).mask(0).toInt8()
     base = ee.Image().byte()
-    img = base.paint(fc, "R").addBands(
+
+    return base.paint(fc, "R").addBands(
         base.paint(fc, "G").addBands(base.paint(fc, "B"))
     )
 
-    return img
 
-
-def nwi_rename(names):
+def nwi_rename(names) -> ee.List:
     name_dict = ee.Dictionary(
         {
             "Freshwater Emergent Wetland": "Emergent",
@@ -8345,8 +8299,7 @@ def nwi_rename(names):
         }
     )
 
-    new_names = ee.List(names).map(lambda name: name_dict.get(name))
-    return new_names
+    return ee.List(names).map(lambda name: name_dict.get(name))
 
 
 def summarize_by_group(
@@ -8451,20 +8404,19 @@ def column_stats(collection, column, stats_type):
     }
 
     selectors = [column]
-    stats = collection.reduceColumns(
+
+    return collection.reduceColumns(
         **{"selectors": selectors, "reducer": stats_dict[stats_type]}
     )
 
-    return stats
-
 
 def ee_num_round(
-    num: ee.Number | ee.ComputedObject | float, decimal: int = 2
+    num: float | ee.Number | ee.ComputedObject, decimal: int = 2
 ) -> ee.Number:
     """Rounds a number to a specified number of decimal places.
 
     Args:
-        num (ee.Number): The number to round.
+        num: The number to round.
         decimal (int, optional): The number of decimal places to round. Defaults to 2.
 
     Returns:
@@ -8474,15 +8426,15 @@ def ee_num_round(
     return ee.Number.parse(ee.Number(num).format(format_str))
 
 
-def num_round(num, decimal=2):
+def num_round(num: float, decimal: int = 2) -> float:
     """Rounds a number to a specified number of decimal places.
 
     Args:
-        num (float): The number to round.
-        decimal (int, optional): The number of decimal places to round. Defaults to 2.
+        num: The number to round.
+        decimal: The number of decimal places to round. Defaults to 2.
 
     Returns:
-        float: The number with the specified decimal places rounded.
+        The number with the specified decimal places rounded.
     """
     return round(num, decimal)
 
@@ -8590,7 +8542,7 @@ def vector_styling(
     width=1,
     lineType="solid",
     fillColorOpacity=0.66,
-):
+) -> ee.FeatureCollection:
     """Add a new property to each feature containing a stylying dictionary.
 
     Args:
@@ -8604,13 +8556,14 @@ def vector_styling(
         width (int, optional): The default line width for lines and outlines for polygons and point shapes. Defaults to 1.
         lineType (str, optional): The default line style for lines and outlines of polygons and point shapes. Defaults to 'solid'. One of: solid, dotted, dashed. Defaults to "solid".
         fillColorOpacity (float, optional): Opacity between 0-1 of the fill. Defaults to 0.66. Color of the fill is based on the column name or index in the palette.
+
     Raises:
         ValueError: The provided column name is invalid.
         TypeError: The provided palette is invalid.
         TypeError: The provided ee_object is not an ee.FeatureCollection.
 
     Returns:
-        object: An ee.FeatureCollection containing the styling attribute.
+        An ee.FeatureCollection containing the styling attribute.
     """
     if isinstance(ee_object, ee.FeatureCollection):
         prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
@@ -8649,7 +8602,8 @@ def vector_styling(
         )
         fc = ee_object.map(lambda f: f.set({"styleIndex": arr.indexOf(f.get(column))}))
         step = arr.size().divide(colors.size()).ceil()
-        fc = fc.map(
+
+        return fc.map(
             lambda f: f.set(
                 {
                     "style": {
@@ -8667,8 +8621,6 @@ def vector_styling(
                 }
             )
         )
-
-        return fc
 
     else:
         raise TypeError("The ee_object must be an ee.FeatureCollection.")
@@ -8697,10 +8649,6 @@ def is_GCS(in_shp):
         try:
             crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
             return crs == epsg4326
-            # if crs == epsg4326:
-            #     return True
-            # else:
-            #     return False
         except Exception:
             return False
 
@@ -8741,8 +8689,8 @@ def kml_to_geojson(in_kml: str, out_geojson: str | None = None, **kwargs):
     """Converts a KML to GeoJSON.
 
     Args:
-        in_kml (str): The file path to the input KML.
-        out_geojson (str): The file path to the output GeoJSON. Defaults to None.
+        in_kml: The file path to the input KML.
+        out_geojson: The file path to the output GeoJSON. Defaults to None.
 
     Raises:
         FileNotFoundError: The input KML could not be found.
@@ -9002,9 +8950,8 @@ def df_to_ee(df, latitude="latitude", longitude="longitude", **kwargs):
         raise TypeError("The input data type must be pandas.DataFrame.")
 
     geojson = df_to_geojson(df, latitude=latitude, longitude=longitude)
-    fc = coreutils.geojson_to_ee(geojson)
 
-    return fc
+    return coreutils.geojson_to_ee(geojson)
 
 
 pandas_to_ee = df_to_ee
@@ -9354,8 +9301,7 @@ def osm_to_gdf(
     """
     from osmnx import geocoder
 
-    gdf = geocoder.geocode_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
-    return gdf
+    return geocoder.geocode_to_gdf(query, which_result=which_result, by_osmid=by_osmid)
 
 
 osm_to_geopandas = osm_to_gdf
@@ -9374,8 +9320,8 @@ def osm_to_ee(query, which_result=None, by_osmid=False, geodesic=True):
         ee.FeatureCollection: An Earth Engine FeatureCollection.
     """
     gdf = osm_to_gdf(query, which_result, by_osmid)
-    fc = gdf_to_ee(gdf, geodesic)
-    return fc
+
+    return gdf_to_ee(gdf, geodesic)
 
 
 def osm_to_geojson(query, which_result=None, by_osmid=False):
@@ -9862,9 +9808,8 @@ def planet_by_quarter(
     subfix = "_mosaic/gmap/{z}/{x}/{y}.png?api_key="
 
     m_str = str(year) + "q" + str(quarter)
-    url = f"{prefix}{m_str}{subfix}{api_key}"
 
-    return url
+    return f"{prefix}{m_str}{subfix}{api_key}"
 
 
 def planet_by_month(
@@ -9911,9 +9856,8 @@ def planet_by_month(
     subfix = "_mosaic/gmap/{z}/{x}/{y}.png?api_key="
 
     m_str = str(year) + "_" + str(month).zfill(2)
-    url = f"{prefix}{m_str}{subfix}{api_key}"
 
-    return url
+    return f"{prefix}{m_str}{subfix}{api_key}"
 
 
 def planet_tile_by_quarter(
@@ -9940,7 +9884,6 @@ def planet_tile_by_quarter(
     Returns:
         dict: A dictionary of TileLayer.
     """
-
     import folium
 
     if tile_format not in ["ipyleaflet", "folium"]:
@@ -10305,12 +10248,8 @@ def gdf_to_geojson(gdf, out_geojson=None, epsg=None):
         gdf.to_file(out_geojson, driver="GeoJSON")
 
 
-def get_temp_dir():
-    """Returns the temporary directory.
-
-    Returns:
-        str: The temporary directory.
-    """
+def get_temp_dir() -> str:
+    """Returns the temporary directory."""
     return tempfile.gettempdir()
 
 
@@ -10418,6 +10357,11 @@ def get_local_tile_layer(
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
     import rasterio
+    from localtileserver import (
+        get_leaflet_tile_layer,
+        get_folium_tile_layer,
+        TileClient,
+    )
 
     # Handle legacy localtileserver kwargs
     if "cmap" in kwargs:
@@ -10470,23 +10414,10 @@ def get_local_tile_layer(
         os.environ["LOCALTILESERVER_CLIENT_PREFIX"] = kwargs["prefix"]
         kwargs.pop("prefix")
 
-    from localtileserver import (
-        get_leaflet_tile_layer,
-        get_folium_tile_layer,
-        TileClient,
-    )
-
-    # if "show_loading" not in kwargs:
-    #     kwargs["show_loading"] = False
-
     if isinstance(source, str):
         if not source.startswith("http"):
             if source.startswith("~"):
                 source = os.path.expanduser(source)
-            # else:
-            #     source = os.path.abspath(source)
-            # if not os.path.exists(source):
-            #     raise ValueError("The source path does not exist.")
         else:
             source = coreutils.github_raw_url(source)
     elif isinstance(source, TileClient) or isinstance(
@@ -10578,19 +10509,6 @@ def get_local_tile_layer(
         return tile_layer, tile_client
     else:
         return tile_layer
-
-    # center = tile_client.center()
-    # bounds = tile_client.bounds()  # [ymin, ymax, xmin, xmax]
-    # bounds = (bounds[2], bounds[0], bounds[3], bounds[1])  # [minx, miny, maxx, maxy]
-
-    # if get_center and get_bounds:
-    #     return tile_layer, center, bounds
-    # elif get_center:
-    #     return tile_layer, center
-    # elif get_bounds:
-    #     return tile_layer, bounds
-    # else:
-    #     return tile_layer
 
 
 def get_palettable(types=None):
@@ -10740,17 +10658,22 @@ def get_palettable(types=None):
 
 
 def connect_postgis(
-    database, host="localhost", user=None, password=None, port=5432, use_env_var=False
+    database: str,
+    host: str = "localhost",
+    user: str | None = None,
+    password: str | None = None,
+    port: int = 5432,
+    use_env_var: bool = False,
 ):
     """Connects to a PostGIS database.
 
     Args:
-        database (str): Name of the database
-        host (str, optional): Hosting server for the database. Defaults to "localhost".
-        user (str, optional): User name to access the database. Defaults to None.
-        password (str, optional): Password to access the database. Defaults to None.
-        port (int, optional): Port number to connect to at the server host. Defaults to 5432.
-        use_env_var (bool, optional): Whether to use environment variables. It set to True, user and password are treated as an environment variables with default values user="SQL_USER" and password="SQL_PASSWORD". Defaults to False.
+        database: Name of the database
+        host: Hosting server for the database. Defaults to "localhost".
+        user: User name to access the database. Defaults to None.
+        password: Password to access the database. Defaults to None.
+        port: Port number to connect to at the server host. Defaults to 5432.
+        use_env_var: Whether to use environment variables. It set to True, user and password are treated as an environment variables with default values user="SQL_USER" and password="SQL_PASSWORD". Defaults to False.
 
     Raises:
         ValueError: If user is not specified.
@@ -10759,7 +10682,7 @@ def connect_postgis(
     Returns:
         [type]: [description]
     """
-    from sqlalchemy import create_engine
+    import sqlalchemy
 
     if use_env_var:
         if user is not None:
@@ -10778,56 +10701,68 @@ def connect_postgis(
             raise ValueError("password is not specified.")
 
     connection_string = f"postgresql://{user}:{password}@{host}:{port}/{database}"
-    engine = create_engine(connection_string)
-
-    return engine
+    return sqlalchemy.create_engine(connection_string)
 
 
-def read_postgis(sql, con, geom_col="geom", crs=None, **kwargs):
+def read_postgis(
+    sql: str, con, geom_col: str = "geom", crs: str | dict | None = None, **kwargs
+):
     """Reads data from a PostGIS database and returns a GeoDataFrame.
 
     Args:
-        sql (str): SQL query to execute in selecting entries from database, or name of the table to read from the database.
+        sql: SQL query to execute in selecting entries from database, or name of the table to read from the database.
         con (sqlalchemy.engine.Engine): Active connection to the database to query.
-        geom_col (str, optional): Column name to convert to shapely geometries. Defaults to "geom".
-        crs (str | dict, optional): CRS to use for the returned GeoDataFrame; if not set, tries to determine CRS from the SRID associated with the first geometry in the database, and assigns that to all geometries. Defaults to None.
+        geom_col: Column name to convert to shapely geometries. Defaults to "geom".
+        crs: CRS to use for the returned GeoDataFrame; if not set, tries to determine CRS from the SRID associated with the first geometry in the database, and assigns that to all geometries. Defaults to None.
 
     Returns:
         [type]: [description]
     """
     import geopandas as gpd
 
-    gdf = gpd.read_postgis(sql, con, geom_col, crs, **kwargs)
-    return gdf
+    return gpd.read_postgis(sql, con, geom_col, crs, **kwargs)
 
 
-def postgis_to_ee(sql, con, geom_col="geom", crs=None, geodestic=False, **kwargs):
+def postgis_to_ee(
+    sql: str,
+    con,
+    geom_col: str = "geom",
+    crs: str | dict | None = None,
+    geodestic: bool = False,
+    **kwargs,
+):
     """Reads data from a PostGIS database and returns a GeoDataFrame.
 
     Args:
-        sql (str): SQL query to execute in selecting entries from database, or name of the table to read from the database.
+        sql: SQL query to execute in selecting entries from database, or name of the table to read from the database.
         con (sqlalchemy.engine.Engine): Active connection to the database to query.
-        geom_col (str, optional): Column name to convert to shapely geometries. Defaults to "geom".
-        crs (str | dict, optional): CRS to use for the returned GeoDataFrame; if not set, tries to determine CRS from the SRID associated with the first geometry in the database, and assigns that to all geometries. Defaults to None.
-        geodestic (bool, optional): Whether to use geodestic coordinates. Defaults to False.
+        geom_col: Column name to convert to shapely geometries. Defaults to "geom".
+        crs: CRS to use for the returned GeoDataFrame; if not set, tries to determine CRS from the SRID associated with the first geometry in the database, and assigns that to all geometries. Defaults to None.
+        geodestic: Whether to use geodestic coordinates. Defaults to False.
 
     Returns:
         [type]: [description]
     """
     gdf = read_postgis(sql, con, geom_col, crs=crs, **kwargs)
-    fc = gdf_to_ee(gdf, geodesic=geodestic)
-    return fc
+    return gdf_to_ee(gdf, geodesic=geodestic)
 
 
-def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs):
+def points_from_xy(
+    data: str | pd.DataFrame,
+    x: str = "longitude",
+    y: str = "latitude",
+    z: str | None = None,
+    crs: str | int | None = None,
+    **kwargs,
+):
     """Create a GeoPandas GeoDataFrame from a csv or Pandas DataFrame containing x, y, z values.
 
     Args:
-        data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
-        x (str, optional): The column name for the x values. Defaults to "longitude".
-        y (str, optional): The column name for the y values. Defaults to "latitude".
-        z (str, optional): The column name for the z values. Defaults to None.
-        crs (str | int, optional): The coordinate reference system for the GeoDataFrame. Defaults to None.
+        data: A csv or Pandas DataFrame containing x, y, z values.
+        x: The column name for the x values. Defaults to "longitude".
+        y: The column name for the y values. Defaults to "latitude".
+        z: The column name for the z values. Defaults to None.
+        crs: The coordinate reference system for the GeoDataFrame. Defaults to None.
 
     Returns:
         geopandas.GeoDataFrame: A GeoPandas GeoDataFrame containing x, y, z values.
@@ -10849,9 +10784,7 @@ def points_from_xy(data, x="longitude", y="latitude", z=None, crs=None, **kwargs
     else:
         raise TypeError("The data must be a pandas DataFrame or a csv file path.")
 
-    gdf = gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs))
-
-    return gdf
+    return gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs))
 
 
 def vector_centroids(ee_object):
@@ -10873,7 +10806,7 @@ def vector_centroids(ee_object):
         lambda f: ee.Feature(f.geometry().centroid(0.001), f.toDictionary())
     )
 
-    centroids = centroids.map(
+    return centroids.map(
         lambda f: f.set(
             {
                 "longitude": f.geometry().coordinates().get(0),
@@ -10881,8 +10814,6 @@ def vector_centroids(ee_object):
             }
         )
     )
-
-    return centroids
 
 
 def bbox_to_gdf(bbox, crs="EPSG:4326"):
@@ -11028,7 +10959,7 @@ def cog_validate(source, verbose=False):
         return cog_validate(source)
 
 
-def gdf_to_df(gdf, drop_geom=True):
+def gdf_to_df(gdf, drop_geom=True) -> pd.DataFrame:
     """Converts a GeoDataFrame to a pandas DataFrame.
 
     Args:
@@ -11036,14 +10967,12 @@ def gdf_to_df(gdf, drop_geom=True):
         drop_geom (bool, optional): Whether to drop the geometry column. Defaults to True.
 
     Returns:
-        pd.DataFrame: A pandas DataFrame containing the GeoDataFrame.
+        A pandas DataFrame containing the GeoDataFrame.
     """
     if drop_geom:
-        df = pd.DataFrame(gdf.drop(columns=["geometry"]))
+        return pd.DataFrame(gdf.drop(columns=["geometry"]))
     else:
-        df = pd.DataFrame(gdf)
-
-    return df
+        return pd.DataFrame(gdf)
 
 
 def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
@@ -11130,8 +11059,7 @@ def ee_join_table(ee_object, data, src_key, dst_key=None):
     df = df[~df.index.duplicated(keep="first")]
     table = ee.Dictionary(df.to_dict("index"))
 
-    fc = ee_object.map(lambda f: f.set(table.get(f.get(src_key), ee.Dictionary())))
-    return fc
+    return ee_object.map(lambda f: f.set(table.get(f.get(src_key), ee.Dictionary())))
 
 
 def gdf_bounds(gdf, return_geom=False):
@@ -11487,10 +11415,9 @@ def download_folder(
     """
     import gdown
 
-    files = gdown.download_folder(
+    return gdown.download_folder(
         url, id, output, quiet, proxy, speed, use_cookies, remaining_ok
     )
-    return files
 
 
 def blend(
@@ -11501,8 +11428,10 @@ def blend(
     hillshade=True,
     expression="a*b",
     **kwargs,
-):
-    """Create a blended image that is a combination of two images, e.g., DEM and hillshade. This function was inspired by Jesse Anderson. See https://github.com/jessjaco/gee-blend.
+) -> ee.Image:
+    """Create a blended image that is a combination of two images, e.g., DEM and hillshade.
+
+    This function was inspired by Jesse Anderson. See https://github.com/jessjaco/gee-blend.
 
     Args:
         top_layer (ee.Image): The top layer image, e.g., ee.Image("CGIAR/SRTM90_V4")
@@ -11513,7 +11442,7 @@ def blend(
         expression (str, optional): The expression to use for the blend. Defaults to 'a*b'.
 
     Returns:
-        ee.Image: The blended image.
+        The blended image.
     """
     if not isinstance(top_layer, ee.Image):
         raise ValueError("top_layer must be an ee.Image.")
@@ -11568,8 +11497,7 @@ def blend(
     if "a" not in expression or ("b" not in expression):
         raise ValueError("expression must contain 'a' and 'b'.")
 
-    result = ee.Image().expression(expression, {"a": top, "b": bottom})
-    return result
+    return ee.Image().expression(expression, {"a": top, "b": bottom})
 
 
 def clip_image(image, mask, output):
@@ -11733,8 +11661,7 @@ def read_netcdf(filename, **kwargs):
     if not os.path.exists(filename):
         raise FileNotFoundError(f"{filename} does not exist.")
 
-    xds = xr.open_dataset(filename, **kwargs)
-    return xds
+    return xr.open_dataset(filename, **kwargs)
 
 
 def netcdf_tile_layer(
@@ -11871,7 +11798,7 @@ def classify(
             Additional accepted keywords when `scheme` is specified:
             fmt : string
                 A formatting specification for the bin edges of the classes in the
-                legend. For example, to have no decimals: ``{"fmt": "{:.0f}"}``.
+                legend. For example, to have no decimals: `{"fmt": "{:.0f}"}`.
             labels : list-like
                 A list of legend labels to override the auto-generated labblels.
                 Needs to have the same number of elements as the number of
@@ -12289,23 +12216,23 @@ def download_ee_image(
         image (ee.Image): The image to be downloaded.
         filename (str): Name of the destination file.
         region (ee.Geometry, optional): Region defined by geojson polygon in WGS84. Defaults to the entire image granule.
-        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS. Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
         crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
-            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
-            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            List of 6 numbers specifying an affine transform in the specified CRS. In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation]. All bands are re-projected to
             this transform.
-        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
-            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m). Where image bands have different scales,
+            all are resampled to this scale. Defaults to the minimum scale of image bands.
         resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
         dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
-            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+            or `float64`). Defaults to auto select a minimum size type that can represent the range of pixel values.
         overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
         num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
         max_tile_size: int, optional
-            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+            Maximum tile size (MB). If None, defaults to the Earth Engine download size limit (32 MB).
         max_tile_dim: int, optional
-            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+            Maximum tile width/height (pixels). If None, defaults to Earth Engine download limit (10000).
         shape: tuple of int, optional
             (height, width) dimensions to export (pixels).
         scale_offset: bool, optional
@@ -12391,23 +12318,23 @@ def download_ee_image_tiles(
         features (ee.FeatureCollection): The features to loop through to download image.
         out_dir (str, optional): The output directory. Defaults to None.
         prefix (str, optional): The prefix for the output file. Defaults to None.
-        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS. Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
         crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
-            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
-            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            List of 6 numbers specifying an affine transform in the specified CRS. In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation]. All bands are re-projected to
             this transform.
-        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
-            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m). Where image bands have different scales,
+            all are resampled to this scale. Defaults to the minimum scale of image bands.
         resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
         dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
-            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+            or `float64`). Defaults to auto select a minimum size type that can represent the range of pixel values.
         overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
         num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
         max_tile_size: int, optional
-            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+            Maximum tile size (MB). If None, defaults to the Earth Engine download size limit (32 MB).
         max_tile_dim: int, optional
-            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+            Maximum tile width/height (pixels). If None, defaults to Earth Engine download limit (10000).
         shape: tuple of int, optional
             (height, width) dimensions to export (pixels).
         scale_offset: bool, optional
@@ -12501,23 +12428,23 @@ def download_ee_image_tiles_parallel(
         features (ee.FeatureCollection): The features to loop through to download image.
         out_dir (str, optional): The output directory. Defaults to None.
         prefix (str, optional): The prefix for the output file. Defaults to None.
-        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS. Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
         crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
-            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
-            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            List of 6 numbers specifying an affine transform in the specified CRS. In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation]. All bands are re-projected to
             this transform.
-        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
-            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m). Where image bands have different scales,
+            all are resampled to this scale. Defaults to the minimum scale of image bands.
         resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
         dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
-            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+            or `float64`). Defaults to auto select a minimum size type that can represent the range of pixel values.
         overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
         num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
         max_tile_size: int, optional
-            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+            Maximum tile size (MB). If None, defaults to the Earth Engine download size limit (32 MB).
         max_tile_dim: int, optional
-            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+            Maximum tile width/height (pixels). If None, defaults to Earth Engine download limit (10000).
         shape: tuple of int, optional
             (height, width) dimensions to export (pixels).
         scale_offset: bool, optional
@@ -12621,23 +12548,23 @@ def download_ee_image_collection(
         out_dir (str, optional): The directory to save the downloaded images. Defaults to the current directory.
         filenames (list, optional): A list of filenames to use for the downloaded images. Defaults to the image ID.
         region (ee.Geometry, optional): Region defined by geojson polygon in WGS84. Defaults to the entire image granule.
-        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS.  Where image bands have different CRSs, all are
+        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS. Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
         crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
-            List of 6 numbers specifying an affine transform in the specified CRS.  In row-major order:
-            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation].  All bands are re-projected to
+            List of 6 numbers specifying an affine transform in the specified CRS. In row-major order:
+            [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation]. All bands are re-projected to
             this transform.
-        scale (float, optional): Resample image(s) to this pixel scale (size) (m).  Where image bands have different scales,
-            all are resampled to this scale.  Defaults to the minimum scale of image bands.
+        scale (float, optional): Resample image(s) to this pixel scale (size) (m). Where image bands have different scales,
+            all are resampled to this scale. Defaults to the minimum scale of image bands.
         resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
         dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
-            or `float64`).  Defaults to auto select a minimum size type that can represent the range of pixel values.
+            or `float64`). Defaults to auto select a minimum size type that can represent the range of pixel values.
         overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
         num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
         max_tile_size: int, optional
-            Maximum tile size (MB).  If None, defaults to the Earth Engine download size limit (32 MB).
+            Maximum tile size (MB). If None, defaults to the Earth Engine download size limit (32 MB).
         max_tile_dim: int, optional
-            Maximum tile width/height (pixels).  If None, defaults to Earth Engine download limit (10000).
+            Maximum tile width/height (pixels). If None, defaults to Earth Engine download limit (10000).
         shape: tuple of int, optional
             (height, width) dimensions to export (pixels).
         scale_offset: bool, optional
@@ -12875,7 +12802,7 @@ def display_html(src, width=950, height=600):
     display(IFrame(src=src, width=width, height=height))
 
 
-def bbox_coords(geometry, decimals=4):
+def bbox_coords(geometry, decimals=4) -> list[float] | None:
     """Get the bounding box coordinates of a geometry.
 
     Args:
@@ -12883,7 +12810,7 @@ def bbox_coords(geometry, decimals=4):
         decimals (int, optional): The number of decimals to round to. Defaults to 4.
 
     Returns:
-        list: The bounding box coordinates in the form [west, south, east, north].
+        The bounding box coordinates in the form [west, south, east, north].
     """
     if isinstance(geometry, ee.FeatureCollection):
         geometry = geometry.geometry()
@@ -12905,8 +12832,12 @@ def bbox_coords(geometry, decimals=4):
 
 
 def requireJS(lib_path=None, Map=None):
-    """Import Earth Engine JavaScript libraries. Based on the Open Earth Engine Library (OEEL).
-        For more info, visit https://www.open-geocomputing.org/OpenEarthEngineLibrary.
+    """Import Earth Engine JavaScript libraries.
+
+    Based on the Open Earth Engine Library (OEEL):
+
+    * https://www.open-geocomputing.org/OpenEarthEngineLibrary
+    * https://github.com/open-geocomputing/OpenEarthEngineLibrary
 
     Args:
         lib_path (str, optional): A local file path or HTTP URL to a JavaScript library. It can also be in a format like 'users/gena/packages:grid'. Defaults to None.
@@ -13113,24 +13044,19 @@ def ee_vector_style(
         return result.style(**{"styleProperty": "style", "neighborhood": neighborhood})
 
 
-def get_direct_url(url):
-    """Get the direct URL for a given URL.
+def get_direct_url(url: str) -> str:
+    """Returns the direct URL for a given URL.
 
     Args:
-        url (str): The URL to get the direct URL for.
-
-    Returns:
-        str: The direct URL.
+        url: The URL to get the direct URL for.
     """
-
     if not isinstance(url, str):
         raise ValueError("url must be a string.")
 
     if not url.startswith("http"):
         raise ValueError("url must start with http.")
 
-    r = requests.head(url, allow_redirects=True)
-    return r.url
+    return requests.head(url, allow_redirects=True).url
 
 
 def add_crs(filename, epsg):
@@ -14504,14 +14430,14 @@ def tms_to_geotiff(
         )
         return (xtile, ytile)
 
-    def deg2num(lat, lon, zoom):
+    def deg2num(lat, lon, zoom) -> tuple[float, float]:
         lat_r = math.radians(lat)
         n = 2**zoom
         xtile = (lon + 180) / 360 * n
         ytile = (1 - math.log(math.tan(lat_r) + 1 / math.cos(lat_r)) / math.pi) / 2 * n
-        return (xtile, ytile)
+        return xtile, ytile
 
-    def is_empty(im):
+    def is_empty(im) -> bool:
         extrema = im.getextrema()
         if len(extrema) >= 3:
             if len(extrema) > 3 and extrema[-1] == (0, 0):
@@ -14674,7 +14600,7 @@ def tif_to_jp2(filename, output, creationOptions=None):
         output (str): The path to the output JPEG2000 file.
         creationOptions (list): A list of creation options for the JPEG2000 file. See
             https://gdal.org/drivers/raster/jp2openjpeg.html. For example, to specify the compression
-            ratio, use ``["QUALITY=20"]``. A value of 20 means the file will be 20% of the size in comparison
+            ratio, use `["QUALITY=20"]`. A value of 20 means the file will be 20% of the size in comparison
             to uncompressed data.
     """
     from osgeo import gdal
@@ -14813,9 +14739,7 @@ def create_grid(
     if proj is None:
         proj = geometry.projection()
 
-    grid = geometry.coveringGrid(proj, scale)
-
-    return grid
+    return geometry.coveringGrid(proj, scale)
 
 
 def jslink_slider_label(
@@ -15121,9 +15045,7 @@ def array_to_memory_file(
     dst.close()
 
     # Read the dataset from memory.
-    dataset_reader = rasterio.open(dst.name, mode="r")
-
-    return dataset_reader
+    return rasterio.open(dst.name, mode="r")
 
 
 def array_to_image(
@@ -15489,7 +15411,7 @@ def pmtiles_style(
     Args:
         url: The URL of the PMTiles file.
         layers: The layers to include in the style. If None, all
-            layers will be included.  Defaults to None.
+            layers will be included. Defaults to None.
         cmap: Color map to use for styling layers. Defaults to "Set3".
         n_class: The number of classes to use for styling. If None,
             the number of classes will be determined automatically
