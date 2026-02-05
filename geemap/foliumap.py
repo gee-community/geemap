@@ -14,7 +14,6 @@ import random
 import re
 from typing import Any
 import warnings
-import webbrowser
 
 import ee
 import folium
@@ -35,7 +34,6 @@ from .common import *
 from .conversion import *
 from . import coreutils
 from . import ee_tile_layers
-from . import examples
 from . import osm
 from .plot import *
 from .timelapse import *
@@ -176,7 +174,12 @@ class Map(folium.Map):
 
         self.fit_bounds([latlon, latlon], max_zoom=zoom)
 
-    def setOptions(self, mapTypeId: str = "HYBRID", styles={}, types=[]):
+    def setOptions(
+        self,
+        mapTypeId: str = "HYBRID",
+        styles: dict[str, Any] | None = None,
+        types: dict[str, Any] | None = None,
+    ):
         """Adds Google basemap to the map.
 
         Args:
@@ -190,6 +193,9 @@ class Map(folium.Map):
                 omitted, but opt_styles is specified, appends all of the style keys to
                 the standard Google Maps API map types. Defaults to None.
         """
+        styles = styles or {}
+        types = types or {}
+
         try:
             basemaps[mapTypeId].add_to(self)
         except Exception:
@@ -278,7 +284,7 @@ class Map(folium.Map):
     def add_layer(
         self,
         ee_object,
-        vis_params={},
+        vis_params: dict[str, Any] | None = None,
         name: str = "Layer untitled",
         shown: bool = True,
         opacity: float = 1.0,
@@ -288,13 +294,14 @@ class Map(folium.Map):
 
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
-            vis_params (dict, optional): The visualization parameters. Defaults to {}.
+            vis_params: The visualization parameters. Defaults to {}.
             name: The name of the layer. Defaults to 'Layer untitled'.
             shown: A flag indicating whether the layer should be on by default. Defaults
                 to True.
             opacity: The layer's opacity represented as a number between 0 and
                 1. Defaults to 1.
         """
+        vis_params = vis_params or {}
 
         layer = ee_tile_layers.EEFoliumTileLayer(
             ee_object, vis_params, name, shown, opacity, **kwargs
@@ -307,7 +314,9 @@ class Map(folium.Map):
     def _repr_mimebundle_(self, **kwargs) -> None:
         """Adds Layer control to the map.
 
-        Reference: https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
+        Reference:
+
+        https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
         """
         if self.options["layersControl"]:
             self.add_layer_control()
@@ -673,7 +682,7 @@ class Map(folium.Map):
         nodata: float | None = None,
         attribution: str | None = None,
         layer_name: str | None = "Raster",
-        array_args: dict | None = {},
+        array_args: dict | None = None,
         **kwargs,
     ) -> None:
         """Add a local raster dataset to the map.
@@ -707,8 +716,9 @@ class Map(folium.Map):
             array_args: Additional arguments to pass to `array_to_image`.
                 Defaults to {}.
         """
-
         import xarray as xr
+
+        array_args = array_args or {}
 
         if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
             source = array_to_image(source, **array_args)
@@ -836,24 +846,33 @@ class Map(folium.Map):
         opacity: float = 1.0,
         position: str = "bottomright",
         draggable: bool = True,
-        style={},
+        style: dict[str, Any] | None = None,
     ):
-        """Adds a customized legend to the map. Reference: https://bit.ly/3oV6vnH.
-            If you want to add multiple legends to the map, you need to set the `draggable` argument to False.
+        """Adds a customized legend to the map.
+
+        Reference: https://bit.ly/3oV6vnH.
+
+        If you want to add multiple legends to the map, you need to set the `draggable`
+        argument to False.
 
         Args:
             title: Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
             colors (list, optional): A list of legend colors. Defaults to None.
             labels (list, optional): A list of legend labels. Defaults to None.
-            legend_dict (dict, optional): A dictionary containing legend items as keys and color as values.
-                If provided, legend_keys and legend_colors will be ignored. Defaults to None.
-            builtin_legend: Name of the builtin legend to add to the map. Defaults to None.
+            legend_dict (dict, optional): A dictionary containing legend items as keys
+                and color as values.  If provided, legend_keys and legend_colors will be
+                ignored. Defaults to None.
+            builtin_legend: Name of the builtin legend to add to the map. Defaults to
+                None.
             opacity: The opacity of the legend. Defaults to 1.0.
             position: The position of the legend, can be one of the following:
-                "topleft", "topright", "bottomleft", "bottomright". Defaults to "bottomright".
-            draggable: If True, the legend can be dragged to a new position. Defaults to True.
-            style: Additional keyword arguments to style the legend, such as position, bottom, right, z-index,
-                border, background-color, border-radius, padding, font-size, etc. The default style is:
+                "topleft", "topright", "bottomleft", "bottomright". Defaults to
+                "bottomright".
+            draggable: If True, the legend can be dragged to a new position. Defaults to
+                True.
+            style: Additional keyword arguments to style the legend, such as position,
+                bottom, right, z-index, border, background-color, border-radius,
+                padding, font-size, etc. The default style is:
                 style = {
                     'position': 'fixed',
                     'z-index': '9999',
@@ -865,8 +884,9 @@ class Map(folium.Map):
                     'bottom': '20px',
                     'right': '5px'
                 }
-
         """
+        style = style or {}
+
         content = create_legend(
             title,
             labels,
@@ -907,15 +927,30 @@ class Map(folium.Map):
         """Add a colorbar to the map.
 
         Args:
-            colors (list): The set of colors to be used for interpolation. Colors can be provided in the form: * tuples of RGBA ints between 0 and 255 (e.g: (255, 255, 0) or (255, 255, 0, 255)) * tuples of RGBA floats between 0. and 1. (e.g: (1.,1.,0.) or (1., 1., 0., 1.)) * HTML-like string (e.g: “#ffff00) * a color name or shortcut (e.g: “y” or “yellow”)
-            vmin (int, optional): The minimal value for the colormap. Values lower than vmin will be bound directly to colors[0]. Defaults to 0.
-            vmax (float, optional): The maximal value for the colormap. Values higher than vmax will be bound directly to colors[-1]. Defaults to 1.0.
-            index (list, optional):The values corresponding to each color. It has to be sorted, and have the same length as colors. If None, a regular grid between vmin and vmax is created. Defaults to None.
+            vis_params: TODO.
+            index (list, optional):The values corresponding to each color. It has to be
+                sorted, and have the same length as colors. If None, a regular grid
+                between vmin and vmax is created. Defaults to None.
             label: The caption for the colormap. Defaults to "".
-            categorical: Whether or not to create a categorical colormap. Defaults to False.
-            step: The step to split the LinearColormap into a StepColormap. Defaults to None.
+            categorical: Whether or not to create a categorical colormap. Defaults to
+                False.
+            step: The step to split the LinearColormap into a StepColormap. Defaults to
+                None.
+            background_color: TODO.
+            # TODO: Fix these.
+            colors (list): The set of colors to be used for interpolation. Colors can be
+                provided in the form: * tuples of RGBA ints between 0 and 255 (e.g:
+                (255, 255, 0) or (255, 255, 0, 255)) * tuples of RGBA floats between
+                0. and 1. (e.g: (1.,1.,0.) or (1., 1., 0., 1.)) * HTML-like string (e.g:
+                “#ffff00) * a color name or shortcut (e.g: “y” or “yellow”)
+            vmin (int, optional): The minimal value for the colormap. Values lower than
+              vmin will be bound directly to colors[0]. Defaults to 0.
+            vmax (float, optional): The maximal value for the colormap. Values higher
+                than vmax will be bound directly to colors[-1]. Defaults to 1.0.
         """
         from branca.colormap import LinearColormap
+
+        del kwargs  # Unused.
 
         if not isinstance(vis_params, dict):
             raise ValueError("vis_params must be a dictionary.")
@@ -986,7 +1021,10 @@ class Map(folium.Map):
         position=(70, 5),
         **kwargs,
     ):
-        """Add a colorbar to the map. Under the hood, it uses matplotlib to generate the colorbar, save it as a png file, and add it to the map using m.add_image().
+        """Add a colorbar to the map.
+
+        Under the hood, it uses matplotlib to generate the colorbar, save it as a png
+        file, and add it to the map using m.add_image().
 
         Args:
             width: Width of the colorbar in inches. Default is 4.0.
@@ -1021,7 +1059,6 @@ class Map(folium.Map):
         Returns:
             str: Path to the output image.
         """
-
         colorbar = save_colorbar(
             None,
             width,
@@ -1115,8 +1152,11 @@ class Map(folium.Map):
             in_geojson: The input file path to the GeoJSON.
             layer_name: The layer name to be used. Defaults to "Untitled".
             encoding: The encoding of the GeoJSON file. Defaults to "utf-8".
-            info_mode: Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-            fields (list, optional): The fields to be displayed in the popup. Defaults to None.
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
+            fields (list, optional): The fields to be displayed in the popup. Defaults
+                to None.
 
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
@@ -1173,6 +1213,7 @@ class Map(folium.Map):
             fill_colors = kwargs["fill_colors"]
 
             def random_color(feature):
+                del feature  # Unused.
                 style_dict["fillColor"] = random.choice(fill_colors)
                 return style_dict
 
@@ -1205,7 +1246,7 @@ class Map(folium.Map):
         in_kml: str,
         layer_name: str = "Untitled",
         info_mode: str = "on_hover",
-        fields=None,
+        fields: list | None = None,
         **kwargs,
     ) -> None:
         """Adds a KML file to the map.
@@ -1213,14 +1254,15 @@ class Map(folium.Map):
         Args:
             in_kml: The input file path to the KML.
             layer_name: The layer name to be used. Defaults to "Untitled".
-            info_mode: Displays the attributes by either on_hover or on_click.
-                Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-            fields (list, optional): The fields to be displayed in the popup. Defaults to None.
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
+            fields: The fields to be displayed in the popup. Defaults to None.
 
         Raises:
             FileNotFoundError: The provided KML file could not be found.
-        """
 
+        """
         if in_kml.startswith("http") and in_kml.endswith(".kml"):
             out_dir = os.path.abspath("./cache")
             if not os.path.exists(out_dir):
@@ -1246,7 +1288,7 @@ class Map(folium.Map):
         layer_name: str = "Untitled",
         zoom_to_layer: bool = True,
         info_mode: str = "on_hover",
-        fields=None,
+        fields: list | None = None,
         **kwargs,
     ) -> None:
         """Adds a GeoPandas GeoDataFrame to the map.
@@ -1255,11 +1297,12 @@ class Map(folium.Map):
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
             layer_name: The layer name to be used. Defaults to "Untitled".
             zoom_to_layer: Whether to zoom to the layer.
-            info_mode: Displays the attributes by either on_hover or on_click.
-                Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-            fields (list, optional): The fields to be displayed in the popup. Defaults to None.
-        """
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
+            fields: The fields to be displayed in the popup. Defaults to None.
 
+        """
         data = gdf_to_geojson(gdf, epsg="4326")
 
         self.add_geojson(
@@ -1285,11 +1328,11 @@ class Map(folium.Map):
         """Adds a GeoPandas GeoDataFrameto the map.
 
         Args:
-            sql: SQL query to execute in selecting entries from database, or name of the table to read from the database.
+            sql: SQL query to execute in selecting entries from database, or name of the
+                table to read from the database.
             con (sqlalchemy.engine.Engine): Active connection to the database to query.
             layer_name: The layer name to be used. Defaults to "Untitled".
             zoom_to_layer: Whether to zoom to the layer.
-
         """
         if "fill_colors" in kwargs:
             kwargs.pop("fill_colors")
@@ -1351,29 +1394,40 @@ class Map(folium.Map):
     def add_osm_from_geocode(
         self,
         query,
-        which_result=None,
-        by_osmid=False,
-        layer_name="Untitled",
-        style={},
-        hover_style={},
+        which_result: int | None = None,
+        by_osmid: bool = False,
+        layer_name: str = "Untitled",
+        style: dict[str, Any] | None = None,
+        hover_style: dict[str, Any] | None = None,
         style_callback=None,
-        fill_colors=["black"],
-        info_mode="on_hover",
+        fill_colors: list[str] = ["black"],
+        info_mode: str = "on_hover",
     ):
         """Adds OSM data of place(s) by name or ID to the map.
 
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-            which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-            by_osmid (bool, optional): If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
-            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
-            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-            fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
 
+            which_result: Which geocoding result to use. if None, auto-select the first
+                (Multi)Polygon or raise an error if OSM doesn't return one. to get the
+                top match regardless of geometry type, set which_result=1. Defaults to
+                None.
+            by_osmid: If True, handle query as an OSM ID for lookup rather than text
+                search. Defaults to False.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            style: A dictionary specifying the style to be used. Defaults to {}.
+            hover_style: Hover style dictionary. Defaults to {}.
+            style_callback (function, optional): Styling function that is called for
+                each feature, and should return the feature style. This styling function
+                takes the feature as argument. Defaults to None.
+            fill_colors: The random colors to use for filling polygons. Defaults to
+                ["black"].
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
         """
+        style = style or {}
+        hover_style = hover_style or {}
 
         gdf = osm.osm_gdf_from_geocode(
             query, which_result=which_result, by_osmid=by_osmid
@@ -1393,30 +1447,47 @@ class Map(folium.Map):
 
     def add_osm_from_address(
         self,
-        address,
-        tags,
-        dist=1000,
-        layer_name="Untitled",
-        style={},
-        hover_style={},
+        address: str,
+        tags: dict[str, Any],
+        dist: int = 1000,
+        layer_name: str = "Untitled",
+        style: dict[str, Any] | None = None,
+        hover_style: dict[str, Any] | None = None,
         style_callback=None,
-        fill_colors=["black"],
-        info_mode="on_hover",
+        fill_colors: list[str] = ["black"],
+        info_mode: str = "on_hover",
     ):
         """Adds OSM entities within some distance N, S, E, W of address to the map.
 
         Args:
-            address (str): The address to geocode and use as the central point around which to get the geometries.
-            tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            dist (int, optional): Distance in meters. Defaults to 1000.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
-            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
-            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-            fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
+            address: The address to geocode and use as the central point around which to
+                get the geometries.
+            tags: Dict of tags used for finding objects in the selected area. Results
+                returned are the union, not intersection of each individual tag. Each
+                result matches at least one given tag. The dict keys should be OSM tags,
+                (e.g., building, landuse, highway, etc) and the dict values should be
+                either True to retrieve all items with the given tag, or a string to get
+                a single tag-value combination, or a list of strings to get multiple
+                values for the given tag. For example, tags = {‘building’: True} would
+                return all building footprints in the area. tags = {‘amenity’:True,
+                ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return
+                all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
+            dist: Distance in meters. Defaults to 1000.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            style: A dictionary specifying the style to be used. Defaults to {}.
+            hover_style: Hover style dictionary. Defaults to {}.
+            style_callback: Styling function that is called for each feature, and should
+                return the feature style. This styling function takes the feature as
+                argument. Defaults to None.
+            fill_colors: The random colors to use for filling polygons. Defaults to
+                ["black"].
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
         """
+        style = style or {}
+        hover_style = hover_style or {}
+
         gdf = osm.osm_gdf_from_address(address, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -1434,29 +1505,48 @@ class Map(folium.Map):
     def add_osm_from_place(
         self,
         query,
-        tags,
-        which_result=None,
-        layer_name="Untitled",
-        style={},
-        hover_style={},
+        tags: dict,
+        which_result: int | None = None,
+        layer_name: str = "Untitled",
+        style: dict[str, Any] | None = None,
+        hover_style: dict[str, Any] | None = None,
         style_callback=None,
-        fill_colors=["black"],
-        info_mode="on_hover",
+        fill_colors: list[str] = ["black"],
+        info_mode: str = "on_hover",
     ):
         """Adds OSM entities within boundaries of geocodable place(s) to the map.
 
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-            tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            which_result (int, optional): Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
-            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
-            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-            fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
+            tags: Dict of tags used for finding objects in the selected area. Results
+                returned are the union, not intersection of each individual tag. Each
+                result matches at least one given tag. The dict keys should be OSM tags,
+                (e.g., building, landuse, highway, etc) and the dict values should be
+                either True to retrieve all items with the given tag, or a string to get
+                a single tag-value combination, or a list of strings to get multiple
+                values for the given tag. For example, tags = {‘building’: True} would
+                return all building footprints in the area. tags = {‘amenity’:True,
+                ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return
+                all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
+            which_result: Which geocoding result to use. if None, auto-select the first
+                (Multi)Polygon or raise an error if OSM doesn't return one. to get the
+                top match regardless of geometry type, set which_result=1. Defaults to
+                None.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            style: A dictionary specifying the style to be used. Defaults to {}.
+            hover_style: Hover style dictionary. Defaults to {}.
+            style_callback (function, optional): Styling function that is called for
+                each feature, and should return the feature style. This styling function
+                takes the feature as argument. Defaults to None.
+            fill_colors: The random colors to use for filling polygons. Defaults to
+                ["black"].
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
         """
+        style = style or {}
+        hover_style = hover_style or {}
+
         gdf = osm.osm_gdf_from_place(query, tags, which_result)
         geojson = gdf.__geo_interface__
 
@@ -1473,30 +1563,46 @@ class Map(folium.Map):
 
     def add_osm_from_point(
         self,
-        center_point,
-        tags,
-        dist=1000,
-        layer_name="Untitled",
-        style={},
-        hover_style={},
+        center_point: tuple[float, float],
+        tags: dict,
+        dist: int = 1000,
+        layer_name: str = "Untitled",
+        style: dict[str, Any] | None = None,
+        hover_style: dict[str, Any] | None = None,
         style_callback=None,
-        fill_colors=["black"],
-        info_mode="on_hover",
+        fill_colors: list[str] = ["black"],
+        info_mode: str = "on_hover",
     ):
         """Adds OSM entities within some distance N, S, E, W of a point to the map.
 
         Args:
-            center_point (tuple): The (lat, lng) center point around which to get the geometries.
-            tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            dist (int, optional): Distance in meters. Defaults to 1000.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
-            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
-            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-            fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
+            center_point: The (lat, lng) center point around which to get the
+                geometries.
+            tags: Dict of tags used for finding objects in the selected area. Results
+                returned are the union, not intersection of each individual tag. Each
+                result matches at least one given tag. The dict keys should be OSM tags,
+                (e.g., building, landuse, highway, etc) and the dict values should be
+                either True to retrieve all items with the given tag, or a string to get
+                a single tag-value combination, or a list of strings to get multiple
+                values for the given tag. For example, tags = {‘building’: True} would
+                return all building footprints in the area. tags = {‘amenity’:True,
+                ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return
+                all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
+            dist: Distance in meters. Defaults to 1000.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            style: A dictionary specifying the style to be used. Defaults to {}.
+            hover_style: Hover style dictionary. Defaults to {}.
+            style_callback (function, optional): Styling function that is called for
+                each feature, and should return the feature style. This styling function
+                takes the feature as argument. Defaults to None.
+            fill_colors: The random colors to use for filling polygons. Defaults to ["black"].
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
         """
+        style = style or {}
+        hover_style = hover_style or {}
+
         gdf = osm.osm_gdf_from_point(center_point, tags, dist)
         geojson = gdf.__geo_interface__
 
@@ -1514,27 +1620,45 @@ class Map(folium.Map):
     def add_osm_from_polygon(
         self,
         polygon,
-        tags,
-        layer_name="Untitled",
-        style={},
-        hover_style={},
+        tags: dict,
+        layer_name: str = "Untitled",
+        style: dict[str, Any] | None = None,
+        hover_style: dict[str, Any] | None = None,
         style_callback=None,
-        fill_colors=["black"],
-        info_mode="on_hover",
+        fill_colors: list[str] = ["black"],
+        info_mode: str = "on_hover",
     ):
         """Adds OSM entities within boundaries of a (multi)polygon to the map.
 
         Args:
-            polygon (shapely.geometry.Polygon | shapely.geometry.MultiPolygon): Geographic boundaries to fetch geometries within
-            tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
-            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
-            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-            fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
+            polygon (shapely.geometry.Polygon | shapely.geometry.MultiPolygon):
+                Geographic boundaries to fetch geometries within
+            tags: Dict of tags used for finding objects in the selected
+                area. Results returned are the union, not intersection of each
+                individual tag. Each result matches at least one given tag. The dict
+                keys should be OSM tags, (e.g., building, landuse, highway, etc) and the
+                dict values should be either True to retrieve all items with the given
+                tag, or a string to get a single tag-value combination, or a list of
+                strings to get multiple values for the given tag. For example, tags =
+                {‘building’: True} would return all building footprints in the
+                area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’],
+                ‘highway’:’bus_stop’} would return all amenities, landuse=retail,
+                landuse=commercial, and highway=bus_stop.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            style: A dictionary specifying the style to be used. Defaults to {}.
+            hover_style: Hover style dictionary. Defaults to {}.
+            style_callback (function, optional): Styling function that is called for
+                each feature, and should return the feature style. This styling function
+                takes the feature as argument. Defaults to None.
+            fill_colors (list, optional): The random colors to use for filling
+                polygons. Defaults to ["black"].
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
         """
+        style = style or {}
+        hover_style = hover_style or {}
+
         gdf = osm.osm_gdf_from_polygon(polygon, tags)
         geojson = gdf.__geo_interface__
 
@@ -1551,35 +1675,50 @@ class Map(folium.Map):
 
     def add_osm_from_bbox(
         self,
-        north,
-        south,
-        east,
-        west,
-        tags,
-        layer_name="Untitled",
-        style={},
-        hover_style={},
+        north: float,
+        south: float,
+        east: float,
+        west: float,
+        tags: dict,
+        layer_name: str = "Untitled",
+        style: dict[str, Any] | None = None,
+        hover_style: dict[str, Any] | None = None,
         style_callback=None,
-        fill_colors=["black"],
-        info_mode="on_hover",
+        fill_colors: list[str] = ["black"],
+        info_mode: str = "on_hover",
     ):
         """Adds OSM entities within a N, S, E, W bounding box to the map.
 
-
         Args:
-            north (float): Northern latitude of bounding box.
-            south (float): Southern latitude of bounding box.
-            east (float): Eastern longitude of bounding box.
-            west (float): Western longitude of bounding box.
-            tags (dict): Dict of tags used for finding objects in the selected area. Results returned are the union, not intersection of each individual tag. Each result matches at least one given tag. The dict keys should be OSM tags, (e.g., building, landuse, highway, etc) and the dict values should be either True to retrieve all items with the given tag, or a string to get a single tag-value combination, or a list of strings to get multiple values for the given tag. For example, tags = {‘building’: True} would return all building footprints in the area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            layer_name (str, optional): The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be used. Defaults to {}.
-            hover_style (dict, optional): Hover style dictionary. Defaults to {}.
-            style_callback (function, optional): Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
-            fill_colors (list, optional): The random colors to use for filling polygons. Defaults to ["black"].
-            info_mode (str, optional): Displays the attributes by either on_hover or on_click. Any value other than "on_hover" or "on_click" will be treated as None. Defaults to "on_hover".
-
+            north: Northern latitude of bounding box.
+            south: Southern latitude of bounding box.
+            east: Eastern longitude of bounding box.
+            west: Western longitude of bounding box.
+            tags: Dict of tags used for finding objects in the selected area. Results
+                returned are the union, not intersection of each individual tag. Each
+                result matches at least one given tag. The dict keys should be OSM tags,
+                (e.g., building, landuse, highway, etc) and the dict values should be
+                either True to retrieve all items with the given tag, or a string to get
+                a single tag-value combination, or a list of strings to get multiple
+                values for the given tag. For example, tags = {‘building’: True} would
+                return all building footprints in the area. tags = {‘amenity’:True,
+                ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return
+                all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
+            layer_name: The layer name to be used. Defaults to "Untitled".
+            style: A dictionary specifying the style to be used. Defaults to {}.
+            hover_style: Hover style dictionary. Defaults to {}.
+            style_callback (function, optional): Styling function that is called for
+                each feature, and should return the feature style. This styling function
+                takes the feature as argument. Defaults to None.
+            fill_colors: The random colors to use for filling polygons. Defaults to
+                ["black"].
+            info_mode: Displays the attributes by either on_hover or on_click. Any value
+                other than "on_hover" or "on_click" will be treated as None. Defaults to
+                "on_hover".
         """
+        style = style or {}
+        hover_style = hover_style or {}
+
         gdf = osm.osm_gdf_from_bbox(north, south, east, west, tags)
         geojson = gdf.__geo_interface__
 
@@ -1757,27 +1896,27 @@ class Map(folium.Map):
     def add_circle_markers_from_xy(
         self,
         data,
-        x="longitude",
-        y="latitude",
-        radius=10,
-        popup=None,
-        tooltip=None,
-        min_width=100,
-        max_width=200,
+        x: str = "longitude",
+        y: str = "latitude",
+        radius: int = 10,
+        popup: list | None = None,
+        tooltip: list | None = None,
+        min_width: int = 100,
+        max_width: int = 200,
         **kwargs,
     ):
         """Adds a marker cluster to the map.
 
         Args:
-            data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
-            x (str, optional): The column name for the x values. Defaults to "longitude".
-            y (str, optional): The column name for the y values. Defaults to "latitude".
-            radius (int, optional): The radius of the circle. Defaults to 10.
-            popup (list, optional): A list of column names to be used as the popup. Defaults to None.
-            tooltip (list, optional): A list of column names to be used as the tooltip. Defaults to None.
-            min_width (int, optional): The minimum width of the popup. Defaults to 100.
-            max_width (int, optional): The maximum width of the popup. Defaults to 200.
-
+            data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z
+                values.
+            x: The column name for the x values. Defaults to "longitude".
+            y: The column name for the y values. Defaults to "latitude".
+            radius: The radius of the circle. Defaults to 10.
+            popup: A list of column names to be used as the popup. Defaults to None.
+            tooltip: A list of column names to be used as the tooltip. Defaults to None.
+            min_width: The minimum width of the popup. Defaults to 100.
+            max_width: The maximum width of the popup. Defaults to 200.
         """
         data = coreutils.github_raw_url(data)
 
@@ -1857,35 +1996,36 @@ class Map(folium.Map):
     def add_markers_from_xy(
         self,
         data,
-        x="longitude",
-        y="latitude",
-        popup=None,
-        min_width=100,
-        max_width=200,
-        layer_name="Markers",
-        icon=None,
-        icon_shape="circle-dot",
-        border_width=3,
-        border_color="#0000ff",
+        x: str = "longitude",
+        y: str = "latitude",
+        popup: list | None = None,
+        min_width: int = 100,
+        max_width: int = 200,
+        layer_name: str = "Markers",
+        icon: str | None = None,
+        icon_shape: str = "circle-dot",
+        border_width: int = 3,
+        border_color: str = "#0000ff",
         **kwargs,
     ):
         """Adds markers to the map from a csv or Pandas DataFrame containing x, y values.
 
         Args:
             data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
-            x (str, optional): The column name for the x values. Defaults to "longitude".
-            y (str, optional): The column name for the y values. Defaults to "latitude".
-            popup (list, optional): A list of column names to be used as the popup. Defaults to None.
-            min_width (int, optional): The minimum width of the popup. Defaults to 100.
-            max_width (int, optional): The maximum width of the popup. Defaults to 200.
-            layer_name (str, optional): The name of the layer. Defaults to "Marker Cluster".
-            icon (str, optional): The Font-Awesome icon name to use to render the marker. Defaults to None.
-            icon_shape (str, optional): The shape of the marker, such as "retangle-dot", "circle-dot". Defaults to 'circle-dot'.
-            border_width (int, optional): The width of the border. Defaults to 3.
-            border_color (str, optional): The color of the border. Defaults to '#0000ff'.
-            kwargs (dict, optional): Additional keyword arguments to pass to BeautifyIcon. See
+            x: The column name for the x values. Defaults to "longitude".
+            y: The column name for the y values. Defaults to "latitude".
+            popup: A list of column names to be used as the popup. Defaults to None.
+            min_width: The minimum width of the popup. Defaults to 100.
+            max_width: The maximum width of the popup. Defaults to 200.
+            layer_name: The name of the layer. Defaults to "Marker Cluster".
+            icon: The Font-Awesome icon name to use to render the marker. Defaults to
+                None.
+            icon_shape: The shape of the marker, such as "retangle-dot",
+                "circle-dot". Defaults to 'circle-dot'.
+            border_width: The width of the border. Defaults to 3.
+            border_color: The color of the border. Defaults to '#0000ff'.
+            kwargs: Additional keyword arguments to pass to BeautifyIcon. See
                 https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.
-
         """
         from folium.plugins import BeautifyIcon
 
@@ -2325,8 +2465,8 @@ class Map(folium.Map):
         self,
         left_layer: str = "TERRAIN",
         right_layer: str = "OpenTopoMap",
-        left_args={},
-        right_args={},
+        left_args: dict[str, Any] | None = None,
+        right_args: dict[str, Any] | None = None,
         left_label=None,
         right_label=None,
         left_position="bottomleft",
@@ -2347,6 +2487,11 @@ class Map(folium.Map):
             left_position: TODO
             right_position: TODO
         """
+        left_args = left_args or {}
+        right_args = right_args or {}
+
+        del kwargs  # Unused.
+
         if "max_zoom" not in left_args:
             left_args["max_zoom"] = 100
         if "max_native_zoom" not in left_args:
@@ -2890,8 +3035,8 @@ class Map(folium.Map):
         right_ts,
         left_names,
         right_names,
-        left_vis={},
-        right_vis={},
+        left_vis: dict[str, Any] | None = None,
+        right_vis: dict[str, Any] | None = None,
         width="130px",
         **kwargs,
     ):
@@ -2900,7 +3045,7 @@ class Map(folium.Map):
     def add_time_slider(
         self,
         ee_object,
-        vis_params={},
+        vis_params: dict[str, Any] | None = None,
         region=None,
         layer_name="Time series",
         labels=None,
@@ -3056,7 +3201,7 @@ class CustomControl(MacroElement):
     )
 
     def __init__(self, html, position: str = "bottomleft"):
-        def escape_backticks(text):
+        def escape_backticks(text: str) -> str:
             """Escape backticks so text can be used in a JS template."""
             return re.sub(r"(?<!\\)`", r"\`", text)
 
@@ -3150,7 +3295,7 @@ def delete_dp_reports():
 
 def ee_tile_layer(
     ee_object,
-    vis_params={},
+    vis_params: dict[str, Any] | None = None,
     name: str = "Layer untitled",
     shown: bool = True,
     opacity: float = 1.0,
@@ -3160,13 +3305,14 @@ def ee_tile_layer(
 
     Args:
         ee_object (Collection|Feature|Image|MapId): The object to add to the map.
-        vis_params (dict, optional): The visualization parameters. Defaults to {}.
+        vis_params: Visualization parameters. Defaults to {}.
         name: The name of the layer. Defaults to 'Layer untitled'.
         shown: A flag indicating whether the layer should be on by default. Defaults to
             True.
         opacity: The layer's opacity represented as a number between 0 and 1. Defaults
             to 1.0.
     """
+    vis_params = vis_params or {}
     image = None
 
     if (
