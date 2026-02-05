@@ -16,7 +16,6 @@ class DeckTest(unittest.TestCase):
 
     def test_map_init_default_params(self):
         m = deck.Map(ee_initialize=False)
-        self.assertIsNotNone(m)
         self.assertEqual(m.initial_view_state.latitude, 20)
         self.assertEqual(m.initial_view_state.longitude, 0)
         self.assertEqual(m.initial_view_state.zoom, 1.2)
@@ -26,18 +25,15 @@ class DeckTest(unittest.TestCase):
 
     def test_map_init_custom_center(self):
         m = deck.Map(ee_initialize=False, center=(40, -100))
-        self.assertIsNotNone(m)
         self.assertEqual(m.initial_view_state.latitude, 40)
         self.assertEqual(m.initial_view_state.longitude, -100)
 
     def test_map_init_custom_zoom(self):
         m = deck.Map(ee_initialize=False, zoom=10)
-        self.assertIsNotNone(m)
         self.assertEqual(m.initial_view_state.zoom, 10)
 
     def test_map_init_custom_height(self):
         m = deck.Map(ee_initialize=False, height=600)
-        self.assertIsNotNone(m)
         self.assertEqual(m.initial_view_state.height, 600)
 
     def test_map_custom_map_style(self):
