@@ -238,14 +238,13 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
     """
     colormap = cm.get_cmap(cmap, n)
     vals = np.linspace(0, 1, n)
-    palette = list(map(lambda x: colors.rgb2hex(colormap(x)[:3]), vals))
 
-    return palette
+    return list(map(lambda x: colors.rgb2hex(colormap(x)[:3]), vals))
 
 
 def add_colorbar(
     ax,
-    vis_params,
+    vis_params: dict,
     loc: str | None = None,
     cmap: str = "gray",
     discrete: bool = False,
@@ -257,7 +256,7 @@ def add_colorbar(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required
             cartopy GeoAxesSubplot object to add image overlay to.
-        vis_params (dict, optional): visualization parameters as a dictionary. See
+        vis_params: Visualization parameters as a dictionary. See
             https://developers.google.com/earth-engine/guides/image_visualization for
             options.
         loc: String specifying the position.
@@ -716,7 +715,7 @@ def add_scale_bar(
 
         return axes_coords
 
-    def _add_bbox(ax, list_of_patches, paddings={}, bbox_kwargs={}):
+    def _add_bbox(ax, list_of_patches, paddings: dict, bbox_kwargs: dict):
         """Add a box behind the scalebar.
 
         Code inspired by:
@@ -933,7 +932,7 @@ def add_scale_bar_lite(
 
     # Get the limits of the axis in lat long.
     llx0, llx1, lly0, lly1 = ax.get_extent(ccrs.PlateCarree())
-    # Make tmc horizontally centred on the middle of the map,
+    # Make tmc horizontally centred on the middle of the map.
     # Vertically at scale bar location.
     sbllx = (llx1 + llx0) / 2
     sblly = lly0 + (lly1 - lly0) * xy[1]
@@ -1107,12 +1106,12 @@ def get_image_collection_gif(
     fig_size: tuple[int, int] = (10, 10),
     dpi_plot: int = 100,
     file_format: str = "png",
-    north_arrow_dict={},
-    scale_bar_dict={},
-    overlay_layers=[],
-    overlay_styles=[],
-    colorbar_dict={},
-    verbose=True,
+    north_arrow_dict: dict | None = None,
+    scale_bar_dict: dict | None = None,
+    overlay_layers: list | None = None,
+    overlay_styles: list | None = None,
+    colorbar_dict: dict | None = None,
+    verbose: bool = True,
     **kwargs,
 ):
     """Download all images in an image collection and generate a gif/video.
@@ -1138,23 +1137,29 @@ def get_image_collection_gif(
         fig_size: Size of the figure.
         dpi_plot: The resolution in dots per inch of the plot.
         file_format: Either 'png' or 'jpg'. Defaults to 'png'.
-        north_arrow_dict (dict, optional): Parameters for the north arrow. See
+        north_arrow_dict: Parameters for the north arrow. See
             https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow.
             Defaults to {}.
-        scale_bar_dict (dict, optional): Parameters for the scale bar. See
+        scale_bar_dict: Parameters for the scale bar. See
             https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar.
             Defaults to {}.
-        overlay_layers (list, optional): A list of Earth Engine objects to overlay on
+        overlay_layers: A list of Earth Engine objects to overlay on
             the map. Defaults to [].
-        overlay_styles (list, optional): A list of dictionaries of visualization
+        overlay_styles: A list of dictionaries of visualization
             parameters for overlay layers. Defaults to [].
-        colorbar_dict (dict, optional): Parameters for the colorbar. See
+        colorbar_dict: Parameters for the colorbar. See
             https://geemap.org/cartoee/#geemap.cartoee.add_colorbar.
             Defaults to {}.
-        verbose (bool, optional): Whether or not to print text when the program is
+        verbose: Whether or not to print text when the program is
             running. Defaults to True.
         **kwargs: Additional keyword arguments are passed to the add_layer() function.
     """
+    north_arrow_dict = north_arrow_dict or {}
+    scale_bar_dict = scale_bar_dict or {}
+    overlay_layers = overlay_layers or []
+    overlay_styles = overlay_styles or []
+    colorbar_dict = colorbar_dict or {}
+
     out_dir = os.path.abspath(out_dir)
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
@@ -1162,7 +1167,6 @@ def get_image_collection_gif(
     out_gif = os.path.join(out_dir, out_gif)
 
     count = int(ee_ic.size().getInfo())
-    names = ee_ic.aggregate_array("system:index").getInfo()
     images = ee_ic.toList(count)
 
     dates = ee_ic.aggregate_array("system:time_start")
@@ -1277,12 +1281,15 @@ def get_image_collection_gif(
         fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 
         def convert_frames_to_video(
-            input_list, output_video_file_name: str, fps_video: int, frame_size
-        ):
+            input_list: list[str],
+            output_video_file_name: str,
+            fps_video: int,
+            frame_size,
+        ) -> None:
             """Convert frames to video
 
             Args:
-                input_list (list): Downloaded Image Name List.
+                input_list: Downloaded Image Name List.
                 output_video_file_name: Name of the video file in the image directory.
                 fps_video: Video frames per second.
                 frame_size (tuple): Frame size.
