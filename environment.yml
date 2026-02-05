@@ -19,7 +19,7 @@ dependencies:
     - pip
     - pydeck
     - pyntcloud
-    - python>=3.10
+    - python>=3.11
     - pyvista
     - requests
     - rio-cogeo
