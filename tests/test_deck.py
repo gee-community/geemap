@@ -5,10 +5,10 @@ import unittest
 try:
     import pydeck
     from geemap import deck
+
     PYDECK_AVAILABLE = True
 except ImportError:
     PYDECK_AVAILABLE = False
-
 
 
 @unittest.skipUnless(PYDECK_AVAILABLE, "pydeck not available")
