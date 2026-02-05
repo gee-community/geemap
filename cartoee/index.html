@@ -7203,7 +7203,7 @@ cartopy GeoAxesSubplot object to add image overlay to.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>visualization parameters as a dictionary. See
+                <p>Visualization parameters as a dictionary. See
 https://developers.google.com/earth-engine/guides/image_visualization for
 options.</p>
               </div>
@@ -7379,7 +7379,8 @@ options.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">246</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">245</span>
+<span class="normal">246</span>
 <span class="normal">247</span>
 <span class="normal">248</span>
 <span class="normal">249</span>
@@ -7550,10 +7551,9 @@ options.</p>
 <span class="normal">414</span>
 <span class="normal">415</span>
 <span class="normal">416</span>
-<span class="normal">417</span>
-<span class="normal">418</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_colorbar</span><span class="p">(</span>
+<span class="normal">417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_colorbar</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
-    <span class="n">vis_params</span><span class="p">,</span>
+    <span class="n">vis_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">loc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span><span class="p">,</span>
     <span class="n">discrete</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
@@ -7565,7 +7565,7 @@ options.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required</span>
 <span class="sd">            cartopy GeoAxesSubplot object to add image overlay to.</span>
-<span class="sd">        vis_params (dict, optional): visualization parameters as a dictionary. See</span>
+<span class="sd">        vis_params: Visualization parameters as a dictionary. See</span>
 <span class="sd">            https://developers.google.com/earth-engine/guides/image_visualization for</span>
 <span class="sd">            options.</span>
 <span class="sd">        loc: String specifying the position.</span>
@@ -7932,7 +7932,8 @@ extent. Default = true.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">470</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">469</span>
+<span class="normal">470</span>
 <span class="normal">471</span>
 <span class="normal">472</span>
 <span class="normal">473</span>
@@ -8034,8 +8035,7 @@ extent. Default = true.</p>
 <span class="normal">569</span>
 <span class="normal">570</span>
 <span class="normal">571</span>
-<span class="normal">572</span>
-<span class="normal">573</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_gridlines</span><span class="p">(</span>
+<span class="normal">572</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_gridlines</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">interval</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">n_ticks</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -8825,7 +8825,8 @@ left', 'lower right']. Defaults to "lower right".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1008</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1007</span>
+<span class="normal">1008</span>
 <span class="normal">1009</span>
 <span class="normal">1010</span>
 <span class="normal">1011</span>
@@ -8907,8 +8908,7 @@ left', 'lower right']. Defaults to "lower right".</p>
 <span class="normal">1087</span>
 <span class="normal">1088</span>
 <span class="normal">1089</span>
-<span class="normal">1090</span>
-<span class="normal">1091</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span>
+<span class="normal">1090</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_legend</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">legend_elements</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">loc</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;lower right&quot;</span><span class="p">,</span>
@@ -9209,7 +9209,8 @@ map).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">604</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">603</span>
+<span class="normal">604</span>
 <span class="normal">605</span>
 <span class="normal">606</span>
 <span class="normal">607</span>
@@ -9250,8 +9251,7 @@ map).</p>
 <span class="normal">642</span>
 <span class="normal">643</span>
 <span class="normal">644</span>
-<span class="normal">645</span>
-<span class="normal">646</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_north_arrow</span><span class="p">(</span>
+<span class="normal">645</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_north_arrow</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span>
     <span class="n">xy</span><span class="o">=</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">),</span>
@@ -9545,7 +9545,8 @@ bar. Defaults to 0.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">671</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">670</span>
+<span class="normal">671</span>
 <span class="normal">672</span>
 <span class="normal">673</span>
 <span class="normal">674</span>
@@ -9767,8 +9768,7 @@ bar. Defaults to 0.</p>
 <span class="normal">890</span>
 <span class="normal">891</span>
 <span class="normal">892</span>
-<span class="normal">893</span>
-<span class="normal">894</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar</span><span class="p">(</span>
+<span class="normal">893</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">metric_distance</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mi">4</span><span class="p">,</span>
     <span class="n">unit</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;km&quot;</span><span class="p">,</span>
@@ -9816,7 +9816,7 @@ bar. Defaults to 0.</p>
 
         <span class="k">return</span> <span class="n">axes_coords</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">_add_bbox</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">list_of_patches</span><span class="p">,</span> <span class="n">paddings</span><span class="o">=</span><span class="p">{},</span> <span class="n">bbox_kwargs</span><span class="o">=</span><span class="p">{}):</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_add_bbox</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">list_of_patches</span><span class="p">,</span> <span class="n">paddings</span><span class="p">:</span> <span class="nb">dict</span><span class="p">,</span> <span class="n">bbox_kwargs</span><span class="p">:</span> <span class="nb">dict</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Add a box behind the scalebar.</span>
 
 <span class="sd">        Code inspired by:</span>
@@ -10176,7 +10176,8 @@ of the map from the lower-left corner. Defaults to (0.1, 0.1).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">897</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">896</span>
+<span class="normal">897</span>
 <span class="normal">898</span>
 <span class="normal">899</span>
 <span class="normal">900</span>
@@ -10258,8 +10259,7 @@ of the map from the lower-left corner. Defaults to (0.1, 0.1).</p>
 <span class="normal">976</span>
 <span class="normal">977</span>
 <span class="normal">978</span>
-<span class="normal">979</span>
-<span class="normal">980</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar_lite</span><span class="p">(</span>
+<span class="normal">979</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_scale_bar_lite</span><span class="p">(</span>
     <span class="n">ax</span><span class="p">,</span>
     <span class="n">length</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
     <span class="n">xy</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">),</span>
@@ -10298,7 +10298,7 @@ of the map from the lower-left corner. Defaults to (0.1, 0.1).</p>
 
     <span class="c1"># Get the limits of the axis in lat long.</span>
     <span class="n">llx0</span><span class="p">,</span> <span class="n">llx1</span><span class="p">,</span> <span class="n">lly0</span><span class="p">,</span> <span class="n">lly1</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_extent</span><span class="p">(</span><span class="n">ccrs</span><span class="o">.</span><span class="n">PlateCarree</span><span class="p">())</span>
-    <span class="c1"># Make tmc horizontally centred on the middle of the map,</span>
+    <span class="c1"># Make tmc horizontally centred on the middle of the map.</span>
     <span class="c1"># Vertically at scale bar location.</span>
     <span class="n">sbllx</span> <span class="o">=</span> <span class="p">(</span><span class="n">llx1</span> <span class="o">+</span> <span class="n">llx0</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
     <span class="n">sblly</span> <span class="o">=</span> <span class="n">lly0</span> <span class="o">+</span> <span class="p">(</span><span class="n">lly1</span> <span class="o">-</span> <span class="n">lly0</span><span class="p">)</span> <span class="o">*</span> <span class="n">xy</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -10419,7 +10419,8 @@ of the map from the lower-left corner. Defaults to (0.1, 0.1).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">456</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">455</span>
+<span class="normal">456</span>
 <span class="normal">457</span>
 <span class="normal">458</span>
 <span class="normal">459</span>
@@ -10429,8 +10430,7 @@ of the map from the lower-left corner. Defaults to (0.1, 0.1).</p>
 <span class="normal">463</span>
 <span class="normal">464</span>
 <span class="normal">465</span>
-<span class="normal">466</span>
-<span class="normal">467</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bbox_to_extent</span><span class="p">(</span>
+<span class="normal">466</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">bbox_to_extent</span><span class="p">(</span>
     <span class="n">bbox</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">],</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Reorder a list of coordinates from [W,S,E,N] to [W,E,S,N].</span>
@@ -10549,8 +10549,7 @@ specified visParams cannot contain 'palette' key.</p>
 <span class="normal">239</span>
 <span class="normal">240</span>
 <span class="normal">241</span>
-<span class="normal">242</span>
-<span class="normal">243</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_palette</span><span class="p">(</span><span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">242</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_palette</span><span class="p">(</span><span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">n</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">256</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates hex color code palette from a matplotlib colormap.</span>
 
 <span class="sd">    Args:</span>
@@ -10563,9 +10562,8 @@ specified visParams cannot contain 'palette' key.</p>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">colormap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">get_cmap</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
     <span class="n">vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-    <span class="n">palette</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">colormap</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]),</span> <span class="n">vals</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">palette</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">colors</span><span class="o">.</span><span class="n">rgb2hex</span><span class="p">(</span><span class="n">colormap</span><span class="p">(</span><span class="n">x</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]),</span> <span class="n">vals</span><span class="p">))</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -10674,7 +10672,8 @@ specified visParams cannot contain 'palette' key.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">649</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">648</span>
+<span class="normal">649</span>
 <span class="normal">650</span>
 <span class="normal">651</span>
 <span class="normal">652</span>
@@ -10692,8 +10691,7 @@ specified visParams cannot contain 'palette' key.</p>
 <span class="normal">664</span>
 <span class="normal">665</span>
 <span class="normal">666</span>
-<span class="normal">667</span>
-<span class="normal">668</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_SI</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+<span class="normal">667</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_SI</span><span class="p">(</span><span class="n">val</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">unit_in</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">unit_out</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Unit converter.</span>
 
 <span class="sd">    Args:</span>
@@ -10723,7 +10721,7 @@ specified visParams cannot contain 'palette' key.</p>
 
 
 <h2 id="geemap.cartoee.get_image_collection_gif" class="doc doc-heading">
-            <code class="highlight language-python"><span class="n">get_image_collection_gif</span><span class="p">(</span><span class="n">ee_ic</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">grid_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;YYYY-MM-dd&#39;</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span> <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[],</span> <span class="n">colorbar_dict</span><span class="o">=</span><span class="p">{},</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+            <code class="highlight language-python"><span class="n">get_image_collection_gif</span><span class="p">(</span><span class="n">ee_ic</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">region</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">proj</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">fps</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">mp4</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">grid_interval</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">plot_title</span><span class="o">=</span><span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">date_format</span><span class="o">=</span><span class="s1">&#39;YYYY-MM-dd&#39;</span><span class="p">,</span> <span class="n">fig_size</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span> <span class="n">dpi_plot</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">file_format</span><span class="o">=</span><span class="s1">&#39;png&#39;</span><span class="p">,</span> <span class="n">north_arrow_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">scale_bar_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlay_layers</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">overlay_styles</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">colorbar_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
 
 <a href="#geemap.cartoee.get_image_collection_gif" class="headerlink" title="Permanent link">&para;</a></h2>
 
@@ -10992,7 +10990,7 @@ Defaults to "YYYY-MM-dd".</p>
                 <code>north_arrow_dict</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11002,7 +11000,7 @@ Defaults to {}.</p>
               </div>
             </td>
             <td>
-                  <code>{}</code>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -11010,7 +11008,7 @@ Defaults to {}.</p>
                 <code>scale_bar_dict</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11020,7 +11018,7 @@ Defaults to {}.</p>
               </div>
             </td>
             <td>
-                  <code>{}</code>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -11028,7 +11026,7 @@ Defaults to {}.</p>
                 <code>overlay_layers</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="list">list</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11037,7 +11035,7 @@ the map. Defaults to [].</p>
               </div>
             </td>
             <td>
-                  <code>[]</code>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -11045,7 +11043,7 @@ the map. Defaults to [].</p>
                 <code>overlay_styles</code>
             </td>
             <td>
-                  <code><span title="list">list</span></code>
+                  <code><span title="list">list</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11054,7 +11052,7 @@ parameters for overlay layers. Defaults to [].</p>
               </div>
             </td>
             <td>
-                  <code>[]</code>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -11062,7 +11060,7 @@ parameters for overlay layers. Defaults to [].</p>
                 <code>colorbar_dict</code>
             </td>
             <td>
-                  <code><span title="dict">dict</span></code>
+                  <code><span title="dict">dict</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -11072,7 +11070,7 @@ Defaults to {}.</p>
               </div>
             </td>
             <td>
-                  <code>{}</code>
+                  <code>None</code>
             </td>
           </tr>
           <tr class="doc-section-item">
@@ -11113,7 +11111,8 @@ running. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1094</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1093</span>
+<span class="normal">1094</span>
 <span class="normal">1095</span>
 <span class="normal">1096</span>
 <span class="normal">1097</span>
@@ -11328,7 +11327,14 @@ running. Defaults to True.</p>
 <span class="normal">1306</span>
 <span class="normal">1307</span>
 <span class="normal">1308</span>
-<span class="normal">1309</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_image_collection_gif</span><span class="p">(</span>
+<span class="normal">1309</span>
+<span class="normal">1310</span>
+<span class="normal">1311</span>
+<span class="normal">1312</span>
+<span class="normal">1313</span>
+<span class="normal">1314</span>
+<span class="normal">1315</span>
+<span class="normal">1316</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_image_collection_gif</span><span class="p">(</span>
     <span class="n">ee_ic</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">out_gif</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -11344,12 +11350,12 @@ running. Defaults to True.</p>
     <span class="n">fig_size</span><span class="p">:</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">),</span>
     <span class="n">dpi_plot</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
     <span class="n">file_format</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;png&quot;</span><span class="p">,</span>
-    <span class="n">north_arrow_dict</span><span class="o">=</span><span class="p">{},</span>
-    <span class="n">scale_bar_dict</span><span class="o">=</span><span class="p">{},</span>
-    <span class="n">overlay_layers</span><span class="o">=</span><span class="p">[],</span>
-    <span class="n">overlay_styles</span><span class="o">=</span><span class="p">[],</span>
-    <span class="n">colorbar_dict</span><span class="o">=</span><span class="p">{},</span>
-    <span class="n">verbose</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">north_arrow_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">scale_bar_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">overlay_layers</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">overlay_styles</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">colorbar_dict</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">verbose</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Download all images in an image collection and generate a gif/video.</span>
@@ -11375,23 +11381,29 @@ running. Defaults to True.</p>
 <span class="sd">        fig_size: Size of the figure.</span>
 <span class="sd">        dpi_plot: The resolution in dots per inch of the plot.</span>
 <span class="sd">        file_format: Either &#39;png&#39; or &#39;jpg&#39;. Defaults to &#39;png&#39;.</span>
-<span class="sd">        north_arrow_dict (dict, optional): Parameters for the north arrow. See</span>
+<span class="sd">        north_arrow_dict: Parameters for the north arrow. See</span>
 <span class="sd">            https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow.</span>
 <span class="sd">            Defaults to {}.</span>
-<span class="sd">        scale_bar_dict (dict, optional): Parameters for the scale bar. See</span>
+<span class="sd">        scale_bar_dict: Parameters for the scale bar. See</span>
 <span class="sd">            https://geemap.org/cartoee/#geemap.cartoee.add_scale_bar.</span>
 <span class="sd">            Defaults to {}.</span>
-<span class="sd">        overlay_layers (list, optional): A list of Earth Engine objects to overlay on</span>
+<span class="sd">        overlay_layers: A list of Earth Engine objects to overlay on</span>
 <span class="sd">            the map. Defaults to [].</span>
-<span class="sd">        overlay_styles (list, optional): A list of dictionaries of visualization</span>
+<span class="sd">        overlay_styles: A list of dictionaries of visualization</span>
 <span class="sd">            parameters for overlay layers. Defaults to [].</span>
-<span class="sd">        colorbar_dict (dict, optional): Parameters for the colorbar. See</span>
+<span class="sd">        colorbar_dict: Parameters for the colorbar. See</span>
 <span class="sd">            https://geemap.org/cartoee/#geemap.cartoee.add_colorbar.</span>
 <span class="sd">            Defaults to {}.</span>
-<span class="sd">        verbose (bool, optional): Whether or not to print text when the program is</span>
+<span class="sd">        verbose: Whether or not to print text when the program is</span>
 <span class="sd">            running. Defaults to True.</span>
 <span class="sd">        **kwargs: Additional keyword arguments are passed to the add_layer() function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">north_arrow_dict</span> <span class="o">=</span> <span class="n">north_arrow_dict</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">scale_bar_dict</span> <span class="o">=</span> <span class="n">scale_bar_dict</span> <span class="ow">or</span> <span class="p">{}</span>
+    <span class="n">overlay_layers</span> <span class="o">=</span> <span class="n">overlay_layers</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">overlay_styles</span> <span class="o">=</span> <span class="n">overlay_styles</span> <span class="ow">or</span> <span class="p">[]</span>
+    <span class="n">colorbar_dict</span> <span class="o">=</span> <span class="n">colorbar_dict</span> <span class="ow">or</span> <span class="p">{}</span>
+
     <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">out_dir</span><span class="p">)</span>
@@ -11399,7 +11411,6 @@ running. Defaults to True.</p>
     <span class="n">out_gif</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">out_gif</span><span class="p">)</span>
 
     <span class="n">count</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">ee_ic</span><span class="o">.</span><span class="n">size</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">())</span>
-    <span class="n">names</span> <span class="o">=</span> <span class="n">ee_ic</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s2">&quot;system:index&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
     <span class="n">images</span> <span class="o">=</span> <span class="n">ee_ic</span><span class="o">.</span><span class="n">toList</span><span class="p">(</span><span class="n">count</span><span class="p">)</span>
 
     <span class="n">dates</span> <span class="o">=</span> <span class="n">ee_ic</span><span class="o">.</span><span class="n">aggregate_array</span><span class="p">(</span><span class="s2">&quot;system:time_start&quot;</span><span class="p">)</span>
@@ -11514,12 +11525,15 @@ running. Defaults to True.</p>
         <span class="n">fourcc</span> <span class="o">=</span> <span class="n">cv2</span><span class="o">.</span><span class="n">VideoWriter_fourcc</span><span class="p">(</span><span class="o">*</span><span class="s2">&quot;mp4v&quot;</span><span class="p">)</span>
 
         <span class="k">def</span><span class="w"> </span><span class="nf">convert_frames_to_video</span><span class="p">(</span>
-            <span class="n">input_list</span><span class="p">,</span> <span class="n">output_video_file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fps_video</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">frame_size</span>
-        <span class="p">):</span>
+            <span class="n">input_list</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
+            <span class="n">output_video_file_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
+            <span class="n">fps_video</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+            <span class="n">frame_size</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">            </span><span class="sd">&quot;&quot;&quot;Convert frames to video</span>
 
 <span class="sd">            Args:</span>
-<span class="sd">                input_list (list): Downloaded Image Name List.</span>
+<span class="sd">                input_list: Downloaded Image Name List.</span>
 <span class="sd">                output_video_file_name: Name of the video file in the image directory.</span>
 <span class="sd">                fps_video: Video frames per second.</span>
 <span class="sd">                frame_size (tuple): Frame size.</span>
@@ -11890,7 +11904,8 @@ interpreted at [xfactor, yfactor].</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">576</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">575</span>
+<span class="normal">576</span>
 <span class="normal">577</span>
 <span class="normal">578</span>
 <span class="normal">579</span>
@@ -11914,8 +11929,7 @@ interpreted at [xfactor, yfactor].</p>
 <span class="normal">597</span>
 <span class="normal">598</span>
 <span class="normal">599</span>
-<span class="normal">600</span>
-<span class="normal">601</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">600</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pad_view</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">factor</span><span class="p">:</span> <span class="nb">float</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.05</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pad area around the view extent of a map, used for visual appeal.</span>
 
 <span class="sd">    Args:</span>
@@ -12061,14 +12075,7 @@ saved. If 'tight', try to figure out the tight bbox of the figure.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/cartoee.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1312</span>
-<span class="normal">1313</span>
-<span class="normal">1314</span>
-<span class="normal">1315</span>
-<span class="normal">1316</span>
-<span class="normal">1317</span>
-<span class="normal">1318</span>
-<span class="normal">1319</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1319</span>
 <span class="normal">1320</span>
 <span class="normal">1321</span>
 <span class="normal">1322</span>
@@ -12079,7 +12086,14 @@ saved. If 'tight', try to figure out the tight bbox of the figure.</p>
 <span class="normal">1327</span>
 <span class="normal">1328</span>
 <span class="normal">1329</span>
-<span class="normal">1330</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">savefig</span><span class="p">(</span>
+<span class="normal">1330</span>
+<span class="normal">1331</span>
+<span class="normal">1332</span>
+<span class="normal">1333</span>
+<span class="normal">1334</span>
+<span class="normal">1335</span>
+<span class="normal">1336</span>
+<span class="normal">1337</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">savefig</span><span class="p">(</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">fname</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">dpi</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;figure&quot;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;tight&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save figure to file. It wraps the matplotlib.pyplot.savefig() function.</span>
