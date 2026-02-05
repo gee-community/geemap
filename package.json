@@ -29,7 +29,7 @@
 		"puppeteer-core": "^23.5.3",
 		"ts-loader": "^9.5.1",
 		"typescript": "^5.5.3",
-		"webpack": "^5.95.0",
+		"webpack": "^5.105.0",
 		"webpack-cli": "^5.1.4"
 	}
 }
