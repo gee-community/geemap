@@ -1679,11 +1679,7 @@ def credentials_in_drive() -> bool:
 
 
 def credentials_in_colab() -> bool:
-    """Checks if the ee credentials file exists in Google Colab.
-
-    Returns:
-        Returns True if Google Drive is mounted, False otherwise.
-    """
+    """Returns True if Earth Engine credentials exist in the Colab environment, False otherwise."""
     credentials_path = "/root/.config/earthengine/credentials"
     return os.path.exists(credentials_path)
 
@@ -2882,10 +2878,6 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat", deci
     dim_lon = [most_common_value(dim_lon)]
     dim_lat = [most_common_value(dim_lat)]
 
-    # if (len(dim_lon) != 1) or (len(dim_lat) != 1):
-    #     print("The netCDF file is not a regular longitude/latitude grid")
-    #     return
-
     try:
         data = data.to_array()
         # ^ this is only needed (and works) if we have more than 1 variable
@@ -3301,14 +3293,12 @@ def show_youtube(id="h0pz3S6Tvx0"):
 
     Args:
         id (str, optional): Unique ID of the video. Defaults to 'h0pz3S6Tvx0'.
-
     """
     if "/" in id:
         id = id.split("/")[-1]
 
     try:
         out = widgets.Output(layout={"width": "815px"})
-        # layout={'border': '1px solid black', 'width': '815px'})
         out.outputs = ()
         display(out)
         with out:
@@ -3320,7 +3310,7 @@ def show_youtube(id="h0pz3S6Tvx0"):
 def create_colorbar(
     width=150,
     height=30,
-    palette=["blue", "green", "red"],
+    palette: list[int | str] = None,
     add_ticks=True,
     add_labels=True,
     labels=None,
@@ -3351,8 +3341,8 @@ def create_colorbar(
 
     Returns:
         str: File path of the output colorbar in png format.
-
     """
+    palette = palette or ["blue", "green", "red"]
     from PIL import Image, ImageDraw, ImageFont
 
     warnings.simplefilter("ignore")
@@ -3397,7 +3387,12 @@ def create_colorbar(
     def gaussian(x: float, a: float, b: float, c: float, d: float = 0) -> float:
         return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
-    def pixel(x, width=100, map=[], spread=1) -> tuple[float, float, float]:
+    # TODO: Rename map to something that doesn't class with Python's `map`
+    def pixel(
+        x, width: float = 100, map=None, spread: float = 1
+    ) -> tuple[float, float, float]:
+        map = map or None
+
         width = float(width)
         r = sum(
             [
@@ -3550,8 +3545,8 @@ def save_colorbar(
     transparent: bool = False,
     show_colorbar: bool = True,
     **kwargs,
-) -> str:
-    """Create a standalone colorbar and save it as an image.
+):
+    """Creates a standalone colorbar and saves it as an image.
 
     Args:
         out_fig: Path to the output image.
@@ -7357,8 +7352,8 @@ def image_histogram(
     title: str | None = None,
     width: int | None = None,
     height: int = 500,
-    plot_args={},
-    layout_args={},
+    plot_args: dict | None = None,
+    layout_args: dict | None = None,
     return_df: bool = False,
     **kwargs,
 ):
@@ -7373,12 +7368,16 @@ def image_histogram(
         title: Title for the plot. Defaults to None.
         width: Width of the plot in pixels. Defaults to None.
         height: Height of the plot in pixels. Defaults to 500.
-        layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
+        plot_args: TODO.
+        layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
         return_df: If True, return a pandas dataframe. Defaults to False.
 
     Returns:
         pandas DataFrame | plotly figure object: A dataframe or plotly figure object.
     """
+    plot_args = plot_args or {}
+    layout_args = layout_args or {}
+
     hist = image_value_list(img, region, scale, return_hist=True, **kwargs).getInfo()
     keys = sorted(hist, key=int)
     values = [hist.get(key) for key in keys]
@@ -8533,29 +8532,29 @@ def jpg_to_gif(in_dir, out_gif, fps=10, loop=0):
 
 def vector_styling(
     ee_object,
-    column,
-    palette,
-    color="000000",
-    colorOpacity=1.0,
-    pointSize=3,
-    pointShape="circle",
-    width=1,
-    lineType="solid",
-    fillColorOpacity=0.66,
+    column: str,
+    palette: list | dict,
+    color: str = "000000",
+    colorOpacity: float = 1.0,
+    pointSize: int = 3,
+    pointShape: str = "circle",
+    width: int = 1,
+    lineType: str = "solid",
+    fillColorOpacity: float = 0.66,
 ) -> ee.FeatureCollection:
-    """Add a new property to each feature containing a stylying dictionary.
+    """Add a new property to each feature containing a styling dictionary.
 
     Args:
         ee_object (object): An ee.FeatureCollection.
-        column (str): The column name to use for styling.
-        palette (list | dict): The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
-        color (str, optional): A default color (CSS 3.0 color value e.g. 'FF0000' or 'red') to use for drawing the features. Defaults to "black".
-        colorOpacity (float, optional): Opacity between 0-1 of the features. Defaults to 1
-        pointSize (int, optional): The default size in pixels of the point markers. Defaults to 3.
-        pointShape (str, optional): The default shape of the marker to draw at each point location. One of: circle, square, diamond, cross, plus, pentagram, hexagram, triangle, triangle_up, triangle_down, triangle_left, triangle_right, pentagon, hexagon, star5, star6. This argument also supports the following Matlab marker abbreviations: o, s, d, x, +, p, h, ^, v, <, >. Defaults to "circle".
-        width (int, optional): The default line width for lines and outlines for polygons and point shapes. Defaults to 1.
-        lineType (str, optional): The default line style for lines and outlines of polygons and point shapes. Defaults to 'solid'. One of: solid, dotted, dashed. Defaults to "solid".
-        fillColorOpacity (float, optional): Opacity between 0-1 of the fill. Defaults to 0.66. Color of the fill is based on the column name or index in the palette.
+        column: The column name to use for styling.
+        palette: The palette (e.g., list of colors or a dict containing label and color pairs) to use for styling.
+        color: A default color (CSS 3.0 color value e.g. 'FF0000' or 'red') to use for drawing the features. Defaults to "black".
+        colorOpacity: Opacity between 0-1 of the features. Defaults to 1
+        pointSize: The default size in pixels of the point markers. Defaults to 3.
+        pointShape: The default shape of the marker to draw at each point location. One of: circle, square, diamond, cross, plus, pentagram, hexagram, triangle, triangle_up, triangle_down, triangle_left, triangle_right, pentagon, hexagon, star5, star6. This argument also supports the following Matlab marker abbreviations: o, s, d, x, +, p, h, ^, v, <, >. Defaults to "circle".
+        width: The default line width for lines and outlines for polygons and point shapes. Defaults to 1.
+        lineType: The default line style for lines and outlines of polygons and point shapes. Defaults to 'solid'. One of: solid, dotted, dashed. Defaults to "solid".
+        fillColorOpacity: Opacity between 0-1 of the fill. Defaults to 0.66. Color of the fill is based on the column name or index in the palette.
 
     Raises:
         ValueError: The provided column name is invalid.
@@ -12625,16 +12624,20 @@ def download_ee_image_collection(
         raise Exception(f"Error downloading image collection: {e}")
 
 
-def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
-    """Get a palette from a matplotlib colormap. See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
+def get_palette_colors(
+    cmap_name: str | None = None, n_class: int | None = None, hashtag: bool = False
+) -> list[str]:
+    """Get a palette from a matplotlib colormap.
+
+    See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
     Args:
-        cmap_name (str, optional): The name of the matplotlib colormap. Defaults to None.
-        n_class (int, optional): The number of colors. Defaults to None.
-        hashtag (bool, optional): Whether to return a list of hex colors. Defaults to False.
+        cmap_name: The name of the matplotlib colormap. Defaults to None.
+        n_class: The number of colors. Defaults to None.
+        hashtag: Whether to return a list of hex colors. Defaults to False.
 
     Returns:
-        list: A list of hex colors.
+        A list of hex colors.
     """
     try:
         cmap = plt.get_cmap(cmap_name, n_class)
@@ -12648,25 +12651,26 @@ def get_palette_colors(cmap_name=None, n_class=None, hashtag=False):
 
 def plot_raster(
     image,
-    band=None,
-    cmap="terrain",
-    proj="EPSG:3857",
-    figsize=None,
-    open_kwargs={},
+    band: int | None = None,
+    cmap: str = "terrain",
+    proj: str = "EPSG:3857",
+    figsize: tuple[int, int] | None = None,
+    open_kwargs: dict | None = None,
     **kwargs,
 ):
     """Plot a raster image.
 
     Args:
         image (str | xarray.DataArray ): The input raster image, can be a file path, HTTP URL, or xarray.DataArray.
-        band (int, optional): The band index, starting from zero. Defaults to None.
-        cmap (str, optional): The matplotlib colormap to use. Defaults to "terrain".
-        proj (str, optional): The EPSG projection code. Defaults to "EPSG:3857".
-        figsize (tuple, optional): The figure size as a tuple, such as (10, 8). Defaults to None.
-        open_kwargs (dict, optional): The keyword arguments to pass to rioxarray.open_rasterio. Defaults to {}.
+        band: The band index, starting from zero. Defaults to None.
+        cmap: The matplotlib colormap to use. Defaults to "terrain".
+        proj: The EPSG projection code. Defaults to "EPSG:3857".
+        figsize: The figure size as a tuple, such as (10, 8). Defaults to None.
+        open_kwargs: The keyword arguments to pass to rioxarray.open_rasterio. Defaults to {}.
         **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
-
     """
+    open_kwargs = open_kwargs or None
+
     if os.environ.get("USE_MKDOCS") is not None:
         return
 
@@ -12708,8 +12712,8 @@ def plot_raster_3d(
     z=None,
     order=None,
     component=None,
-    open_kwargs={},
-    mesh_kwargs={},
+    open_kwargs: dict | None = None,
+    mesh_kwargs: dict | None = None,
     **kwargs,
 ):
     """Plot a raster image in 3D.
@@ -12730,7 +12734,6 @@ def plot_raster_3d(
         mesh_kwargs (dict, optional): The keyword arguments to pass to pyvista.mesh.warp_by_scalar(). Defaults to {}.
         **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
     """
-
     if os.environ.get("USE_MKDOCS") is not None:
         return
 
@@ -12742,6 +12745,9 @@ def plot_raster_3d(
     import pyvista
     import rioxarray
     import xarray
+
+    open_kwargs = open_kwargs or None
+    mesh_kwargs = mesh_kwargs or None
 
     if isinstance(background, str):
         pyvista.global_theme.background = background
@@ -13087,21 +13093,21 @@ def add_crs(filename, epsg):
 def jrc_hist_monthly_history(
     collection=None,
     region=None,
-    start_date="1984-03-16",
-    end_date=None,
-    start_month=1,
-    end_month=12,
-    scale=None,
-    frequency="year",
-    reducer="mean",
-    denominator=1e4,
-    x_label=None,
-    y_label=None,
-    title=None,
-    width=None,
-    height=None,
-    layout_args={},
-    return_df=False,
+    start_date: str = "1984-03-16",
+    end_date: str | None = None,
+    start_month: int = 1,
+    end_month: int = 12,
+    scale: float | None = None,
+    frequency: str = "year",
+    reducer: str = "mean",
+    denominator: int = int(1e4),
+    x_label: str | None = None,
+    y_label: str | None = None,
+    title: str | None = None,
+    width: int | None = None,
+    height: int | None = None,
+    layout_args: dict | None = None,
+    return_df: bool = False,
     **kwargs,
 ):
     """Create a JRC monthly history plot.
@@ -13110,25 +13116,27 @@ def jrc_hist_monthly_history(
         collection (ee.ImageCollection, optional): The image collection of JRC surface water monthly history.
             Default to ee.ImageCollection('JRC/GSW1_4/MonthlyHistory')
         region (ee.Geometry | ee.FeatureCollection, optional): The region to plot. Default to None.
-        start_date (str, optional): The start date of the plot. Default to '1984-03-16'.
-        end_date (str, optional): The end date of the plot. Default to the current date.
-        start_month (int, optional): The start month of the plot. Default to 1.
-        end_month (int, optional): The end month of the plot. Default to 12.
-        scale (float, optional): The scale to compute the statistics. Default to None.
-        frequency (str, optional): The frequency of the plot. Can be either 'year' or 'month', Default to 'year'.
-        reducer (str, optional): The reducer to compute the statistics. Can be either 'mean', 'min', 'max', 'median', etc. Default to 'mean'.
-        denominator (int, optional): The denominator to convert area from square meters to other units. Default to 1e4, converting to hectares.
-        x_label (str, optional): Label for the x axis. Defaults to None.
-        y_label (str, optional): Label for the y axis. Defaults to None.
-        title (str, optional): Title for the plot. Defaults to None.
-        width (int, optional): Width of the plot in pixels. Defaults to None.
-        height (int, optional): Height of the plot in pixels. Defaults to 500.
-        layout_args (dict, optional): Layout arguments for the plot to be passed to fig.update_layout(),
-        return_df (bool, optional): Whether to return the dataframe of the plot. Defaults to False.
+        start_date: The start date of the plot. Default to '1984-03-16'.
+        end_date: The end date of the plot. Default to the current date.
+        start_month: The start month of the plot. Default to 1.
+        end_month: The end month of the plot. Default to 12.
+        scale: The scale to compute the statistics. Default to None.
+        frequency: The frequency of the plot. Can be either 'year' or 'month', Default to 'year'.
+        reducer: The reducer to compute the statistics. Can be either 'mean', 'min', 'max', 'median', etc. Default to 'mean'.
+        denominator: The denominator to convert area from square meters to other units. Default to 1e4, converting to hectares.
+        x_label: Label for the x axis. Defaults to None.
+        y_label: Label for the y axis. Defaults to None.
+        title: Title for the plot. Defaults to None.
+        width: Width of the plot in pixels. Defaults to None.
+        height: Height of the plot in pixels. Defaults to 500.
+        layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
+        return_df: Whether to return the dataframe of the plot. Defaults to False.
 
     Returns:
         pd.DataFrame: Pandas dataframe of the plot.
     """
+    layout_args = layout_args or {}
+
     if end_date is None:
         end_date = datetime.date.today().strftime("%Y-%m-%d")
 
@@ -13200,15 +13208,19 @@ def jrc_hist_monthly_history(
 
 
 def html_to_streamlit(
-    filename, width=None, height=None, scrolling=False, replace_dict={}
+    filename: str,
+    width: int | None = None,
+    height: int | None = None,
+    scrolling: bool = False,
+    replace_dict: dict | None = None,
 ):
     """Renders an HTML file as a Streamlit component.
     Args:
-        filename (str): The filename of the HTML file.
-        width (int, optional): Width of the map. Defaults to None.
-        height (int, optional): Height of the map. Defaults to 600.
-        scrolling (bool, optional): Whether to allow the map to scroll. Defaults to False.
-        replace_dict (dict, optional): A dictionary of strings to replace in the HTML file. Defaults to {}.
+        filename: The filename of the HTML file.
+        width: Width of the map. Defaults to None.
+        height: Height of the map. Defaults to 600.
+        scrolling: Whether to allow the map to scroll. Defaults to False.
+        replace_dict: A dictionary of strings to replace in the HTML file. Defaults to {}.
 
     Raises:
         ValueError: If the filename does not exist.
@@ -13217,6 +13229,8 @@ def html_to_streamlit(
         streamlit.components: components.html object.
     """
     import streamlit.components.v1 as components
+
+    replace_dict = replace_dict or {}
 
     if not os.path.exists(filename):
         raise ValueError("filename must exist.")
@@ -13268,19 +13282,28 @@ def image_convolution(
     return result.setDefaultProjection(projection)
 
 
-def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwargs):
+def download_ned(
+    region: str | list,
+    out_dir: str | None = None,
+    return_url: bool = False,
+    download_args: dict | None = None,
+    **kwargs,
+):
     """Download the US National Elevation Datasets (NED) for a region.
 
     Args:
-        region (str | list): A filepath to a vector dataset or a list of bounds in the form of [minx, miny, maxx, maxy].
-        out_dir (str, optional): The directory to download the files to. Defaults to None, which uses the current working directory.
-        return_url (bool, optional): Whether to return the download URLs of the files. Defaults to False.
-        download_args (dict, optional): A dictionary of arguments to pass to the download_file function. Defaults to {}.
+        region: A filepath to a vector dataset or a list of bounds in the form of [minx, miny, maxx, maxy].
+        out_dir: The directory to download the files to. Defaults to None, which uses the current working directory.
+        return_url: Whether to return the download URLs of the files. Defaults to False.
+        download_args: A dictionary of arguments to pass to the download_file function. Defaults to {}.
 
     Returns:
         list: A list of the download URLs of the files if return_url is True.
     """
     import geopandas as gpd
+
+    if download_args is None:
+        download_args = {}
 
     if out_dir is None:
         out_dir = os.getcwd()
@@ -13339,18 +13362,28 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
             coreutils.download_file(link, filepaths[index], **download_args)
 
 
-def mosaic(images, output, merge_args={}, verbose=True, **kwargs):
-    """Mosaics a list of images into a single image. Inspired by https://bit.ly/3A6roDK.
+def mosaic(
+    images: str | list,
+    output: str,
+    merge_args: dict | None = None,
+    verbose: bool = True,
+    **kwargs,
+):
+    """Mosaics a list of images into a single image.
+
+    Inspired by https://bit.ly/3A6roDK.
 
     Args:
-        images (str | list): An input directory containing images or a list of images.
-        output (str): The output image filepath.
-        merge_args (dict, optional): A dictionary of arguments to pass to the rasterio.merge function. Defaults to {}.
-        verbose (bool, optional): Whether to print progress. Defaults to True.
-
+        images: An input directory containing images or a list of images.
+        output: The output image filepath.
+        merge_args: A dictionary of arguments to pass to the rasterio.merge function. Defaults to {}.
+        verbose: Whether to print progress. Defaults to True.
     """
     from rasterio.merge import merge
     import rasterio as rio
+
+    if merge_args is None:
+        merge_args = {}
 
     output = os.path.abspath(output)
 
@@ -13469,31 +13502,31 @@ def use_mkdocs():
 
 
 def create_legend(
-    title="Legend",
-    labels=None,
+    title: str = "Legend",
+    labels: list[str] | None = None,
     colors=None,
-    legend_dict=None,
-    builtin_legend=None,
-    opacity=1.0,
-    position="bottomright",
-    draggable=True,
-    output=None,
-    style={},
+    legend_dict: dict[str, str] | None = None,
+    builtin_legend: str | None = None,
+    opacity: float = 1.0,
+    position: str = "bottomright",
+    draggable: bool = True,
+    output: str | None = None,
+    style: dict | None = None,
 ):
     """Create a legend in HTML format. Reference: https://bit.ly/3oV6vnH
 
     Args:
-        title (str, optional): Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
+        title: Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
         colors (list, optional): A list of legend colors. Defaults to None.
-        labels (list, optional): A list of legend labels. Defaults to None.
-        legend_dict (dict, optional): A dictionary containing legend items as keys and color as values.
+        labels: A list of legend labels. Defaults to None.
+        legend_dict: A dictionary containing legend items as keys and color as values.
             If provided, legend_keys and legend_colors will be ignored. Defaults to None.
-        builtin_legend (str, optional): Name of the builtin legend to add to the map. Defaults to None.
-        opacity (float, optional): The opacity of the legend. Defaults to 1.0.
-        position (str, optional): The position of the legend, can be one of the following:
+        builtin_legend: Name of the builtin legend to add to the map. Defaults to None.
+        opacity: The opacity of the legend. Defaults to 1.0.
+        position: The position of the legend, can be one of the following:
             "topleft", "topright", "bottomleft", "bottomright". Defaults to "bottomright".
-        draggable (bool, optional): If True, the legend can be dragged to a new position. Defaults to True.
-        output (str, optional): The output file path (*.html) to save the legend. Defaults to None.
+        draggable: If True, the legend can be dragged to a new position. Defaults to True.
+        output: The output file path (*.html) to save the legend. Defaults to None.
         style: Additional keyword arguments to style the legend, such as position, bottom, right, z-index,
             border, background-color, border-radius, padding, font-size, etc. The default style is:
             style = {
@@ -13512,6 +13545,8 @@ def create_legend(
         str: The HTML code of the legend.
     """
     from .legends import builtin_legends
+
+    style = style or {}
 
     # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
@@ -14620,14 +14655,14 @@ def tif_to_jp2(filename, output, creationOptions=None):
 
 def ee_to_geotiff(
     ee_object,
-    output,
+    output: str,
     bbox=None,
-    vis_params={},
-    zoom=None,
-    resolution=None,
-    crs="EPSG:3857",
-    to_cog=False,
-    quiet=False,
+    vis_params: dict[str, Any] | None = None,
+    zoom: int | None = None,
+    resolution: float | None = None,
+    crs: str = "EPSG:3857",
+    to_cog: bool = False,
+    quiet: bool = False,
     **kwargs,
 ):
     """Downloads an Earth Engine object as GeoTIFF.
@@ -14635,6 +14670,7 @@ def ee_to_geotiff(
     Args:
         ee_object (ee.Image | ee.FeatureCollection): The Earth Engine object to download.
         output (str): The output path for the GeoTIFF.
+        # TODO: What is the proper type for bbox?
         bbox (str, optional): The bounding box in the format [xmin, ymin, xmax, ymax]. Defaults to None,
             which is the bounding box of the Earth Engine object.
         vis_params (dict, optional): Visualization parameters. Defaults to {}.
@@ -14644,6 +14680,8 @@ def ee_to_geotiff(
         to_cog (bool, optional): Whether to convert the image to Cloud Optimized GeoTIFF. Defaults to False.
         quiet (bool, optional): Whether to hide the download progress bar. Defaults to False.
     """
+    vis_params = vis_params or {}
+
     image = None
 
     if (
