@@ -109,4 +109,4 @@ Before you submit a pull request, check that it meets these guidelines:
 
 1. The pull request should include tests.
 2. If the pull request adds functionality, the docs should be updated. Put your new functionality into a function with a docstring, and add the feature to the list in README.md.
-3. The pull request should work for Python 3.10-3.13. Check <https://github.com/gee-community/geemap/actions> and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python 3.11-3.13. Check <https://github.com/gee-community/geemap/actions> and make sure that the tests pass for all supported Python versions.
