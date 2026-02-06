@@ -660,24 +660,22 @@ class Map(core.Map):
         """Sets plotting options.
 
         Args:
-            add_marker_cluster: Whether to add a marker cluster.
-                Defaults to False.
-            sample_scale:  A nominal scale in meters of the
-                projection to sample in . Defaults to None.
-            plot_type: The plot type can be one of "None", "bar",
-                "scatter" or "hist". Defaults to None.
-            overlay: Whether to overlay plotted lines on the figure.
-                Defaults to False.
-            position: Position of the control, can be ‘bottomleft’,
-                ‘bottomright’, ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
-            min_width: Min width of the widget (in pixels),
-                if None it will respect the content size. Defaults to None.
-            max_width: Max width of the widget (in pixels),
-                if None it will respect the content size. Defaults to None.
-            min_height: Min height of the widget (in pixels),
-                if None it will respect the content size. Defaults to None.
-            max_height: Max height of the widget (in pixels),
-                if None it will respect the content size. Defaults to None.
+            add_marker_cluster: Whether to add a marker cluster.  Defaults to False.
+            sample_scale: A nominal scale in meters of the projection to sample
+                in. Defaults to None.
+            plot_type: The plot type can be one of "None", "bar", "scatter" or
+                "hist". Defaults to None.
+            overlay: Whether to overlay plotted lines on the figure.  Defaults to False.
+            position: Position of the control, can be ‘bottomleft’, ‘bottomright’,
+                ‘topleft’, or ‘topright’. Defaults to 'bottomright'.
+            min_width: Min width of the widget (in pixels), if None it will respect the
+                content size. Defaults to None.
+            max_width: Max width of the widget (in pixels), if None it will respect the
+                content size. Defaults to None.
+            min_height: Min height of the widget (in pixels), if None it will respect
+                the content size. Defaults to None.
+            max_height: Max height of the widget (in pixels), if None it will respect
+                the content size. Defaults to None.
         """
         plot_options_dict = {}
         plot_options_dict["add_marker_cluster"] = add_marker_cluster
@@ -3091,9 +3089,9 @@ class Map(core.Map):
 
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-            which_result Which geocoding result to use. if None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. to get the top match regardless of geometry type, set which_result=1. Defaults to None.
+            which_result: Which geocoding result to use. If None, auto-select the first (Multi)Polygon or raise an error if OSM doesn't return one. To get the top match regardless of geometry type, set which_result=1. Defaults to None.
             by_osmid: If True, handle query as an OSM ID for lookup rather than text search. Defaults to False.
-            layer_name : The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used. Defaults to "Untitled".
             style: A dictionary specifying the style to be used. Defaults to {}.
             hover_style: Hover style dictionary. Defaults to {}.
             style_callback: Styling function that is called for each feature, and should return the feature style. This styling function takes the feature as argument. Defaults to None.
@@ -3741,8 +3739,8 @@ class Map(core.Map):
         layer_name: str = "Marker Cluster",
         color_column: str | None = None,
         marker_colors: list | None = None,
-        icon_colors: list[str] = ["white"],
-        icon_names: list[str] = ["info"],
+        icon_colors: list[str] | None = None,
+        icon_names: list[str] | None = None,
         spin: bool = False,
         add_legend: bool = True,
         **kwargs,
