@@ -24,6 +24,10 @@ class PlotlymapTest(unittest.TestCase):
         self.assertEqual(m.layout.mapbox.style, "open-street-map")
         self.assertEqual(m.layout.height, 600)
         self.assertEqual(len(m.data), 1)
+        self.assertEqual(m.get_layers(), {})
+        self.assertEqual(m.get_tile_layers(), {})
+        self.assertEqual(m.get_data_layers(), {})
+        self.assertIsNone(m.find_layer_index("nonexistent"))
 
     def test_map_init_custom_center(self):
         m = plotlymap.Map(center=(40, -100), ee_initialize=False)
@@ -59,7 +63,9 @@ class PlotlymapTest(unittest.TestCase):
     def test_add_controls_string_and_list(self):
         m = plotlymap.Map(ee_initialize=False)
         m.add_controls("drawline")
+        self.assertIn("drawline", m.layout.modebar.add)
         m.add_controls(["drawline", "drawopenpath"])
+        self.assertIn("drawopenpath", m.layout.modebar.add)
 
     def test_add_controls_invalid_type_raises(self):
         m = plotlymap.Map(ee_initialize=False)
@@ -69,7 +75,9 @@ class PlotlymapTest(unittest.TestCase):
     def test_remove_controls_string_and_list(self):
         m = plotlymap.Map(ee_initialize=False)
         m.remove_controls("zoomin")
+        self.assertIn("zoomin", m.layout.modebar.remove)
         m.remove_controls(["zoomin", "zoomout"])
+        self.assertIn("zoomout", m.layout.modebar.remove)
 
     def test_remove_controls_invalid_type_raises(self):
         m = plotlymap.Map(ee_initialize=False)
@@ -89,16 +97,6 @@ class PlotlymapTest(unittest.TestCase):
         layer = go.Scattermapbox(lat=[37.8], lon=[-122.4])
         m.add_layer(layer, name="My Layer")
         self.assertIn("My Layer", m.get_data_layers())
-
-    def test_get_layers_empty(self):
-        m = plotlymap.Map(ee_initialize=False)
-        self.assertEqual(m.get_layers(), {})
-        self.assertEqual(m.get_tile_layers(), {})
-        self.assertEqual(m.get_data_layers(), {})
-
-    def test_find_layer_index_not_found(self):
-        m = plotlymap.Map(ee_initialize=False)
-        self.assertIsNone(m.find_layer_index("nonexistent"))
 
     def test_find_layer_index_data_layer(self):
         m = plotlymap.Map(ee_initialize=False)
@@ -164,8 +162,8 @@ class PlotlymapTest(unittest.TestCase):
         layer = go.Scattermapbox(lat=[0], lon=[0], name="vis_test")
         m.add_layer(layer)
         m.set_layer_visibility("vis_test", show=False)
-        idx = m.find_layer_index("vis_test")
-        self.assertFalse(m.data[idx].visible)
+        index = m.find_layer_index("vis_test")
+        self.assertFalse(m.data[index].visible)
 
     def test_set_layer_opacity(self):
         m = plotlymap.Map(ee_initialize=False)
@@ -174,8 +172,8 @@ class PlotlymapTest(unittest.TestCase):
             name="opacity_test",
         )
         m.set_layer_opacity("opacity_test", opacity=0.5)
-        idx = m.find_layer_index("opacity_test")
-        self.assertEqual(m.layout.mapbox.layers[idx].opacity, 0.5)
+        index = m.find_layer_index("opacity_test")
+        self.assertEqual(m.layout.mapbox.layers[index].opacity, 0.5)
 
 
 if __name__ == "__main__":
