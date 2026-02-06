@@ -7,6 +7,7 @@ import pandas as pd
 try:
     from plotly import graph_objects as go
     from geemap import plotlymap
+
     PLOTLY_AVAILABLE = True
 except ImportError:
     PLOTLY_AVAILABLE = False
@@ -119,11 +120,13 @@ class PlotlymapTest(unittest.TestCase):
 
     def test_add_heatmap_dataframe(self):
         m = plotlymap.Map(ee_initialize=False)
-        df = pd.DataFrame({
-            "latitude": [37.8, 37.7],
-            "longitude": [-122.4, -122.3],
-            "value": [1.0, 0.5],
-        })
+        df = pd.DataFrame(
+            {
+                "latitude": [37.8, 37.7],
+                "longitude": [-122.4, -122.3],
+                "value": [1.0, 0.5],
+            }
+        )
         m.add_heatmap(df)
         self.assertEqual(len(m.data), 2)
 
