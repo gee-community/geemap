@@ -730,7 +730,7 @@ def create_timeseries(
     date_format: str | None = None,
     parallel_scale: int = 1,
     step: int = 1,
-):
+) -> ee.ImageCollection:
     """Creates a timeseries from a collection of images by a specified frequency and reducer.
 
     Args:
@@ -828,12 +828,12 @@ def create_timeseries(
     images = ee.ImageCollection(dates.map(create_image))
     if drop_empty:
         return images.filterMetadata("empty", "equals", 0)
-    else:
-        return images
+
+    return images
 
 
 def create_timelapse(
-    collection,
+    collection: str | ee.ImageCollection,
     start_date: str,
     end_date: str,
     region=None,
@@ -883,7 +883,7 @@ def create_timelapse(
     """Create a timelapse from any ee.ImageCollection.
 
     Args:
-        collection (str | ee.ImageCollection): The collection of images to create a
+        collection: The collection of images to create a
             timeseries from. It can be a string representing the collection ID or an
             ee.ImageCollection object.
         start_date: The start date of the timeseries. It must be formatted like this:
@@ -1203,7 +1203,7 @@ def naip_timeseries(
     end_year: int | None = None,
     RGBN: bool = False,
     step: int = 1,
-):
+) -> ee.ImageCollection:
     """Creates NAIP annual timeseries
 
     Args:
@@ -1216,7 +1216,7 @@ def naip_timeseries(
         step: The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
-        object: An ee.ImageCollection representing annual NAIP imagery.
+        An ee.ImageCollection representing annual NAIP imagery.
     """
     if end_year is None:
         end_year = datetime.datetime.now().year
@@ -1282,7 +1282,7 @@ def naip_timelapse(
     mp4: bool = False,
     fading: bool | int = False,
     step: int = 1,
-):
+) -> str:
     """Create a timelapse from NAIP imagery.
 
     Args:
@@ -1338,7 +1338,7 @@ def naip_timelapse(
         step: The step size to use when creating the date sequence. Defaults to 1.
 
     Returns:
-        str: File path to the timelapse gif.
+        File path to the timelapse gif.
     """
     if end_year is None:
         end_year = datetime.datetime.now().year
@@ -1390,7 +1390,7 @@ def naip_timelapse(
     )
 
 
-def valid_roi(roi):
+def valid_roi(roi) -> ee.Geometry | None:
     if not isinstance(roi, ee.Geometry):
         try:
             roi = roi.geometry()
@@ -1423,14 +1423,14 @@ def sentinel1_defaults():
 
 
 def sentinel1_filtering(
-    collection,
-    band="VV",
-    instrumentMode=None,
-    orbitProperties_pass=None,
-    transmitterReceiverPolarisation=None,
-    remove_outliers=True,
+    collection: ee.ImageCollection,
+    band: str = "VV",
+    instrumentMode: str | None = None,
+    orbitProperties_pass: str | None = None,
+    transmitterReceiverPolarisation: str | None = None,
+    remove_outliers: bool = True,
     **kwargs,
-):
+) -> ee.ImageCollection:
     """
     Sentinel-1 data is collected with several different instrument configurations, resolutions,
     band combinations during both ascending and descending orbits. Because of this heterogeneity,
@@ -1440,19 +1440,18 @@ def sentinel1_filtering(
 
     Args:
         collection: A Sentinel1 ImageCollection to filter.
-        band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land.
-        instrumentMode (str, optional): Collection property. Can be one of ['IW','EW','SM']. Defaults to band default availability (IW for ['VV','VH'], EW for ['HH','HV']). IW is typically available for land. EW for icy regions.
+        band: Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land.
+        instrumentMode: Collection property. Can be one of ['IW','EW','SM']. Defaults to band default availability (IW for ['VV','VH'], EW for ['HH','HV']). IW is typically available for land. EW for icy regions.
         orbitProperties_pass (str|None, optional): Collection property. Can be one of ['ASCENDING', 'DESCENDING', None]. Default to 'ASCENDING'.
             Will return mixed property if set to None, which dampen elevation, and increase surface roughness/fractality visibility.
         transmitterReceiverPolarisation: Collection property List contains this value. Can be one of ['HH','HV','VV','VH']. Defaults to band.
-        remove_outliers (bool, optional): Remove pixels with extreme values (< -30). These can occur near the edge of an image. Default to True.
-        **kwargs (dict, optional): All other arguments will be applied as filters to collection properties. F.e. {'resolution_meters':10}
+        remove_outliers: Remove pixels with extreme values (< -30). These can occur near the edge of an image. Default to True.
+        **kwargs: All other arguments will be applied as filters to collection properties. F.e. {'resolution_meters':10}
             Full list properties: https://developers.google.com/earth-engine/datasets/catalog/COPERNICUS_S1_GRD#image-properties
 
     Returns:
-        object: Returns a homogeneous ImageCollection of Sentinel 1 images.
+        Returns a homogeneous ImageCollection of Sentinel 1 images.
     """
-
     transmitterReceiverPolarisation = transmitterReceiverPolarisation or band
     instrumentMode = (
         instrumentMode or {"VV": "IW", "VH": "IW", "HH": "EW", "HV": "EW"}[band]
@@ -1484,31 +1483,34 @@ def sentinel1_filtering(
 
 def sentinel1_timeseries(
     roi=None,
-    start_year=2015,
-    end_year=None,
-    start_date="01-01",
-    end_date="12-31",
-    frequency="year",
-    clip=False,
-    band="VV",
-    orbit=["ascending", "descending"],
+    start_year: int = 2015,
+    end_year: int | None = None,
+    start_date: str = "01-01",
+    end_date: str = "12-31",
+    frequency: str = "year",
+    clip: bool = False,
+    band: str = "VV",
+    orbit: list[str] = ["ascending", "descending"],
     **kwargs,
-):
-    """
+) -> ee.ImageCollection:
+    """Return a Sentinel 1 ImageCollection of mean composites at a specified frequency.
+
     Generates a Sentinel 1 ImageCollection,
     based on mean composites following a steady frequency (f.e. 1 image per month)
     Adapted from https://code.earthengine.google.com/?scriptPath=Examples:Datasets/COPERNICUS_S1_GRD
+
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to a polygon partially covering Las Vegas and Lake Mead.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.  Can be 'year', 'quarter' or 'month'.
-        clip (bool, optional): Whether to clip images to ROI. Defaults to False.
-        band (str): Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land.
-        orbit (list, optional): List of orbit directions to include. Can be ['ascending'], ['descending'], or ['ascending', 'descending']. Defaults to both.
+        start_year: Starting year for the timelapse. Defaults to 2015.
+        end_year: Ending year for the timelapse. Defaults to current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        frequency: Frequency of the timelapse. Defaults to 'year'.  Can be 'year', 'quarter' or 'month'.
+        clip: Whether to clip images to ROI. Defaults to False.
+        band: Collection band. Can be one of ['HH','HV','VV','VH']. Defaults to 'VV' which is most commonly available on land.
+        orbit: List of orbit directions to include. Can be ['ascending'], ['descending'], or ['ascending', 'descending']. Defaults to both.
         **kwargs: Arguments for sentinel1_filtering().
+
     Returns:
         object: Returns an ImageCollection of Sentinel 1 images.
     """
@@ -1539,7 +1541,7 @@ def sentinel1_timeseries(
         n = 3
         frequency = "month"
 
-    def transform(date):
+    def transform(date: str) -> ee.ImageCollection:
         start = date
         end = ee.Date(date).advance(n, frequency).advance(-1, "day")
         return (
@@ -1554,52 +1556,55 @@ def sentinel1_timeseries(
             )
         )
 
-    imgList = dates.map(lambda date: transform(date))
-    imgColl = ee.ImageCollection.fromImages(imgList)
+    img_list = dates.map(lambda date: transform(date))
+    img_coll = ee.ImageCollection.fromImages(img_list)
 
     if clip:
-        imgColl = imgColl.map(lambda img: img.clip(roi))
+        img_coll = img_coll.map(lambda img: img.clip(roi))
 
-    return imgColl
+    return img_coll
 
 
 def sentinel2_timeseries(
     roi,
-    start_year=2015,
-    end_year=None,
-    start_date="01-01",
-    end_date="12-31",
-    bands=None,
-    mask_cloud=True,
-    cloud_pct=30,
-    frequency="year",
-    reducer="median",
-    drop_empty=True,
-    date_format=None,
-    parallel_scale=1,
-    step=1,
+    start_year: int = 2015,
+    end_year: int | None = None,
+    start_date: str = "01-01",
+    end_date: str = "12-31",
+    bands: list[str] | None = None,
+    mask_cloud: bool = True,
+    cloud_pct: int = 30,
+    frequency: str = "year",
+    reducer: str = "median",
+    drop_empty: bool = True,
+    date_format: str | None = None,
+    parallel_scale: int = 1,
+    step: int = 1,
 ):
-    """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
-       Images include both level 1C and level 2A imagery.
-    Args:
+    """Generates an annual Sentinel 2 ImageCollection.
 
-        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to None, which will use the current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
-        mask_cloud (bool, optional): Whether to mask clouds. Defaults to True.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
-        bands (list, optional): The list of bands to use to create the timeseries. It must be a list of strings. Defaults to None.
-        cloud_pct (int, optional): Maximum cloud percentage to include in the timelapse. Defaults to 30.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
-        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
-        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
-        date_format (str, optional): Format of the date. Defaults to None.
-        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
-        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
+     This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
 
-    Returns:
-        object: Returns an ImageCollection containing annual Sentinel 2 images.
+    Images include both level 1C and level 2A imagery.
+
+     Args:
+         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
+         start_year: Starting year for the timelapse. Defaults to 2015.
+         end_year: Ending year for the timelapse. Defaults to None, which will use the current year.
+         start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+         end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+         bands: The list of bands to use to create the timeseries. Defaults to None.
+         mask_cloud: Whether to mask clouds. Defaults to True.
+         cloud_pct: Maximum cloud percentage to include in the timelapse. Defaults to 30.
+         frequency: Frequency of the timelapse. Defaults to 'year'.
+         reducer:  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
+         drop_empty: Whether to drop empty images from the timeseries. Defaults to True.
+         date_format: Format of the date. Defaults to None.
+         parallel_scale: A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
+         step: The step size to use when creating the date sequence. Defaults to 1.
+
+     Returns:
+         object: Returns an ImageCollection containing annual Sentinel 2 images.
     """
     if end_year is None:
         end_year = datetime.date.today().year
@@ -1678,35 +1683,33 @@ def sentinel2_timeseries(
 
 def sentinel2_timeseries_legacy(
     roi=None,
-    start_year=2015,
-    end_year=None,
-    start_date="01-01",
-    end_date="12-31",
-    apply_fmask=True,
-    frequency="year",
-    date_format=None,
-):
-    """Generates an annual Sentinel 2 ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
-       Images include both level 1C and level 2A imagery.
-    Args:
+    start_year: int = 2015,
+    end_year: int | None = None,
+    start_date: str = "01-01",
+    end_date: str = "12-31",
+    apply_fmask: bool = True,
+    frequency: str = "year",
+    date_format: str | None = None,
+) -> ee.ImageCollection | None:
+    """Generates an annual Sentinel 2 ImageCollection.
 
+    This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
+
+    Images include both level 1C and level 2A imagery.
+
+    Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to None, which will use the current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
-        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
-        date_format (str, optional): Format of the date. Defaults to None.
+        start_year: Starting year for the timelapse. Defaults to 2015.
+        end_year: Ending year for the timelapse. Defaults to None, which will use the current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        apply_fmask: Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        frequency: Frequency of the timelapse. Defaults to 'year'.
+        date_format: Format of the date. Defaults to None.
 
     Returns:
         object: Returns an ImageCollection containing annual Sentinel 2 images.
     """
-    ################################################################################
-
-    ################################################################################
-    # Input and output parameters.
-
     if end_year is None:
         end_year = datetime.date.today().year
 
@@ -1750,7 +1753,6 @@ def sentinel2_timeseries_legacy(
     if frequency not in feq_dict:
         raise ValueError("frequency must be year, quarter, or month.")
 
-    ################################################################################
     # Setup vars to get dates.
     if (
         isinstance(start_year, int)
@@ -1803,12 +1805,6 @@ def sentinel2_timeseries_legacy(
     )
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
-    # start_date = str(start_year) + "-" + start_date
-    # end_date = str(end_year) + "-" + end_date
-
-    # # Define a collection filter by date, bounds, and quality.
-    # def colFilter(col, aoi):  # , startDate, endDate):
-    #     return(col.filterBounds(aoi))
 
     # Get Sentinel 2 collections, both Level-1C (top of atmophere) and Level-2A (surface reflectance)
     MSILCcol = ee.ImageCollection("COPERNICUS/S2")
@@ -1841,15 +1837,13 @@ def sentinel2_timeseries_legacy(
         )
 
     # Add NBR for LandTrendr segmentation.
-
     def calcNbr(img):
         return img.addBands(
             img.normalizedDifference(["NIR", "SWIR2"]).multiply(-10000).rename("NBR")
         ).int16()
 
-    # Define function to mask out clouds and cloud shadows in images.
+    # Mask out clouds and cloud shadows in images.
     # Use CFmask band included in USGS Landsat SR image product.
-
     def fmask(img):
         cloudOpaqueBitMask = 1 << 10
         cloudCirrusBitMask = 1 << 11
@@ -1861,7 +1855,6 @@ def sentinel2_timeseries_legacy(
         )
         return img.updateMask(mask)
 
-    # Define function to prepare MSI images.
     def prepMSI(img):
         orig = img
         img = renameMSI(img)
@@ -1906,7 +1899,6 @@ def sentinel2_timeseries_legacy(
         MSILCcoly = colFilter(MSILCcol, roi, startDate, endDate).map(prepMSI)
         MSI2Acoly = colFilter(MSI2Acol, roi, startDate, endDate).map(prepMSI)
 
-        # Merge the collections.
         col = MSILCcoly.merge(MSI2Acoly)
 
         yearImg = col.median()
@@ -1943,8 +1935,6 @@ def sentinel2_timeseries_legacy(
             }
         )
 
-    ################################################################################
-
     # Make a dummy image for missing years.
     bandNames = ee.List(
         [
@@ -1963,14 +1953,6 @@ def sentinel2_timeseries_legacy(
     )
     fillerValues = ee.List.repeat(0, bandNames.size())
     dummyImg = ee.Image.constant(fillerValues).rename(bandNames).selfMask().int16()
-
-    # ################################################################################
-    # # Get a list of years
-    # years = ee.List.sequence(start_year, end_year)
-
-    # ################################################################################
-    # # Make list of annual image composites.
-    # imgList = years.map(getAnnualComp)
 
     if frequency == "year":
         years = ee.List.sequence(start_year, end_year)
@@ -1996,32 +1978,33 @@ def sentinel2_timeseries_legacy(
 
 def landsat_timeseries(
     roi=None,
-    start_year=1984,
-    end_year=None,
-    start_date="06-10",
-    end_date="09-20",
-    apply_fmask=True,
-    frequency="year",
-    date_format=None,
-    step=1,
-):
-    """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
+    start_year: int = 1984,
+    end_year: int | None = None,
+    start_date: str = "06-10",
+    end_date: str = "09-20",
+    apply_fmask: bool = True,
+    frequency: str = "year",
+    date_format: str | None = None,
+    step: int = 1,
+) -> ee.ImageCollection | None:
+    """Generates an annual Landsat ImageCollection.
+
+    Adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to None, which means the current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
-        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
-        date_format (str, optional): Format of the date. Defaults to None.
-        step (int, optional): The step size to use when creating the date sequence. Defaults to 1.
+        start_year: Starting year for the timelapse. Defaults to 1984.
+        end_year: Ending year for the timelapse. Defaults to None, which means the current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        apply_fmask: Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        frequency: Frequency of the timelapse. Defaults to 'year'.
+        date_format: Format of the date. Defaults to None.
+        step: The step size to use when creating the date sequence. Defaults to 1.
+
     Returns:
         object: Returns an ImageCollection containing annual Landsat images.
     """
-
-    # Input and output parameters.
     if roi is None:
         roi = ee.Geometry.Polygon(
             [
@@ -2134,7 +2117,7 @@ def landsat_timeseries(
         )
 
     def fmask(image):
-        # see https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2
+        # See https://developers.google.com/earth-engine/datasets/catalog/LANDSAT_LC09_C02_T1_L2
         # Bit 0 - Fill
         # Bit 1 - Dilated Cloud
         # Bit 2 - Cirrus
@@ -2295,31 +2278,31 @@ def landsat_timeseries(
 
 def landsat_timeseries_legacy(
     roi=None,
-    start_year=1984,
-    end_year=2021,
-    start_date="06-10",
-    end_date="09-20",
-    apply_fmask=True,
-    frequency="year",
-    date_format=None,
-):
-    """Generates an annual Landsat ImageCollection. This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc. A huge thank you to Justin Braaten for sharing his fantastic work.
+    start_year: int = 1984,
+    end_year: int = 2021,
+    start_date: str = "06-10",
+    end_date: str = "09-20",
+    apply_fmask: bool = True,
+    frequency: str = "year",
+    date_format: str | None = None,
+) -> ee.ImageCollection | None:
+    """Generates an annual Landsat ImageCollection.
+
+    Adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
+
     Args:
-        roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to 2021.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
-        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
-        date_format (str, optional): Format of the date. Defaults to None.
+        roi: Region of interest to create the timelapse. Defaults to None.
+        start_year: Starting year for the timelapse. Defaults to 1984.
+        end_year: Ending year for the timelapse. Defaults to 2021.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        apply_fmask: Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        frequency: Frequency of the timelapse. Defaults to 'year'.
+        date_format: Format of the date. Defaults to None.
+
     Returns:
         object: Returns an ImageCollection containing annual Landsat images.
     """
-
-    ################################################################################
-    # Input and output parameters.
-
     if roi is None:
         roi = ee.Geometry.Polygon(
             [
@@ -2354,8 +2337,6 @@ def landsat_timeseries_legacy(
 
     if frequency not in feq_dict:
         raise ValueError("frequency must be year, quarter, or month.")
-
-    ################################################################################
 
     # Setup vars to get dates.
     if isinstance(start_year, int) and (start_year >= 1984) and (start_year < 2021):
@@ -2395,12 +2376,6 @@ def landsat_timeseries_legacy(
     )
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
-    # start_date = str(start_year) + "-" + start_date
-    # end_date = str(end_year) + "-" + end_date
-
-    # # Define a collection filter by date, bounds, and quality.
-    # def colFilter(col, aoi):  # , startDate, endDate):
-    #     return(col.filterBounds(aoi))
 
     # Landsat collection preprocessingEnabled
     # Get Landsat surface reflectance collections for OLI, ETM+ and TM sensors.
@@ -2548,20 +2523,10 @@ def landsat_timeseries_legacy(
             }
         )
 
-    ################################################################################
-
     # Make a dummy image for missing years.
     bandNames = ee.List(["Blue", "Green", "Red", "NIR", "SWIR1", "SWIR2", "pixel_qa"])
     fillerValues = ee.List.repeat(0, bandNames.size())
     dummyImg = ee.Image.constant(fillerValues).rename(bandNames).selfMask().int16()
-
-    # ################################################################################
-    # # Get a list of years
-    # years = ee.List.sequence(start_year, end_year)
-
-    # ################################################################################
-    # # Make list of annual image composites.
-    # imgList = years.map(getAnnualComp)
 
     if frequency == "year":
         years = ee.List.sequence(start_year, end_year)
@@ -2586,65 +2551,29 @@ def landsat_timeseries_legacy(
 
     return imgCol
 
-    # ################################################################################
-    # # Run LandTrendr.
-    # lt = ee.Algorithms.TemporalSegmentation.LandTrendr(
-    #     timeSeries=imgCol.select(['NBR', 'SWIR1', 'NIR', 'Green']),
-    #     maxSegments=10,
-    #     spikeThreshold=0.7,
-    #     vertexCountOvershoot=3,
-    #     preventOneYearRecovery=True,
-    #     recoveryThreshold=0.5,
-    #     pvalThreshold=0.05,
-    #     bestModelProportion=0.75,
-    #     minObservationsNeeded=6)
-
-    # ################################################################################
-    # # Get fitted imagery. This starts export tasks.
-    # def getYearStr(year):
-    #     return(ee.String('yr_').cat(ee.Algorithms.String(year).slice(0,4)))
-
-    # yearsStr = years.map(getYearStr)
-
-    # r = lt.select(['SWIR1_fit']).arrayFlatten([yearsStr]).toShort()
-    # g = lt.select(['NIR_fit']).arrayFlatten([yearsStr]).toShort()
-    # b = lt.select(['Green_fit']).arrayFlatten([yearsStr]).toShort()
-
-    # for i, c in zip([r, g, b], ['r', 'g', 'b']):
-    #     descr = 'mamore-river-'+c
-    #     name = 'users/user/'+descr
-    #     print(name)
-    #     task = ee.batch.Export.image.toAsset(
-    #     image=i,
-    #     region=roi.getInfo()['coordinates'],
-    #     assetId=name,
-    #     description=descr,
-    #     scale=30,
-    #     crs='EPSG:3857',
-    #     maxPixels=1e13)
-    #     task.start()
-
 
 def modis_timeseries(
-    asset_id="MODIS/006/MOD13A2",
-    band_name=None,
+    asset_id: str = "MODIS/006/MOD13A2",
+    band_name: str | None = None,
     roi=None,
-    start_year=2001,
-    end_year=None,
-    start_date="01-01",
-    end_date="12-31",
-):
+    start_year: int = 2001,
+    end_year: int | None = None,
+    start_date: str = "01-01",
+    end_date: str = "12-31",
+) -> ee.ImageCollection:
     """Generates a Monthly MODIS ImageCollection.
+
     Args:
-        asset_id (str, optional): The asset id the MODIS ImageCollection.
-        band_name (str, optional): The band name of the image to use.
+        asset_id: The asset id the MODIS ImageCollection.
+        band_name: The band name of the image to use.
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to None, which is the current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        start_year: Starting year for the timelapse. Defaults to 1984.
+        end_year: Ending year for the timelapse. Defaults to None, which is the current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+
     Returns:
-        object: Returns an ImageCollection containing month MODIS images.
+        Returns an ImageCollection containing month MODIS images.
     """
     if end_year is None:
         end_year = datetime.datetime.now().year
@@ -2670,92 +2599,92 @@ def modis_timeseries(
         end_d = ee.Date(start_d).advance(1, "month")
         return ee.Image(collection.filterDate(start_d, end_d).mean())
 
-    images = ee.ImageCollection(seq.map(monthly_modis))
-    return images
+    return ee.ImageCollection(seq.map(monthly_modis))
 
 
 def landsat_timelapse(
     roi=None,
-    out_gif=None,
-    start_year=1984,
-    end_year=None,
-    start_date="06-10",
-    end_date="09-20",
-    bands=["NIR", "Red", "Green"],
+    out_gif: str | None = None,
+    start_year: int = 1984,
+    end_year: int | None = None,
+    start_date: str = "06-10",
+    end_date: str = "09-20",
+    bands: list[str] = ["NIR", "Red", "Green"],
     vis_params=None,
     dimensions=768,
-    frames_per_second=5,
-    crs="EPSG:3857",
-    apply_fmask=True,
+    frames_per_second: int = 5,
+    crs: str = "EPSG:3857",
+    apply_fmask: bool = True,
     nd_bands=None,
-    nd_threshold=0,
+    nd_threshold: float = 0,
     nd_palette=["black", "blue"],
     overlay_data=None,
-    overlay_color="black",
-    overlay_width=1,
-    overlay_opacity=1.0,
-    frequency="year",
-    date_format=None,
-    title=None,
+    overlay_color: str = "black",
+    overlay_width: int = 1,
+    overlay_opacity: float = 1.0,
+    frequency: str = "year",
+    date_format: str | None = None,
+    title: str | None = None,
     title_xy=("2%", "90%"),
-    add_text=True,
+    add_text: bool = True,
     text_xy=("2%", "2%"),
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
-    font_color="white",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    loop=0,
-    mp4=False,
-    fading=False,
-    step=1,
-):
-    """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
+    font_color: str = "white",
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    loop: int = 0,
+    mp4: bool = False,
+    fading: bool | int = False,
+    step: int = 1,
+) -> str:
+    """Generates a Landsat timelapse GIF image.
+
+    Adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator by Justin Braaten.
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to None, which will use the current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        out_gif: File path to the output animated GIF. Defaults to None.
+        start_year: Starting year for the timelapse. Defaults to 1984.
+        end_year: Ending year for the timelapse. Defaults to None, which will use the current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
         vis_params (dict, optional): Visualization parameters. Defaults to None.
         dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 5.
-        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
-        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        frames_per_second: Animation speed. Defaults to 5.
+        crs: The coordinate reference system to use. Defaults to "EPSG:3857".
+        apply_fmask: Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
         nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).
-        nd_threshold (float, optional): The threshold for extracting pixels from the normalized difference band.
+        nd_threshold: The threshold for extracting pixels from the normalized difference band.
         nd_palette (list, optional): The color palette to use for displaying the normalized difference band.
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Line width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
-        date_format (str, optional): Date format for the timelapse. Defaults to None.
-        title (str, optional): The title of the timelapse. Defaults to None.
+        overlay_color: Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width: Line width of the overlay. Defaults to 1.
+        overlay_opacity: Opacity of the overlay. Defaults to 1.0.
+        frequency: Frequency of the timelapse. Defaults to 'year'.
+        date_format: Date format for the timelapse. Defaults to None.
+        title: The title of the timelapse. Defaults to None.
         title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        add_text: Whether to add animated text to the timelapse. Defaults to True.
         title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
-        step (int, optional): Step size for the timelapse. Defaults to 1.
+        font_type: Font type. Defaults to "arial.ttf".
+        font_size: Font size. Defaults to 20.
+        font_color: Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar: Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color: Color for the progress bar. Defaults to 'white'.
+        progress_bar_height: Height of the progress bar. Defaults to 5.
+        loop: Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4: Whether to convert the GIF to MP4. Defaults to False.
+        fading: If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        step: Step size for the timelapse. Defaults to 1.
 
     Returns:
-        str: File path to the output GIF image.
+        File path to the output GIF image.
     """
-
     if roi is None:
         roi = ee.Geometry.Polygon(
             [
@@ -2957,83 +2886,84 @@ def landsat_timelapse(
 def landsat_timelapse_legacy(
     roi=None,
     out_gif=None,
-    start_year=1984,
-    end_year=None,
-    start_date="06-10",
-    end_date="09-20",
-    bands=["NIR", "Red", "Green"],
+    start_year: int = 1984,
+    end_year: int | None = None,
+    start_date: str = "06-10",
+    end_date: str = "09-20",
+    bands: list[str] = ["NIR", "Red", "Green"],
     vis_params=None,
     dimensions=768,
-    frames_per_second=5,
-    crs="EPSG:3857",
-    apply_fmask=True,
+    frames_per_second: int = 5,
+    crs: str = "EPSG:3857",
+    apply_fmask: bool = True,
     nd_bands=None,
-    nd_threshold=0,
+    nd_threshold: float = 0,
     nd_palette=["black", "blue"],
     overlay_data=None,
-    overlay_color="black",
-    overlay_width=1,
-    overlay_opacity=1.0,
-    frequency="year",
-    date_format=None,
-    title=None,
+    overlay_color: str = "black",
+    overlay_width: int = 1,
+    overlay_opacity: float = 1.0,
+    frequency: str = "year",
+    date_format: str | None = None,
+    title: str | None = None,
     title_xy=("2%", "90%"),
-    add_text=True,
+    add_text: bool = True,
     text_xy=("2%", "2%"),
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
-    font_color="white",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    loop=0,
-    mp4=False,
-    fading=False,
-):
-    """Generates a Landsat timelapse GIF image. This function is adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator. A huge thank you to Justin Braaten for sharing his fantastic work.
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
+    font_color: str = "white",
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    loop: int = 0,
+    mp4: bool = False,
+    fading: bool | int = False,
+) -> str:
+    """Generates a Landsat timelapse GIF image.
+
+    Adapted from https://emaprlab.users.earthengine.app/view/lt-gee-time-series-animator by Justin Braaten.
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-        out_gif (str, optional): File path to the output animated GIF. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to None, which means the current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
+        out_gif: File path to the output animated GIF. Defaults to None.
+        start_year: Starting year for the timelapse. Defaults to 1984.
+        end_year: Ending year for the timelapse. Defaults to None, which means the current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '06-10'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '09-20'.
         bands (list, optional): Three bands selected from ['Blue', 'Green', 'Red', 'NIR', 'SWIR1', 'SWIR2', 'pixel_qa']. Defaults to ['NIR', 'Red', 'Green'].
         vis_params (dict, optional): Visualization parameters. Defaults to None.
         dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 5.
-        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
-        apply_fmask (bool, optional): Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
+        frames_per_second: Animation speed. Defaults to 5.
+        crs: The coordinate reference system to use. Defaults to "EPSG:3857".
+        apply_fmask: Whether to apply Fmask (Function of mask) for automated clouds, cloud shadows, snow, and water masking.
         nd_bands (list, optional): A list of names specifying the bands to use, e.g., ['Green', 'SWIR1']. The normalized difference is computed as (first − second) / (first + second). Note that negative input values are forced to 0 so that the result is confined to the range (-1, 1).
-        nd_threshold (float, optional): The threshold for extracting pixels from the normalized difference band.
+        nd_threshold: The threshold for extracting pixels from the normalized difference band.
         nd_palette (list, optional): The color palette to use for displaying the normalized difference band.
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Line width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'.
-        date_format (str, optional): Date format for the timelapse. Defaults to None.
-        title (str, optional): The title of the timelapse. Defaults to None.
+        overlay_color: Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width: Line width of the overlay. Defaults to 1.
+        overlay_opacity: Opacity of the overlay. Defaults to 1.0.
+        frequency: Frequency of the timelapse. Defaults to 'year'.
+        date_format: Date format for the timelapse. Defaults to None.
+        title: The title of the timelapse. Defaults to None.
         title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        add_text: Whether to add animated text to the timelapse. Defaults to True.
         title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        font_type: Font type. Defaults to "arial.ttf".
+        font_size: Font size. Defaults to 20.
+        font_color: Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
+        add_progress_bar: Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color: Color for the progress bar. Defaults to 'white'.
+        progress_bar_height: Height of the progress bar. Defaults to 5.
+        loop: Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4: Whether to convert the GIF to MP4. Defaults to False.
+        fading: If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Returns:
-        str: File path to the output GIF image.
+        File path to the output GIF image.
     """
-
     if end_year is None:
         end_year = get_current_year()
 
@@ -3233,73 +3163,75 @@ def landsat_timelapse_legacy(
 
 def sentinel1_timelapse_legacy(
     roi=None,
-    out_gif=None,
-    start_year=2015,
-    end_year=None,
-    start_date="01-01",
-    end_date="12-31",
+    out_gif: str | None = None,
+    start_year: int = 2015,
+    end_year: int | None = None,
+    start_date: str = "01-01",
+    end_date: str = "12-31",
     vis_params=None,
     dimensions=768,
-    frames_per_second=5,
-    crs="EPSG:3857",
+    frames_per_second: int = 5,
+    crs: str = "EPSG:3857",
     overlay_data=None,
-    overlay_color="black",
-    overlay_width=1,
-    overlay_opacity=1.0,
-    frequency="year",
-    orbit=["ascending", "descending"],
-    title=None,
+    overlay_color: str = "black",
+    overlay_width: int = 1,
+    overlay_opacity: float = 1.0,
+    frequency: str = "year",
+    orbit: list[str] | None = None,
+    title: str | None = None,
     title_xy=("2%", "90%"),
-    add_text=True,
+    add_text: bool = True,
     text_xy=("2%", "2%"),
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
     font_color="white",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    loop=0,
-    mp4=False,
-    fading=False,
-):
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    loop: int = 0,
+    mp4: bool = False,
+    fading: bool | int = False,
+) -> str | None:
     """Generates a Sentinel-1 timelapse animated GIF or MP4.
 
     Args:
         roi (object, optional): Region of interest to create the timelapse. Defaults to LV & Lake Mead.
-        out_gif (str, optional): File path to the output animated GIF. Defaults to the Downloads folder s1_ts_*.gif.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 2015.
-        end_year (int, optional): Ending year for the timelapse. Defaults to current year.
-        start_date (str, optional): Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
-        end_date (str, optional): Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
+        out_gif: File path to the output animated GIF. Defaults to the Downloads folder s1_ts_*.gif.
+        start_year: Starting year for the timelapse. Defaults to 2015.
+        end_year: Ending year for the timelapse. Defaults to current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
+        end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
         vis_params (dict, optional): Visualization parameters. Defaults to {'min':-18, 'max': -4}.
         dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 5.
-        crs (str, optional): Coordinate reference system. Defaults to 'EPSG:3857'.
+        frames_per_second: Animation speed. Defaults to 5.
+        crs: Coordinate reference system. Defaults to 'EPSG:3857'.
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Line width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        frequency (str, optional): Frequency of the timelapse. Defaults to 'year'. Can be year, quarter or month.
-        orbit (list, optional): List of orbit directions to include. Can be ['ascending'], ['descending'], or ['ascending', 'descending']. Defaults to both.
-        title (str, optional): The title of the timelapse. Defaults to None.
+        overlay_color: Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
+        overlay_width: Line width of the overlay. Defaults to 1.
+        overlay_opacity: Opacity of the overlay. Defaults to 1.0.
+        frequency: Frequency of the timelapse. Defaults to 'year'. Can be year, quarter or month.
+        orbit: List of orbit directions to include. Can be ['ascending'], ['descending'], or ['ascending', 'descending']. Defaults to both.
+        title: The title of the timelapse. Defaults to None.
         title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
+        add_text: Whether to add animated text to the timelapse. Defaults to True.
         title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
         text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to image start dates.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
+        font_type: Font type. Defaults to "arial.ttf".
+        font_size: Font size. Defaults to 20.
         font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to 'white'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        add_progress_bar: Whether to add a progress bar at the bottom of the GIF. Defaults to True.
+        progress_bar_color: Color for the progress bar. Defaults to 'white'.
+        progress_bar_height: Height of the progress bar. Defaults to 5.
+        loop: Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
+        mp4: Whether to convert the GIF to MP4. Defaults to False.
+        fading: If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Returns:
-        str: File path to the output GIF image.
+        File path to the output GIF image.
     """
+    if orbit is None:
+        orbit = ["ascending", "descending"]
 
     CURRENT_YEAR, ROI_DEFAULT = sentinel1_defaults()
     roi = roi or ROI_DEFAULT
@@ -5230,61 +5162,67 @@ def add_progress_bar_to_gif(
 
 
 def vector_to_gif(
-    filename,
-    out_gif,
-    colname,
-    vmin=None,
-    vmax=None,
-    step=1,
-    facecolor="black",
-    figsize=(10, 8),
-    padding=3,
-    title=None,
-    add_text=True,
-    xy=("1%", "1%"),
-    fontsize=20,
-    add_progress_bar=True,
-    progress_bar_color="blue",
-    progress_bar_height=5,
-    dpi=300,
-    fps=10,
-    loop=0,
-    mp4=False,
-    keep_png=False,
-    verbose=True,
-    open_args={},
-    plot_args={},
+    filename: str,
+    out_gif: str,
+    colname: str,
+    vmin: float | None = None,
+    vmax: float | None = None,
+    step: float = 1.0,
+    facecolor: str = "black",
+    figsize: tuple[int, int] = (10, 8),
+    padding: int = 3,
+    title: str | None = None,
+    add_text: bool = True,
+    xy: tuple[str, str] = ("1%", "1%"),
+    fontsize: int = 20,
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "blue",
+    progress_bar_height: int = 5,
+    dpi: int = 300,
+    fps: int = 10,
+    loop: int = 0,
+    mp4: bool = False,
+    keep_png: bool = False,
+    verbose: bool = True,
+    open_args: dict | None = None,
+    plot_args: dict | None = None,
 ):
     """Convert a vector to a gif. This function was inspired by by Johannes Uhl's shapefile2gif repo at
             https://github.com/johannesuhl/shapefile2gif. Credits to Johannes Uhl.
 
     Args:
-        filename (str): The input vector file. Can be a directory path or http URL, e.g., "https://i.imgur.com/ZWSZC5z.gif"
-        out_gif (str): The output gif file.
-        colname (str): The column name of the vector that contains numerical values.
-        vmin (float, optional): The minimum value to filter the data. Defaults to None.
-        vmax (float, optional): The maximum value to filter the data. Defaults to None.
-        step (float, optional): The step to filter the data. Defaults to 1.
-        facecolor (str, optional): The color to visualize the data. Defaults to "black".
-        figsize (tuple, optional): The figure size. Defaults to (10, 8).
-        padding (int, optional): The padding of the figure tight_layout. Defaults to 3.
-        title (str, optional): The title of the figure. Defaults to None.
-        add_text (bool, optional): Whether to add text to the figure. Defaults to True.
-        xy (tuple, optional): The position of the text from the lower-left corner. Defaults to ("1%", "1%").
-        fontsize (int, optional): The font size of the text. Defaults to 20.
-        add_progress_bar (bool, optional): Whether to add a progress bar to the figure. Defaults to True.
-        progress_bar_color (str, optional): The color of the progress bar. Defaults to "blue".
-        progress_bar_height (int, optional): The height of the progress bar. Defaults to 5.
-        dpi (int, optional): The dpi of the figure. Defaults to 300.
-        fps (int, optional): The frames per second (fps) of the gif. Defaults to 10.
-        loop (int, optional): The number of loops of the gif. Defaults to 0, infinite loop.
-        mp4 (bool, optional): Whether to convert the gif to mp4. Defaults to False.
-        keep_png (bool, optional): Whether to keep the png files. Defaults to False.
-        verbose (bool, optional): Whether to print the progress. Defaults to True.
-        open_args (dict, optional): The arguments for the geopandas.read_file() function. Defaults to {}.
-        plot_args (dict, optional): The arguments for the geopandas.GeoDataFrame.plot() function. Defaults to {}.
+        filename: The input vector file. Can be a directory path or http URL, e.g.,
+            "https://i.imgur.com/ZWSZC5z.gif"
+        out_gif: The output gif file.
+        colname: The column name of the vector that contains numerical values.
+        vmin: The minimum value to filter the data. Defaults to None.
+        vmax: The maximum value to filter the data. Defaults to None.
+        step: The step to filter the data. Defaults to 1.
+        facecolor: The color to visualize the data. Defaults to "black".
+        figsize: The figure size. Defaults to (10, 8).
+        padding: The padding of the figure tight_layout. Defaults to 3.
+        title: The title of the figure. Defaults to None.
+        add_text: Whether to add text to the figure. Defaults to True.
+        xy: The position of the text from the lower-left corner. Defaults to ("1%", "1%").
+        fontsize: The font size of the text. Defaults to 20.
+        add_progress_bar: Whether to add a progress bar to the figure. Defaults to True.
+        progress_bar_color: The color of the progress bar. Defaults to "blue".
+        progress_bar_height: The height of the progress bar. Defaults to 5.
+        dpi: The dpi of the figure. Defaults to 300.
+        fps: The frames per second (fps) of the gif. Defaults to 10.
+        loop: The number of loops of the gif. Defaults to 0, infinite loop.
+        mp4: Whether to convert the gif to mp4. Defaults to False.
+        keep_png: Whether to keep the png files. Defaults to False.
+        verbose: Whether to print the progress. Defaults to True.
+        open_args: The arguments for the geopandas.read_file() function. Defaults to {}.
+        plot_args: The arguments for the geopandas.GeoDataFrame.plot() function. Defaults to {}.
     """
     import geopandas as gpd
+
+    if open_args is None:
+        open_args = {}
+    if plot_args is None:
+        plot_args = {}
 
     out_dir = os.path.dirname(out_gif)
     tmp_dir = os.path.join(out_dir, "tmp_png")
@@ -8105,19 +8043,19 @@ def landsat_timelapse_with_samples(
     return final_gif
 
 
-def calculate_landsat_indices(image):
+def calculate_landsat_indices(image: ee.Image) -> ee.Image:
     """Calculate common vegetation and spectral indices for Landsat images.
 
     Args:
-        image (ee.Image): Landsat image with bands Blue, Green, Red, NIR, SWIR1, SWIR2
+        image: Landsat image with bands Blue, Green, Red, NIR, SWIR1, SWIR2
 
     Returns:
-        ee.Image: Image with added index bands
+        Image with added index bands
     """
-    # Normalized Difference Vegetation Index
+    # Normalized Difference Vegetation Index.
     ndvi = image.normalizedDifference(["NIR", "Red"]).rename("NDVI")
 
-    # Enhanced Vegetation Index
+    # Enhanced Vegetation Index.
     evi = image.expression(
         "2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))",
         {
@@ -8127,37 +8065,37 @@ def calculate_landsat_indices(image):
         },
     ).rename("EVI")
 
-    # Normalized Difference Water Index
+    # Normalized Difference Water Index.
     ndwi = image.normalizedDifference(["Green", "NIR"]).rename("NDWI")
 
-    # Modified Normalized Difference Water Index
+    # Modified Normalized Difference Water Index.
     mndwi = image.normalizedDifference(["Green", "SWIR1"]).rename("MNDWI")
 
-    # Normalized Difference Built-up Index
+    # Normalized Difference Built-up Index.
     ndbi = image.normalizedDifference(["SWIR1", "NIR"]).rename("NDBI")
 
-    # Normalized Burn Ratio
+    # Normalized Burn Ratio.
     nbr = image.normalizedDifference(["NIR", "SWIR2"]).rename("NBR")
 
-    # Soil Adjusted Vegetation Index
+    # Soil Adjusted Vegetation Index.
     savi = image.expression(
         "((NIR - RED) / (NIR + RED + 0.5)) * (1.5)",
         {"NIR": image.select("NIR"), "RED": image.select("Red")},
     ).rename("SAVI")
 
-    # Green Normalized Difference Vegetation Index
+    # Green Normalized Difference Vegetation Index.
     gndvi = image.normalizedDifference(["NIR", "Green"]).rename("GNDVI")
 
-    # Normalized Difference Moisture Index
+    # Normalized Difference Moisture Index.
     ndmi = image.normalizedDifference(["NIR", "SWIR1"]).rename("NDMI")
 
-    # Modified Soil Adjusted Vegetation Index 2
+    # Modified Soil Adjusted Vegetation Index 2.
     msavi2 = image.expression(
         "(2 * NIR + 1 - sqrt(pow((2 * NIR + 1), 2) - 8 * (NIR - RED))) / 2",
         {"NIR": image.select("NIR"), "RED": image.select("Red")},
     ).rename("MSAVI2")
 
-    # Visible Atmospherically Resistant Index
+    # Visible Atmospherically Resistant Index.
     vari = image.expression(
         "(GREEN - RED) / (GREEN + RED - BLUE)",
         {
@@ -8167,7 +8105,7 @@ def calculate_landsat_indices(image):
         },
     ).rename("VARI")
 
-    # Modified Chlorophyll Absorption Ratio Index
+    # Modified Chlorophyll Absorption Ratio Index.
     mcari = image.expression(
         "((RE - RED) - 0.2 * (RE - GREEN)) * (RE / RED)",
         {
@@ -8177,8 +8115,8 @@ def calculate_landsat_indices(image):
         },
     ).rename("MCARI")
 
-    # Tasseled Cap Transformation coefficients for Landsat 8 OLI
-    # These coefficients are for surface reflectance data
+    # Tasseled Cap Transformation coefficients for Landsat 8 OLI.
+    # These coefficients are for surface reflectance data.
     tcb = image.expression(
         "0.3037*BLUE + 0.2793*GREEN + 0.4743*RED + 0.5585*NIR + 0.5082*SWIR1 + 0.1863*SWIR2",
         {
@@ -8236,7 +8174,7 @@ def calculate_landsat_indices(image):
     )
 
 
-def get_default_landsat_index_vis_params():
+def get_default_landsat_index_vis_params() -> dict[str, dict[str, Any]]:
     """Get default visualization parameters for different Landsat indices."""
     return {
         "NDVI": {
@@ -8483,7 +8421,7 @@ def create_landsat_time_series_chart_frames(
     fps: int,
     xlabel_format: str = "auto",
     xlabel_interval: str = "auto",
-):
+) -> list[str]:
     """Create frames for the Landsat time series chart with current time indicator.
 
     Args:
