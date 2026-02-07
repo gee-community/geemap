@@ -14,11 +14,29 @@ try:
     import folium
 
     _fake_basemaps = {
-        "ROADMAP": folium.TileLayer(tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}", attr="Google", name="ROADMAP"),
-        "SATELLITE": folium.TileLayer(tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}", attr="Google", name="SATELLITE"),
-        "HYBRID": folium.TileLayer(tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}", attr="Google", name="HYBRID"),
-        "TERRAIN": folium.TileLayer(tiles="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}", attr="Google", name="TERRAIN"),
-        "OpenStreetMap": folium.TileLayer(tiles="OpenStreetMap", attr="OSM", name="OpenStreetMap"),
+        "ROADMAP": folium.TileLayer(
+            tiles="https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",
+            attr="Google",
+            name="ROADMAP",
+        ),
+        "SATELLITE": folium.TileLayer(
+            tiles="https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}",
+            attr="Google",
+            name="SATELLITE",
+        ),
+        "HYBRID": folium.TileLayer(
+            tiles="https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",
+            attr="Google",
+            name="HYBRID",
+        ),
+        "TERRAIN": folium.TileLayer(
+            tiles="https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}",
+            attr="Google",
+            name="TERRAIN",
+        ),
+        "OpenStreetMap": folium.TileLayer(
+            tiles="OpenStreetMap", attr="OSM", name="OpenStreetMap"
+        ),
     }
 
     # Importing the geemap package causes `from .geemap import *` which brings
@@ -31,6 +49,7 @@ try:
     # real basemaps module as the package attribute so foliumap's
     # `from . import basemaps` picks up the actual module (with our mock on it).
     import geemap
+
     _real_basemaps_module = sys.modules["geemap.basemaps"]
 
     # Drop any cached foliumap so the module-level code re-executes with our mock.
@@ -39,7 +58,9 @@ try:
     _saved_attr = getattr(geemap, "basemaps", None)
     geemap.basemaps = _real_basemaps_module
 
-    with mock.patch.object(_real_basemaps_module, "xyz_to_folium", return_value=_fake_basemaps):
+    with mock.patch.object(
+        _real_basemaps_module, "xyz_to_folium", return_value=_fake_basemaps
+    ):
         from geemap import foliumap
 
     geemap.basemaps = _saved_attr
