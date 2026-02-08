@@ -780,7 +780,7 @@ class Map(folium.Map):
                 about it being a local file. Defaults to None.
             layer_name: The layer name to use. Defaults to None.
         """
-        if isinstance(source, str) and source.startswith("http"):
+        if isinstance(source, str) and source.startswith(("http://", "https://")):
             self.add_raster(
                 source,
                 band=band,
@@ -1163,7 +1163,7 @@ class Map(folium.Map):
         """
         try:
             if isinstance(in_geojson, str):
-                if in_geojson.startswith("http"):
+                if in_geojson.startswith(("http://", "https://")):
                     in_geojson = coreutils.github_raw_url(in_geojson)
                     data = requests.get(in_geojson).json()
                 else:
@@ -1263,7 +1263,7 @@ class Map(folium.Map):
             FileNotFoundError: The provided KML file could not be found.
 
         """
-        if in_kml.startswith("http") and in_kml.endswith(".kml"):
+        if in_kml.startswith(("http://", "https://")) and in_kml.endswith(".kml"):
             out_dir = os.path.abspath("./cache")
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir)
@@ -1807,7 +1807,9 @@ class Map(folium.Map):
 
         if isinstance(data, pd.DataFrame):
             df = data
-        elif not data.startswith("http") and (not os.path.exists(data)):
+        elif not data.startswith(("http://", "https://")) and (
+            not os.path.exists(data)
+        ):
             raise FileNotFoundError("The specified input csv does not exist.")
         else:
             df = pd.read_csv(data)
@@ -1922,7 +1924,9 @@ class Map(folium.Map):
 
         if isinstance(data, pd.DataFrame):
             df = data
-        elif not data.startswith("http") and (not os.path.exists(data)):
+        elif not data.startswith(("http://", "https://")) and (
+            not os.path.exists(data)
+        ):
             raise FileNotFoundError("The specified input csv does not exist.")
         else:
             df = pd.read_csv(data)
@@ -2033,7 +2037,9 @@ class Map(folium.Map):
 
         if isinstance(data, pd.DataFrame):
             df = data
-        elif not data.startswith("http") and (not os.path.exists(data)):
+        elif not data.startswith(("http://", "https://")) and (
+            not os.path.exists(data)
+        ):
             raise FileNotFoundError("The specified input csv does not exist.")
         else:
             df = pd.read_csv(data)
@@ -2524,7 +2530,9 @@ class Map(folium.Map):
             if left_layer in basemaps.keys():
                 left_layer = basemaps[left_layer]
             elif isinstance(left_layer, str):
-                if left_layer.startswith("http") and left_layer.endswith(".tif"):
+                if left_layer.startswith(
+                    ("http://", "https://")
+                ) and left_layer.endswith(".tif"):
                     url = cog_tile(left_layer, **left_args)
                     bbox = cog_bounds(left_layer)
                     bounds = [(bbox[1], bbox[0]), (bbox[3], bbox[2])]
@@ -2563,7 +2571,9 @@ class Map(folium.Map):
             if right_layer in basemaps.keys():
                 right_layer = basemaps[right_layer]
             elif isinstance(right_layer, str):
-                if right_layer.startswith("http") and right_layer.endswith(".tif"):
+                if right_layer.startswith(
+                    ("http://", "https://")
+                ) and right_layer.endswith(".tif"):
                     url = cog_tile(right_layer, **right_args)
                     bbox = cog_bounds(right_layer)
                     bounds = [(bbox[1], bbox[0]), (bbox[3], bbox[2])]
@@ -2862,7 +2872,7 @@ class Map(folium.Map):
                 the percentage ranging from 0 to 100, starting from the lower-left corner. Defaults to (0, 0).
         """
         if isinstance(image, str):
-            if image.startswith("http"):
+            if image.startswith(("http://", "https://")):
                 html = f'<img src="{image}">'
                 if isinstance(position, tuple):
                     position = "bottomright"
