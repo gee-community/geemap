@@ -1650,7 +1650,7 @@ def set_proxy(
         ip: The IP address. Defaults to 'http://127.0.0.1'.
         timeout: The timeout in seconds. Defaults to 300.
     """
-    if not ip.startswith("http"):
+    if not ip.startswith(("http://", "https://")):
         ip = "http://" + ip
     proxy = f"{ip}:{port}"
 
@@ -1944,7 +1944,9 @@ def show_image(img_path: str, width: int | None = None, height: int | None = Non
         out.outputs = ()
         display(out)
         with out:
-            if isinstance(img_path, str) and img_path.startswith("http"):
+            if isinstance(img_path, str) and img_path.startswith(
+                ("http://", "https://")
+            ):
                 file_path = coreutils.download_file(img_path)
             else:
                 file_path = img_path
@@ -2271,7 +2273,7 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
     """
     import whitebox
 
-    if in_csv.startswith("http") and in_csv.endswith(".csv"):
+    if in_csv.startswith(("http://", "https://")) and in_csv.endswith(".csv"):
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
         out_name = os.path.basename(in_csv)
 
@@ -2312,7 +2314,7 @@ def csv_to_shp(
     """
     import shapefile as shp
 
-    if in_csv.startswith("http") and in_csv.endswith(".csv"):
+    if in_csv.startswith(("http://", "https://")) and in_csv.endswith(".csv"):
         in_csv = coreutils.github_raw_url(in_csv)
         in_csv = coreutils.download_file(in_csv, quiet=True, overwrite=True)
 
@@ -5150,7 +5152,7 @@ def load_GeoTIFF(URL: str) -> ee.Image:
     """
     uri = URL.strip()
 
-    if uri.startswith("http"):
+    if uri.startswith(("http://", "https://")):
         uri = get_direct_url(uri)
 
     if uri.startswith("https://storage.googleapis.com/"):
@@ -5192,7 +5194,7 @@ def load_GeoTIFFs(URLs: Sequence[str]) -> ee.ImageCollection:
     for URL in URLs:
         uri = URL.strip()
 
-        if uri.startswith("http"):
+        if uri.startswith(("http://", "https://")):
             uri = get_direct_url(uri)
 
         if uri.startswith("https://storage.googleapis.com/"):
@@ -5378,7 +5380,7 @@ def cog_mosaic_from_file(
     """
     titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
     links = []
-    if filepath.startswith("http"):
+    if filepath.startswith(("http://", "https://")):
         with urllib.request.urlopen(filepath) as data:
             for line in data:
                 links.append(line.decode("utf-8").strip())
@@ -9022,7 +9024,7 @@ def vector_to_geojson(
 
     warnings.filterwarnings("ignore")
 
-    if not filename.startswith("http"):
+    if not filename.startswith(("http://", "https://")):
         filename = os.path.abspath(filename)
     else:
         filename = coreutils.download_file(coreutils.github_raw_url(filename))
@@ -10415,7 +10417,7 @@ def get_local_tile_layer(
         kwargs.pop("prefix")
 
     if isinstance(source, str):
-        if not source.startswith("http"):
+        if not source.startswith(("http://", "https://")):
             if source.startswith("~"):
                 source = os.path.expanduser(source)
         else:
@@ -10432,7 +10434,7 @@ def get_local_tile_layer(
         raise ValueError("The tile format must be either ipyleaflet or folium.")
 
     if layer_name is None:
-        if source.startswith("http"):
+        if source.startswith(("http://", "https://")):
             layer_name = "RemoteTile_" + coreutils.random_string(3)
         else:
             layer_name = "LocalTile_" + coreutils.random_string(3)
@@ -10777,7 +10779,7 @@ def points_from_xy(
     if isinstance(data, pd.DataFrame):
         df = data
     elif isinstance(data, str):
-        if not data.startswith("http") and (not os.path.exists(data)):
+        if not data.startswith(("http://", "https://")) and (not os.path.exists(data)):
             raise FileNotFoundError("The specified input csv does not exist.")
         else:
             df = pd.read_csv(data, **kwargs)
@@ -10913,14 +10915,14 @@ def image_to_cog(source, dst_path=None, profile="deflate", **kwargs):
     from rio_cogeo.cogeo import cog_translate
     from rio_cogeo.profiles import cog_profiles
 
-    if not source.startswith("http"):
+    if not source.startswith(("http://", "https://")):
         source = check_file_path(source)
 
         if not os.path.exists(source):
             raise FileNotFoundError("The provided input file could not be found.")
 
     if dst_path is None:
-        if not source.startswith("http"):
+        if not source.startswith(("http://", "https://")):
             dst_path = os.path.splitext(source)[0] + "_cog.tif"
         else:
             dst_path = coreutils.temp_file_path(extension=".tif")
@@ -10947,7 +10949,7 @@ def cog_validate(source, verbose=False):
     """
     from rio_cogeo.cogeo import cog_validate, cog_info
 
-    if not source.startswith("http"):
+    if not source.startswith(("http://", "https://")):
         source = check_file_path(source)
 
         if not os.path.exists(source):
@@ -10990,7 +10992,7 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
         pd.DataFrame: A pandas DataFrame containing the GeoJSON object.
     """
     if isinstance(in_geojson, str):
-        if in_geojson.startswith("http"):
+        if in_geojson.startswith(("http://", "https://")):
             in_geojson = coreutils.github_raw_url(in_geojson)
             with urllib.request.urlopen(in_geojson) as f:
                 data = json.load(f)
@@ -11322,7 +11324,7 @@ def read_lidar(filename, **kwargs):
 
     if (
         isinstance(filename, str)
-        and filename.startswith("http")
+        and filename.startswith(("http://", "https://"))
         and (filename.endswith(".las") or filename.endswith(".laz"))
     ):
         filename = coreutils.github_raw_url(filename)
@@ -11530,7 +11532,7 @@ def clip_image(image, mask, output):
         mask = mask.coordinates().getInfo()[0]
 
     if isinstance(mask, str):
-        if mask.startswith("http"):
+        if mask.startswith(("http://", "https://")):
             mask = coreutils.download_file(mask, output)
         if not os.path.exists(mask):
             raise FileNotFoundError(f"{mask} does not exist.")
@@ -11603,7 +11605,7 @@ def netcdf_to_tif(
     """
     import xarray as xr
 
-    if filename.startswith("http"):
+    if filename.startswith(("http://", "https://")):
         filename = coreutils.download_file(filename)
 
     if not os.path.exists(filename):
@@ -11655,7 +11657,7 @@ def read_netcdf(filename, **kwargs):
     """
     import xarray as xr
 
-    if filename.startswith("http"):
+    if filename.startswith(("http://", "https://")):
         filename = coreutils.download_file(filename)
 
     if not os.path.exists(filename):
@@ -11712,7 +11714,7 @@ def netcdf_tile_layer(
     """
     import xarray as xr
 
-    if filename.startswith("http"):
+    if filename.startswith(("http://", "https://")):
         filename = coreutils.download_file(filename)
 
     if not os.path.exists(filename):
@@ -12855,7 +12857,7 @@ def requireJS(lib_path=None, Map=None):
             oeel.setMap(Map)
         return oeel
     elif isinstance(lib_path, str):
-        if lib_path.startswith("http"):
+        if lib_path.startswith(("http://", "https://")):
             lib_path = get_direct_url(lib_path)
 
         lib_path = change_require(lib_path)
@@ -12884,7 +12886,7 @@ def change_require(lib_path):
     if not isinstance(lib_path, str):
         raise ValueError("lib_path must be a string.")
 
-    if lib_path.startswith("http"):
+    if lib_path.startswith(("http://", "https://")):
         if lib_path.startswith("https://github.com") and "blob" in lib_path:
             lib_path = lib_path.replace("blob", "raw")
         basename = os.path.basename(lib_path)
@@ -13053,7 +13055,7 @@ def get_direct_url(url: str) -> str:
     if not isinstance(url, str):
         raise ValueError("url must be a string.")
 
-    if not url.startswith("http"):
+    if not url.startswith(("http://", "https://")):
         raise ValueError("url must start with http.")
 
     return requests.head(url, allow_redirects=True).url
@@ -13288,7 +13290,7 @@ def download_ned(region, out_dir=None, return_url=False, download_args={}, **kwa
         out_dir = os.path.abspath(out_dir)
 
     if isinstance(region, str):
-        if region.startswith("http"):
+        if region.startswith(("http://", "https://")):
             region = coreutils.github_raw_url(region)
             region = coreutils.download_file(region)
         elif not os.path.exists(region):
@@ -13872,7 +13874,7 @@ def image_check(image):
     from localtileserver import TileClient
 
     if isinstance(image, str):
-        if image.startswith("http") or os.path.exists(image):
+        if image.startswith(("http://", "https://")) or os.path.exists(image):
             pass
         else:
             raise ValueError("image must be a URL or filepath.")
@@ -14380,7 +14382,7 @@ def tms_to_geotiff(
 
     if isinstance(source, str) and source.upper() in XYZ_TILES:
         source = XYZ_TILES[source.upper()]["url"]
-    elif isinstance(source, str) and source.startswith("http"):
+    elif isinstance(source, str) and source.startswith(("http://", "https://")):
         pass
     else:
         raise ValueError(
@@ -15369,7 +15371,7 @@ def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
     metadata_offset = header["metadata_offset"]
     metadata_length = header["metadata_length"]
 
-    if input_file.startswith("http"):
+    if input_file.startswith(("http://", "https://")):
         headers = {"Range": f"bytes=0-{metadata_offset + metadata_length}"}
         response = requests.get(input_file, headers=headers)
         content = MemorySource(response.content)

@@ -120,7 +120,7 @@ class Map(keplergl.KeplerGl):
 
         try:
             if isinstance(in_geojson, str):
-                if in_geojson.startswith("http"):
+                if in_geojson.startswith(("http://", "https://")):
                     data = requests.get(in_geojson).json()
                 else:
                     in_geojson = os.path.abspath(in_geojson)
@@ -158,7 +158,7 @@ class Map(keplergl.KeplerGl):
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
         """
-        if in_shp.startswith("http") and in_shp.endswith(".zip"):
+        if in_shp.startswith(("http://", "https://")) and in_shp.endswith(".zip"):
             out_dir = os.path.abspath("./cache/shp")
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir)
@@ -260,7 +260,7 @@ class Map(keplergl.KeplerGl):
             layer_name: The layer name to use. Defaults to "Untitled".
             config: Local path or HTTP URL to the config file. Defaults to None.
         """
-        if not filename.startswith("http"):
+        if not filename.startswith(("http://", "https://")):
             filename = os.path.abspath(filename)
 
         ext = os.path.splitext(filename)[1].lower()
@@ -310,7 +310,7 @@ class Map(keplergl.KeplerGl):
             FileNotFoundError: The provided KML file could not be found.
         """
 
-        if in_kml.startswith("http") and in_kml.endswith(".kml"):
+        if in_kml.startswith(("http://", "https://")) and in_kml.endswith(".kml"):
             out_dir = os.path.abspath("./cache")
             if not os.path.exists(out_dir):
                 os.makedirs(out_dir)
@@ -488,7 +488,7 @@ class Map(keplergl.KeplerGl):
         elif isinstance(config, dict):
             self.config = config
         elif isinstance(config, str):
-            if config.startswith("http"):
+            if config.startswith(("http://", "https://")):
                 r = requests.get(config)
                 self.config = r.json()
             elif os.path.isfile(config):

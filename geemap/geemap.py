@@ -519,7 +519,9 @@ class Map(core.Map):
                 arc_add_layer(basemaps[basemap].url, basemap)
             elif basemap in basemaps and basemaps[basemap].name in layer_names:
                 print(f"{basemap} has been already added before.")
-            elif basemap.startswith("http"):  # pytype: disable=attribute-error
+            elif isinstance(basemap, str) and basemap.startswith(
+                ("http://", "https://")
+            ):
                 self.add_tile_layer(url=basemap, shown=show, **kwargs)
             else:
                 print(
@@ -1726,7 +1728,9 @@ class Map(core.Map):
             if left_layer in basemaps.keys():
                 left_layer = get_basemap(left_layer)
             elif isinstance(left_layer, str):
-                if left_layer.startswith("http") and left_layer.endswith(".tif"):
+                if left_layer.startswith(
+                    ("http://", "https://")
+                ) and left_layer.endswith(".tif"):
                     url = cog_tile(left_layer)
                     left_layer = ipyleaflet.TileLayer(
                         url=url,
@@ -1750,7 +1754,9 @@ class Map(core.Map):
             if right_layer in basemaps.keys():
                 right_layer = get_basemap(right_layer)
             elif isinstance(right_layer, str):
-                if right_layer.startswith("http") and right_layer.endswith(".tif"):
+                if right_layer.startswith(
+                    ("http://", "https://")
+                ) and right_layer.endswith(".tif"):
                     url = cog_tile(right_layer)
                     right_layer = ipyleaflet.TileLayer(
                         url=url,
@@ -2121,7 +2127,7 @@ class Map(core.Map):
         from PIL import Image, ImageSequence
 
         try:
-            if not url.startswith("http"):
+            if not url.startswith(("http://", "https://")):
                 if not os.path.exists(url):
                     print("The provided file does not exist.")
                     return
@@ -2536,7 +2542,7 @@ class Map(core.Map):
             attribution: Attribution for the source raster. This defaults to a message about it being a local file. Defaults to None.
             layer_name: The layer name to use. Defaults to None.
         """
-        if isinstance(source, str) and source.startswith("http"):
+        if isinstance(source, str) and source.startswith(("http://", "https://")):
             self.add_raster(
                 source,
                 band=band,
@@ -2738,7 +2744,7 @@ class Map(core.Map):
             style_callback_only = True
 
         if isinstance(in_geojson, str):
-            if in_geojson.startswith("http"):
+            if in_geojson.startswith(("http://", "https://")):
                 in_geojson = coreutils.github_raw_url(in_geojson)
                 data = requests.get(in_geojson).json()
             else:
@@ -2908,7 +2914,7 @@ class Map(core.Map):
         hover_style = hover_style or {}
         fill_colors = fill_colors or ["black"]
 
-        if isinstance(in_kml, str) and in_kml.startswith("http"):
+        if isinstance(in_kml, str) and in_kml.startswith(("http://", "https://")):
             in_kml = coreutils.github_raw_url(in_kml)
             in_kml = coreutils.download_file(in_kml)
 
@@ -2961,7 +2967,7 @@ class Map(core.Map):
         hover_style = hover_style or {}
         fill_colors = fill_colors or ["black"]
 
-        if not filename.startswith("http"):
+        if not filename.startswith(("http://", "https://")):
             filename = os.path.abspath(filename)
         else:
             filename = coreutils.github_raw_url(filename)
@@ -3684,7 +3690,9 @@ class Map(core.Map):
             ValueError: The specified y column does not exist.
             ValueError: The specified label column does not exist.
         """
-        if not in_csv.startswith("http") and (not os.path.exists(in_csv)):
+        if not in_csv.startswith(("http://", "https://")) and (
+            not os.path.exists(in_csv)
+        ):
             raise FileNotFoundError("The specified input csv does not exist.")
 
         df = pd.read_csv(in_csv)
@@ -3790,7 +3798,9 @@ class Map(core.Map):
 
         if isinstance(data, pd.DataFrame):
             df = data
-        elif not data.startswith("http") and (not os.path.exists(data)):
+        elif not data.startswith(("http://", "https://")) and (
+            not os.path.exists(data)
+        ):
             raise FileNotFoundError("The specified input csv does not exist.")
         else:
             df = pd.read_csv(data)
@@ -3989,7 +3999,9 @@ class Map(core.Map):
 
         if isinstance(data, pd.DataFrame):
             df = data
-        elif not data.startswith("http") and (not os.path.exists(data)):
+        elif not data.startswith(("http://", "https://")) and (
+            not os.path.exists(data)
+        ):
             raise FileNotFoundError("The specified input csv does not exist.")
         else:
             df = pd.read_csv(data)
@@ -4112,7 +4124,7 @@ class Map(core.Map):
 
         self.default_style = {"cursor": "wait"}
 
-        if not filename.startswith("http"):
+        if not filename.startswith(("http://", "https://")):
             filename = os.path.abspath(filename)
         gdf = gpd.read_file(filename, **kwargs)
         df = gdf.to_crs(epsg="4326")
@@ -4489,7 +4501,7 @@ class Map(core.Map):
         from ipyleaflet.velocity import Velocity
 
         if isinstance(data, str):
-            if data.startswith("http"):
+            if data.startswith(("http://", "https://")):
                 data = coreutils.download_file(data)
             ds = xr.open_dataset(data)
 
@@ -4739,7 +4751,7 @@ class Map(core.Map):
                 "topright", "bottomleft", "bottomright". Defaults to "bottomright".
         """
         if isinstance(image, str):
-            if image.startswith("http"):
+            if image.startswith(("http://", "https://")):
                 image = widgets.Image(value=requests.get(image).content, **kwargs)
             elif os.path.exists(image):
                 with open(image, "rb") as f:
@@ -4918,7 +4930,7 @@ class ImageOverlay(ipyleaflet.ImageOverlay):
 
         url = kwargs.get("url")
         assert url is not None  # For pytype.
-        if not url.startswith("http"):
+        if not url.startswith(("http://", "https://")):
             url = os.path.abspath(url)
             if not os.path.exists(url):
                 raise FileNotFoundError("The provided file does not exist.")

@@ -66,9 +66,9 @@ def add_overlay(
                     overlay_data = ee.FeatureCollection(
                         f"users/giswqs/public/{overlay_data.lower()}"
                     )
-                elif overlay_data.startswith("http") and overlay_data.endswith(
-                    ".geojson"
-                ):
+                elif overlay_data.startswith(
+                    ("http://", "https://")
+                ) and overlay_data.endswith(".geojson"):
                     overlay_data = coreutils.geojson_to_ee(overlay_data)
                 else:
                     overlay_data = ee.FeatureCollection(overlay_data)
@@ -299,7 +299,7 @@ def gif_fading(
     """
     current_dir = os.getcwd()
 
-    if isinstance(in_gif, str) and in_gif.startswith("http"):
+    if isinstance(in_gif, str) and in_gif.startswith(("http://", "https://")):
         ext = os.path.splitext(in_gif)[1]
         file_path = coreutils.temp_file_path(ext)
         download_from_url(in_gif, file_path, verbose=verbose)
@@ -571,7 +571,7 @@ def add_image_to_gif(
     in_gif = os.path.abspath(in_gif)
 
     is_url = False
-    if in_image.startswith("http"):
+    if in_image.startswith(("http://", "https://")):
         is_url = True
 
     if not os.path.exists(in_gif):
@@ -595,7 +595,7 @@ def add_image_to_gif(
 
     logo_raw_image = None
     try:
-        if in_image.startswith("http"):
+        if in_image.startswith(("http://", "https://")):
             logo_raw_image = open_image_from_url(in_image)
         else:
             in_image = os.path.abspath(in_image)
