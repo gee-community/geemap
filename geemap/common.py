@@ -12398,63 +12398,62 @@ def download_ee_image_tiles(
 
 
 def download_ee_image_tiles_parallel(
-    image,
-    features,
-    out_dir=None,
-    prefix=None,
-    crs=None,
-    crs_transform=None,
-    scale=None,
-    resampling="near",
-    dtype=None,
-    overwrite=True,
-    num_threads=None,
-    max_tile_size=None,
-    max_tile_dim=None,
-    shape=None,
-    scale_offset=False,
-    unmask_value=None,
-    column=None,
-    job_args={"n_jobs": -1},
-    ee_init=True,
-    project_id=None,
+    image: ee.Image,
+    features: ee.FeatureCollection,
+    out_dir: str | None = None,
+    prefix: str | None = None,
+    crs: str | None = None,
+    crs_transform: list[float] | None = None,
+    scale: float | None = None,
+    resampling: str = "near",
+    dtype: str | None = None,
+    overwrite: bool = True,
+    num_threads: int | None = None,
+    max_tile_size: int | None = None,
+    max_tile_dim: int | None = None,
+    shape: tuple[int, int] | None = None,
+    scale_offset: bool = False,
+    unmask_value: float | None = None,
+    column: str | None = None,
+    job_args: dict[str, Any] = {"n_jobs": -1},
+    ee_init: bool = True,
+    project_id: str | None = None,
     **kwargs,
 ):
-    """Download an Earth Engine Image as small tiles based on ee.FeatureCollection. Images larger than the `Earth Engine size limit are split and downloaded as
-        separate tiles, then re-assembled into a single GeoTIFF. See https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
+    """Download an Earth Engine Image as small tiles based on ee.FeatureCollection.
+
+    Images larger than the `Earth Engine size limit are split and downloaded as separate
+    tiles, then re-assembled into a single GeoTIFF. See
+    https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
 
     Args:
-        image (ee.Image): The image to be downloaded.
-        features (ee.FeatureCollection): The features to loop through to download image.
-        out_dir (str, optional): The output directory. Defaults to None.
-        prefix (str, optional): The prefix for the output file. Defaults to None.
-        crs (str, optional): Reproject image(s) to this EPSG or WKT CRS. Where image bands have different CRSs, all are
+        image: The image to be downloaded.
+        features: The features to loop through to download image.
+        out_dir: The output directory. Defaults to None.
+        prefix : The prefix for the output file. Defaults to None.
+        crs : Reproject image(s) to this EPSG or WKT CRS. Where image bands have different CRSs, all are
             re-projected to this CRS. Defaults to the CRS of the minimum scale band.
-        crs_transform (list, optional): tuple of float, list of float, rio.Affine, optional
+        crs_transform: tuple of float, list of float, rio.Affine, optional
             List of 6 numbers specifying an affine transform in the specified CRS. In row-major order:
             [xScale, xShearing, xTranslation, yShearing, yScale, yTranslation]. All bands are re-projected to
             this transform.
-        scale (float, optional): Resample image(s) to this pixel scale (size) (m). Where image bands have different scales,
+        scale: Resample image(s) to this pixel scale (size) (m). Where image bands have different scales,
             all are resampled to this scale. Defaults to the minimum scale of image bands.
-        resampling (ResamplingMethod, optional): Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
-        dtype (str, optional): Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
+        resampling: Resampling method, can be 'near', 'bilinear', 'bicubic', or 'average'. Defaults to None.
+        dtype: Convert to this data type (`uint8`, `int8`, `uint16`, `int16`, `uint32`, `int32`, `float32`
             or `float64`). Defaults to auto select a minimum size type that can represent the range of pixel values.
-        overwrite (bool, optional): Overwrite the destination file if it exists. Defaults to True.
-        num_threads (int, optional): Number of tiles to download concurrently. Defaults to a sensible auto value.
-        max_tile_size: int, optional
-            Maximum tile size (MB). If None, defaults to the Earth Engine download size limit (32 MB).
-        max_tile_dim: int, optional
-            Maximum tile width/height (pixels). If None, defaults to Earth Engine download limit (10000).
-        shape: tuple of int, optional
-            (height, width) dimensions to export (pixels).
-        scale_offset: bool, optional
-            Whether to apply any EE band scales and offsets to the image.
-        unmask_value (float, optional): The value to use for pixels that are masked in the input image. If the exported image contains zero values,
+        overwrite: Overwrite the destination file if it exists. Defaults to True.
+        num_threads: Number of tiles to download concurrently. Defaults to a sensible auto value.
+        max_tile_size: Maximum tile size (MB). If None, defaults to the Earth Engine download size limit (32 MB).
+        max_tile_dim: Maximum tile width/height (pixels). If None, defaults to Earth Engine download limit (10000).
+        shape: (height, width) dimensions to export (pixels).
+        scale_offset: Whether to apply any EE band scales and offsets to the image.
+        unmask_value: The value to use for pixels that are masked in the input image. If the exported image contains zero values,
             you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
-        column (str, optional): The column name in the feature collection to use as the filename. Defaults to None.
-        job_args (dict, optional): The arguments to pass to joblib.Parallel. Defaults to {"n_jobs": -1}.
-        ee_init (bool, optional): Whether to initialize Earth Engine. Defaults to True.
-        project_id (str, optional): The Earth Engine project ID. Defaults to None.
+        column: The column name in the feature collection to use as the filename. Defaults to None.
+        job_args: The arguments to pass to joblib.Parallel. Defaults to {"n_jobs": -1}.
+        ee_init: Whether to initialize Earth Engine. Defaults to True.
+        project_id: The Earth Engine project ID. Defaults to None.
 
     """
     import joblib
