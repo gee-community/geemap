@@ -4083,7 +4083,7 @@ class Map(core.Map):
         Returns:
             streamlit.components: components.html object.
         """
-        import streamlit.components.v1 as components  # pytype: disable=import-error
+        import streamlit.components.v1 as components
 
         return components.html(
             self.to_html(), width=width, height=height, scrolling=scrolling
