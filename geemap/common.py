@@ -12422,7 +12422,7 @@ def download_ee_image_tiles_parallel(
 ):
     """Download an Earth Engine Image as small tiles based on ee.FeatureCollection.
 
-    Images larger than the `Earth Engine size limit are split and downloaded as separate
+    Images larger than the Earth Engine size limit are split and downloaded as separate
     tiles, then re-assembled into a single GeoTIFF. See
     https://github.com/dugalh/geedim/blob/main/geedim/download.py#L574
 
