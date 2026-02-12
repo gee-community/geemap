@@ -12483,7 +12483,7 @@ def download_ee_image_tiles_parallel(
         names = [str(i + 1).zfill(len(str(count))) for i in range(count)]
     collection = features.toList(count)
 
-    def download_data(index):
+    def download_data(index: int) -> None:
         if ee_init:
             coreutils.ee_initialize(
                 opt_url=ee.data.HIGH_VOLUME_API_BASE_URL,
