@@ -21,6 +21,14 @@ import psutil
 import requests
 
 
+try:
+    import joblib
+
+    JOBLIB_AVAILABLE = True
+except ImportError:
+    JOBLIB_AVAILABLE = False
+
+
 class CommonTest(unittest.TestCase):
 
     # TODO: test_ee_export_image
@@ -598,7 +606,64 @@ class CommonTest(unittest.TestCase):
     # TODO: test_dynamic_world_s2
     # TODO: test_download_ee_image
     # TODO: test_download_ee_image_tiles
-    # TODO: test_download_ee_image_tiles_parallel
+
+    @unittest.skipIf(not JOBLIB_AVAILABLE, "joblib not available.")
+    @mock.patch.object(common, "download_ee_image")
+    def test_download_ee_image_tiles_parallel(self, mock_download_ee_image):
+        image_mock = mock.MagicMock(spec=ee.Image)
+        feature_mock = mock.MagicMock(spec=ee.Feature)
+        geom_mock = mock.MagicMock(spec=ee.Geometry)
+        feature_mock.geometry.return_value = geom_mock
+        fc_mock = mock.MagicMock(spec=ee.FeatureCollection)
+        fc_mock.size.return_value.getInfo.return_value = 2
+        fc_mock.toList.return_value.get.side_effect = [feature_mock, feature_mock]
+        fc_mock.aggregate_array.return_value.getInfo.return_value = ["1", "2"]
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            common.download_ee_image_tiles_parallel(
+                image_mock,
+                fc_mock,
+                out_dir=tmpdir,
+                column="id",
+                ee_init=False,
+                job_args={"n_jobs": 1},
+            )
+        self.assertEqual(mock_download_ee_image.call_count, 2)
+        mock_download_ee_image.assert_any_call(
+            image_mock,
+            os.path.join(tmpdir, "1.tif"),
+            geom_mock,
+            None,
+            None,
+            None,
+            "near",
+            None,
+            True,
+            None,
+            None,
+            None,
+            None,
+            False,
+            None,
+        )
+        mock_download_ee_image.assert_any_call(
+            image_mock,
+            os.path.join(tmpdir, "2.tif"),
+            geom_mock,
+            None,
+            None,
+            None,
+            "near",
+            None,
+            True,
+            None,
+            None,
+            None,
+            None,
+            False,
+            None,
+        )
+
     # TODO: test_download_ee_image_collection
 
     def test_get_palette_colors(self):
