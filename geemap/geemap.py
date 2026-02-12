@@ -4551,7 +4551,6 @@ class Map(core.Map):
             labels: A list of labels to use for the legend. Defaults to None.
             cmap: The name of a colormap recognized by matplotlib. Defaults to None.
             scheme: Name of a choropleth classification scheme (requires mapclassify).
-                Name of a choropleth classification scheme (requires mapclassify).
                 A mapclassify.MapClassifier object will be used
                 under the hood. Supported are all schemes provided by mapclassify (e.g.
                 'BoxPlot', 'EqualInterval', 'FisherJenks', 'FisherJenksSampled',
