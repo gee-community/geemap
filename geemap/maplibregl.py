@@ -211,7 +211,7 @@ class Map(MapWidget):
 
     def add_layer(
         self,
-        layer: "Layer",
+        layer: Layer,
         before_id: str | None = None,
         name: str | None = None,
     ) -> None:
@@ -565,7 +565,7 @@ class Map(MapWidget):
         geom_type = None
 
         if isinstance(data, str):
-            if os.path.isfile(data) or data.startswith("http"):
+            if os.path.isfile(data) or data.startswith(("http://", "https://")):
                 data = gpd.read_file(data).__geo_interface__
                 bounds = get_bounds(data)
                 source = GeoJSONSource(data=data, **source_args)
@@ -1747,7 +1747,7 @@ class Map(MapWidget):
 
         if isinstance(image, str):
             try:
-                if image.startswith("http"):
+                if image.startswith(("http://", "https://")):
                     image = coreutils.download_file(
                         image,
                         coreutils.temp_file_path(image.split(".")[-1]),
@@ -1947,7 +1947,7 @@ class Map(MapWidget):
         """
         super().add_call("rotateTo", bearing, options, **kwargs)
 
-    def open_geojson(self, **kwargs: Any) -> "widgets.FileUpload":
+    def open_geojson(self, **kwargs: Any) -> widgets.FileUpload:
         """Creates a file uploader widget to upload a GeoJSON file.
 
         When a file is uploaded, it is written to a temporary file and added to the map.

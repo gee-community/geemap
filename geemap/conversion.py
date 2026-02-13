@@ -13,11 +13,11 @@
 # *******************************************************************************#
 
 import collections
+from collections.abc import Sequence
 import os
 import pathlib
 import re
 import shutil
-from typing import Sequence
 import urllib.request
 
 from IPython.core.getipython import get_ipython
@@ -190,7 +190,7 @@ def convert_for_loop(line: str) -> str:
     params = line[(start_index + 1) : end_index]
 
     if " in " in params and params.count(";") == 0:
-        new_line = prefix + "{}:".format(params) + suffix
+        new_line = prefix + f"{params}:" + suffix
         return new_line
 
     items = params.split("=")
@@ -213,11 +213,7 @@ def convert_for_loop(line: str) -> str:
 
     prefix = line[:(start_index)]
     suffix = line[(end_index + 1) :]
-    new_line = (
-        prefix
-        + "{} in range({}, {}, {}):".format(param_name, start, end, step)
-        + suffix
-    )
+    new_line = prefix + f"{param_name} in range({start}, {end}, {step}):" + suffix
 
     return new_line
 
@@ -1140,7 +1136,7 @@ def execute_notebook(in_file: str) -> None:
     Args:
         in_file: Input Jupyter notebook.
     """
-    command = 'jupyter nbconvert --to notebook --execute "{}" --inplace'.format(in_file)
+    command = f'jupyter nbconvert --to notebook --execute "{in_file}" --inplace'
     print(os.popen(command).read().rstrip())
 
 

@@ -117,7 +117,7 @@ class Map(pdk.Deck):
         """
 
         try:
-            if isinstance(layer, str) and layer.startswith("http"):
+            if isinstance(layer, str) and layer.startswith(("http://", "https://")):
                 pdk.settings.custom_libraries = [
                     {
                         "libraryName": "MyTileLayerLibrary",
@@ -349,7 +349,7 @@ class Map(pdk.Deck):
         try:
             import geopandas as gpd
 
-            if not filename.startswith("http"):
+            if not filename.startswith(("http://", "https://")):
                 filename = os.path.abspath(filename)
                 if filename.endswith(".zip"):
                     filename = "zip://" + filename

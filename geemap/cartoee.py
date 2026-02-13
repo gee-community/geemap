@@ -8,6 +8,7 @@
 from collections.abc import Iterable
 import io
 import os
+from typing import Any
 import warnings
 
 try:
@@ -679,8 +680,8 @@ def add_scale_bar(
     font_weight: str = "bold",
     rotation: int = 0,
     zorder: float = 999,
-    paddings: dict[str, float] = {"xmin": 0.05, "xmax": 0.05, "ymin": 1.5, "ymax": 0.5},
-    bbox_kwargs={"facecolor": "white", "edgecolor": "black", "alpha": 0.5},
+    paddings: dict[str, float] | None = None,
+    bbox_kwargs: dict[str, Any] | None = None,
 ):
     """Add a scale bar to the map.
 
@@ -703,9 +704,14 @@ def add_scale_bar(
             bar. Defaults to 0.
         zorder: z order of the text bounding box.
         paddings: Boundaries of the box that contains the scale bar.
-        bbox_kwargs (dict, optional): Style of the box containing the scale bar.
+        bbox_kwargs: Style of the box containing the scale bar.
     """
-
+    paddings = paddings or {"xmin": 0.05, "xmax": 0.05, "ymin": 1.5, "ymax": 0.5}
+    bbox_kwargs = bbox_kwargs or {
+        "facecolor": "white",
+        "edgecolor": "black",
+        "alpha": 0.5,
+    }
     warnings.filterwarnings("ignore")
 
     def _crs_coord_project(crs_target, xcoords, ycoords, crs_source):
@@ -1284,7 +1290,7 @@ def get_image_collection_gif(
             input_list: list[str],
             output_video_file_name: str,
             fps_video: int,
-            frame_size,
+            frame_size: tuple[int, int],
         ) -> None:
             """Convert frames to video
 
@@ -1292,7 +1298,7 @@ def get_image_collection_gif(
                 input_list: Downloaded Image Name List.
                 output_video_file_name: Name of the video file in the image directory.
                 fps_video: Video frames per second.
-                frame_size (tuple): Frame size.
+                frame_size: Frame size.
             """
             out = cv2.VideoWriter(output_video_file_name, fourcc, fps_video, frame_size)
             num_frames = len(input_list)
@@ -1333,5 +1339,4 @@ def savefig(
             saved. If 'tight', try to figure out the tight bbox of the figure.
         kwargs: Additional keyword arguments are passed on to the savefig() method.
     """
-
     fig.savefig(fname=fname, dpi=dpi, bbox_inches=bbox_inches, **kwargs)
