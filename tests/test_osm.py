@@ -143,17 +143,13 @@ class OsmTest(unittest.TestCase):
     def test_shp_from_point_calls_to_file(self, mock_gdf_func):
         gdf = _make_mock_gdf()
         mock_gdf_func.return_value = gdf
-        osm.osm_shp_from_point(
-            (48.8566, 2.3522), {"building": True}, "/tmp/test.shp"
-        )
+        osm.osm_shp_from_point((48.8566, 2.3522), {"building": True}, "/tmp/test.shp")
         gdf.to_file.assert_called_once_with("/tmp/test.shp")
 
     @mock.patch.object(osm, "osm_gdf_from_point")
     def test_geojson_from_point_returns_dict(self, mock_gdf_func):
         mock_gdf_func.return_value = _make_mock_gdf()
-        result = osm.osm_geojson_from_point(
-            (35.6762, 139.6503), {"building": True}
-        )
+        result = osm.osm_geojson_from_point((35.6762, 139.6503), {"building": True})
         self.assertIsInstance(result, dict)
         self.assertEqual(result["type"], "FeatureCollection")
 
@@ -229,9 +225,7 @@ class OsmTest(unittest.TestCase):
     @mock.patch.object(osm, "osm_gdf_from_bbox")
     def test_geojson_from_bbox_returns_dict(self, mock_gdf_func):
         mock_gdf_func.return_value = _make_mock_gdf()
-        result = osm.osm_geojson_from_bbox(
-            40.8, 40.7, -73.9, -74.0, {"building": True}
-        )
+        result = osm.osm_geojson_from_bbox(40.8, 40.7, -73.9, -74.0, {"building": True})
         self.assertIsInstance(result, dict)
         self.assertEqual(result["type"], "FeatureCollection")
 
@@ -240,7 +234,11 @@ class OsmTest(unittest.TestCase):
         gdf = _make_mock_gdf()
         mock_gdf_func.return_value = gdf
         osm.osm_geojson_from_bbox(
-            40.8, 40.7, -73.9, -74.0, {"building": True},
+            40.8,
+            40.7,
+            -73.9,
+            -74.0,
+            {"building": True},
             filepath="/tmp/test.geojson",
         )
         gdf.to_file.assert_called_once_with("/tmp/test.geojson", driver="GeoJSON")
