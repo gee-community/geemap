@@ -8292,7 +8292,7 @@ Defaults to False.</p>
     <span class="kn">import</span><span class="w"> </span><span class="nn">gdown</span>
 
     <span class="k">if</span> <span class="n">output</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span> <span class="ow">and</span> <span class="n">url</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;http://&quot;</span><span class="p">,</span> <span class="s2">&quot;https://&quot;</span><span class="p">)):</span>
             <span class="n">output</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
@@ -8811,7 +8811,9 @@ Defaults to False.</p>
 <span class="normal">808</span>
 <span class="normal">809</span>
 <span class="normal">810</span>
-<span class="normal">811</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geojson_to_ee</span><span class="p">(</span>
+<span class="normal">811</span>
+<span class="normal">812</span>
+<span class="normal">813</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geojson_to_ee</span><span class="p">(</span>
     <span class="n">geo_json</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">geodesic</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
     <span class="n">encoding</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
@@ -8837,7 +8839,9 @@ Defaults to False.</p>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">geo_json</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;http&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="n">geo_json</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.geojson&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">geo_json</span><span class="o">.</span><span class="n">startswith</span><span class="p">((</span><span class="s2">&quot;http://&quot;</span><span class="p">,</span> <span class="s2">&quot;https://&quot;</span><span class="p">))</span> <span class="ow">and</span> <span class="n">geo_json</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span>
+                <span class="s2">&quot;.geojson&quot;</span>
+            <span class="p">):</span>
                 <span class="n">geo_json</span> <span class="o">=</span> <span class="n">github_raw_url</span><span class="p">(</span><span class="n">geo_json</span><span class="p">)</span>
                 <span class="n">out_geojson</span> <span class="o">=</span> <span class="n">temp_file_path</span><span class="p">(</span><span class="n">extension</span><span class="o">=</span><span class="s2">&quot;.geojson&quot;</span><span class="p">)</span>
                 <span class="n">download_file</span><span class="p">(</span><span class="n">geo_json</span><span class="p">,</span> <span class="n">out_geojson</span><span class="p">)</span>
