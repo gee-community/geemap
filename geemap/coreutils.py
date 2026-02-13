@@ -709,7 +709,7 @@ def download_file(
     import gdown
 
     if output is None:
-        if isinstance(url, str) and url.startswith("http"):
+        if isinstance(url, str) and url.startswith(("http://", "https://")):
             output = os.path.basename(url)
 
     if isinstance(url, str):
@@ -763,7 +763,9 @@ def geojson_to_ee(
 
     try:
         if isinstance(geo_json, str):
-            if geo_json.startswith("http") and geo_json.endswith(".geojson"):
+            if geo_json.startswith(("http://", "https://")) and geo_json.endswith(
+                ".geojson"
+            ):
                 geo_json = github_raw_url(geo_json)
                 out_geojson = temp_file_path(extension=".geojson")
                 download_file(geo_json, out_geojson)

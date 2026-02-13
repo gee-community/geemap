@@ -235,7 +235,7 @@ def bar_chart(
         plotly.graph_objs._figure.Figure: A plotly figure object.
     """
     if isinstance(data, str):
-        if data.startswith("http"):
+        if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
@@ -521,7 +521,7 @@ def line_chart(
         plotly.graph_objs._figure.Figure: A plotly figure object.
     """
     if isinstance(data, str):
-        if data.startswith("http"):
+        if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
@@ -794,7 +794,7 @@ def histogram(
         plotly.graph_objs._figure.Figure: A plotly figure object.
     """
     if isinstance(data, str):
-        if data.startswith("http"):
+        if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
@@ -939,7 +939,7 @@ def pie_chart(
         plotly.graph_objs._figure.Figure: A plotly figure object.
     """
     if isinstance(data, str):
-        if data.startswith("http"):
+        if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
             data = get_direct_url(data)
 
