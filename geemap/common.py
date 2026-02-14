@@ -13372,7 +13372,9 @@ def mosaic(
 ):
     """Mosaics a list of images into a single image.
 
-    Inspired by https://bit.ly/3A6roDK.
+    Inspired by:
+
+    https://medium.com/spatial-data-science/how-to-mosaic-merge-raster-data-in-python-fb18e44f3c8
 
     Args:
         images: An input directory containing images or a list of images.
