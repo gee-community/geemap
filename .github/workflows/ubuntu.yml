@@ -41,6 +41,7 @@ jobs:
               run: |
                   uv pip install --find-links https://girder.github.io/large_image_wheels gdal pyproj
                   uv pip install -r pyproject.toml --extra tests
+                  uv pip install -r pyproject.toml --extra all
             - name: Test import
               run: |
                   uv run python -c "import geemap; print('geemap import successful')"
