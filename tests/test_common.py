@@ -627,7 +627,7 @@ class CommonTest(unittest.TestCase):
                 column="id",
                 ee_init=False,
                 # Avoid separate process spawning.
-                job_args={"n_jobs": 1, "backend": "threading"},
+                job_args={"n_jobs": 1, "prefer": "threads"},
             )
         self.assertEqual(mock_download_ee_image.call_count, 2)
         mock_download_ee_image.assert_any_call(
