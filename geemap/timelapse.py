@@ -1583,7 +1583,7 @@ def sentinel2_timeseries(
 ):
     """Generates an annual Sentinel 2 ImageCollection.
 
-     This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
+    This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
 
     Images include both level 1C and level 2A imagery.
 
