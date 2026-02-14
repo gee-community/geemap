@@ -46,7 +46,7 @@ class CommonTest(unittest.TestCase):
         image_mock.geometry.return_value = fake_ee.Geometry()
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            filename = os.path.join(tmpdir, "test.tif")
+            filename = str(pathlib.Path(tmpdir) / "test.tif")
             common.ee_export_image(image_mock, filename, unzip=True, verbose=False)
 
             image_mock.getDownloadURL.assert_called_once()
@@ -74,7 +74,7 @@ class CommonTest(unittest.TestCase):
         image_mock.geometry.return_value = fake_ee.Geometry()
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            filename = os.path.join(tmpdir, "test.tif")
+            filename = str(pathlib.Path(tmpdir) / "test.tif")
             common.ee_export_image(image_mock, filename, unzip=False, verbose=False)
 
             image_mock.getDownloadURL.assert_called_once()
