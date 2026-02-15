@@ -1087,9 +1087,6 @@ def ee_export_vector_to_drive(
             )
         )
 
-    if os.environ.get("USE_MKDOCS") is not None:  # Skip if running GitHub CI.
-        return
-
     print(
         f"Exporting {description}... "
         "Please check the Task Manager from the JavaScript Code Editor."
