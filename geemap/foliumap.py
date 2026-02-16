@@ -3335,11 +3335,7 @@ def ee_tile_layer(
         err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
         raise AttributeError(err_str)
 
-    if (
-        isinstance(ee_object, ee.geometry.Geometry)
-        or isinstance(ee_object, ee.feature.Feature)
-        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-    ):
+    if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
 
         width = 2
@@ -3360,9 +3356,9 @@ def ee_tile_layer(
         )
 
         image = image_fill.blend(image_outline)
-    elif isinstance(ee_object, ee.image.Image):
+    elif isinstance(ee_object, ee.Image):
         image = ee_object
-    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+    elif isinstance(ee_object, ee.ImageCollection):
         image = ee_object.mosaic()
 
     if "palette" in vis_params:
