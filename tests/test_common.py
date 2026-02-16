@@ -11,6 +11,7 @@ import sys
 import tempfile
 import unittest
 from unittest import mock
+import zipfile
 
 import ee
 from geemap import colormaps
@@ -20,10 +21,73 @@ from PIL import Image
 import psutil
 import requests
 
+from tests import fake_ee
+
 
 class CommonTest(unittest.TestCase):
 
-    # TODO: test_ee_export_image
+    def _create_zip_with_tif(self, tif_name: str, content: bytes) -> bytes:
+        zip_buffer = io.BytesIO()
+        with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
+            zip_file.writestr(tif_name, content)
+        return zip_buffer.getvalue()
+
+    @mock.patch.object(requests, "get")
+    def test_ee_export_image_unzip(self, mock_get):
+        """Tests ee_export_image with unzip=True."""
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        zip_content = self._create_zip_with_tif("test.tif", b"tif content")
+        mock_response.iter_content.return_value = [zip_content]
+        mock_get.return_value = mock_response
+
+        image_mock = mock.MagicMock(spec=ee.Image)
+        image_mock.getDownloadURL.return_value = "http://example.com/image.zip"
+        image_mock.geometry.return_value = fake_ee.Geometry()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            filename = str(pathlib.Path(tmpdir) / "test.tif")
+            common.ee_export_image(image_mock, filename, unzip=True, verbose=False)
+
+            image_mock.getDownloadURL.assert_called_once()
+            mock_get.assert_called_once_with(
+                "http://example.com/image.zip", stream=True, timeout=300, proxies=None
+            )
+            filename_path = pathlib.Path(filename)
+            self.assertTrue(filename_path.exists())
+            with open(filename_path, "rb") as f:
+                self.assertEqual(f.read(), b"tif content")
+            filename_zip_path = pathlib.Path(tmpdir) / "test.zip"
+            self.assertFalse(filename_zip_path.exists())
+
+    @mock.patch.object(requests, "get")
+    def test_ee_export_image_no_unzip(self, mock_get):
+        """Tests ee_export_image with unzip=False."""
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        zip_content = self._create_zip_with_tif("test.tif", b"tif content")
+        mock_response.iter_content.return_value = [zip_content]
+        mock_get.return_value = mock_response
+
+        image_mock = mock.MagicMock(spec=ee.Image)
+        image_mock.getDownloadURL.return_value = "http://example.com/image.zip"
+        image_mock.geometry.return_value = fake_ee.Geometry()
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            filename = str(pathlib.Path(tmpdir) / "test.tif")
+            common.ee_export_image(image_mock, filename, unzip=False, verbose=False)
+
+            image_mock.getDownloadURL.assert_called_once()
+            mock_get.assert_called_once_with(
+                "http://example.com/image.zip", stream=True, timeout=300, proxies=None
+            )
+            filename_path = pathlib.Path(filename)
+            filename_zip_path = pathlib.Path(tmpdir) / "test.zip"
+            self.assertTrue(filename_zip_path.exists())
+            with open(filename_zip_path, "rb") as f:
+                self.assertEqual(f.read(), zip_content)
+            self.assertFalse(filename_path.exists())
+
     # TODO: test_ee_export_image_collection
     # TODO: test_ee_export_image_to_drive
     # TODO: test_ee_export_image_to_asset
