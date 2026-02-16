@@ -429,7 +429,7 @@ def check_cmap(cmap: str | list[str]) -> list[str] | str:
                 raise Exception(f"{cmap} is not a valid colormap.")
     elif isinstance(cmap, box.Box):
         return list(cmap["default"])  # pytype: disable=unsupported-operands
-    elif isinstance(cmap, list) or isinstance(cmap, tuple):
+    elif isinstance(cmap, (list, tuple)):
         return cmap
     else:
         raise Exception(f"{cmap} is not a valid colormap.")

@@ -720,7 +720,7 @@ class Map(folium.Map):
 
         array_args = array_args or {}
 
-        if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
+        if isinstance(source, (np.ndarray, xr.DataArray)):
             source = array_to_image(source, **array_args)
 
         tile_layer, tile_client = get_local_tile_layer(
@@ -2559,13 +2559,14 @@ class Map(folium.Map):
                         overlay=True,
                         **left_args,
                     )
-            elif isinstance(left_layer, folium.raster_layers.TileLayer) or isinstance(
-                left_layer, folium.WmsTileLayer
+            elif isinstance(
+                left_layer, (folium.raster_layers.TileLayer, folium.WmsTileLayer)
             ):
                 pass
             else:
                 raise ValueError(
-                    f"left_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
+                    "left_layer must be one of the following: "
+                    f"{', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             if right_layer in basemaps.keys():
@@ -2599,13 +2600,14 @@ class Map(folium.Map):
                         overlay=True,
                         **right_args,
                     )
-            elif isinstance(right_layer, folium.raster_layers.TileLayer) or isinstance(
-                left_layer, folium.WmsTileLayer
+            elif isinstance(
+                right_layer, (folium.raster_layers.TileLayer, folium.WmsTileLayer)
             ):
                 pass
             else:
                 raise ValueError(
-                    f"right_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
+                    "right_layer must be one of the following: "
+                    f"{', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             control = folium.plugins.SideBySideLayers(

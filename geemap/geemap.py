@@ -2246,7 +2246,7 @@ class Map(core.Map):
                     None,
                     False,
                 )
-        elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+        elif isinstance(roi, (ee.Feature, ee.FeatureCollection)):
             roi = roi.geometry()
         elif isinstance(roi, ee.Geometry):
             pass
@@ -2474,7 +2474,7 @@ class Map(core.Map):
 
         array_args = array_args or {}
 
-        if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
+        if isinstance(source, (np.ndarray, xr.DataArray)):
             source = array_to_image(source, **array_args)
 
         tile_layer, tile_client = get_local_tile_layer(
