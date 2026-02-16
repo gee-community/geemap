@@ -26,7 +26,7 @@ from tests import fake_ee
 
 class CommonTest(unittest.TestCase):
 
-    def _create_zip_with_tif(self, tif_name: str, content: bytes):
+    def _create_zip_with_tif(self, tif_name: str, content: bytes) -> bytes:
         zip_buffer = io.BytesIO()
         with zipfile.ZipFile(zip_buffer, "w", zipfile.ZIP_DEFLATED) as zip_file:
             zip_file.writestr(tif_name, content)
