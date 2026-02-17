@@ -1679,7 +1679,7 @@ def credentials_in_drive() -> bool:
 
 
 def credentials_in_colab() -> bool:
-    """Returns True if Earth Engine credentials exist in the Colab environment, False otherwise."""
+    """Returns True if Earth Engine credentials exist in Colab, False otherwise."""
     credentials_path = "/root/.config/earthengine/credentials"
     return os.path.exists(credentials_path)
 
@@ -3312,7 +3312,7 @@ def show_youtube(id="h0pz3S6Tvx0"):
 def create_colorbar(
     width=150,
     height=30,
-    palette: list[int | str] = None,
+    palette: list[int | str] | None = None,
     add_ticks=True,
     add_labels=True,
     labels=None,
@@ -3393,7 +3393,7 @@ def create_colorbar(
     def pixel(
         x, width: float = 100, map=None, spread: float = 1
     ) -> tuple[float, float, float]:
-        map = map or None
+        map = map or []
 
         width = float(width)
         r = sum(
@@ -7371,7 +7371,7 @@ def image_histogram(
         width: Width of the plot in pixels. Defaults to None.
         height: Height of the plot in pixels. Defaults to 500.
         plot_args: TODO.
-        layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
+        layout_args: Layout arguments for the plot to be passed to fig.update_layout().
         return_df: If True, return a pandas dataframe. Defaults to False.
 
     Returns:
@@ -12670,7 +12670,7 @@ def plot_raster(
         open_kwargs: The keyword arguments to pass to rioxarray.open_rasterio. Defaults to {}.
         **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
     """
-    open_kwargs = open_kwargs or None
+    open_kwargs = open_kwargs or {}
 
     if os.environ.get("USE_MKDOCS") is not None:
         return
@@ -12747,8 +12747,8 @@ def plot_raster_3d(
     import rioxarray
     import xarray
 
-    open_kwargs = open_kwargs or None
-    mesh_kwargs = mesh_kwargs or None
+    open_kwargs = open_kwargs or {}
+    mesh_kwargs = mesh_kwargs or {}
 
     if isinstance(background, str):
         pyvista.global_theme.background = background
@@ -13130,7 +13130,7 @@ def jrc_hist_monthly_history(
         title: Title for the plot. Defaults to None.
         width: Width of the plot in pixels. Defaults to None.
         height: Height of the plot in pixels. Defaults to 500.
-        layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
+        layout_args: Layout arguments for the plot to be passed to fig.update_layout().
         return_df: Whether to return the dataframe of the plot. Defaults to False.
 
     Returns:
@@ -13303,8 +13303,7 @@ def download_ned(
     """
     import geopandas as gpd
 
-    if download_args is None:
-        download_args = {}
+    download_args = download_args or {}
 
     if out_dir is None:
         out_dir = os.getcwd()
@@ -13385,8 +13384,7 @@ def mosaic(
     from rasterio.merge import merge
     import rasterio as rio
 
-    if merge_args is None:
-        merge_args = {}
+    merge_args = merge_args or {}
 
     output = os.path.abspath(output)
 
