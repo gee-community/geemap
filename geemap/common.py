@@ -1101,12 +1101,12 @@ def ee_export_vector_to_drive(
 
 
 def ee_export_vector_to_asset(
-    collection,
-    description="myExportTableTask",
-    assetId=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str = "myExportTableTask",
+    assetId: str | None = None,
+    maxVertices: int | None = None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Asset.
 
     Args:
@@ -1146,15 +1146,15 @@ def ee_export_vector_to_asset(
 
 
 def ee_export_vector_to_cloud_storage(
-    collection,
-    description="myExportTableTask",
-    bucket=None,
-    fileNamePrefix=None,
-    fileFormat=None,
-    selectors=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str = "myExportTableTask",
+    bucket: str | None = None,
+    fileNamePrefix: str | None = None,
+    fileFormat: str = "csv",
+    selectors: list[str] | None = None,
+    maxVertices: int | None = None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Google Cloud Storage.
 
     Args:
@@ -1207,12 +1207,12 @@ def ee_export_vector_to_cloud_storage(
 
 
 def ee_export_vector_to_feature_view(
-    collection,
-    description="myExportTableTask",
-    assetId=None,
-    ingestionTimeParameters=None,
+    collection: ee.FeatureCollection,
+    description: str = "myExportTableTask",
+    assetId: str | None = None,
+    ingestionTimeParameters: dict[str, Any] | None = None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to a FeatureView.
 
     Args:
