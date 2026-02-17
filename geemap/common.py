@@ -60,7 +60,7 @@ from . import coreutils
 
 
 def ee_export_image(
-    ee_object: Any,
+    ee_object: ee.Image,
     filename: str,
     scale: float | None = None,
     crs: str | None = None,
@@ -81,18 +81,16 @@ def ee_export_image(
         ee_object: The ee.Image to download.
         filename: Output filename for the exported image.
         scale: A default scale to use for any bands that do not specify one; ignored if
-            crs and crs_transform is specified. Defaults to None.
+            crs and crs_transform is specified.
         crs: A default CRS string to use for any bands that do not explicitly specify
-            one. Defaults to None.
+            one.
         crs_transform: a default affine transform to use for any bands that do not
-            specify one, of the same format as the crs_transform of bands. Defaults to
-            None.
+            specify one, of the same format as the crs_transform of bands.
         region: A polygon specifying a region to download; ignored if crs and
-            crs_transform is specified. Defaults to None.
+            crs_transform is specified.
         dimensions: An optional array of two integers defining the width and height to
-            which the band is cropped. Defaults to None.
-        file_per_band: Whether to produce a different GeoTIFF per band. Defaults to
-            False.
+            which the band is cropped.
+        file_per_band: Whether to produce a different GeoTIFF per band.
         format: One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file,
             default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If
             "GEO_TIFF" or "NPY", filePerBand and all band-level transformations will be
@@ -101,10 +99,10 @@ def ee_export_image(
         unmask_value: The value to use for pixels that are masked in the input image.
             If the exported image contains zero values, you should set the unmask value
             to a non-zero value so that the zero values are not treated as missing
-            data. Defaults to None.
-        timeout: The timeout in seconds for the request. Defaults to 300.
-        proxies: A dictionary of proxy servers to use. Defaults to None.
-        verbose: Whether to print out descriptive text. Defaults to True.
+            data.
+        timeout: The timeout in seconds for the request.
+        proxies: A dictionary of proxy servers to use.
+        verbose: Whether to print out descriptive text.
     """
     if not isinstance(ee_object, ee.Image):
         print("The ee_object must be an ee.Image.")
@@ -186,7 +184,7 @@ def ee_export_image(
 
 
 def ee_export_image_collection(
-    ee_object: Any,
+    ee_object: ee.ImageCollection,
     out_dir: str,
     scale: float | None = None,
     crs: str | None = None,
@@ -196,7 +194,7 @@ def ee_export_image_collection(
     file_per_band: bool = False,
     format: str = "ZIPPED_GEO_TIFF",  # pylint: disable=redefined-builtin
     unmask_value: float | None = None,
-    filenames=None,
+    filenames: list[str] | int | None = None,
     timeout: int = 300,
     proxies: dict[str, Any] | None = None,
     verbose: bool = True,
@@ -204,21 +202,19 @@ def ee_export_image_collection(
     """Exports an ImageCollection as GeoTIFFs.
 
     Args:
-        ee_object: The ee.Image to download.
+        ee_object: The ee.ImageCollection to download.
         out_dir: The output directory for the exported images.
         scale: A default scale to use for any bands that do not specify one; ignored if
             crs and crs_transform is specified. Defaults to None.
         crs: A default CRS string to use for any bands that do not explicitly specify
-            one. Defaults to None.
+            one.
         crs_transform: a default affine transform to use for any bands that do not
-            specify one, of the same format as the crs_transform of bands. Defaults to
-            None.
+            specify one, of the same format as the crs_transform of bands.
         region: A polygon specifying a region to download; ignored if crs and
-            crs_transform is specified. Defaults to None.
+            crs_transform is specified.
         dimensions: An optional array of two integers defining the width and height to
-            which the band is cropped. Defaults to None.
-        file_per_band: Whether to produce a different GeoTIFF per band. Defaults to
-            False.
+            which the band is cropped.
+        file_per_band: Whether to produce a different GeoTIFF per band.
         format: One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file,
             default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If
             "GEO_TIFF" or "NPY", filePerBand and all band-level transformations will be
@@ -226,17 +222,12 @@ def ee_export_image_collection(
         unmask_value: The value to use for pixels that are masked in the input image.
             If the exported image contains zero values, you should set the unmask value
             to a non-zero value so that the zero values are not treated as missing
-            data. Defaults to None.
-        filenames (list | int, optional): A list of filenames to use for the exported
-            images. Defaults to None.
+            data.
+        filenames: A list of filenames to use for the exported images.
         timeout: The timeout in seconds for the request.
-            Defaults to 300.
         proxies: A dictionary of proxy servers to use.
-            Defaults to None.
         verbose: Whether to print out descriptive text.
-            Defaults to True.
     """
-    # TODO(schwehr): Fix the doc string and type annotation for filenames.
     if not isinstance(ee_object, ee.ImageCollection):
         print("The ee_object must be an ee.ImageCollection.")
         return
