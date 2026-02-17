@@ -3389,7 +3389,7 @@ def create_colorbar(
     def gaussian(x: float, a: float, b: float, c: float, d: float = 0) -> float:
         return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
-    # TODO: Rename map to something that doesn't class with Python's `map`
+    # TODO: Rename map to something that doesn't clash with Python's `map`.
     def pixel(
         x, width: float = 100, map=None, spread: float = 1
     ) -> tuple[float, float, float]:
@@ -8544,7 +8544,7 @@ def vector_styling(
     lineType: str = "solid",
     fillColorOpacity: float = 0.66,
 ) -> ee.FeatureCollection:
-    """Add a new property to each feature containing a styling dictionary.
+    """Adds a new property to each feature containing a styling dictionary.
 
     Args:
         ee_object (object): An ee.FeatureCollection.
@@ -12628,7 +12628,7 @@ def download_ee_image_collection(
 def get_palette_colors(
     cmap_name: str | None = None, n_class: int | None = None, hashtag: bool = False
 ) -> list[str]:
-    """Get a palette from a matplotlib colormap.
+    """Returns a list of hex colors in a palette from a matplotlib colormap.
 
     See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
@@ -12636,9 +12636,6 @@ def get_palette_colors(
         cmap_name: The name of the matplotlib colormap. Defaults to None.
         n_class: The number of colors. Defaults to None.
         hashtag: Whether to return a list of hex colors. Defaults to False.
-
-    Returns:
-        A list of hex colors.
     """
     try:
         cmap = plt.get_cmap(cmap_name, n_class)
@@ -13971,13 +13968,10 @@ def image_bounds(image: str, **kwargs) -> list[tuple[float, float]]:
 
 
 def image_metadata(image: str, **kwargs) -> dict[str, Any]:
-    """Get the metadata of an image.
+    """Returns a dictionary of the metadata of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        A dictionary of image metadata.
     """
     image_check(image)
 
@@ -13989,13 +13983,10 @@ def image_metadata(image: str, **kwargs) -> dict[str, Any]:
 
 
 def image_bandcount(image: str, **kwargs) -> int:
-    """Get the number of bands in an image.
+    """Returns the number of bands in an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        The number of bands in the image.
     """
     image_check(image)
 
@@ -14007,13 +13998,10 @@ def image_bandcount(image: str, **kwargs) -> int:
 
 
 def image_size(image: str, **kwargs) -> tuple[int, int]:
-    """Get the size (width, height) of an image.
+    """Returns the size (width, height) of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        A tuple of (width, height).
     """
     image_check(image)
 
@@ -14027,13 +14015,10 @@ def image_size(image: str, **kwargs) -> tuple[int, int]:
 
 
 def image_projection(image: str, **kwargs) -> str:
-    """Get the projection of an image.
+    """Returns the projection of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        The projection of the image.
     """
     image_check(image)
 
@@ -14059,13 +14044,10 @@ def image_set_crs(image: str, epsg: int) -> None:
 
 
 def image_geotransform(image: str, **kwargs) -> list[float]:
-    """Get the geotransform of an image.
+    """Returns the list geotransform values of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        A list of geotransform values.
     """
     image_check(image)
 
@@ -14076,14 +14058,12 @@ def image_geotransform(image: str, **kwargs) -> list[float]:
     return client.metadata()["GeoTransform"]
 
 
+# TODO: Are the units always meters?
 def image_resolution(image: str, **kwargs) -> float:
-    """Get the resolution of an image.
+    """Returns the resolution of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        The resolution of the image.
     """
     image_check(image)
 
@@ -14133,16 +14113,13 @@ def find_files(
 
 
 def zoom_level_resolution(zoom: int, latitude: float = 0.0) -> float:
-    """Returns the approximate pixel scale based on zoom level and latutude.
+    """Returns the approximate pixel scale (m) based on zoom level and latutude.
 
     See https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
 
     Args:
         zoom: The zoom level.
-        latitude: The latitude. Defaults to 0.0.
-
-    Returns:
-        Map resolution in meters.
+        latitude: The latitude.
     """
     resolution = 156543.04 * math.cos(latitude) / math.pow(2, zoom)
     return abs(resolution)
