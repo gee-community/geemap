@@ -60,7 +60,7 @@ from . import coreutils
 
 
 def ee_export_image(
-    ee_object: Any,
+    ee_object: ee.Image,
     filename: str,
     scale: float | None = None,
     crs: str | None = None,
@@ -81,18 +81,16 @@ def ee_export_image(
         ee_object: The ee.Image to download.
         filename: Output filename for the exported image.
         scale: A default scale to use for any bands that do not specify one; ignored if
-            crs and crs_transform is specified. Defaults to None.
+            crs and crs_transform is specified.
         crs: A default CRS string to use for any bands that do not explicitly specify
-            one. Defaults to None.
+            one.
         crs_transform: a default affine transform to use for any bands that do not
-            specify one, of the same format as the crs_transform of bands. Defaults to
-            None.
+            specify one, of the same format as the crs_transform of bands.
         region: A polygon specifying a region to download; ignored if crs and
-            crs_transform is specified. Defaults to None.
+            crs_transform is specified.
         dimensions: An optional array of two integers defining the width and height to
-            which the band is cropped. Defaults to None.
-        file_per_band: Whether to produce a different GeoTIFF per band. Defaults to
-            False.
+            which the band is cropped.
+        file_per_band: Whether to produce a different GeoTIFF per band.
         format: One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file,
             default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If
             "GEO_TIFF" or "NPY", filePerBand and all band-level transformations will be
@@ -101,10 +99,10 @@ def ee_export_image(
         unmask_value: The value to use for pixels that are masked in the input image.
             If the exported image contains zero values, you should set the unmask value
             to a non-zero value so that the zero values are not treated as missing
-            data. Defaults to None.
-        timeout: The timeout in seconds for the request. Defaults to 300.
-        proxies: A dictionary of proxy servers to use. Defaults to None.
-        verbose: Whether to print out descriptive text. Defaults to True.
+            data.
+        timeout: The timeout in seconds for the request.
+        proxies: A dictionary of proxy servers to use.
+        verbose: Whether to print out descriptive text.
     """
     if not isinstance(ee_object, ee.Image):
         print("The ee_object must be an ee.Image.")
@@ -186,7 +184,7 @@ def ee_export_image(
 
 
 def ee_export_image_collection(
-    ee_object: Any,
+    ee_object: ee.ImageCollection,
     out_dir: str,
     scale: float | None = None,
     crs: str | None = None,
@@ -196,7 +194,7 @@ def ee_export_image_collection(
     file_per_band: bool = False,
     format: str = "ZIPPED_GEO_TIFF",  # pylint: disable=redefined-builtin
     unmask_value: float | None = None,
-    filenames=None,
+    filenames: list[str] | int | None = None,
     timeout: int = 300,
     proxies: dict[str, Any] | None = None,
     verbose: bool = True,
@@ -204,21 +202,19 @@ def ee_export_image_collection(
     """Exports an ImageCollection as GeoTIFFs.
 
     Args:
-        ee_object: The ee.Image to download.
+        ee_object: The ee.ImageCollection to download.
         out_dir: The output directory for the exported images.
         scale: A default scale to use for any bands that do not specify one; ignored if
             crs and crs_transform is specified. Defaults to None.
         crs: A default CRS string to use for any bands that do not explicitly specify
-            one. Defaults to None.
+            one.
         crs_transform: a default affine transform to use for any bands that do not
-            specify one, of the same format as the crs_transform of bands. Defaults to
-            None.
+            specify one, of the same format as the crs_transform of bands.
         region: A polygon specifying a region to download; ignored if crs and
-            crs_transform is specified. Defaults to None.
+            crs_transform is specified.
         dimensions: An optional array of two integers defining the width and height to
-            which the band is cropped. Defaults to None.
-        file_per_band: Whether to produce a different GeoTIFF per band. Defaults to
-            False.
+            which the band is cropped.
+        file_per_band: Whether to produce a different GeoTIFF per band.
         format: One of: "ZIPPED_GEO_TIFF" (GeoTIFF file(s) wrapped in a zip file,
             default), "GEO_TIFF" (GeoTIFF file), "NPY" (NumPy binary format). If
             "GEO_TIFF" or "NPY", filePerBand and all band-level transformations will be
@@ -226,17 +222,12 @@ def ee_export_image_collection(
         unmask_value: The value to use for pixels that are masked in the input image.
             If the exported image contains zero values, you should set the unmask value
             to a non-zero value so that the zero values are not treated as missing
-            data. Defaults to None.
-        filenames (list | int, optional): A list of filenames to use for the exported
-            images. Defaults to None.
+            data.
+        filenames: A list of filenames to use for the exported images.
         timeout: The timeout in seconds for the request.
-            Defaults to 300.
         proxies: A dictionary of proxy servers to use.
-            Defaults to None.
         verbose: Whether to print out descriptive text.
-            Defaults to True.
     """
-    # TODO(schwehr): Fix the doc string and type annotation for filenames.
     if not isinstance(ee_object, ee.ImageCollection):
         print("The ee_object must be an ee.ImageCollection.")
         return
@@ -1102,12 +1093,12 @@ def ee_export_vector_to_drive(
 
 
 def ee_export_vector_to_asset(
-    collection,
-    description="myExportTableTask",
-    assetId=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str = "myExportTableTask",
+    assetId: str | None = None,
+    maxVertices: int | None = None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Asset.
 
     Args:
@@ -1147,15 +1138,15 @@ def ee_export_vector_to_asset(
 
 
 def ee_export_vector_to_cloud_storage(
-    collection,
-    description="myExportTableTask",
-    bucket=None,
-    fileNamePrefix=None,
-    fileFormat=None,
-    selectors=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str = "myExportTableTask",
+    bucket: str | None = None,
+    fileNamePrefix: str | None = None,
+    fileFormat: str = "csv",
+    selectors: list[str] | None = None,
+    maxVertices: int | None = None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Google Cloud Storage.
 
     Args:
@@ -1208,12 +1199,12 @@ def ee_export_vector_to_cloud_storage(
 
 
 def ee_export_vector_to_feature_view(
-    collection,
-    description="myExportTableTask",
-    assetId=None,
-    ingestionTimeParameters=None,
+    collection: ee.FeatureCollection,
+    description: str = "myExportTableTask",
+    assetId: str | None = None,
+    ingestionTimeParameters: dict[str, Any] | None = None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to a FeatureView.
 
     Args:
@@ -3381,7 +3372,7 @@ def create_colorbar(
     def gaussian(x: float, a: float, b: float, c: float, d: float = 0) -> float:
         return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
-    # TODO: Rename map to something that doesn't class with Python's `map`
+    # TODO: Rename map to something that doesn't clash with Python's `map`.
     def pixel(
         x, width: float = 100, map=None, spread: float = 1
     ) -> tuple[float, float, float]:
@@ -8536,7 +8527,7 @@ def vector_styling(
     lineType: str = "solid",
     fillColorOpacity: float = 0.66,
 ) -> ee.FeatureCollection:
-    """Add a new property to each feature containing a styling dictionary.
+    """Adds a new property to each feature containing a styling dictionary.
 
     Args:
         ee_object (object): An ee.FeatureCollection.
@@ -12620,7 +12611,7 @@ def download_ee_image_collection(
 def get_palette_colors(
     cmap_name: str | None = None, n_class: int | None = None, hashtag: bool = False
 ) -> list[str]:
-    """Get a palette from a matplotlib colormap.
+    """Returns a list of hex colors in a palette from a matplotlib colormap.
 
     See the list of colormaps at https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
@@ -12628,9 +12619,6 @@ def get_palette_colors(
         cmap_name: The name of the matplotlib colormap. Defaults to None.
         n_class: The number of colors. Defaults to None.
         hashtag: Whether to return a list of hex colors. Defaults to False.
-
-    Returns:
-        A list of hex colors.
     """
     try:
         cmap = plt.get_cmap(cmap_name, n_class)
@@ -13963,13 +13951,10 @@ def image_bounds(image: str, **kwargs) -> list[tuple[float, float]]:
 
 
 def image_metadata(image: str, **kwargs) -> dict[str, Any]:
-    """Get the metadata of an image.
+    """Returns a dictionary of the metadata of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        A dictionary of image metadata.
     """
     image_check(image)
 
@@ -13981,13 +13966,10 @@ def image_metadata(image: str, **kwargs) -> dict[str, Any]:
 
 
 def image_bandcount(image: str, **kwargs) -> int:
-    """Get the number of bands in an image.
+    """Returns the number of bands in an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        The number of bands in the image.
     """
     image_check(image)
 
@@ -13999,13 +13981,10 @@ def image_bandcount(image: str, **kwargs) -> int:
 
 
 def image_size(image: str, **kwargs) -> tuple[int, int]:
-    """Get the size (width, height) of an image.
+    """Returns the size (width, height) of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        A tuple of (width, height).
     """
     image_check(image)
 
@@ -14019,13 +13998,10 @@ def image_size(image: str, **kwargs) -> tuple[int, int]:
 
 
 def image_projection(image: str, **kwargs) -> str:
-    """Get the projection of an image.
+    """Returns the projection of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        The projection of the image.
     """
     image_check(image)
 
@@ -14051,13 +14027,10 @@ def image_set_crs(image: str, epsg: int) -> None:
 
 
 def image_geotransform(image: str, **kwargs) -> list[float]:
-    """Get the geotransform of an image.
+    """Returns the list geotransform values of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        A list of geotransform values.
     """
     image_check(image)
 
@@ -14068,14 +14041,12 @@ def image_geotransform(image: str, **kwargs) -> list[float]:
     return client.metadata()["GeoTransform"]
 
 
+# TODO: Are the units always meters?
 def image_resolution(image: str, **kwargs) -> float:
-    """Get the resolution of an image.
+    """Returns the resolution of an image.
 
     Args:
         image: The input image filepath or URL.
-
-    Returns:
-        The resolution of the image.
     """
     image_check(image)
 
@@ -14125,16 +14096,13 @@ def find_files(
 
 
 def zoom_level_resolution(zoom: int, latitude: float = 0.0) -> float:
-    """Returns the approximate pixel scale based on zoom level and latutude.
+    """Returns the approximate pixel scale (m) based on zoom level and latutude.
 
     See https://blogs.bing.com/maps/2006/02/25/map-control-zoom-levels-gt-resolution
 
     Args:
         zoom: The zoom level.
-        latitude: The latitude. Defaults to 0.0.
-
-    Returns:
-        Map resolution in meters.
+        latitude: The latitude.
     """
     resolution = 156543.04 * math.cos(latitude) / math.pow(2, zoom)
     return abs(resolution)
