@@ -1016,7 +1016,7 @@ def create_timelapse(
 
     if isinstance(palette, str):
         palette = colormaps.get_palette(palette, 15)
-    elif isinstance(palette, list) or isinstance(palette, tuple):
+    elif isinstance(palette, (list, tuple)):
         pass
     elif palette is not None:
         raise Exception("The palette must be a string or a list of strings.")
@@ -2770,7 +2770,7 @@ def landsat_timelapse(
             None,
             False,
         )
-    elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+    elif isinstance(roi, (ee.Feature, ee.FeatureCollection)):
         roi = roi.geometry()
     elif isinstance(roi, ee.Geometry):
         pass
@@ -3051,7 +3051,7 @@ def landsat_timelapse_legacy(
             None,
             False,
         )
-    elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+    elif isinstance(roi, (ee.Feature, ee.FeatureCollection)):
         roi = roi.geometry()
     elif isinstance(roi, ee.Geometry):
         pass
@@ -3520,7 +3520,7 @@ def sentinel2_timelapse(
             None,
             False,
         )
-    elif isinstance(roi, ee.Feature) or isinstance(roi, ee.FeatureCollection):
+    elif isinstance(roi, (ee.Feature, ee.FeatureCollection)):
         roi = roi.geometry()
     elif isinstance(roi, ee.Geometry):
         pass
@@ -4381,7 +4381,7 @@ def modis_ndvi_doy_ts(
         raise Exception("band must be 'NDVI' or 'EVI'.")
 
     if region is not None:
-        if isinstance(region, ee.Geometry) or isinstance(region, ee.FeatureCollection):
+        if isinstance(region, (ee.Geometry, ee.FeatureCollection)):
             pass
         else:
             raise Exception("region must be an ee.Geometry or ee.FeatureCollection.")
@@ -4627,7 +4627,7 @@ def modis_ocean_color_timeseries(
         raise Exception(f"Frequency must be one of the following: {allowed_frequency}")
 
     if region is not None:
-        if isinstance(region, ee.Geometry) or isinstance(region, ee.FeatureCollection):
+        if isinstance(region, (ee.Geometry, ee.FeatureCollection)):
             pass
         else:
             raise Exception("region must be an ee.Geometry or ee.FeatureCollection.")
@@ -4847,11 +4847,7 @@ def dynamic_world_timeseries(
             f"{return_type} must be one of 'hillshade', 'visualize', 'class', or 'probability'."
         )
 
-    if (
-        isinstance(region, ee.FeatureCollection)
-        or isinstance(region, ee.Feature)
-        or isinstance(region, ee.Geometry)
-    ):
+    if isinstance(region, (ee.FeatureCollection, ee.Feature, ee.Geometry)):
         pass
     else:
         raise ValueError(

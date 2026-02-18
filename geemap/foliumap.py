@@ -720,7 +720,7 @@ class Map(folium.Map):
 
         array_args = array_args or {}
 
-        if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
+        if isinstance(source, (np.ndarray, xr.DataArray)):
             source = array_to_image(source, **array_args)
 
         tile_layer, tile_client = get_local_tile_layer(
@@ -2559,13 +2559,14 @@ class Map(folium.Map):
                         overlay=True,
                         **left_args,
                     )
-            elif isinstance(left_layer, folium.raster_layers.TileLayer) or isinstance(
-                left_layer, folium.WmsTileLayer
+            elif isinstance(
+                left_layer, (folium.raster_layers.TileLayer, folium.WmsTileLayer)
             ):
                 pass
             else:
                 raise ValueError(
-                    f"left_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
+                    "left_layer must be one of the following: "
+                    f"{', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             if right_layer in basemaps.keys():
@@ -2599,13 +2600,14 @@ class Map(folium.Map):
                         overlay=True,
                         **right_args,
                     )
-            elif isinstance(right_layer, folium.raster_layers.TileLayer) or isinstance(
-                left_layer, folium.WmsTileLayer
+            elif isinstance(
+                right_layer, (folium.raster_layers.TileLayer, folium.WmsTileLayer)
             ):
                 pass
             else:
                 raise ValueError(
-                    f"right_layer must be one of the following: {', '.join(basemaps.keys())} or a string url to a tif file."
+                    "right_layer must be one of the following: "
+                    f"{', '.join(basemaps.keys())} or a string url to a tif file."
                 )
 
             control = folium.plugins.SideBySideLayers(
@@ -3335,11 +3337,7 @@ def ee_tile_layer(
         err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
         raise AttributeError(err_str)
 
-    if (
-        isinstance(ee_object, ee.geometry.Geometry)
-        or isinstance(ee_object, ee.feature.Feature)
-        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-    ):
+    if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
 
         width = 2
@@ -3360,9 +3358,9 @@ def ee_tile_layer(
         )
 
         image = image_fill.blend(image_outline)
-    elif isinstance(ee_object, ee.image.Image):
+    elif isinstance(ee_object, ee.Image):
         image = ee_object
-    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+    elif isinstance(ee_object, ee.ImageCollection):
         image = ee_object.mosaic()
 
     if "palette" in vis_params:

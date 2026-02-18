@@ -1112,7 +1112,7 @@ class Map(MapWidget):
         """
         import xarray as xr
 
-        if isinstance(source, np.ndarray) or isinstance(source, xr.DataArray):
+        if isinstance(source, (np.ndarray, xr.DataArray)):
             source = array_to_image(source, **array_args)
 
         tile_layer, tile_client = get_local_tile_layer(

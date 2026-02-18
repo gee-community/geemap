@@ -56,11 +56,7 @@ def get_map(
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot): cartopy GeoAxesSubplot object with
             Earth Engine results displayed.
     """
-    if (
-        isinstance(ee_object, ee.geometry.Geometry)
-        or isinstance(ee_object, ee.feature.Feature)
-        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-    ):
+    if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
 
         if "style" in kwargs and kwargs["style"] is not None:
@@ -73,7 +69,7 @@ def get_map(
             ee_object = features.style(**{"styleProperty": "style"})
         else:
             ee_object = features.style(**style)
-    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+    elif isinstance(ee_object, ee.ImageCollection):
         ee_object = ee_object.mosaic()
 
     if proj is None:
@@ -133,14 +129,10 @@ def add_layer(
 
     Raises:
         ValueError: If `dims` is not of type list, tuple, or int.
-        ValueError: If `imgObj` is not of type ee.image.Image.
+        ValueError: If `imgObj` is not of type ee.Image.
         ValueError: If `ax` if not of type cartopy.mpl.geoaxes.GeoAxesSubplot.
     """
-    if (
-        isinstance(ee_object, ee.geometry.Geometry)
-        or isinstance(ee_object, ee.feature.Feature)
-        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-    ):
+    if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
 
         if "style" in kwargs and kwargs["style"] is not None:
@@ -153,10 +145,10 @@ def add_layer(
             ee_object = features.style(**{"styleProperty": "style"})
         else:
             ee_object = features.style(**style)
-    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+    elif isinstance(ee_object, ee.ImageCollection):
         ee_object = ee_object.mosaic()
 
-    if type(ee_object) is not ee.image.Image:
+    if type(ee_object) is not ee.Image:
         raise ValueError("provided `ee_object` is not of type ee.Image")
 
     if region is not None:
@@ -1207,19 +1199,11 @@ def get_image_collection_gif(
             )
 
         for ee_object, style in zip(overlay_layers, overlay_styles):
-            if (
-                isinstance(ee_object, ee.geometry.Geometry)
-                or isinstance(ee_object, ee.feature.Feature)
-                or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-            ):
+            if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
                 overlay_vis_params = (
                     None  # For vector data, we can pass style parameters directly.
                 )
-            elif (
-                isinstance(ee_object, ee.image.Image)
-                or isinstance(ee_object, ee.imagecollection.ImageCollection)
-                or isinstance(ee_object, ee.imagecollection.ImageCollection)
-            ):
+            elif isinstance(ee_object, (ee.Image, ee.ImageCollection)):
                 overlay_vis_params = style  # For raster, need to pass vis_params.
                 style = None
             else:

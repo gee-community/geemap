@@ -412,7 +412,7 @@ def ee_export_image_to_asset(
         **kwargs: Holds other keyword arguments that may have been deprecated
             such as 'crs_transform'.
     """
-    if isinstance(image, ee.Image) or isinstance(image, ee.image.Image):
+    if isinstance(image, ee.Image):
         pass
     else:
         raise ValueError("Input image must be an instance of ee.Image")
@@ -2471,11 +2471,7 @@ def ee_to_geojson(ee_object, filename: str | None = None, indent: int = 2, **kwa
     Returns:
         object: GeoJSON object.
     """
-    if (
-        isinstance(ee_object, ee.Geometry)
-        or isinstance(ee_object, ee.Feature)
-        or isinstance(ee_object, ee.FeatureCollection)
-    ):
+    if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         json_object = ee_object.getInfo()
         if filename is not None:
             filename = os.path.abspath(filename)
@@ -2498,12 +2494,8 @@ def ee_to_bbox(ee_object) -> list[float]:
     Returns:
         list: The bounding box of the Earth Engine object in the format [xmin, ymin, xmax, ymax].
     """
-    if (
-        isinstance(ee_object, ee.Image)
-        or isinstance(ee_object, ee.Feature)
-        or isinstance(ee_object, ee.FeatureCollection)
-    ):
-        geometry = ee_object.geometry()  # pytype: disable=attribute-error
+    if isinstance(ee_object, (ee.Image, ee.Feature, ee.FeatureCollection)):
+        geometry = ee_object.geometry()
     elif isinstance(ee_object, ee.Geometry):
         geometry = ee_object
     else:
@@ -7646,7 +7638,7 @@ def fishnet(
     if isinstance(data, str):
         data = vector_to_ee(data, **kwargs)
 
-    if isinstance(data, ee.FeatureCollection) or isinstance(data, ee.Feature):
+    if isinstance(data, (ee.Feature, ee.FeatureCollection)):
         data = data.geometry()
     elif isinstance(data, ee.Geometry):
         pass
@@ -10269,7 +10261,7 @@ def create_contours(
     if not isinstance(image, ee.Image):
         raise TypeError("The image must be an ee.Image.")
     if region is not None:
-        if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
+        if isinstance(region, (ee.FeatureCollection, ee.Geometry)):
             pass
         else:
             raise TypeError(
@@ -10412,9 +10404,7 @@ def get_local_tile_layer(
                 source = os.path.expanduser(source)
         else:
             source = coreutils.github_raw_url(source)
-    elif isinstance(source, TileClient) or isinstance(
-        source, rasterio.io.DatasetReader
-    ):
+    elif isinstance(source, (TileClient, rasterio.io.DatasetReader)):
         pass
 
     else:
@@ -10429,7 +10419,7 @@ def get_local_tile_layer(
         else:
             layer_name = "LocalTile_" + coreutils.random_string(3)
 
-    if isinstance(source, str) or isinstance(source, rasterio.io.DatasetReader):
+    if isinstance(source, (str, rasterio.io.DatasetReader)):
         tile_client = TileClient(source, port=port, debug=debug)
     else:
         tile_client = source
@@ -11526,7 +11516,7 @@ def clip_image(image, mask, output):
             mask = coreutils.download_file(mask, output)
         if not os.path.exists(mask):
             raise FileNotFoundError(f"{mask} does not exist.")
-    elif isinstance(mask, list) or isinstance(mask, dict):
+    elif isinstance(mask, (list, dict)):
         if isinstance(mask, list):
             geojson = {
                 "type": "FeatureCollection",
@@ -11806,7 +11796,7 @@ def classify(
     import geopandas as gpd
     import mapclassify
 
-    if isinstance(data, gpd.GeoDataFrame) or isinstance(data, pd.DataFrame):
+    if isinstance(data, (gpd.GeoDataFrame, pd.DataFrame)):
         df = data
     else:
         try:
@@ -11979,7 +11969,7 @@ def image_count(
         raise TypeError("collection must be an ee.ImageCollection.")
 
     if region is not None:
-        if isinstance(region, ee.Geometry) or isinstance(region, ee.FeatureCollection):
+        if isinstance(region, (ee.Geometry, ee.FeatureCollection)):
             pass
         else:
             raise TypeError("region must be an ee.Geometry or ee.FeatureCollection.")
@@ -12052,7 +12042,7 @@ def dynamic_world(
         ee.Filter.date(start_date, end_date)
     )
 
-    if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
+    if isinstance(region, (ee.FeatureCollection, ee.Geometry)):
         dw = dw.filterBounds(region)
     else:
         raise ValueError("region must be an ee.FeatureCollection or ee.Geometry.")
@@ -12164,7 +12154,7 @@ def dynamic_world_s2(
         .filter(ee.Filter.lt("CLOUDY_PIXEL_PERCENTAGE", cloud_pct * 100))
     )
 
-    if isinstance(region, ee.FeatureCollection) or isinstance(region, ee.Geometry):
+    if isinstance(region, (ee.FeatureCollection, ee.Geometry)):
         s2 = s2.filterBounds(region)
     else:
         raise ValueError("region must be an ee.FeatureCollection or ee.Geometry.")
@@ -13469,7 +13459,7 @@ def reproject(image, output, dst_crs="EPSG:4326", resampling="nearest", **kwargs
 def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
     dataset = ee.ImageCollection("USGS/3DEP/1m")
 
-    if isinstance(region, ee.Geometry) or isinstance(region, ee.Feature):
+    if isinstance(region, (ee.Geometry, ee.Feature)):
         region = ee.FeatureCollection([region])
 
     if isinstance(region, ee.FeatureCollection):
@@ -14205,7 +14195,7 @@ def center_zoom_to_xy_range(
     Returns:
         A tuple of (x_range, y_range).
     """
-    if isinstance(center, tuple) or isinstance(center, list):
+    if isinstance(center, (tuple, list)):
         pass
     else:
         raise TypeError("center must be a tuple or list")
@@ -14663,11 +14653,7 @@ def ee_to_geotiff(
         err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
         raise AttributeError(err_str)
 
-    if (
-        isinstance(ee_object, ee.geometry.Geometry)
-        or isinstance(ee_object, ee.feature.Feature)
-        or isinstance(ee_object, ee.featurecollection.FeatureCollection)
-    ):
+    if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
 
         width = 2
@@ -14688,9 +14674,9 @@ def ee_to_geotiff(
         )
 
         image = image_fill.blend(image_outline)
-    elif isinstance(ee_object, ee.image.Image):
+    elif isinstance(ee_object, ee.Image):
         image = ee_object
-    elif isinstance(ee_object, ee.imagecollection.ImageCollection):
+    elif isinstance(ee_object, ee.ImageCollection):
         image = ee_object.mosaic()
 
     if "palette" in vis_params:
@@ -14734,7 +14720,7 @@ def create_grid(
     Returns:
         The grid as a feature collection.
     """
-    if isinstance(ee_object, ee.FeatureCollection) or isinstance(ee_object, ee.Image):
+    if isinstance(ee_object, (ee.FeatureCollection, ee.Image)):
         geometry = ee_object.geometry()
     elif isinstance(ee_object, ee.Geometry):
         geometry = ee_object
