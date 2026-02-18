@@ -1583,28 +1583,34 @@ def sentinel2_timeseries(
 ):
     """Generates an annual Sentinel 2 ImageCollection.
 
-    This algorithm is adapted from https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
+    This algorithm is adapted from
+    https://gist.github.com/jdbcode/76b9ac49faf51627ebd3ff988e10adbc by Justin Braaten.
 
     Images include both level 1C and level 2A imagery.
 
-     Args:
-         roi (object, optional): Region of interest to create the timelapse. Defaults to None.
-         start_year: Starting year for the timelapse. Defaults to 2015.
-         end_year: Ending year for the timelapse. Defaults to None, which will use the current year.
-         start_date: Starting date (month-day) each year for filtering ImageCollection. Defaults to '01-01'.
-         end_date: Ending date (month-day) each year for filtering ImageCollection. Defaults to '12-31'.
-         bands: The list of bands to use to create the timeseries. Defaults to None.
-         mask_cloud: Whether to mask clouds. Defaults to True.
-         cloud_pct: Maximum cloud percentage to include in the timelapse. Defaults to 30.
-         frequency: Frequency of the timelapse. Defaults to 'year'.
-         reducer:  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
-         drop_empty: Whether to drop empty images from the timeseries. Defaults to True.
-         date_format: Format of the date. Defaults to None.
-         parallel_scale: A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
-         step: The step size to use when creating the date sequence. Defaults to 1.
+    Args:
+        roi (object, optional): Region of interest to create the timelapse.
+        start_year: Starting year for the timelapse.
+        end_year: Ending year for the timelapse. Defaults to None, which will use the
+            current year.
+        start_date: Starting date (month-day) each year for filtering ImageCollection.
+        end_date: Ending date (month-day) each year for filtering ImageCollection.
+        bands: The list of bands to use to create the timeseries.
+        mask_cloud: Whether to mask clouds.
+        cloud_pct: Maximum cloud percentage to include in the timelapse.
+        frequency: Frequency of the timelapse.
+        reducer: The reducer to use to reduce the collection of images to a single
+            value. It can be one of the following: 'median', 'mean', 'min', 'max',
+            'variance', 'sum'.
+        drop_empty: Whether to drop empty images from the timeseries.
+        date_format: Format of the date.
+        parallel_scale: A scaling factor used to limit memory use; using a larger
+            parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with
+            the default.
+        step: The step size to use when creating the date sequence.
 
-     Returns:
-         object: Returns an ImageCollection containing annual Sentinel 2 images.
+    Returns:
+        object: Returns an ImageCollection containing annual Sentinel 2 images.
     """
     if end_year is None:
         end_year = datetime.date.today().year
@@ -1665,7 +1671,7 @@ def sentinel2_timeseries(
 
         collection = collection.select(bands)
 
-    ts = create_timeseries(
+    return create_timeseries(
         collection,
         start,
         end,
@@ -1678,7 +1684,6 @@ def sentinel2_timeseries(
         parallel_scale,
         step,
     )
-    return ts
 
 
 def sentinel2_timeseries_legacy(
