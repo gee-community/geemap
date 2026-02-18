@@ -7648,7 +7648,7 @@ def fishnet(
     if isinstance(data, str):
         data = vector_to_ee(data, **kwargs)
 
-    if isinstance(data, (ee.FeatureCollection, ee.Feature)):
+    if isinstance(data, (ee.Feature, ee.FeatureCollection)):
         data = data.geometry()
     elif isinstance(data, ee.Geometry):
         pass
