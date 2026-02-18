@@ -278,21 +278,21 @@ def ee_export_image_collection(
 
 
 def ee_export_image_to_drive(
-    image,
-    description="myExportImageTask",
-    folder=None,
-    fileNamePrefix=None,
-    dimensions=None,
+    image: str | ee.Image | ee.ComputedObject,
+    description: str = "myExportImageTask",
+    folder: str | None = None,
+    fileNamePrefix: str | None = None,
+    dimensions: int | str | None = None,
     region=None,
-    scale=None,
-    crs=None,
-    crsTransform=None,
-    maxPixels=None,
-    shardSize=None,
-    fileDimensions=None,
-    skipEmptyTiles=None,
-    fileFormat=None,
-    formatOptions=None,
+    scale: float | None = None,
+    crs: str | None = None,
+    crsTransform: list[float] | None = None,
+    maxPixels: int | None = None,
+    shardSize: int | None = None,
+    fileDimensions: int | list[int] | None = None,
+    skipEmptyTiles: bool | None = None,
+    fileFormat: str | None = None,
+    formatOptions: dict[str, Any] | None = None,
     **kwargs,
 ):
     """Creates a batch task to export an Image as a raster to Google Drive.
@@ -300,46 +300,42 @@ def ee_export_image_to_drive(
     Args:
         image: The image to be exported.
         description: Human-readable name of the task.
-        folder: The name of a unique folder in your Drive account to
-            export into. Defaults to the root of the drive.
-        fileNamePrefix: The Google Drive filename for the export.
-            Defaults to the name of the task.
-        dimensions: The dimensions of the exported image. Takes either a
-            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
-            where WIDTH and HEIGHT are each positive integers.
-        region: The lon,lat coordinates for a LinearRing or Polygon
-            specifying the region to export. Can be specified as a nested
-            lists of numbers or a serialized string. Defaults to the image's
-            region.
-        scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image asset unless a crsTransform
-            is specified.
-        crs: The coordinate reference system of the exported image's
-            projection. Defaults to the image's default projection.
-        crsTransform: A comma-separated string of 6 numbers describing
-            the affine transform of the coordinate reference system of the
-            exported image's projection, in the order: xScale, xShearing,
-            xTranslation, yShearing, yScale and yTranslation. Defaults to
-            the image's native CRS transform.
-        maxPixels: The maximum allowed number of pixels in the exported
-            image. The task will fail if the exported region covers more
-            pixels in the specified projection. Defaults to 100,000,000.
+        folder: The name of a unique folder in your Drive account to export
+            into. Defaults to the root of the drive.
+        fileNamePrefix: The Google Drive filename for the export.  Defaults to the name
+            of the task.
+        dimensions: The dimensions of the exported image. Takes either a single positive
+            integer as the maximum dimension or "WIDTHxHEIGHT" where WIDTH and HEIGHT
+            are each positive integers.
+        region: The lon,lat coordinates for a LinearRing or Polygon specifying the
+            region to export. Can be specified as a nested lists of numbers or a
+            serialized string. Defaults to the image's region.
+        scale: The resolution in meters per pixel. Defaults to the native resolution of
+            the image asset unless a crsTransform is specified.
+        crs: The coordinate reference system of the exported image's projection.
+            Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing the affine
+            transform of the coordinate reference system of the exported image's
+            projection, in the order: xScale, xShearing, xTranslation, yShearing, yScale
+            and yTranslation. Defaults to the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported image. The task
+            will fail if the exported region covers more pixels in the specified
+            projection. Defaults to 100,000,000.
         shardSize: Size in pixels of the tiles in which this image will be
             computed. Defaults to 256.
-        fileDimensions: The dimensions in pixels of each image file, if the
-            image is too large to fit in a single file. May specify a
-            single number to indicate a square shape, or a tuple of two
-            dimensions to indicate (width,height). Note that the image will
-            still be clipped to the overall image dimensions. Must be a
-            multiple of shardSize.
-        skipEmptyTiles: If true, skip writing empty (i.e. fully-masked)
-            image tiles. Defaults to false.
+        fileDimensions: The dimensions in pixels of each image file, if the image is too
+            large to fit in a single file. May specify a single number to indicate a
+            square shape, or a tuple of two dimensions to indicate (width,height). Note
+            that the image will still be clipped to the overall image dimensions. Must
+            be a multiple of shardSize.
+        skipEmptyTiles: If true, skip writing empty (i.e. fully-masked) image
+            tiles. Defaults to false.
         fileFormat: The string file format to which the image is exported.
             Currently only 'GeoTIFF' and 'TFRecord' are supported, defaults to
             'GeoTIFF'.
         formatOptions: A dictionary of string keys to format specific options.
-        **kwargs: Holds other keyword arguments that may have been deprecated
-            such as 'crs_transform', 'driveFolder', and 'driveFileNamePrefix'.
+        **kwargs: Holds other keyword arguments that may have been deprecated such as
+            'crs_transform', 'driveFolder', and 'driveFileNamePrefix'.
     """
     if not isinstance(image, ee.Image):
         raise ValueError("Input image must be an instance of ee.Image")
@@ -366,16 +362,16 @@ def ee_export_image_to_drive(
 
 
 def ee_export_image_to_asset(
-    image,
-    description="myExportImageTask",
-    assetId=None,
-    pyramidingPolicy=None,
-    dimensions=None,
-    region=None,
-    scale=None,
-    crs=None,
+    image: str | ee.Image | ee.ComputedObject,
+    description: str = "myExportImageTask",
+    assetId: str | None = None,
+    pyramidingPolicy: dict[str, str] | None = None,
+    dimensions: int | str | None = None,
+    region: list[list[float]] | str | None = None,
+    scale: float | None = None,
+    crs: str | None = None,
     crsTransform=None,
-    maxPixels=None,
+    maxPixels: int | None = None,
     **kwargs,
 ):
     """Creates a task to export an EE Image to an EE Asset.
@@ -384,33 +380,29 @@ def ee_export_image_to_asset(
         image: The image to be exported.
         description: Human-readable name of the task.
         assetId: The destination asset ID.
-        pyramidingPolicy: The pyramiding policy to apply to each band in the
-            image, a dictionary keyed by band name. Values must be
-            one of: "mean", "sample", "min", "max", or "mode".
-            Defaults to "mean". A special key, ".default", may be used to
-            change the default for all bands.
-        dimensions: The dimensions of the exported image. Takes either a
-            single positive integer as the maximum dimension or "WIDTHxHEIGHT"
-            where WIDTH and HEIGHT are each positive integers.
-        region: The lon,lat coordinates for a LinearRing or Polygon
-            specifying the region to export. Can be specified as a nested
-            lists of numbers or a serialized string. Defaults to the image's
-            region.
-        scale: The resolution in meters per pixel. Defaults to the
-            native resolution of the image asset unless a crsTransform
-            is specified.
-        crs: The coordinate reference system of the exported image's
-            projection. Defaults to the image's default projection.
-        crsTransform: A comma-separated string of 6 numbers describing
-            the affine transform of the coordinate reference system of the
-            exported image's projection, in the order: xScale, xShearing,
-            xTranslation, yShearing, yScale and yTranslation. Defaults to
-            the image's native CRS transform.
-        maxPixels: The maximum allowed number of pixels in the exported
-            image. The task will fail if the exported region covers more
-            pixels in the specified projection. Defaults to 100,000,000.
-        **kwargs: Holds other keyword arguments that may have been deprecated
-            such as 'crs_transform'.
+        pyramidingPolicy: The pyramiding policy to apply to each band in the image, a
+            dictionary keyed by band name. Values must be one of: "mean", "sample",
+            "min", "max", or "mode".  Defaults to "mean". A special key, ".default", may
+            be used to change the default for all bands.
+        dimensions: The dimensions of the exported image. Takes either a single positive
+            integer as the maximum dimension or "WIDTHxHEIGHT" where WIDTH and HEIGHT
+            are each positive integers.
+        region: The lon, lat coordinates for a LinearRing or Polygon specifying the
+            region to export. Can be specified as a nested lists of numbers or a
+            serialized string. Defaults to the image's region.
+        scale: The resolution in meters per pixel. Defaults to the native resolution of
+            the image asset unless a crsTransform is specified.
+        crs: The coordinate reference system of the exported image's projection.
+            Defaults to the image's default projection.
+        crsTransform: A comma-separated string of 6 numbers describing the affine
+            transform of the coordinate reference system of the exported image's
+            projection, in the order: xScale, xShearing, xTranslation, yShearing, yScale
+            and yTranslation. Defaults to the image's native CRS transform.
+        maxPixels: The maximum allowed number of pixels in the exported image. The task
+            will fail if the exported region covers more pixels in the specified
+            projection. Defaults to 100,000,000.
+        **kwargs: Holds other keyword arguments that may have been deprecated such as
+            'crs_transform'.
     """
     if isinstance(image, ee.Image):
         pass
