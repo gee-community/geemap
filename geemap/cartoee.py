@@ -148,7 +148,7 @@ def add_layer(
     elif isinstance(ee_object, ee.ImageCollection):
         ee_object = ee_object.mosaic()
 
-    if type(ee_object) is not ee.Image:
+    if not isinstance(ee_object, ee.Image):
         raise ValueError("provided `ee_object` is not of type ee.Image")
 
     if region is not None:
@@ -168,10 +168,10 @@ def add_layer(
             )
             warnings.warn(msg)
 
-    if type(dims) not in [list, tuple, int]:
+    if not isinstance(dims, (list, tuple, int)):
         raise ValueError("provided dims not of type list, tuple, or int")
 
-    if type(ax) not in [GeoAxes, GeoAxesSubplot]:
+    if not isinstance(ax, (GeoAxes, GeoAxesSubplot)):
         raise ValueError(
             "provided axes not of type cartopy.mpl.geoaxes.GeoAxes "
             "or cartopy.mpl.geoaxes.GeoAxesSubplot"
@@ -267,14 +267,14 @@ def add_colorbar(
         ValueError: If 'loc' or 'cax' keywords are not provided.
         ValueError: If 'loc' is not of type str or does not equal available options.
     """
-    if type(ax) not in [GeoAxes, GeoAxesSubplot]:
+    if not isinstance(ax, (GeoAxes, GeoAxesSubplot)):
         raise ValueError(
             "provided axes not of type cartopy.mpl.geoaxes.GeoAxes "
             "or cartopy.mpl.geoaxes.GeoAxesSubplot"
         )
 
     if loc:
-        if type(loc) == str and loc in ["left", "right", "bottom", "top"]:
+        if isinstance(loc, str) and loc in ("left", "right", "bottom", "top"):
             if "posOpts" not in kwargs:
                 posOpts = {
                     "left": [0.01, 0.25, 0.02, 0.5],
@@ -317,21 +317,21 @@ def add_colorbar(
     if vis_params:
         if "min" in vis_params:
             vmin = vis_params["min"]
-            if type(vmin) not in (int, float):
+            if not isinstance(vmin, (int, float)):
                 raise ValueError("Provided min value not of scalar type.")
         else:
             vmin = 0
 
         if "max" in vis_params:
             vmax = vis_params["max"]
-            if type(vmax) not in (int, float):
+            if not isinstance(vmax, (int, float)):
                 raise ValueError("Provided max value not of scalar type.")
         else:
             vmax = 1
 
         if "opacity" in vis_params:
             alpha = vis_params["opacity"]
-            if type(alpha) not in (int, float):
+            if not isinstance(alpha, (int, float)):
                 raise ValueError("Provided opacity value of not type scalar.")
         elif "alpha" in kwargs:
             alpha = kwargs["alpha"]

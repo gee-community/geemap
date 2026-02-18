@@ -3582,7 +3582,7 @@ def save_colorbar(
 
     if "opacity" in vis_params:
         alpha = vis_params["opacity"]
-        if type(alpha) not in (int, float):
+        if not isinstance(alpha, (int, float)):
             raise ValueError("The provided opacity value must be type scalar.")
     else:
         alpha = 1
