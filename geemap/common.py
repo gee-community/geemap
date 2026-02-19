@@ -1023,34 +1023,32 @@ def ee_export_vector(
 
 
 def ee_export_vector_to_drive(
-    collection,
-    description="myExportTableTask",
-    folder=None,
-    fileNamePrefix=None,
-    fileFormat=None,
-    selectors=None,
-    maxVertices=None,
+    collection: ee.FeatureCollection,
+    description: str = "myExportTableTask",
+    folder: str | None = None,
+    fileNamePrefix: str | None = None,
+    fileFormat: str = "csv",
+    selectors: list[str] | None = None,
+    maxVertices: int | None = None,
     **kwargs,
-):
+) -> None:
     """Creates a task to export a FeatureCollection to Drive.
 
     Args:
         collection: The feature collection to be exported.
         description: Human-readable name of the task.
-        folder: The name of a unique folder in your Drive account to
-            export into. Defaults to the root of the drive.
-        fileNamePrefix: The Google Drive filename for the export.
-            Defaults to the name of the task.
-        fileFormat: The output format: "CSV" (default), "GeoJSON", "KML",
-            "KMZ", "SHP", or "TFRecord".
-        selectors: The list of properties to include in the output, as a list
-            of strings or a comma-separated string. By default, all properties
-            are included.
-        maxVertices:
-            Max number of uncut vertices per geometry; geometries with more
+        folder: The name of a unique folder in your Drive account to export
+            into. Defaults to the root of the drive.
+        fileNamePrefix: The Google Drive filename for the export.  Defaults to the name
+            of the task.
+        fileFormat: The output format: "CSV" (default), "GeoJSON", "KML", "KMZ", "SHP",
+            or "TFRecord".
+        selectors: The list of properties to include in the output, as a list of strings
+            or a comma-separated string. By default, all properties are included.
+        maxVertices: Max number of uncut vertices per geometry; geometries with more
             vertices will be cut into pieces smaller than this size.
-        **kwargs: Holds other keyword arguments that may have been deprecated
-            such as 'driveFolder' and 'driveFileNamePrefix'.
+        **kwargs: Holds other keyword arguments that may have been deprecated such as
+            'driveFolder' and 'driveFileNamePrefix'.
     """
     if not isinstance(collection, ee.FeatureCollection):
         raise ValueError("The collection must be an ee.FeatureCollection.")
@@ -1063,11 +1061,9 @@ def ee_export_vector_to_drive(
             )
         )
 
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
-
     print(
-        f"Exporting {description}... Please check the Task Manager from the JavaScript Code Editor."
+        f"Exporting {description}... "
+        "Please check the Task Manager from the JavaScript Code Editor."
     )
 
     task = ee.batch.Export.table.toDrive(

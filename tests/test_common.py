@@ -97,7 +97,40 @@ class CommonTest(unittest.TestCase):
     # TODO: test_ee_export_image_collection_to_cloud_storage
     # TODO: test_ee_export_geojson
     # TODO: test_ee_export_vector
-    # TODO: test_ee_export_vector_to_drive
+
+    @mock.patch.object(ee.batch.Export.table, "toDrive")
+    def test_ee_export_vector_to_drive(self, mock_to_drive):
+        """Tests ee_export_vector_to_drive."""
+        mock_task = mock.MagicMock()
+        mock_to_drive.return_value = mock_task
+        collection_mock = mock.MagicMock(spec=ee.FeatureCollection)
+
+        common.ee_export_vector_to_drive(
+            collection_mock,
+            description="test_task",
+            folder="test_folder",
+            fileFormat="CSV",
+        )
+
+        mock_to_drive.assert_called_once_with(
+            collection_mock,
+            "test_task",
+            "test_folder",
+            None,
+            "CSV",
+            None,
+            None,
+        )
+        mock_task.start.assert_called_once()
+
+        with self.assertRaisesRegex(
+            ValueError, "The collection must be an ee.FeatureCollection"
+        ):
+            common.ee_export_vector_to_drive("not a collection", fileFormat="CSV")
+
+        with self.assertRaisesRegex(ValueError, "The file type must be one"):
+            common.ee_export_vector_to_drive(collection_mock, fileFormat="INVALID")
+
     # TODO: test_ee_export_vector_to_asset
     # TODO: test_ee_export_vector_to_cloud_storage
     # TODO: test_ee_export_vector_to_feature_view
