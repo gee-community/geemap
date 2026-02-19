@@ -515,9 +515,9 @@ def add_text_to_gif(
 
     try:
         frames = []
-        # Loop over each frame in the animated image
+        # Loop over each frame in the animated image.
         for index, frame in enumerate(ImageSequence.Iterator(image)):
-            # Draw the text on the frame
+            # Draw the text on the frame.
             frame = frame.convert("RGB")
             draw = ImageDraw.Draw(frame)
             # w, h = draw.textsize(text[index])
@@ -1087,9 +1087,6 @@ def create_timelapse(
     video_args["min"] = 0
     video_args["max"] = 255
 
-    # if crs is not None:
-    #     video_args["crs"] = crs
-
     if "palette" in vis_params or len(bands) > 1:
         video_args["bands"] = ["vis-red", "vis-green", "vis-blue"]
     else:
@@ -1522,20 +1519,20 @@ def sentinel1_timeseries(
     end = f"{end_year}-{end_date}"
     dates = date_sequence(start, end, frequency)
 
-    # Load and filter Sentinel-1 collection
+    # Load and filter Sentinel-1 collection.
     col = ee.ImageCollection("COPERNICUS/S1_GRD").filterBounds(roi)
 
-    # Apply orbit filtering
+    # Apply orbit filtering.
     if orbit:
-        # Convert orbit strings to uppercase for consistency
+        # Convert orbit strings to uppercase for consistency.
         orbit_upper = [o.upper() for o in orbit]
         orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
         col = col.filter(orbit_filter)
 
-    # Apply additional filtering and select band
+    # Apply additional filtering and select band.
     col = sentinel1_filtering(col, band=band, **kwargs).select(band)
 
-    # Set up frequency parameters
+    # Set up frequency parameters.
     n = 1
     if frequency == "quarter":
         n = 3
@@ -1811,7 +1808,8 @@ def sentinel2_timeseries_legacy(
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
 
-    # Get Sentinel 2 collections, both Level-1C (top of atmophere) and Level-2A (surface reflectance)
+    # Get Sentinel 2 collections, both Level-1C (top of atmophere).
+    # and Level-2A (surface reflectance).
     MSILCcol = ee.ImageCollection("COPERNICUS/S2")
     MSI2Acol = ee.ImageCollection("COPERNICUS/S2_SR")
 
@@ -1822,7 +1820,7 @@ def sentinel2_timeseries_legacy(
         # .filter('GEOMETRIC_RMSE_MODEL < 15')
         # .filter('IMAGE_QUALITY == 9 || IMAGE_QUALITY_OLI == 9'))
 
-    # Function to get and rename bands of interest from MSI
+    # Function to get and rename bands of interest from MSI.
     def renameMSI(img):
         return img.select(
             ["B2", "B3", "B4", "B5", "B6", "B7", "B8", "B8A", "B11", "B12", "QA60"],
@@ -1973,7 +1971,7 @@ def sentinel2_timeseries_legacy(
         )
         imgList = months.map(getMonthlyComp)
 
-    # Convert image composite list to collection
+    # Convert image composite list to collection.
     imgCol = ee.ImageCollection.fromImages(imgList)
 
     imgCol = imgCol.map(lambda img: img.clip(roi))
@@ -2095,7 +2093,7 @@ def landsat_timeseries(
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
 
-    # Landsat collection preprocessingEnabled
+    # Landsat collection preprocessingEnabled.
     # Get Landsat surface reflectance collections for OLI, ETM+ and TM sensors.
     LC09col = ee.ImageCollection("LANDSAT/LC09/C02/T1_L2")
     LC08col = ee.ImageCollection("LANDSAT/LC08/C02/T1_L2")
@@ -2271,7 +2269,7 @@ def landsat_timeseries(
         )
         imgList = months.map(getMonthlyComp)
 
-    # Convert image composite list to collection
+    # Convert image composite list to collection.
     imgCol = ee.ImageCollection.fromImages(imgList)
 
     imgCol = imgCol.map(
@@ -2382,7 +2380,7 @@ def landsat_timeseries_legacy(
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
 
-    # Landsat collection preprocessingEnabled
+    # Landsat collection preprocessingEnabled.
     # Get Landsat surface reflectance collections for OLI, ETM+ and TM sensors.
     LC08col = ee.ImageCollection("LANDSAT/LC08/C01/T1_SR")
     LE07col = ee.ImageCollection("LANDSAT/LE07/C01/T1_SR")
@@ -2547,7 +2545,7 @@ def landsat_timeseries_legacy(
         )
         imgList = months.map(getMonthlyComp)
 
-    # Convert image composite list to collection
+    # Convert image composite list to collection.
     imgCol = ee.ImageCollection.fromImages(imgList)
 
     imgCol = imgCol.map(
@@ -3824,9 +3822,9 @@ def goes_timeseries(
         )
         return img.addBands(green)
 
-    # Show at clouds at night (a-mode)
+    # Show at clouds at night (a-mode).
     def showNighta(img):
-        # Make normalized infrared
+        # Make normalized infrared.
         IR_n = img.select("CMI_C13").unitScale(ee.Number(90), ee.Number(313))
         IR_n = IR_n.expression(
             "ir_p = (1 -IR_n)/1.4",
@@ -3835,14 +3833,14 @@ def goes_timeseries(
             },
         )
 
-        # Add infrared to rgb bands
+        # Add infrared to rgb bands.
         R_ir = img.select("CMI_C02").max(IR_n)
         G_ir = img.select("CMI_GREEN").max(IR_n)
         B_ir = img.select("CMI_C01").max(IR_n)
 
         return img.addBands([R_ir, G_ir, B_ir], overwrite=True)
 
-    # Show at clouds at night (b-mode)
+    # Show at clouds at night (b-mode).
     def showNightb(img):
         night = img.select("CMI_C03").unitScale(0, 0.016).subtract(1).multiply(-1)
 
@@ -4111,7 +4109,7 @@ def goes_timelapse(
 
     if crs is None:
         if overlay_data is not None:
-            # Use EPSG:3857 when overlay_data is provided because the native
+            # Use EPSG:3857 when overlay_data is provided because the native.
             # GEOS projection doesn't work well with overlay during video rendering.
             crs = "EPSG:3857"
         else:
@@ -4238,16 +4236,6 @@ def goes_fire_timelapse(
             col, overlay_data, overlay_color, overlay_width, overlay_opacity, roi
         )
 
-    # visParams = {
-    #     "bands": ["CMI_C02", "CMI_GREEN", "CMI_C01"],
-    #     "min": 0,
-    #     "max": 0.8,
-    #     "dimensions": dimensions,
-    #     "framesPerSecond": framesPerSecond,
-    #     "region": region,
-    #     "crs": col.first().projection(),
-    # }
-
     if crs is None:
         crs = col.first().projection()
 
@@ -4347,8 +4335,7 @@ def modis_ndvi_doy_ts(
     # Define a join.
     join = ee.Join.saveAll("doy_matches")
 
-    # Apply the join and convert the resulting FeatureCollection to an
-    # ImageCollection.
+    # Apply the join and convert the resulting FeatureCollection to an ImageCollection.
     joinCol = ee.ImageCollection(join.apply(distinctDOY, col, filter))
 
     # Apply median reduction among matching DOY collections.
@@ -4844,7 +4831,7 @@ def dynamic_world_timeseries(
         result = images.map(lambda img: img.visualize(**dwVisParams))
         return result
     else:
-        # Create a Top-1 Probability Hillshade Visualization
+        # Create a Top-1 Probability Hillshade Visualization.
         probabilityBands = [
             "water",
             "trees",
@@ -4857,7 +4844,6 @@ def dynamic_world_timeseries(
             "snow_and_ice",
         ]
 
-        # Select probability bands
         probabilityCol = dw.select(probabilityBands)
 
         prob_col = create_timeseries(
@@ -5036,9 +5022,9 @@ def sentinel1_timelapse(
         ee.ImageCollection("COPERNICUS/S1_GRD").filterDate(start, end).filterBounds(roi)
     )
 
-    # Apply orbit filtering
+    # Apply orbit filtering.
     if orbit:
-        # Convert orbit strings to uppercase for consistency
+        # Convert orbit strings to uppercase for consistency.
         orbit_upper = [o.upper() for o in orbit]
         orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
         collection = collection.filter(orbit_filter)
@@ -5135,12 +5121,11 @@ def add_progress_bar_to_gif(
     ]
 
     frames = []
-    # Loop over each frame in the animated image
+    # Loop over each frame in the animated image.
     for index, frame in enumerate(ImageSequence.Iterator(image)):
-        # Draw the text on the frame
+        # Draw the text on the frame.
         frame = frame.convert("RGB")
         draw = ImageDraw.Draw(frame)
-        # w, h = draw.textsize(text[index])
         draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
         del draw
 
@@ -5150,7 +5135,7 @@ def add_progress_bar_to_gif(
 
         frames.append(frame)
     # https://www.pythoninformer.com/python-libraries/pillow/creating-animated-gif/
-    # Save the frames as a new image
+    # Save the frames as a new image.
 
     frames[0].save(
         out_gif,
@@ -5461,7 +5446,7 @@ def sentinel1_timelapse_with_samples(
     Returns:
         str: File path to the output GIF with optional chart.
     """
-    # Validate sample points
+    # Validate sample points.
     if sample_points is not None:
         if not isinstance(sample_points, list):
             raise ValueError("sample_points must be a list of [lon, lat] coordinates")
@@ -5470,7 +5455,7 @@ def sentinel1_timelapse_with_samples(
         if len(sample_points) == 0:
             sample_points = None
 
-    # Set default marker colors if not provided
+    # Set default marker colors if not provided.
     if sample_points is not None and marker_colors is None:
         marker_colors = ["red", "blue", "green", "orange", "purple"][
             : len(sample_points)
@@ -5479,8 +5464,8 @@ def sentinel1_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
 
-    # Adjust dimensions to avoid Earth Engine limits
-    # Calculate optimal dimensions based on ROI
+    # Adjust dimensions to avoid Earth Engine limits.
+    # Calculate optimal dimensions based on ROI.
     if isinstance(roi, ee.Geometry):
         roi_bounds = roi.bounds().getInfo()["coordinates"][0]
         min_lon = min([coord[0] for coord in roi_bounds])
@@ -5488,31 +5473,31 @@ def sentinel1_timelapse_with_samples(
         min_lat = min([coord[1] for coord in roi_bounds])
         max_lat = max([coord[1] for coord in roi_bounds])
 
-        # Calculate aspect ratio
+        # Calculate aspect ratio.
         lon_range = max_lon - min_lon
         lat_range = max_lat - min_lat
         aspect_ratio = lon_range / lat_range if lat_range > 0 else 1
 
-        # Adjust dimensions to stay within Earth Engine limits
-        # Max pixels = 26,214,400 (approximately 5120x5120)
+        # Adjust dimensions to stay within Earth Engine limits.
+        # Max pixels = 26,214,400 (approximately 5120x5120).
         max_pixels = 26214400
 
         if isinstance(dimensions, int):
-            # Single dimension - calculate based on aspect ratio
+            # Single dimension - calculate based on aspect ratio.
             if aspect_ratio > 1:
-                # Wider than tall
+                # Wider than tall.
                 width = min(dimensions, int(math.sqrt(max_pixels * aspect_ratio)))
                 height = int(width / aspect_ratio)
             else:
-                # Taller than wide
+                # Taller than wide.
                 height = min(dimensions, int(math.sqrt(max_pixels / aspect_ratio)))
                 width = int(height * aspect_ratio)
 
-            # Ensure minimum size
+            # Ensure minimum size.
             width = max(256, width)
             height = max(256, height)
 
-            # Final check
+            # Final check.
             if width * height > max_pixels:
                 scale_factor = math.sqrt(max_pixels / (width * height))
                 width = int(width * scale_factor)
@@ -5520,14 +5505,14 @@ def sentinel1_timelapse_with_samples(
 
             adjusted_dimensions = f"{width}x{height}"
         else:
-            # Already in WxH format
+            # Already in WxH format.
             adjusted_dimensions = dimensions
 
         print(f"Adjusted dimensions: {adjusted_dimensions}")
     else:
         adjusted_dimensions = dimensions
 
-    # Create the base timelapse
+    # Create the base timelapse.
     try:
         base_gif = sentinel1_timelapse(
             roi=roi,
@@ -5582,11 +5567,11 @@ def sentinel1_timelapse_with_samples(
         print(f"Error creating base timelapse: {str(e)}")
         raise e
 
-    # Check if base GIF was created successfully
+    # Check if base GIF was created successfully.
     if not os.path.exists(base_gif):
         raise FileNotFoundError(f"Base timelapse GIF was not created: {base_gif}")
 
-    # If no sample points, return the base gif (map only)
+    # If no sample points, return the base gif (map only).
     if sample_points is None or len(sample_points) == 0:
         print("No sample points provided. Returning map-only timelapse.")
         if mp4:
@@ -5595,14 +5580,14 @@ def sentinel1_timelapse_with_samples(
             # pytype: enable=attribute-error
         return base_gif
 
-    # Get the Sentinel-1 time series for sampling
+    # Get the Sentinel-1 time series for sampling.
     if end_year is None:
         end_year = datetime.date.today().year
 
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
 
-    # Create collection with error handling
+    # Create collection with error handling.
     try:
         collection = (
             ee.ImageCollection("COPERNICUS/S1_GRD")
@@ -5610,7 +5595,7 @@ def sentinel1_timelapse_with_samples(
             .filterBounds(roi)
         )
 
-        # Apply orbit filtering
+        # Apply orbit filtering.
         if orbit:
             orbit_upper = [o.upper() for o in orbit]
             orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
@@ -5619,11 +5604,11 @@ def sentinel1_timelapse_with_samples(
         band = bands[0]
         collection = sentinel1_filtering(collection, band, **kwargs)
 
-        # Check if collection is empty
+        # Check if collection is empty.
         collection_size = collection.size().getInfo()
         if collection_size == 0:
             print("Warning: No Sentinel-1 images found for the specified parameters")
-            # Return base gif without sampling
+            # Return base gif without sampling.
             if mp4:
                 # pytype: disable=attribute-error
                 gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
@@ -5632,7 +5617,7 @@ def sentinel1_timelapse_with_samples(
 
         print(f"Found {collection_size} Sentinel-1 images for sampling")
 
-        # Create time series
+        # Create time series.
         ts_collection = create_timeseries(
             collection,
             start,
@@ -5647,7 +5632,7 @@ def sentinel1_timelapse_with_samples(
             1,
         )
 
-        # Check if time series is empty
+        # Check if time series is empty.
         ts_size = ts_collection.size().getInfo()
         if ts_size == 0:
             print("Warning: No time series data generated")
@@ -5661,12 +5646,12 @@ def sentinel1_timelapse_with_samples(
 
     except Exception as e:
         print(f"Error creating time series: {str(e)}")
-        # Return base gif without sampling
+        # Return base gif without sampling.
         if mp4:
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
         return base_gif
 
-    # Sample points from the time series
+    # Sample points from the time series.
     sample_data = {}
     point_geometries = []
 
@@ -5680,7 +5665,7 @@ def sentinel1_timelapse_with_samples(
 
                 point_geometries.append(geometry)
 
-                # Sample the time series at this point
+                # Sample the time series at this point.
                 def sample_point(image):
                     sampled = image.sample(geometry, 30)
                     return sampled.first().set(
@@ -5692,13 +5677,13 @@ def sentinel1_timelapse_with_samples(
 
                 sampled = ts_collection.map(sample_point)
 
-                # Get the time series data with error handling
+                # Get the time series data with error handling.
                 try:
                     time_series = sampled.aggregate_array("system:time_start").getInfo()
                     values = sampled.aggregate_array(band).getInfo()
                     dates = sampled.aggregate_array("system:date").getInfo()
 
-                    # Filter out null values
+                    # Filter out null values.
                     valid_data = [
                         (t, v, d)
                         for t, v, d in zip(time_series, values, dates)
@@ -5708,7 +5693,7 @@ def sentinel1_timelapse_with_samples(
                     if valid_data:
                         time_series, values, dates = zip(*valid_data)
 
-                        # Convert timestamps to datetime objects
+                        # Convert timestamps to datetime objects.
                         datetimes = [
                             datetime.datetime.fromtimestamp(ts / 1000)
                             for ts in time_series
@@ -5736,10 +5721,10 @@ def sentinel1_timelapse_with_samples(
     else:
         print("No sample points provided. Skipping sampling step.")
 
-    # Add sample point markers to the base gif if requested
+    # Add sample point markers to the base gif if requested.
     if show_sample_markers and sample_points is not None and len(sample_points) > 0:
         try:
-            # Get ROI bounds for coordinate conversion
+            # Get ROI bounds for coordinate conversion.
             roi_bounds = roi.bounds().getInfo()["coordinates"][0]
             min_lon = min([coord[0] for coord in roi_bounds])
             max_lon = max([coord[0] for coord in roi_bounds])
@@ -5747,7 +5732,7 @@ def sentinel1_timelapse_with_samples(
             max_lat = max([coord[1] for coord in roi_bounds])
             bounds = [min_lon, min_lat, max_lon, max_lat]
 
-            # Add markers to the gif
+            # Add markers to the gif.
             add_sample_markers_to_gif(
                 base_gif,
                 base_gif,
@@ -5767,7 +5752,7 @@ def sentinel1_timelapse_with_samples(
         except Exception as e:
             print(f"Error adding markers to GIF: {str(e)}")
 
-    # Create the time series chart if we have sample data
+    # Create the time series chart if we have sample data.
     if sample_data and len(sample_data) > 0:
         try:
             chart_frames = create_time_series_chart_frames(
@@ -5784,7 +5769,7 @@ def sentinel1_timelapse_with_samples(
                 chart_xlabel_interval,
             )
 
-            # Combine gif and chart
+            # Combine gif and chart.
             final_gif = combine_gif_with_chart(
                 base_gif,
                 chart_frames,
@@ -5804,7 +5789,6 @@ def sentinel1_timelapse_with_samples(
         print("No sample data available. Returning map-only timelapse.")
         final_gif = base_gif
 
-    # Handle MP4 conversion
     if mp4:
         # pytype: disable=attribute-error
         gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
@@ -5847,19 +5831,16 @@ def add_sample_markers_to_gif(
         os.makedirs(os.path.dirname(out_gif))
 
     try:
-        # Open the GIF
         gif = Image.open(in_gif)
 
-        # Get GIF properties
         gif_width, gif_height = gif.size
 
-        # Convert sample points to pixel coordinates
+        # Convert sample points to pixel coordinates.
         sample_points_pixel = []
 
         for i, point in enumerate(sample_points):
             lon, lat = point[0], point[1]
 
-            # Convert geographic coordinates to pixel coordinates
             pixel_x, pixel_y = get_pixel_coordinates_from_geo(
                 lon, lat, roi_bounds, gif_width, gif_height
             )
@@ -5872,7 +5853,7 @@ def add_sample_markers_to_gif(
                 }
             )
 
-        # Process each frame
+        # Process each frame.
         frames = []
         frame_count = 0
 
@@ -5881,36 +5862,36 @@ def add_sample_markers_to_gif(
                 frame = gif.copy()
                 frame = frame.convert("RGB")
 
-                # Draw markers on the frame
+                # Draw markers on the frame.
                 draw = ImageDraw.Draw(frame)
 
                 for point in sample_points_pixel:
                     x, y = point["x"], point["y"]
                     color = point["color"]
 
-                    # Draw marker based on style
+                    # Draw marker based on style.
                     if marker_style == "circle":
                         draw_circle_marker(draw, x, y, marker_size, color)
                     elif marker_style == "square":
                         draw_square_marker(draw, x, y, marker_size, color)
-                    else:  # default to cross
+                    else:
                         draw_cross_marker(draw, x, y, marker_size, color)
 
-                # Convert back to GIF frame format
+                # Convert back to GIF frame format.
                 b = io.BytesIO()
                 frame.save(b, format="GIF")
                 frame = Image.open(b)
                 frames.append(frame)
 
-                # Move to next frame
+                # Move to next frame.
                 gif.seek(gif.tell() + 1)
                 frame_count += 1
 
         except EOFError:
-            # End of GIF frames
+            # End of GIF frames.
             pass
 
-        # Save the new GIF with markers
+        # Save the new GIF with markers.
         if frames:
             frames[0].save(
                 out_gif,
@@ -5971,7 +5952,7 @@ def get_pixel_coordinates_from_geo(lon, lat, roi_bounds, gif_width, gif_height):
 
     # Linear transformation from geographic to pixel coordinates.
     pixel_x = int(((lon - min_lon) / (max_lon - min_lon)) * gif_width)
-    pixel_y = int(((max_lat - lat) / (max_lat - min_lat)) * gif_height)  # Flip Y axis
+    pixel_y = int(((max_lat - lat) / (max_lat - min_lat)) * gif_height)  # Flip Y axis.
 
     # Ensure coordinates are within bounds.
     pixel_x = max(0, min(gif_width - 1, pixel_x))
@@ -6035,51 +6016,51 @@ def create_time_series_chart_frames(
                         markersize=4,
                     )
 
-            # Add vertical line for current time
+            # Add vertical line for current time.
             ax.axvline(
                 x=current_date, color="red", linestyle="--", linewidth=2, alpha=0.8
             )
 
-            # Formatting
+            # Formatting.
             ax.set_xlabel("Date", fontsize=10)
             ax.set_ylabel(chart_ylabel, fontsize=10)
             ax.set_title(chart_title, fontsize=12)
             ax.legend(fontsize=8)
             ax.grid(True, alpha=0.3)
 
-            # Format x-axis based on parameters or auto-detect
+            # Format x-axis based on parameters or auto-detect.
             date_range = (max(sorted_dates) - min(sorted_dates)).days
 
             if xlabel_format == "auto" or xlabel_interval == "auto":
-                # Auto-detect based on data characteristics
-                if date_range <= 30:  # Less than 1 month - likely daily/weekly data
+                # Auto-detect based on data characteristics.
+                if date_range <= 30:  # Less than 1 month - likely daily/weekly data.
                     format_str = "%m-%d"
                     if len(sorted_dates) <= 10:
-                        # Few points, show all
+                        # Few points, show all.
                         locator = mdates.DayLocator(interval=max(1, date_range // 10))
                     else:
-                        # Many points, show weekly
+                        # Many points, show weekly.
                         locator = mdates.WeekdayLocator(interval=1)
-                elif date_range <= 90:  # Less than 3 months - likely weekly data
+                elif date_range <= 90:  # Less than 3 months - likely weekly data.
                     format_str = "%m-%d"
                     if len(sorted_dates) <= 15:
-                        # Weekly data with few points
+                        # Weekly data with few points.
                         locator = mdates.WeekdayLocator(interval=1)
                     else:
-                        # Weekly data with many points
+                        # Weekly data with many points.
                         locator = mdates.WeekdayLocator(
                             interval=max(1, len(sorted_dates) // 10)
                         )
-                elif date_range <= 365:  # Less than 1 year - likely monthly data
+                elif date_range <= 365:  # Less than 1 year - likely monthly data.
                     format_str = "%Y-%m"
                     locator = mdates.MonthLocator(
                         interval=max(1, len(sorted_dates) // 8)
                     )
-                else:  # More than 1 year - yearly data
+                else:  # More than 1 year - yearly data.
                     format_str = "%Y"
                     locator = mdates.YearLocator()
             else:
-                # Use manual settings
+                # Use manual settings.
                 format_str = xlabel_format if xlabel_format != "auto" else "%Y-%m-%d"
 
                 if xlabel_interval == "day":
@@ -6104,13 +6085,13 @@ def create_time_series_chart_frames(
             ax.xaxis.set_major_formatter(mdates.DateFormatter(format_str))
             ax.xaxis.set_major_locator(locator)
 
-            # Add minor ticks for better granularity on weekly data
+            # Add minor ticks for better granularity on weekly data.
             if date_range <= 90:
                 ax.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
 
             plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, fontsize=8)
 
-            # Set consistent y-axis limits
+            # Set consistent y-axis limits.
             all_values = []
             for point_data in sample_data.values():
                 all_values.extend([v for v in point_data["values"] if v is not None])
@@ -6125,7 +6106,7 @@ def create_time_series_chart_frames(
 
             plt.tight_layout()
 
-            # Save frame
+            # Save frame.
             frame_path = os.path.join(temp_dir, f"chart_frame_{frame_idx:04d}.png")
             plt.savefig(frame_path, dpi=100, bbox_inches="tight", facecolor="white")
             plt.close()
@@ -6134,7 +6115,7 @@ def create_time_series_chart_frames(
 
     except Exception as e:
         print(f"Error creating chart frames: {str(e)}")
-        # Clean up any created frames
+        # Clean up any created frames.
         for frame_path in chart_frames:
             if os.path.exists(frame_path):
                 os.remove(frame_path)
@@ -6147,11 +6128,10 @@ def combine_gif_with_chart(
     base_gif, chart_frames, chart_position, chart_size_ratio, spacer_width, fps, loop
 ):
     """Combine GIF with chart frames."""
-    # Open the base gif
     base_image = Image.open(base_gif)
     base_frames = []
 
-    # Extract all frames from base gif
+    # Extract all frames from base gif.
     try:
         while True:
             base_frames.append(base_image.copy())
@@ -6159,25 +6139,25 @@ def combine_gif_with_chart(
     except EOFError:
         pass
 
-    # Create combined frames
+    # Create combined frames.
     combined_frames = []
     temp_dir = tempfile.mkdtemp()
 
     for i, base_frame in enumerate(base_frames):
         base_frame = base_frame.convert("RGB")
 
-        # Get corresponding chart frame (cycle if needed)
+        # Get corresponding chart frame (cycle if needed).
         chart_idx = i % len(chart_frames) if chart_frames else 0
 
         if chart_frames:
             chart_frame = Image.open(chart_frames[chart_idx])
             chart_frame = chart_frame.convert("RGB")
 
-            # Calculate dimensions
+            # Calculate dimensions.
             base_width, base_height = base_frame.size
             chart_width, chart_height = chart_frame.size
 
-            # Create combined image based on position
+            # Create combined image based on position.
             if chart_position == "right":
                 combined_width = base_width + spacer_width + chart_width
                 combined_height = max(base_height, chart_height)
@@ -6205,7 +6185,7 @@ def combine_gif_with_chart(
                 combined_frame.paste(base_frame, (0, 0))
                 combined_frame.paste(chart_frame, (0, base_height + spacer_width))
 
-            else:  # default to right
+            else:  # Default to right.
                 combined_width = base_width + spacer_width + chart_width
                 combined_height = max(base_height, chart_height)
                 combined_frame = Image.new(
@@ -6219,7 +6199,7 @@ def combine_gif_with_chart(
 
         combined_frames.append(combined_frame)
 
-    # Save combined gif
+    # Save combined gif.
     output_path = base_gif.replace(".gif", "_with_chart.gif")
 
     if combined_frames:
@@ -6232,7 +6212,7 @@ def combine_gif_with_chart(
             optimize=True,
         )
 
-    # Clean up chart frames
+    # Clean up chart frames.
     for frame_path in chart_frames:
         if os.path.exists(frame_path):
             os.remove(frame_path)
@@ -6379,12 +6359,11 @@ def sentinel2_timelapse_with_samples(
     Returns:
         str: File path to the output GIF with optional chart.
     """
-    # Handle indices parameter
     if indices is not None:
         if not isinstance(indices, list):
             indices = [indices]
 
-        # Validate indices
+        # Validate indices.
         valid_indices = [
             "NDVI",
             "EVI",
@@ -6403,18 +6382,18 @@ def sentinel2_timelapse_with_samples(
                     f"Index '{idx}' not supported. Valid indices: {valid_indices}"
                 )
 
-        # If using indices, update defaults
+        # If using indices, update defaults.
         if sample_bands is None:
-            sample_bands = indices[:1]  # Default to first index
+            sample_bands = indices[:1]  # Default to first index.
 
         if chart_ylabel == "Reflectance":
             chart_ylabel = "Index Value"
 
-        # Set up index visualization if not provided
+        # Set up index visualization if not provided.
         if index_vis_params is None:
             index_vis_params = get_default_index_vis_params()
 
-        # For single index visualization, set up palette and vis_params
+        # For single index visualization, set up palette and vis_params.
         if len(indices) == 1 and vis_params is None:
             index_name = indices[0]
             if palette is None and index_name in index_vis_params:
@@ -6425,12 +6404,12 @@ def sentinel2_timelapse_with_samples(
                     "palette": palette,
                 }
 
-        # If visualizing an index, update bands for visualization
+        # If visualizing an index, update bands for visualization.
         if len(indices) == 1 and len(bands) == 3:
-            # For single index, use that index for visualization
+            # For single index, use that index for visualization.
             bands = indices
 
-    # Validate sample points
+    # Validate sample points.
     if sample_points is not None:
         if not isinstance(sample_points, list):
             raise ValueError("sample_points must be a list of [lon, lat] coordinates")
@@ -6439,7 +6418,7 @@ def sentinel2_timelapse_with_samples(
         if len(sample_points) == 0:
             sample_points = None
 
-    # Set default marker colors if not provided
+    # Set default marker colors if not provided.
     if sample_points is not None and marker_colors is None:
         marker_colors = ["red", "blue", "green", "orange", "purple"][
             : len(sample_points)
@@ -6448,11 +6427,11 @@ def sentinel2_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
 
-    # Set default sample bands if not provided
+    # Set default sample bands if not provided.
     if sample_bands is None:
-        sample_bands = [bands[0]] if bands else ["B4"]  # Default to first band or Red
+        sample_bands = [bands[0]] if bands else ["B4"]  # Default to first band or Red.
 
-    # Set default chart band labels
+    # Set default chart band labels.
     if chart_band_labels is None:
         chart_band_labels = {
             "B2": "Blue",
@@ -6466,11 +6445,11 @@ def sentinel2_timelapse_with_samples(
             "B11": "SWIR1",
             "B12": "SWIR2",
         }
-        # Add index labels
+        # Add index labels.
         index_labels = get_index_chart_labels()
         chart_band_labels.update(index_labels)
 
-    # Adjust dimensions to avoid Earth Engine limits
+    # Adjust dimensions to avoid Earth Engine limits.
     if isinstance(roi, ee.Geometry):
         roi_bounds = roi.bounds().getInfo()["coordinates"][0]
         min_lon = min([coord[0] for coord in roi_bounds])
@@ -6478,12 +6457,12 @@ def sentinel2_timelapse_with_samples(
         min_lat = min([coord[1] for coord in roi_bounds])
         max_lat = max([coord[1] for coord in roi_bounds])
 
-        # Calculate aspect ratio and adjust dimensions
+        # Calculate aspect ratio and adjust dimensions.
         lon_range = max_lon - min_lon
         lat_range = max_lat - min_lat
         aspect_ratio = lon_range / lat_range if lat_range > 0 else 1
 
-        max_pixels = 26214400  # Earth Engine limit
+        max_pixels = 26214400  # Earth Engine limit.
 
         if isinstance(dimensions, int):
             if aspect_ratio > 1:
@@ -6509,9 +6488,9 @@ def sentinel2_timelapse_with_samples(
     else:
         adjusted_dimensions = dimensions
 
-    # Create the base timelapse
+    # Create the base timelapse.
     try:
-        # If using indices, we need to create a custom timelapse that includes index calculation
+        # If using indices, create a custom timelapse that includes index calculation.
         if indices is not None:
             base_gif = create_sentinel2_index_timelapse(
                 roi=roi,
@@ -6563,7 +6542,7 @@ def sentinel2_timelapse_with_samples(
                 **kwargs,
             )
         else:
-            # Use standard Sentinel-2 timelapse
+            # Use standard Sentinel-2 timelapse.
             base_gif = sentinel2_timelapse(
                 roi=roi,
                 out_gif=out_gif,
@@ -6604,11 +6583,11 @@ def sentinel2_timelapse_with_samples(
         print(f"Error creating base timelapse: {str(e)}")
         raise e
 
-    # Check if base GIF was created successfully
+    # Check if base GIF was created successfully.
     if not os.path.exists(base_gif):
         raise FileNotFoundError(f"Base timelapse GIF was not created: {base_gif}")
 
-    # If no sample points, return the base gif (map only)
+    # If no sample points, return the base gif (map only).
     if sample_points is None or len(sample_points) == 0:
         print("No sample points provided. Returning map-only timelapse.")
         if mp4:
@@ -6617,16 +6596,16 @@ def sentinel2_timelapse_with_samples(
             # pytype: enable=attribute-error
         return base_gif
 
-    # Get the Sentinel-2 time series for sampling
+    # Get the Sentinel-2 time series for sampling.
     if end_year is None:
         end_year = datetime.date.today().year
 
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
 
-    # Create collection with error handling
+    # Create collection with error handling.
     try:
-        # Map band names to Sentinel-2 band names
+        # Map band names to Sentinel-2 band names.
         allowed_bands = {
             "Blue": "B2",
             "Green": "B3",
@@ -6641,7 +6620,7 @@ def sentinel2_timelapse_with_samples(
             "QA60": "QA60",
         }
 
-        # Convert sample band names if needed (include indices)
+        # Convert sample band names if needed (include indices).
         s2_sample_bands = []
         for band in sample_bands:
             if band in allowed_bands:
@@ -6658,20 +6637,20 @@ def sentinel2_timelapse_with_samples(
                 "NDRE",
                 "CIRE",
             ]:
-                s2_sample_bands.append(band)  # Keep index names as-is
+                s2_sample_bands.append(band)  # Keep index names as-is.
             else:
                 s2_sample_bands.append(band)
 
-        # Create time series - if using indices, we need to add index calculation
+        # Create time series - if using indices, we need to add index calculation.
         if indices is not None:
-            # Create base time series first
+            # Create base time series first.
             base_ts_collection = sentinel2_timeseries(
                 roi,
                 start_year,
                 end_year,
                 start_date,
                 end_date,
-                None,  # Get all bands first
+                None,  # Get all bands first.
                 mask_cloud,
                 cloud_pct,
                 frequency,
@@ -6743,7 +6722,7 @@ def sentinel2_timelapse_with_samples(
 
                 point_geometries.append(geometry)
 
-                # Sample the time series at this point for each band
+                # Sample the time series at this point for each band.
                 for band_idx, band in enumerate(s2_sample_bands):
 
                     def sample_point_band(image):
@@ -6757,7 +6736,7 @@ def sentinel2_timelapse_with_samples(
 
                     sampled = ts_collection.map(sample_point_band)
 
-                    # Get the time series data with error handling
+                    # Get the time series data with error handling.
                     try:
                         time_series = sampled.aggregate_array(
                             "system:time_start"
@@ -6765,7 +6744,7 @@ def sentinel2_timelapse_with_samples(
                         values = sampled.aggregate_array(band).getInfo()
                         dates = sampled.aggregate_array("system:date").getInfo()
 
-                        # Filter out null values
+                        # Filter out null values.
                         valid_data = [
                             (t, v, d)
                             for t, v, d in zip(time_series, values, dates)
@@ -6775,32 +6754,32 @@ def sentinel2_timelapse_with_samples(
                         if valid_data:
                             time_series, values, dates = zip(*valid_data)
 
-                            # Convert timestamps to datetime objects
+                            # Convert timestamps to datetime objects.
                             datetimes = [
                                 datetime.datetime.fromtimestamp(ts / 1000)
                                 for ts in time_series
                             ]
 
-                            # Create unique key for point and band combination
+                            # Create unique key for point and band combination.
                             point_band_key = f"Point_{i+1}_{band}"
                             if len(s2_sample_bands) == 1:
                                 point_band_key = f"Point_{i+1}"
 
-                            # Get display name for band
+                            # Get display name for band.
                             band_display = chart_band_labels.get(band, band)
                             if len(s2_sample_bands) > 1:
                                 label = f"Point {i+1} ({band_display})"
                             else:
                                 label = f"Point {i+1}"
 
-                            # Color assignment for multi-band sampling
+                            # Color assignment for multi-band sampling.
                             if len(s2_sample_bands) > 1:
                                 base_color = (
                                     marker_colors[i]
                                     if i < len(marker_colors)
                                     else "red"
                                 )
-                                # Modify color for different bands
+                                # Modify color for different bands.
                                 if band_idx == 0:
                                     color = base_color
                                 elif band_idx == 1:
@@ -6847,10 +6826,10 @@ def sentinel2_timelapse_with_samples(
     else:
         print("No sample points provided. Skipping sampling step.")
 
-    # Add sample point markers to the base gif if requested
+    # Add sample point markers to the base gif if requested.
     if show_sample_markers and sample_points is not None and len(sample_points) > 0:
         try:
-            # Get ROI bounds for coordinate conversion
+            # Get ROI bounds for coordinate conversion.
             roi_bounds = roi.bounds().getInfo()["coordinates"][0]
             min_lon = min([coord[0] for coord in roi_bounds])
             max_lon = max([coord[0] for coord in roi_bounds])
@@ -6858,7 +6837,6 @@ def sentinel2_timelapse_with_samples(
             max_lat = max([coord[1] for coord in roi_bounds])
             bounds = [min_lon, min_lat, max_lon, max_lat]
 
-            # Add markers to the gif
             add_sample_markers_to_gif(
                 base_gif,
                 base_gif,
@@ -6915,7 +6893,6 @@ def sentinel2_timelapse_with_samples(
         print("No sample data available. Returning map-only timelapse.")
         final_gif = base_gif
 
-    # Handle MP4 conversion
     if mp4:
         # pytype: disable=attribute-error
         gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
@@ -6933,10 +6910,10 @@ def calculate_sentinel2_indices(image):
     Returns:
         ee.Image: Image with added index bands
     """
-    # Normalized Difference Vegetation Index
+    # Normalized Difference Vegetation Index.
     ndvi = image.normalizedDifference(["B8", "B4"]).rename("NDVI")
 
-    # Enhanced Vegetation Index
+    # Enhanced Vegetation Index.
     evi = image.expression(
         "2.5 * ((NIR - RED) / (NIR + 6 * RED - 7.5 * BLUE + 1))",
         {
@@ -6946,31 +6923,31 @@ def calculate_sentinel2_indices(image):
         },
     ).rename("EVI")
 
-    # Normalized Difference Water Index
+    # Normalized Difference Water Index.
     ndwi = image.normalizedDifference(["B3", "B8"]).rename("NDWI")
 
-    # Modified Normalized Difference Water Index
+    # Modified Normalized Difference Water Index.
     mndwi = image.normalizedDifference(["B3", "B11"]).rename("MNDWI")
 
-    # Normalized Difference Built-up Index
+    # Normalized Difference Built-up Index.
     ndbi = image.normalizedDifference(["B11", "B8"]).rename("NDBI")
 
-    # Normalized Burn Ratio
+    # Normalized Burn Ratio.
     nbr = image.normalizedDifference(["B8", "B12"]).rename("NBR")
 
-    # Soil Adjusted Vegetation Index
+    # Soil Adjusted Vegetation Index.
     savi = image.expression(
         "((NIR - RED) / (NIR + RED + 0.5)) * (1.5)",
         {"NIR": image.select("B8"), "RED": image.select("B4")},
     ).rename("SAVI")
 
-    # Green Normalized Difference Vegetation Index
+    # Green Normalized Difference Vegetation Index.
     gndvi = image.normalizedDifference(["B8", "B3"]).rename("GNDVI")
 
-    # Normalized Difference Red Edge
+    # Normalized Difference Red Edge.
     ndre = image.normalizedDifference(["B8", "B5"]).rename("NDRE")
 
-    # Chlorophyll Index Red Edge
+    # Chlorophyll Index Red Edge.
     cire = image.expression(
         "(NIR / RE1) - 1", {"NIR": image.select("B8"), "RE1": image.select("B5")}
     ).rename("CIRE")
@@ -7106,14 +7083,14 @@ def create_sentinel2_index_timelapse(
     start = f"{start_year}-{start_date}"
     end = f"{end_year}-{end_date}"
 
-    # Create time series with indices
+    # Create time series with indices.
     base_ts_collection = sentinel2_timeseries(
         roi,
         start_year,
         end_year,
         start_date,
         end_date,
-        None,  # Get all bands first
+        None,  # Get all bands first.
         mask_cloud,
         cloud_pct,
         frequency,
@@ -7124,10 +7101,10 @@ def create_sentinel2_index_timelapse(
         1,
     )
 
-    # Add indices to each image
+    # Add indices to each image.
     ts_collection = base_ts_collection.map(calculate_sentinel2_indices)
 
-    # Use create_timelapse with the index collection
+    # Use create_timelapse with the index collection.
     return create_timelapse(
         ts_collection,
         start,
@@ -7204,7 +7181,7 @@ def create_s2_time_series_chart_frames(
     if not sample_data:
         return []
 
-    # Get all unique dates across all points/bands
+    # Get all unique dates across all points/bands.
     all_dates = set()
     for point_data in sample_data.values():
         all_dates.update(point_data["dates"])
@@ -7214,7 +7191,7 @@ def create_s2_time_series_chart_frames(
 
     sorted_dates = sorted(list(all_dates))
 
-    # Create chart frames
+    # Create chart frames.
     chart_frames = []
     temp_dir = tempfile.mkdtemp()
 
@@ -7224,7 +7201,7 @@ def create_s2_time_series_chart_frames(
     else:
         width = height = int(dimensions) if isinstance(dimensions, int) else 768
 
-    chart_width = int(width * 0.8)  # 80% of gif width
+    chart_width = int(width * 0.8)  # 80% of gif width.
     chart_height = height
 
     try:
@@ -7233,10 +7210,10 @@ def create_s2_time_series_chart_frames(
                 figsize=(chart_width / 100, chart_height / 100), dpi=100
             )
 
-            # Plot all time series
+            # Plot all time series.
             for point_key, point_data in sample_data.items():
                 if point_data["dates"] and point_data["values"]:
-                    # Use custom label if available, otherwise use point_key
+                    # Use custom label if available, otherwise use point_key.
                     label = point_data.get("label", point_key)
 
                     ax.plot(
@@ -7249,30 +7226,30 @@ def create_s2_time_series_chart_frames(
                         markersize=4,
                     )
 
-            # Add vertical line for current time
+            # Add vertical line for current time.
             ax.axvline(
                 x=current_date, color="red", linestyle="--", linewidth=2, alpha=0.8
             )
 
-            # Formatting
+            # Formatting.
             ax.set_xlabel("Date", fontsize=10)
             ax.set_ylabel(chart_ylabel, fontsize=10)
             ax.set_title(chart_title, fontsize=12)
             ax.legend(fontsize=8, loc="upper left")
             ax.grid(True, alpha=0.3)
 
-            # Format x-axis based on parameters or auto-detect
+            # Format x-axis based on parameters or auto-detect.
             date_range = (max(sorted_dates) - min(sorted_dates)).days
 
             if xlabel_format == "auto" or xlabel_interval == "auto":
-                # Auto-detect based on data characteristics
-                if date_range <= 30:  # Less than 1 month
+                # Auto-detect based on data characteristics.
+                if date_range <= 30:  # Less than 1 month.
                     format_str = "%m-%d"
                     if len(sorted_dates) <= 10:
                         locator = mdates.DayLocator(interval=max(1, date_range // 10))
                     else:
                         locator = mdates.WeekdayLocator(interval=1)
-                elif date_range <= 90:  # Less than 3 months
+                elif date_range <= 90:  # Less than 3 months.
                     format_str = "%m-%d"
                     if len(sorted_dates) <= 15:
                         locator = mdates.WeekdayLocator(interval=1)
@@ -7280,16 +7257,16 @@ def create_s2_time_series_chart_frames(
                         locator = mdates.WeekdayLocator(
                             interval=max(1, len(sorted_dates) // 10)
                         )
-                elif date_range <= 365:  # Less than 1 year
+                elif date_range <= 365:  # Less than 1 year.
                     format_str = "%Y-%m"
                     locator = mdates.MonthLocator(
                         interval=max(1, len(sorted_dates) // 8)
                     )
-                else:  # More than 1 year
+                else:  # More than 1 year.
                     format_str = "%Y"
                     locator = mdates.YearLocator()
             else:
-                # Use manual settings
+                # Use manual settings.
                 format_str = xlabel_format if xlabel_format != "auto" else "%Y-%m-%d"
 
                 if xlabel_interval == "day":
@@ -7314,13 +7291,13 @@ def create_s2_time_series_chart_frames(
             ax.xaxis.set_major_formatter(mdates.DateFormatter(format_str))
             ax.xaxis.set_major_locator(locator)
 
-            # Add minor ticks for better granularity
+            # Add minor ticks for better granularity.
             if date_range <= 90:
                 ax.xaxis.set_minor_locator(mdates.DayLocator(interval=1))
 
             plt.setp(ax.xaxis.get_majorticklabels(), rotation=45, fontsize=8)
 
-            # Set consistent y-axis limits
+            # Set consistent y-axis limits.
             all_values = []
             for point_data in sample_data.values():
                 all_values.extend([v for v in point_data["values"] if v is not None])
@@ -7335,7 +7312,7 @@ def create_s2_time_series_chart_frames(
 
             plt.tight_layout()
 
-            # Save frame
+            # Save frame.
             frame_path = os.path.join(temp_dir, f"chart_frame_{frame_idx:04d}.png")
             plt.savefig(frame_path, dpi=100, bbox_inches="tight", facecolor="white")
             plt.close()
@@ -7344,7 +7321,7 @@ def create_s2_time_series_chart_frames(
 
     except Exception as e:
         print(f"Error creating chart frames: {str(e)}")
-        # Clean up any created frames
+        # Clean up any created frames.
         for frame_path in chart_frames:
             if os.path.exists(frame_path):
                 os.remove(frame_path)
@@ -7356,13 +7333,13 @@ def create_s2_time_series_chart_frames(
 def draw_square_marker(draw, x, y, size, color):
     """Draw a square marker."""
     half_size = size // 2
-    # Outer square (outline)
+    # Outer square (outline).
     draw.rectangle(
         [x - half_size, y - half_size, x + half_size, y + half_size],
         outline="white",
         width=3,
     )
-    # Inner square (fill)
+    # Inner square (fill).
     draw.rectangle(
         [x - half_size + 2, y - half_size + 2, x + half_size - 2, y + half_size - 2],
         fill=color,
@@ -7509,12 +7486,12 @@ def landsat_timelapse_with_samples(
     Returns:
         str: File path to the output GIF with optional chart.
     """
-    # Handle indices parameter
+    # Handle indices parameter.
     if indices is not None:
         if not isinstance(indices, list):
             indices = [indices]
 
-        # Validate indices
+        # Validate indices.
         valid_indices = [
             "NDVI",
             "EVI",
@@ -7538,9 +7515,9 @@ def landsat_timelapse_with_samples(
                     f"Index '{idx}' not supported. Valid indices: {valid_indices}"
                 )
 
-        # If using indices, update defaults
+        # If using indices, update defaults.
         if sample_bands is None:
-            sample_bands = indices[:1]  # Default to first index
+            sample_bands = indices[:1]  # Default to first index.
 
         if chart_ylabel == "Reflectance/Index Value":
             if any(
@@ -7565,11 +7542,11 @@ def landsat_timelapse_with_samples(
             elif any(idx in ["TCB", "TCG", "TCW"] for idx in indices):
                 chart_ylabel = "Tasseled Cap Component"
 
-        # Set up index visualization if not provided
+        # Set up index visualization if not provided.
         if index_vis_params is None:
             index_vis_params = get_default_landsat_index_vis_params()
 
-        # For single index visualization, set up palette and vis_params
+        # For single index visualization, set up palette and vis_params.
         if len(indices) == 1 and vis_params is None:
             index_name = indices[0]
             if palette is None and index_name in index_vis_params:
@@ -7580,12 +7557,12 @@ def landsat_timelapse_with_samples(
                     "palette": palette,
                 }
 
-        # If visualizing an index, update bands for visualization
+        # If visualizing an index, update bands for visualization.
         if len(indices) == 1 and len(bands) == 3:
-            # For single index, use that index for visualization
+            # For single index, use that index for visualization.
             bands = indices
 
-    # Validate sample points
+    # Validate sample points.
     if sample_points is not None:
         if not isinstance(sample_points, list):
             raise ValueError("sample_points must be a list of [lon, lat] coordinates")
@@ -7594,7 +7571,7 @@ def landsat_timelapse_with_samples(
         if len(sample_points) == 0:
             sample_points = None
 
-    # Set default marker colors if not provided
+    # Set default marker colors if not provided.
     if sample_points is not None and marker_colors is None:
         marker_colors = ["red", "blue", "green", "orange", "purple"][
             : len(sample_points)
@@ -7603,18 +7580,18 @@ def landsat_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
 
-    # Set default sample bands if not provided
+    # Set default sample bands if not provided.
     if sample_bands is None:
-        sample_bands = [bands[0]] if bands else ["Red"]  # Default to first band or Red
+        sample_bands = [bands[0]] if bands else ["Red"]  # Default to first band or Red.
 
-    # Set default chart band labels
+    # Set default chart band labels.
     if chart_band_labels is None:
         chart_band_labels = get_default_landsat_band_labels()
-        # Add index labels
+        # Add index labels.
         index_labels = get_landsat_index_chart_labels()
         chart_band_labels.update(index_labels)
 
-    # Adjust dimensions to avoid Earth Engine limits
+    # Adjust dimensions to avoid Earth Engine limits.
     if isinstance(roi, ee.Geometry):
         roi_bounds = roi.bounds().getInfo()["coordinates"][0]
         min_lon = min([coord[0] for coord in roi_bounds])
@@ -7622,12 +7599,12 @@ def landsat_timelapse_with_samples(
         min_lat = min([coord[1] for coord in roi_bounds])
         max_lat = max([coord[1] for coord in roi_bounds])
 
-        # Calculate aspect ratio and adjust dimensions
+        # Calculate aspect ratio and adjust dimensions.
         lon_range = max_lon - min_lon
         lat_range = max_lat - min_lat
         aspect_ratio = lon_range / lat_range if lat_range > 0 else 1
 
-        max_pixels = 26214400  # Earth Engine limit
+        max_pixels = 26214400  # Earth Engine limit.
 
         if isinstance(dimensions, int):
             if aspect_ratio > 1:
@@ -7653,9 +7630,9 @@ def landsat_timelapse_with_samples(
     else:
         adjusted_dimensions = dimensions
 
-    # Create the base timelapse
+    # Create the base timelapse.
     try:
-        # If using indices, we need to create a custom timelapse that includes index calculation
+        # If using indices, need to create a custom timelapse that includes index calculation.
         if indices is not None:
             base_gif = create_landsat_index_timelapse(
                 roi=roi,
@@ -7707,7 +7684,7 @@ def landsat_timelapse_with_samples(
                 **kwargs,
             )
         else:
-            # Use standard Landsat timelapse
+            # Use standard Landsat timelapse.
             base_gif = landsat_timelapse(
                 roi=roi,
                 out_gif=out_gif,
@@ -7747,26 +7724,26 @@ def landsat_timelapse_with_samples(
         print(f"Error creating base timelapse: {str(e)}")
         raise e
 
-    # Check if base GIF was created successfully
+    # Check if base GIF was created successfully.
     if not os.path.exists(base_gif):
         raise FileNotFoundError(f"Base timelapse GIF was not created: {base_gif}")
 
-    # If no sample points, return the base gif (map only)
+    # If no sample points, return the base gif (map only).
     if sample_points is None or len(sample_points) == 0:
         print("No sample points provided. Returning map-only timelapse.")
         if mp4:
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
         return base_gif
 
-    # Get the Landsat time series for sampling
+    # Get the Landsat time series for sampling.
     if end_year is None:
         end_year = get_current_year()
 
-    # Convert sample band names to Landsat band names if needed
+    # Convert sample band names to Landsat band names if needed.
     landsat_sample_bands = []
     for band in sample_bands:
         if band in chart_band_labels:
-            # Try to map display names back to actual band names
+            # Try to map display names back to actual band names.
             reverse_mapping = {v: k for k, v in chart_band_labels.items()}
             if band in reverse_mapping:
                 landsat_sample_bands.append(reverse_mapping[band])
@@ -7789,15 +7766,15 @@ def landsat_timelapse_with_samples(
             "VARI",
             "MCARI",
         ]:
-            landsat_sample_bands.append(band)  # Keep index names as-is
+            landsat_sample_bands.append(band)  # Keep index names as-is.
         else:
             landsat_sample_bands.append(band)
 
-    # Create collection with error handling
+    # Create collection with error handling.
     try:
-        # Create time series - if using indices, we need to add index calculation
+        # Create time series - if using indices, need to add index calculation.
         if indices is not None:
-            # Create base time series first
+            # Create base time series first.
             base_ts_collection = landsat_timeseries(
                 roi,
                 start_year,
@@ -7810,15 +7787,15 @@ def landsat_timelapse_with_samples(
                 step,
             )
 
-            # Add indices to each image
+            # Add indices to each image.
             # pytype: disable=attribute-error
             ts_collection = base_ts_collection.map(calculate_landsat_indices)
             # pytype: enable=attribute-error
 
-            # Select only the bands we need for sampling
+            # Select only the bands we need for sampling.
             ts_collection = ts_collection.select(landsat_sample_bands)
         else:
-            # Standard time series without indices - use create_timeseries for consistency
+            # Standard time series without indices - use create_timeseries for consistency.
             base_landsat_collection = landsat_timeseries(
                 roi,
                 start_year,
@@ -7831,10 +7808,10 @@ def landsat_timelapse_with_samples(
                 step,
             )
 
-            # Select the sample bands
+            # Select the sample bands.
             ts_collection = base_landsat_collection.select(landsat_sample_bands)
 
-        # Check if time series is empty
+        # Check if time series is empty.
         ts_size = ts_collection.size().getInfo()
         if ts_size == 0:
             print("Warning: No time series data generated")
@@ -7846,12 +7823,12 @@ def landsat_timelapse_with_samples(
 
     except Exception as e:
         print(f"Error creating time series: {str(e)}")
-        # Return base gif without sampling
+        # Return base gif without sampling.
         if mp4:
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
         return base_gif
 
-    # Sample points from the time series
+    # Sample points from the time series.
     sample_data = {}
     point_geometries = []
 
@@ -7865,7 +7842,7 @@ def landsat_timelapse_with_samples(
 
                 point_geometries.append(geometry)
 
-                # Sample the time series at this point for each band
+                # Sample the time series at this point for each band.
                 for band_idx, band in enumerate(landsat_sample_bands):
 
                     def sample_point_band(image):
@@ -7879,7 +7856,7 @@ def landsat_timelapse_with_samples(
 
                     sampled = ts_collection.map(sample_point_band)
 
-                    # Get the time series data with error handling
+                    # Get the time series data with error handling.
                     try:
                         time_series = sampled.aggregate_array(
                             "system:time_start"
@@ -7887,7 +7864,7 @@ def landsat_timelapse_with_samples(
                         values = sampled.aggregate_array(band).getInfo()
                         dates = sampled.aggregate_array("system:date").getInfo()
 
-                        # Filter out null values
+                        # Filter out null values.
                         valid_data = [
                             (t, v, d)
                             for t, v, d in zip(time_series, values, dates)
@@ -7897,32 +7874,32 @@ def landsat_timelapse_with_samples(
                         if valid_data:
                             time_series, values, dates = zip(*valid_data)
 
-                            # Convert timestamps to datetime objects
+                            # Convert timestamps to datetime objects.
                             datetimes = [
                                 datetime.datetime.fromtimestamp(ts / 1000)
                                 for ts in time_series
                             ]
 
-                            # Create unique key for point and band combination
+                            # Create unique key for point and band combination.
                             point_band_key = f"Point_{i+1}_{band}"
                             if len(landsat_sample_bands) == 1:
                                 point_band_key = f"Point_{i+1}"
 
-                            # Get display name for band
+                            # Get display name for band.
                             band_display = chart_band_labels.get(band, band)
                             if len(landsat_sample_bands) > 1:
                                 label = f"Point {i+1} ({band_display})"
                             else:
                                 label = f"Point {i+1}"
 
-                            # Color assignment for multi-band sampling
+                            # Color assignment for multi-band sampling.
                             if len(landsat_sample_bands) > 1:
                                 base_color = (
                                     marker_colors[i]
                                     if i < len(marker_colors)
                                     else "red"
                                 )
-                                # Modify color for different bands
+                                # Modify color for different bands.
                                 if band_idx == 0:
                                     color = base_color
                                 elif band_idx == 1:
@@ -7969,10 +7946,10 @@ def landsat_timelapse_with_samples(
     else:
         print("No sample points provided. Skipping sampling step.")
 
-    # Add sample point markers to the base gif if requested
+    # Add sample point markers to the base gif if requested.
     if show_sample_markers and sample_points is not None and len(sample_points) > 0:
         try:
-            # Get ROI bounds for coordinate conversion
+            # Get ROI bounds for coordinate conversion.
             roi_bounds = roi.bounds().getInfo()["coordinates"][0]
             min_lon = min([coord[0] for coord in roi_bounds])
             max_lon = max([coord[0] for coord in roi_bounds])
@@ -7980,7 +7957,6 @@ def landsat_timelapse_with_samples(
             max_lat = max([coord[1] for coord in roi_bounds])
             bounds = [min_lon, min_lat, max_lon, max_lat]
 
-            # Add markers to the gif
             add_sample_markers_to_gif(
                 base_gif,
                 base_gif,
@@ -8000,7 +7976,7 @@ def landsat_timelapse_with_samples(
         except Exception as e:
             print(f"Error adding markers to GIF: {str(e)}")
 
-    # Create the time series chart if we have sample data
+    # Create the time series chart if we have sample data.
     if sample_data and len(sample_data) > 0:
         try:
             chart_frames = create_landsat_time_series_chart_frames(
@@ -8017,7 +7993,6 @@ def landsat_timelapse_with_samples(
                 chart_xlabel_interval,
             )
 
-            # Combine gif and chart
             final_gif = combine_gif_with_chart(
                 base_gif,
                 chart_frames,
@@ -8037,7 +8012,6 @@ def landsat_timelapse_with_samples(
         print("No sample data available. Returning map-only timelapse.")
         final_gif = base_gif
 
-    # Handle MP4 conversion
     if mp4:
         gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
 
@@ -8110,7 +8084,7 @@ def calculate_landsat_indices(image: ee.Image) -> ee.Image:
     mcari = image.expression(
         "((RE - RED) - 0.2 * (RE - GREEN)) * (RE / RED)",
         {
-            "RE": image.select("NIR"),  # Using NIR as proxy for Red Edge
+            "RE": image.select("NIR"),  # Using NIR as proxy for Red Edge.
             "RED": image.select("Red"),
             "GREEN": image.select("Green"),
         },
