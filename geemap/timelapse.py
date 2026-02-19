@@ -7151,24 +7151,24 @@ def create_sentinel2_index_timelapse(
 
 
 def create_s2_time_series_chart_frames(
-    sample_data,
-    chart_title,
-    chart_ylabel,
-    dimensions,
-    fps,
-    xlabel_format="auto",
-    xlabel_interval="auto",
+    sample_data: dict,
+    chart_title: str,
+    chart_ylabel: str,
+    dimensions: int | str,
+    fps: int,
+    xlabel_format: str = "auto",
+    xlabel_interval: str = "auto",
 ):
     """Create frames for the Sentinel-2 time series chart with current time indicator.
 
     Args:
-        sample_data (dict): Dictionary containing sample data for each point/band combination
-        chart_title (str): Title for the chart
-        chart_ylabel (str): Y-axis label
-        dimensions (int/str): Dimensions for the chart
-        fps (int): Frames per second
-        xlabel_format (str): Format for x-axis labels
-        xlabel_interval (str): Interval for x-axis labels
+        sample_data: Dictionary containing sample data for each point/band combination.
+        chart_title: Title for the chart.
+        chart_ylabel: Y-axis label.
+        dimensions: Dimensions for the chart.
+        fps: Frames per second.
+        xlabel_format: Format for x-axis labels.
+        xlabel_interval: Interval for x-axis labels.
 
     Returns:
         List of paths to chart frame images.
