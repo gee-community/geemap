@@ -7367,143 +7367,151 @@ def draw_square_marker(draw, x, y, size, color):
 
 def landsat_timelapse_with_samples(
     roi,
-    out_gif=None,
-    start_year=1984,
-    end_year=None,
-    start_date="06-10",
-    end_date="09-20",
-    bands=["NIR", "Red", "Green"],
-    frequency="year",
-    reducer="median",
-    date_format=None,
-    palette=None,
+    out_gif: str | None = None,
+    start_year: int = 1984,
+    end_year: int | None = None,
+    start_date: str = "06-10",
+    end_date: str = "09-20",
+    bands: list[str] | None = None,
+    frequency: str = "year",
+    reducer: str = "median",
+    date_format: str | None = None,
+    palette: str | None = None,
     vis_params=None,
     dimensions=768,
-    frames_per_second=10,
-    crs="EPSG:3857",
-    apply_fmask=True,
+    frames_per_second: int = 10,
+    crs: str = "EPSG:3857",
+    apply_fmask: bool = True,
     overlay_data=None,
-    overlay_color="black",
-    overlay_width=1,
-    overlay_opacity=1.0,
-    title=None,
+    overlay_color: str = "black",
+    overlay_width: int = 1,
+    overlay_opacity: float = 1.0,
+    title: str | None = None,
     title_xy=("2%", "90%"),
-    add_text=True,
+    add_text: bool = True,
     text_xy=("2%", "2%"),
     text_sequence=None,
-    font_type="arial.ttf",
-    font_size=20,
-    font_color="white",
-    add_progress_bar=True,
-    progress_bar_color="white",
-    progress_bar_height=5,
-    add_colorbar=False,
-    colorbar_width=6.0,
-    colorbar_height=0.4,
+    font_type: str = "arial.ttf",
+    font_size: int = 20,
+    font_color: str = "white",
+    add_progress_bar: bool = True,
+    progress_bar_color: str = "white",
+    progress_bar_height: int = 5,
+    add_colorbar: bool = False,
+    colorbar_width: float = 6.0,
+    colorbar_height: float = 0.4,
     colorbar_label=None,
-    colorbar_label_size=12,
-    colorbar_label_weight="normal",
-    colorbar_tick_size=10,
-    colorbar_bg_color=None,
-    colorbar_orientation="horizontal",
+    colorbar_label_size: int = 12,
+    colorbar_label_weight: str = "normal",
+    colorbar_tick_size: int = 10,
+    colorbar_bg_color: str | None = None,
+    colorbar_orientation: str = "horizontal",
     colorbar_dpi="figure",
     colorbar_xy=None,
-    colorbar_size=(300, 300),
-    loop=0,
-    mp4=False,
-    fading=False,
-    step=1,
+    colorbar_size: tuple[int, int] = (300, 300),
+    loop: int = 0,
+    mp4: bool = False,
+    fading: bool = False,
+    step: int = 1,
     sample_points=None,
-    sample_point_crs="EPSG:4326",
+    sample_point_crs: str = "EPSG:4326",
     marker_colors=None,
-    marker_size=50,
-    marker_style="cross",
-    show_sample_markers=True,
-    chart_title="Landsat Time Series",
-    chart_ylabel="Reflectance/Index Value",
-    chart_position="right",
-    chart_size_ratio=0.7,
-    spacer_width=20,
-    chart_xlabel_format="auto",
-    chart_xlabel_interval="auto",
+    marker_size: int = 50,
+    marker_style: str = "cross",
+    show_sample_markers: bool = True,
+    chart_title: str = "Landsat Time Series",
+    chart_ylabel: str = "Reflectance/Index Value",
+    chart_position: str = "right",
+    chart_size_ratio: float = 0.7,
+    spacer_width: int = 20,
+    chart_xlabel_format: str = "auto",
+    chart_xlabel_interval: str = "auto",
     sample_bands=None,
     chart_band_labels=None,
     indices=None,
     index_vis_params=None,
     **kwargs,
-):
+) -> str:
     """Create a Landsat timelapse with optional sample points and time series chart.
 
     Args:
         roi (ee.Geometry): The region to use to filter the collection of images.
-        out_gif (str): The output gif file path. Defaults to None.
-        start_year (int, optional): Starting year for the timelapse. Defaults to 1984.
-        end_year (int, optional): Ending year for the timelapse. Defaults to the current year.
-        start_date (str, optional): Starting date (month-day) each year. Defaults to '06-10'.
-        end_date (str, optional): Ending date (month-day) each year. Defaults to '09-20'.
-        bands (list, optional): Three bands for visualization. Defaults to ["NIR", "Red", "Green"].
-        frequency (str, optional): The frequency of the timeseries. Defaults to 'year'.
-        reducer (str, optional): The reducer to use. Defaults to 'median'.
-        date_format (str, optional): Date format pattern. Defaults to None.
-        palette (str, optional): Color palette for single-band visualization. Defaults to None.
-        vis_params (dict, optional): Visualization parameters. Defaults to None.
-        dimensions (int, optional): Maximum dimensions of the thumbnail. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 10.
-        crs (str, optional): Coordinate reference system. Defaults to "EPSG:3857".
-        apply_fmask (bool, optional): Whether to apply Fmask for cloud masking. Defaults to True.
-        overlay_data (optional): Administrative boundary overlay. Defaults to None.
-        overlay_color (str, optional): Color for overlay data. Defaults to 'black'.
-        overlay_width (int, optional): Width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        title (str, optional): The title of the timelapse. Defaults to None.
+        out_gif: The output gif file path.
+        start_year: Starting year for the timelapse.
+        end_year: Ending year for the timelapse. Defaults to the current year.
+        start_date: Starting date (month-day) each year.
+        end_date: Ending date (month-day) each year.
+        bands: Three bands for visualization. Defaults to ["NIR", "Red", "Green"].
+        frequency: The frequency of the timeseries.
+        reducer: The reducer to use.
+        date_format: Date format pattern.
+        palette: Color palette for single-band visualization.
+        vis_params (dict, optional): Visualization parameters.
+        dimensions (int, optional): Maximum dimensions of the thumbnail.
+        frames_per_second: Animation speed.
+        crs: Coordinate reference system.
+        apply_fmask: Whether to apply Fmask for cloud masking.
+        overlay_data (optional): Administrative boundary overlay.
+        overlay_color: Color for overlay data.
+        overlay_width: Width of the overlay.
+        overlay_opacity: Opacity of the overlay.
+        title: The title of the timelapse.
         title_xy (tuple, optional): Position of the title. Defaults to ("2%", "90%").
-        add_text (bool, optional): Whether to add animated text. Defaults to True.
+        add_text: Whether to add animated text.
         text_xy (tuple, optional): Position of the text. Defaults to ("2%", "2%").
-        text_sequence (optional): Text to be drawn. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. Defaults to 'white'.
-        add_progress_bar (bool, optional): Whether to add progress bar. Defaults to True.
-        progress_bar_color (str, optional): Color for progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of progress bar. Defaults to 5.
-        add_colorbar (bool, optional): Whether to add colorbar. Defaults to False.
-        colorbar_width (float, optional): Width of colorbar. Defaults to 6.0.
-        colorbar_height (float, optional): Height of colorbar. Defaults to 0.4.
-        colorbar_label (str, optional): Label for colorbar. Defaults to None.
-        colorbar_label_size (int, optional): Font size for colorbar label. Defaults to 12.
-        colorbar_label_weight (str, optional): Font weight for colorbar label. Defaults to 'normal'.
-        colorbar_tick_size (int, optional): Font size for colorbar ticks. Defaults to 10.
-        colorbar_bg_color (str, optional): Background color for colorbar. Defaults to None.
-        colorbar_orientation (str, optional): Orientation of colorbar. Defaults to 'horizontal'.
-        colorbar_dpi (str, optional): DPI for colorbar. Defaults to 'figure'.
-        colorbar_xy (tuple, optional): Position of colorbar. Defaults to None.
-        colorbar_size (tuple, optional): Size of colorbar. Defaults to (300, 300).
-        loop (int, optional): Number of animation loops. Defaults to 0.
-        mp4 (bool, optional): Whether to create mp4 file. Defaults to False.
-        fading (bool, optional): Whether to add fading effect. Defaults to False.
-        step (int, optional): Step size for the timelapse. Defaults to 1.
-        sample_points (list, optional): List of [lon, lat] coordinates for sampling (max 5 points). Defaults to None.
-        sample_point_crs (str, optional): CRS for sample points. Defaults to "EPSG:4326".
-        marker_colors (list, optional): Colors for markers. Defaults to None (uses default colors).
-        marker_size (int, optional): Size of markers. Defaults to 50.
-        marker_style (str, optional): Style of markers ('cross', 'circle', 'square'). Defaults to 'cross'.
-        show_sample_markers (bool, optional): Whether to show markers on map. Defaults to True.
-        chart_title (str, optional): Title for the time series chart. Defaults to "Landsat Time Series".
-        chart_ylabel (str, optional): Y-axis label for chart. Defaults to "Reflectance/Index Value".
-        chart_position (str, optional): Position of chart ('right', 'left', 'bottom'). Defaults to 'right'.
-        chart_size_ratio (float, optional): Size ratio of chart to gif. Defaults to 0.7.
-        spacer_width (int, optional): Width of spacer between gif and chart. Defaults to 20.
-        chart_xlabel_format (str, optional): Format for x-axis labels ('auto', '%Y-%m', '%m-%d', '%Y-%m-%d'). Defaults to 'auto'.
-        chart_xlabel_interval (str, optional): Interval for x-axis labels ('auto', 'day', 'week', 'month', 'year'). Defaults to 'auto'.
-        sample_bands (list, optional): Which bands to sample for the chart. Defaults to first band only.
-        chart_band_labels (dict, optional): Custom labels for bands in chart. Defaults to None.
-        indices (list, optional): List of indices to calculate ['NDVI', 'EVI', 'NDWI', 'NDBI', 'MNDWI', 'NBR', 'SAVI', 'GNDVI', 'TCB', 'TCG', 'TCW']. Defaults to None.
-        index_vis_params (dict, optional): Visualization parameters for indices. Defaults to None.
+        text_sequence (optional): Text to be drawn.
+        font_type: Font type.
+        font_size: Font size.
+        font_color: Font color.
+        add_progress_bar: Whether to add progress bar.
+        progress_bar_color: Color for progress bar.
+        progress_bar_height: Height of progress bar.
+        add_colorbar: Whether to add colorbar.
+        colorbar_width: Width of colorbar.
+        colorbar_height: Height of colorbar.
+        colorbar_label: Label for colorbar.
+        colorbar_label_size: Font size for colorbar label.
+        colorbar_label_weight: Font weight for colorbar label.
+        colorbar_tick_size: Font size for colorbar ticks.
+        colorbar_bg_color: Background color for colorbar.
+        colorbar_orientation: Orientation of colorbar.
+        colorbar_dpi: DPI for colorbar.
+        colorbar_xy (tuple, optional): Position of colorbar.
+        colorbar_size: Size of colorbar.
+        loop: Number of animation loops.
+        mp4: Whether to create mp4 file.
+        fading: Whether to add fading effect.
+        step: Step size for the timelapse.
+        sample_points (list, optional): List of [lon, lat] coordinates for sampling (max
+            5 points).
+        sample_point_crs: CRS for sample points.
+        marker_colors (list, optional): Colors for markers. Defaults to None (uses
+            default colors).
+        marker_size: Size of markers.
+        marker_style: Style of markers ('cross', 'circle', 'square').
+        show_sample_markers: Whether to show markers on map.
+        chart_title: Title for the time series chart.
+        chart_ylabel: Y-axis label for chart.
+        chart_position: Position of chart ('right', 'left', 'bottom').
+        chart_size_ratio: Size ratio of chart to gif.
+        spacer_width: Width of spacer between gif and chart.
+        chart_xlabel_format: Format for x-axis labels ('auto', '%Y-%m', '%m-%d',
+            '%Y-%m-%d').
+        chart_xlabel_interval: Interval for x-axis labels ('auto', 'day', 'week',
+            'month', 'year').
+        sample_bands (list, optional): Which bands to sample for the chart. Defaults to
+            first band only.
+        chart_band_labels (dict, optional): Custom labels for bands in chart.
+        indices (list, optional): List of indices to calculate ['NDVI', 'EVI', 'NDWI',
+            'NDBI', 'MNDWI', 'NBR', 'SAVI', 'GNDVI', 'TCB', 'TCG', 'TCW'].
+        index_vis_params (dict, optional): Visualization parameters for indices.
         **kwargs: Additional arguments for create_timeseries().
 
     Returns:
-        str: File path to the output GIF with optional chart.
+        File path to the output GIF with optional chart.
     """
+    bands = bands or ["NIR", "Red", "Green"]
+
     # Handle indices parameter
     if indices is not None:
         if not isinstance(indices, list):
