@@ -2138,9 +2138,6 @@ class Map(folium.Map):
             token: The token to use to datapane to publish the map. See
                 https://docs.datapane.com/tut-getting-started. Defaults to None.
         """
-        if os.environ.get("USE_MKDOCS") is not None:
-            return
-
         import datapane as dp
 
         warnings.filterwarnings("ignore")

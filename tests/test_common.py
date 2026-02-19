@@ -786,15 +786,6 @@ class CommonTest(unittest.TestCase):
     # TODO: test_mosaic
     # TODO: test_reproject
     # TODO: test_download_3dep_lidar
-
-    @mock.patch.dict(os.environ, {"USE_MKDOCS": "true"})
-    def test_use_mkdocs_true(self):
-        self.assertTrue(common.use_mkdocs())
-
-    @mock.patch.dict(os.environ, {}, clear=True)
-    def test_use_mkdocs_false(self):
-        self.assertFalse(common.use_mkdocs())
-
     # TODO: test_create_legend
     # TODO: test_is_arcpy
     # TODO: test_arc_active_map
