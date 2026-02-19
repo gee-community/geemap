@@ -2618,7 +2618,7 @@ def landsat_timelapse(
     end_year: int | None = None,
     start_date: str = "06-10",
     end_date: str = "09-20",
-    bands: list[str] = ["NIR", "Red", "Green"],
+    bands: list[str] | None = None,
     vis_params=None,
     dimensions=768,
     frames_per_second: int = 5,
@@ -2694,6 +2694,8 @@ def landsat_timelapse(
     Returns:
         File path to the output GIF image.
     """
+    bands = bands or ["NIR", "Red", "Green"]
+
     if roi is None:
         roi = ee.Geometry.Polygon(
             [
@@ -2899,7 +2901,7 @@ def landsat_timelapse_legacy(
     end_year: int | None = None,
     start_date: str = "06-10",
     end_date: str = "09-20",
-    bands: list[str] = ["NIR", "Red", "Green"],
+    bands: list[str] | None = None,
     vis_params=None,
     dimensions=768,
     frames_per_second: int = 5,
@@ -2973,6 +2975,8 @@ def landsat_timelapse_legacy(
     Returns:
         File path to the output GIF image.
     """
+    bands = bands or ["NIR", "Red", "Green"]
+
     if end_year is None:
         end_year = get_current_year()
 
@@ -3652,7 +3656,7 @@ def sentinel2_timelapse(
 
 
 def landsat_ts_norm_diff(
-    collection, bands: list[str] = ["Green", "SWIR1"], threshold: float = 0.0
+    collection, bands: list[str] | None = None, threshold: float = 0.0
 ):
     """Computes a normalized difference index based on a Landsat timeseries.
 
@@ -3660,12 +3664,14 @@ def landsat_ts_norm_diff(
         collection (ee.ImageCollection): A Landsat timeseries.
         bands: The bands to use for computing normalized difference. Defaults to
             ['Green', 'SWIR1'].
-        threshold: The threshold to extract features. Defaults to 0.
+        threshold: The threshold to extract features.
 
     Returns:
         ee.ImageCollection: An ImageCollection containing images with values greater
         than the specified threshold.
     """
+    bands = bands or ["Green", "SWIR1"]
+
     # pytype: disable=attribute-error
     return collection.map(
         lambda img: img.normalizedDifference(bands)
@@ -3679,7 +3685,7 @@ def landsat_ts_norm_diff_gif(
     collection,
     out_gif: str | None = None,
     vis_params: dict[str, Any] | None = None,
-    palette: list[str] = ["black", "blue"],
+    palette: list[str] | None = None,
     dimensions=768,
     frames_per_second: int = 10,
     mp4: bool = False,
@@ -3702,6 +3708,8 @@ def landsat_ts_norm_diff_gif(
     Returns:
         The path to the output gif image or the mp4 if that is requested.
     """
+    palette = palette or ["black", "blue"]
+
     coordinates = ee.Image(collection.first()).get("coordinates")
     roi = ee.Geometry.Polygon(coordinates, None, False)
 
@@ -3998,7 +4006,7 @@ def goes_timelapse(
     end_date: str = "2021-10-25T01:00:00",
     data: str = "GOES-17",
     scan: str = "full_disk",
-    bands: list[str] = ["CMI_C02", "CMI_GREEN", "CMI_C01"],
+    bands: list[str] | None = None,
     dimensions=768,
     framesPerSecond: int = 10,
     date_format: str = "YYYY-MM-dd HH:mm",
@@ -4071,6 +4079,8 @@ def goes_timelapse(
     Raises:
         Exception: Raise exception.
     """
+    bands = bands or ["CMI_C02", "CMI_GREEN", "CMI_C01"]
+
     if "region" in kwargs:
         roi = kwargs["region"]
 
