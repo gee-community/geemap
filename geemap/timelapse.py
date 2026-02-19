@@ -1487,7 +1487,7 @@ def sentinel1_timeseries(
     frequency: str = "year",
     clip: bool = False,
     band: str = "VV",
-    orbit: list[str] = ["ascending", "descending"],
+    orbit: list[str] | None = None,
     **kwargs,
 ) -> ee.ImageCollection:
     """Return a Sentinel 1 ImageCollection of mean composites at a specified frequency.
@@ -1522,8 +1522,9 @@ def sentinel1_timeseries(
     # Load and filter Sentinel-1 collection.
     col = ee.ImageCollection("COPERNICUS/S1_GRD").filterBounds(roi)
 
-    # Apply orbit filtering.
-    if orbit:
+    # Set orbit to {} to not have an orbit.
+    if orbit or orbit is None:
+        orbit = orbit or ["ascending", "descending"]
         # Convert orbit strings to uppercase for consistency.
         orbit_upper = [o.upper() for o in orbit]
         orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
