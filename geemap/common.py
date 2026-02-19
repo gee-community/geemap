@@ -278,7 +278,7 @@ def ee_export_image_collection(
 
 
 def ee_export_image_to_drive(
-    image: str | ee.Image | ee.ComputedObject,
+    image: ee.Image,
     description: str = "myExportImageTask",
     folder: str | None = None,
     fileNamePrefix: str | None = None,
@@ -362,7 +362,7 @@ def ee_export_image_to_drive(
 
 
 def ee_export_image_to_asset(
-    image: str | ee.Image | ee.ComputedObject,
+    image: ee.Image,
     description: str = "myExportImageTask",
     assetId: str | None = None,
     pyramidingPolicy: dict[str, str] | None = None,
@@ -404,9 +404,7 @@ def ee_export_image_to_asset(
         **kwargs: Holds other keyword arguments that may have been deprecated such as
             'crs_transform'.
     """
-    if isinstance(image, ee.Image):
-        pass
-    else:
+    if not isinstance(image, ee.Image):
         raise ValueError("Input image must be an instance of ee.Image")
 
     if isinstance(assetId, str):
