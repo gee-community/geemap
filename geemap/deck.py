@@ -46,7 +46,7 @@ class Layer(pdk.Layer):
         type: str,
         data: str | None = None,
         id=None,
-        use_binary_transport: bool = None,
+        use_binary_transport: bool | None = None,
         **kwargs,
     ):
         """Initialize a Layer object.
@@ -54,11 +54,10 @@ class Layer(pdk.Layer):
         Args:
             type: Type of layer to render, e.g., HexagonLayer. See deck.gl Layer
                 catalog (https://deck.gl/docs/api-reference/layers)
-            data: Unique name for layer. Defaults to None.
+            data: Unique name for layer.
             id (str | dict | pandas.DataFrame, optional): Either a URL of data to load
-                in or an array of data. Defaults to None.
+                in or an array of data.
             use_binary_transport: Boolean indicating binary data.
-                Defaults to None.
         """
         super().__init__(type, data, id, use_binary_transport, **kwargs)
 
@@ -71,18 +70,18 @@ class Map(pdk.Deck):
         center: tuple[float, float] = (20, 0),
         zoom: float = 1.2,
         height: int = 800,
-        width: int = None,
+        width: int | None = None,
         **kwargs,
     ):
         """Initialize a Map object.
 
         Args:
-            center: Center of the map in the format of (lat, lon). Defaults to (20, 0).
-            zoom: The map zoom level. Defaults to 1.2.
+            center: Center of the map in the format of (lat, lon).
+            zoom: The map zoom level.
             height: The map height. Note that the height has no effect in Jupyter
-                notebook. Only works for streamlit. Defaults to 800.
+                notebook. Only works for streamlit.
             width: The map width. Note that the height has no effect in Jupyter
-                notebook. Only works for streamlit. Defaults to None.
+                notebook. Only works for streamlit.
         """
         # Authenticates Earth Engine and initializes an Earth Engine session.
         if "ee_initialize" not in kwargs.keys():
