@@ -204,7 +204,7 @@ npm = "npm"
 build_cmd = "build"
 
 [tool.uv.extra-build-dependencies]
-pyarrow = ["pkg_resources"]
+pyarrow = ["setuptools"]
 
 [project.urls]
 Homepage = "https://github.com/gee-community/geemap"
