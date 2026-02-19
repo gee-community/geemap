@@ -62,7 +62,6 @@ ai = [
     "iso8601"
 ]
 backends = [
-    "pyarrow>=17.0.0",  # For keplergl.
     "keplergl",
     "pydeck",
 ]
@@ -203,6 +202,9 @@ dependencies = ["hatch-jupyter-builder>=0.5.0"]
 [tool.hatch.build.hooks.jupyter-builder.build-kwargs]
 npm = "npm"
 build_cmd = "build"
+
+[tool.uv.extra-build-dependencies]
+pyarrow = ["pkg_resources"]
 
 [project.urls]
 Homepage = "https://github.com/gee-community/geemap"
