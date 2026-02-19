@@ -62,6 +62,7 @@ ai = [
     "iso8601"
 ]
 backends = [
+    "pyarrow>=17.0.0",  # For keplergl.
     "keplergl",
     "pydeck",
 ]
