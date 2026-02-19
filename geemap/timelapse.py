@@ -37,7 +37,7 @@ def add_overlay(
     color: str = "black",
     width: int = 1,
     opacity: float = 1.0,
-    region: ee.Geometry | ee.FeatureCollection = None,
+    region: ee.Geometry | ee.FeatureCollection | None = None,
 ) -> ee.ImageCollection:
     """Adds an overlay to an image collection.
 

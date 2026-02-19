@@ -434,7 +434,7 @@ class Map(MapWidget):
 
     def add_basemap(
         self,
-        basemap: str | xyzservices.TileProvider = None,
+        basemap: str | xyzservices.TileProvider | None = None,
         opacity: float = 1.0,
         visible: bool = True,
         attribution: str | None = None,
@@ -843,8 +843,8 @@ class Map(MapWidget):
         self,
         ee_object=None,
         vis_params={},
-        asset_id: str = None,
-        name: str = None,
+        asset_id: str | None = None,
+        name: str | None = None,
         opacity: float = 1.0,
         attribution: str = "Google Earth Engine",
         visible: bool = True,
@@ -931,7 +931,7 @@ class Map(MapWidget):
         visible: bool = True,
         bands: list[int] | None = None,
         nodata: float | None = 0,
-        titiler_endpoint: str = None,
+        titiler_endpoint: str | None = None,
         fit_bounds: bool = True,
         before_id: str | None = None,
         **kwargs: Any,
@@ -1147,7 +1147,7 @@ class Map(MapWidget):
 
     def to_html(
         self,
-        output: str = None,
+        output: str | None = None,
         title: str = "My Awesome Map",
         width: str = "100%",
         height: str = "100%",
@@ -1679,7 +1679,7 @@ class Map(MapWidget):
 
     def add_marker(
         self,
-        marker: Marker = None,
+        marker: Marker | None = None,
         lng_lat: list[float | float] = [],
         popup: dict | None = {},
         options: dict | None = {},
@@ -1687,7 +1687,7 @@ class Map(MapWidget):
         """Adds a marker to the map.
 
         Args:
-            marker: A Marker object. Defaults to None.
+            marker: A Marker object.
             lng_lat: A list of two floats representing the longitude and latitude of the
                 marker.
             popup: The text to display in a popup when the marker is clicked. Defaults
@@ -1797,12 +1797,12 @@ class Map(MapWidget):
 
     def add_image(
         self,
-        id: str = None,
-        image: str | dict = None,
-        width: int = None,
-        height: int = None,
-        coordinates: list[float] = None,
-        position: str = None,
+        id: str | None = None,
+        image: str | dict | None = None,
+        width: int | None = None,
+        height: int | None = None,
+        coordinates: list[float] | None = None,
+        position: str | None = None,
         icon_size: float = 1.0,
         **kwargs: Any,
     ) -> None:
@@ -1814,12 +1814,12 @@ class Map(MapWidget):
             image (Union[str, Dict, np.ndarray]): The URL or local file path to
                 the image, or a dictionary containing image data, or a numpy
                 array representing the image.
-            width: The width of the image. Defaults to None.
-            height: The height of the image. Defaults to None.
+            width: The width of the image.
+            height: The height of the image.
             coordinates: The longitude and latitude coordinates to place the image.
-            position: The position of the image. Defaults to None.  Can be one of
-                'top-right', 'top-left', 'bottom-right', 'bottom-left'.
-            icon_size: The size of the icon. Defaults to 1.0.
+            position: The position of the image. Can be one of 'top-right', 'top-left',
+                'bottom-right', 'bottom-left'.
+            icon_size: The size of the icon.
         """
         if id is None:
             id = "image"
