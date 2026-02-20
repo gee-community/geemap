@@ -46,10 +46,9 @@ def get_map(
             of the resulting plot. By default uses an equirectangular projection,
             PlateCarree.
         basemap: Basemap to use. It can be one of ["ROADMAP", "SATELLITE", "TERRAIN",
-            "HYBRID"] or cartopy.io.img_tiles, such as cimgt.StamenTerrain(). Defaults
-            to None. See
+            "HYBRID"] or cartopy.io.img_tiles, such as cimgt.StamenTerrain(). See
             https://scitools.org.uk/cartopy/docs/v0.19/cartopy/io/img_tiles.html.
-        zoom_level: Zoom level of the basemap. Defaults to 2.
+        zoom_level: Zoom level of the basemap.
         **kwargs: remaining keyword arguments are passed to addLayer()
 
     Returns:
@@ -114,8 +113,7 @@ def add_layer(
         ee_object (ee.Image | ee.FeatureCollection): Earth Engine image result to plot.
         dims (list | tuple | int, optional): dimensions to request earth engine result
             as [WIDTH,HEIGHT]. If only one number is passed, it is used as the maximum,
-            and the other dimension is computed by proportional scaling. Default None
-            and infers dimensions.
+            and the other dimension is computed by proportional scaling.
         region (list | tuple, optional): Geospatial region of the image to render in
             format [E,S,W,N]. By default, the whole image.
         cmap: String specifying matplotlib colormap to colorize image. If cmap is
@@ -224,7 +222,7 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
     Args:
         cmap: String specifying matplotlib colormap to colorize image. If cmap is
             specified visParams cannot contain 'palette' key.
-        n: Number of hex color codes to create from colormap. Default is 256.
+        n: Number of hex color codes to create from colormap.
 
     Returns:
         List of hex color codes from matplotlib colormap for n intervals.
@@ -476,14 +474,13 @@ def add_gridlines(
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object to add the gridlines to.
         interval: Interval at which to create gridlines, Units are decimal
-            degrees. Lists will be interpreted as [x_interval, y_interval]. Default =
-            None.
+            degrees. Lists will be interpreted as [x_interval, y_interval].
         n_ticks: Number of gridlines to create within map extent. Lists will be
-            interpreted as [nx, ny]. Default = None.
-        xs: x coordinates to create gridlines. Default = None.
-        ys: y coordinates to create gridlines. Default = None.
+            interpreted as [nx, ny].
+        xs: x coordinates to create gridlines.
+        ys: y coordinates to create gridlines.
         buffer_out: Buffer out the extent to insure coordinates created cover map
-            extent. Default = true.
+            extent.
         xtick_rotation: TODO
         ytick_rotation: TODO
         **kwargs: Remaining keyword arguments are passed to gridlines()
@@ -611,19 +608,19 @@ def add_north_arrow(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object.
-        text: Text for north arrow. Defaults to "N".
+        text: Text for north arrow.
         xy (tuple, optional): Location of the north arrow. Each number representing the
-            percentage length of the map from the lower-left corner. Defaults to (0.1,
+            percentage length of the map from the lower-left corner.
             0.1).
         arrow_length: Length of the north arrow. Defaults to 0.1 (10% length of the
             map).
-        text_color: Text color. Defaults to "black".
-        arrow_color: North arrow color. Defaults to "black".
-        fontsize: Text font size. Defaults to 20.
-        width: Width of the north arrow. Defaults to 5.
-        headwidth: head width of the north arrow. Defaults to 15.
-        ha: Horizontal alignment. Defaults to "center".
-        va: Vertical alignment. Defaults to "center".
+        text_color: Text color.
+        arrow_color: North arrow color.
+        fontsize: Text font size.
+        width: Width of the north arrow.
+        headwidth: head width of the north arrow.
+        ha: Horizontal alignment.
+        va: Vertical alignment.
     """
     ax.annotate(
         text,
@@ -680,20 +677,16 @@ def add_scale_bar(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object.
-        metric_distance: Length in meters of each region of the scale bar. Defaults to
-          4.
-        unit: Scale bar distance unit. Defaults to "km"
-        at_x: Target axes X coordinates (0..1) of box (= left, right). Defaults to
-            (0.05, 0.2).
-        at_y: Axes Y coordinates (0..1) of box (= lower, upper). Defaults to (0.08,
-            0.11).
-        max_stripes: Typical/maximum number of black+white regions. Defaults to 5.
-        ytick_label_margins: Location of distance labels on the Y axis. Defaults to
-            0.25.
-        fontsize: Scale bar text size. Defaults to 8.
-        font_weight: Font weight. Defaults to 'bold'.
+        metric_distance: Length in meters of each region of the scale bar.
+        unit: Scale bar distance unit.
+        at_x: Target axes X coordinates (0..1) of box (= left, right).
+        at_y: Axes Y coordinates (0..1) of box (= lower, upper).
+        max_stripes: Typical/maximum number of black+white regions.
+        ytick_label_margins: Location of distance labels on the Y axis.
+        fontsize: Scale bar text size.
+        font_weight: Font weight.
         rotation: Rotation of the length labels for each region of the scale
-            bar. Defaults to 0.
+            bar.
         zorder: z order of the text bounding box.
         paddings: Boundaries of the box that contains the scale bar.
         bbox_kwargs: Style of the box containing the scale bar.
@@ -909,15 +902,15 @@ def add_scale_bar_lite(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): cartopy
             GeoAxesSubplot object.
-        length ([type], optional): Length of the scale car. Defaults to None.
+        length ([type], optional): Length of the scale car.
         xy: Location of the north arrow. Each number representing the percentage length
-            of the map from the lower-left corner. Defaults to (0.1, 0.1).
-        linewidth: Line width of the scale bar. Defaults to 3.
-        fontsize: Text font size. Defaults to 20.
-        color: Color for the scale bar. Defaults to "black".
-        unit: Length unit for the scale bar. Defaults to "km".
-        ha: Horizontal alignment. Defaults to "center".
-        va: Vertical alignment. Defaults to "bottom".
+            of the map from the lower-left corner.
+        linewidth: Line width of the scale bar.
+        fontsize: Text font size.
+        color: Color for the scale bar.
+        unit: Length unit for the scale bar.
+        ha: Horizontal alignment.
+        va: Vertical alignment.
     """
     allow_units = ["cm", "m", "km", "inch", "foot", "mile"]
     if unit not in allow_units:
@@ -1029,19 +1022,19 @@ def add_legend(
     Args:
         ax (cartopy.mpl.geoaxes.GeoAxesSubplot | cartopy.mpl.geoaxes.GeoAxes): Required
             cartopy GeoAxesSubplot object.
-        legend_elements (list, optional): A list of legend elements. Defaults to None.
+        legend_elements (list, optional): A list of legend elements.
         loc: Location of the legend, can be any of ['upper left', 'upper right', 'lower
-            left', 'lower right']. Defaults to "lower right".
+            left', 'lower right'].
         font_size: Font size. Either an absolute font size or an relative value of
             'xx-small', 'x-small', 'small', 'medium', 'large', 'x-large',
-            'xx-large'. Defaults to 14.
+            'xx-large'.
         font_weight: Font weight. A numeric value in the range 0-1000 or one of
             'ultralight', 'light', 'normal' (default), 'regular', 'book', 'medium',
             'roman', 'semibold', 'demibold', 'demi', 'bold', 'heavy', 'extra bold',
-            'black'. Defaults to 'normal'.
-        font_color: Text color. Defaults to "black".
+            'black'.
+        font_color: Text color.
         font_family: Name of font family. Set to a font family like
-            'SimHei' if you want to show Chinese in the legend. Defaults to None.
+            'SimHei' if you want to show Chinese in the legend.
         title: TODO
         title_fontize: TODO
         title_fontproperties: TODO
@@ -1123,18 +1116,17 @@ def get_image_collection_gif(
             [E,S,W,N].
         cmap: TODO
         proj: TODO
-        fps: Video frames per second. Defaults to 10.
+        fps: Video frames per second.
         mp4: Whether to create mp4 video.
         grid_interval (float | tuple[float]): Interval at which to create gridlines,
             units are decimal degrees. Lists will be interpreted a (x_interval,
-            y_interval), such as (0.1, 0.1). Defaults to None.
-        plot_title: Plot title. Defaults to "".
+            y_interval), such as (0.1, 0.1).
+        plot_title: Plot title.
         date_format: A pattern, as described at
             http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html.
-            Defaults to "YYYY-MM-dd".
         fig_size: Size of the figure.
         dpi_plot: The resolution in dots per inch of the plot.
-        file_format: Either 'png' or 'jpg'. Defaults to 'png'.
+        file_format: Either 'png' or 'jpg'.
         north_arrow_dict: Parameters for the north arrow. See
             https://geemap.org/cartoee/#geemap.cartoee.add_north_arrow.
             Defaults to {}.
@@ -1149,7 +1141,7 @@ def get_image_collection_gif(
             https://geemap.org/cartoee/#geemap.cartoee.add_colorbar.
             Defaults to {}.
         verbose: Whether or not to print text when the program is
-            running. Defaults to True.
+            running.
         **kwargs: Additional keyword arguments are passed to the add_layer() function.
     """
     north_arrow_dict = north_arrow_dict or {}
@@ -1318,7 +1310,7 @@ def savefig(
         fig (matplotlib.figure.Figure): The figure to save.
         fname: A path to a file, or a Python file-like object.
         dpi: The resolution in dots per inch. If 'figure', use the figure's dpi
-            value. Defaults to 'figure'.
+            value.
         bbox_inches: Bounding box in inches: only the given portion of the figure is
             saved. If 'tight', try to figure out the tight bbox of the figure.
         kwargs: Additional keyword arguments are passed on to the savefig() method.
