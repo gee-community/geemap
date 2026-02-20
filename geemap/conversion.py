@@ -37,7 +37,7 @@ def find_matching_bracket(
         lines: The input list of lines.
         start_line_index: The line index where the starting bracket is located.
         start_char_index: The position index of the starting bracket.
-        matching_char: The starting bracket to search for. Defaults to '{'.
+        matching_char: The starting bracket to search for.
 
     Returns:
         matching_line_index: Line index where the matching closing bracket is located.
@@ -92,7 +92,7 @@ def format_params(line: str, sep: str = ":") -> str:
 
     Args:
         line: A string.
-        sep: Separator. Defaults to ':'.
+        sep: Separator.
 
     Returns:
         A string with keys quoted.
@@ -342,14 +342,12 @@ def js_to_python(
 
     Args:
         in_file: File path of the input JavaScript.
-        out_file: File path of the output Python script. Defaults to None.
+        out_file: File path of the output Python script.
         use_qgis: Whether to add "from ee_plugin import Map" to the output script.
-            Defaults to True.
-        github_repo: GitHub repo url. Defaults to None.
-        show_map: Whether to add "Map" to the output script. Defaults to True.
+        github_repo: GitHub repo url.
+        show_map: Whether to add "Map" to the output script.
         import_geemap: Whether to add "import geemap" to the output script.
-            Defaults to False.
-        Map: The name of the map variable. Defaults to "m".
+        Map: The name of the map variable.
 
     Returns:
         Python script.
@@ -757,10 +755,10 @@ def js_snippet_to_py(
     Args:
         in_js_snippet: Earth Engine JavaScript within triple quotes.
         add_new_cell: Whether add the converted Python to a new cell.
-        import_ee: Whether to import ee. Defaults to True.
-        import_geemap: Whether to import geemap. Defaults to False.
-        show_map: Whether to show the map. Defaults to True.
-        Map: The name of the map variable. Defaults to "m".
+        import_ee: Whether to import ee.
+        import_geemap: Whether to import geemap.
+        show_map: Whether to show the map.
+        Map: The name of the map variable.
 
     Returns:
         A list of lines of Python script.
@@ -831,13 +829,10 @@ def js_to_python_dir(
     Args:
         in_dir: The input folder containing Earth Engine JavaScript files.
         out_dir: The output folder containing Earth Engine Python files.
-            Defaults to None.
         use_qgis: Whether to add "from ee_plugin import Map" to the output file.
-            Defaults to True.
-        github_repo: GitHub repo url. Defaults to None.
+        github_repo: GitHub repo url.
         import_geemap: Whether to add "import geemap" to the output file.
-            Defaults to False.
-        Map: The name of the map variable. Defaults to "m".
+        Map: The name of the map variable.
     """
     print("Converting Earth Engine JavaScripts to Python scripts...")
     in_dir = os.path.abspath(in_dir)
@@ -870,7 +865,7 @@ def remove_qgis_import(in_file: str, Map: str = "m") -> list[str] | None:
 
     Args:
         in_file: Input file path of the Python script.
-        Map: The name of the map variable. Defaults to "m".
+        Map: The name of the map variable.
 
     Returns:
         Lines 'from ee_plugin import Map' removed or None.
@@ -898,7 +893,7 @@ def get_js_examples(out_dir: str | None = None) -> str:
     """Gets Earth Engine JavaScript examples from the geemap package.
 
     Args:
-        out_dir: The folder to copy the JavaScript examples to. Defaults to None.
+        out_dir: The folder to copy the JavaScript examples to.
 
     Returns:
         The folder containing the JavaScript examples.
@@ -928,8 +923,7 @@ def get_nb_template(
 
     Args:
         download_latest: If True, downloads the latest notebook template from GitHub.
-            Defaults to False.
-        out_file: Set the output file path of the notebook template. Defaults to None.
+        out_file: Set the output file path of the notebook template.
 
     Returns:
         File path of the template.
@@ -1017,9 +1011,9 @@ def py_to_ipynb(
         in_file: Input Earth Engine Python script.
         template_file: Input Jupyter notebook template.
         out_file: Output Jupyter notebook.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
-        Map: The name of the map variable. Defaults to "m".
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
+        Map: The name of the map variable.
     """
     in_file = os.path.abspath(in_file)
 
@@ -1097,10 +1091,10 @@ def py_to_ipynb_dir(
     Args:
         in_dir: Input folder containing Earth Engine Python scripts.
         template_file: Input jupyter notebook template file.
-        out_dir: Output folder. Defaults to None.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
-        Map: The name of the map variable. Defaults to "m".
+        out_dir: Output folder.
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
+        Map: The name of the map variable.
     """
     print("Converting Earth Engine Python scripts to Jupyter notebooks ...")
 
@@ -1165,8 +1159,8 @@ def update_nb_header(
 
     Args:
         in_file: The input Jupyter notebook.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
     """
     if github_username is None:
         github_username = "giswqs"
@@ -1221,8 +1215,8 @@ def update_nb_header_dir(
 
     Args:
         in_dir: The input directory containing Jupyter notebooks.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
     """
     files = list(pathlib.Path(in_dir).rglob("*.ipynb"))
     for index, file in enumerate(files):
@@ -1242,7 +1236,7 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
 
     Args:
         url: The URL of the GEE App.
-        out_file: The output file path for the downloaded JavaScript. Defaults to None.
+        out_file: The output file path for the downloaded JavaScript.
     """
     cwd = os.getcwd()
     out_file_name = os.path.basename(url) + ".js"
