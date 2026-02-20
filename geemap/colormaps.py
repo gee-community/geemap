@@ -215,8 +215,8 @@ def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
     """Plot all available colormaps.
 
     Args:
-        width: Width of the colormap. Defaults to 8.0.
-        height: Height of the colormap. Defaults to 0.4.
+        width: Width of the colormap.
+        height: Height of the colormap.
     """
     cmap_list = list_colormaps()
     nrows = len(cmap_list)
