@@ -278,15 +278,14 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
 
         Args:
             map_type: The type of map to generate. Options are 'roadmap', 'satellite',
-                'terrain', 'hybrid', 'traffic', 'streetview'.  Defaults to 'roadmap'.
+                'terrain', 'hybrid', 'traffic', 'streetview'.
             language: An IETF language tag that specifies the language used to display
-                information on the tiles, such as 'zh-Cn'.  Defaults to 'en-Us'.
+                information on the tiles, such as 'zh-Cn'.
             region: A Common Locale Data Repository region identifier (two uppercase
-                letters) that represents the physical location of the user. Defaults to
-                'US'.
+                letters) that represents the physical location of the user.
             api_key: The API key to use for the Google Maps API.  If not provided, it
                 will try to get it from the environment or Colab user data with the key
-                'GOOGLE_MAPS_API_KEY'. Defaults to None.
+                'GOOGLE_MAPS_API_KEY'.
             **kwargs: Additional parameters to pass to the map generation. For more
                 info, visit https://bit.ly/3UhbZKU
 
@@ -355,13 +354,12 @@ def get_google_map_tile_providers(
 
     Args:
         language: An IETF language tag that specifies the language used to display
-            information on the tiles, such as 'zh-Cn'.  Defaults to 'en-Us'.
+            information on the tiles, such as 'zh-Cn'.
         region: A Common Locale Data Repository region identifier (two uppercase
-            letters) that represents the physical location of the user. Defaults to
-            'US'.
-        api_key: The API key to use for the Google Maps API.  If not provided, it will
+            letters) that represents the physical location of the user.
+        api_key: The API key to use for the Google Maps API. If not provided, it will
             try to get it from the environment or Colab user data with the key
-            'GOOGLE_MAPS_API_KEY'. Defaults to None.
+            'GOOGLE_MAPS_API_KEY'.
         **kwargs: Additional parameters to pass to the map generation. For more info,
             visit https://bit.ly/3UhbZKU
 
@@ -385,8 +383,8 @@ def get_xyz_dict(free_only: bool = True, france: bool = False) -> dict[str, Any]
 
     Args:
         free_only: Whether to return only free xyz tile services that do not require an
-            access token. Defaults to True.
-        france: Whether to include Geoportail France basemaps.  Defaults to False.
+            access token.
+        france: Whether to include Geoportail France basemaps.
 
     Returns:
         dict: A dictionary of xyz services.
