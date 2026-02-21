@@ -185,7 +185,7 @@ class Map(folium.Map):
         Args:
             mapTypeId: A mapTypeId to set the basemap to. Can be one of "ROADMAP",
                 "SATELLITE", "HYBRID" or "TERRAIN" to select one of the standard Google
-                Maps API map types. Defaults to 'HYBRID'.
+                Maps API map types.
             styles ([type], optional): A dictionary of custom MapTypeStyle objects keyed
                 with a name that will appear in the map's Map Type Controls. Defaults to
                 None.
@@ -211,7 +211,7 @@ class Map(folium.Map):
         """Adds a basemap to the map.
 
         Args:
-            basemap: Can be one of string from ee_basemaps. Defaults to 'ROADMAP'.
+            basemap: Can be one of string from ee_basemaps.
         """
         import xyzservices
 
@@ -295,11 +295,9 @@ class Map(folium.Map):
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params: The visualization parameters. Defaults to {}.
-            name: The name of the layer. Defaults to 'Layer untitled'.
-            shown: A flag indicating whether the layer should be on by default. Defaults
-                to True.
-            opacity: The layer's opacity represented as a number between 0 and
-                1. Defaults to 1.
+            name: The name of the layer.
+            shown: A flag indicating whether the layer should be on by default.
+            opacity: The layer's opacity represented as a number between 0 and 1.
         """
         vis_params = vis_params or {}
 
@@ -327,7 +325,7 @@ class Map(folium.Map):
         Args:
             lon: The longitude of the center, in degrees.
             lat: The latitude of the center, in degrees.
-            zoom: The zoom level, from 1 to 24. Defaults to 10.
+            zoom: The zoom level, from 1 to 24.
         """
         self.fit_bounds([[lat, lon], [lat, lon]], max_zoom=zoom)
 
@@ -366,8 +364,8 @@ class Map(folium.Map):
 
         Args:
             ee_object: An Earth Engine object to center on a geometry, image or feature.
-            zoom: The zoom level, from 1 to 24. Defaults to None.
-            max_error: The maximum error for the geometry. Defaults to 0.001.
+            zoom: The zoom level, from 1 to 24.
+            max_error: The maximum error for the geometry.
         """
         if isinstance(ee_object, ee.Geometry):
             geometry = ee_object.transform(maxError=max_error)
@@ -422,11 +420,11 @@ class Map(folium.Map):
 
         Args:
             layerControl: Whether to show the control that allows the user to toggle
-                layers on/off. Defaults to True.
+                layers on/off.
             fullscreenControl: Whether to show the control that allows the user to make
-                the map full-screen. Defaults to True.
+                the map full-screen.
             latLngPopup: Whether to show the control that pops up the Lat/lon when the
-                user clicks on the map. Defaults to True.
+                user clicks on the map.
         """
         if layerControl:
             folium.LayerControl().add_to(self)
@@ -466,10 +464,10 @@ class Map(folium.Map):
 
         Args:
             location (list | tuple): Location of the marker in the format of [lat, lng].
-            popup: The popup text. Defaults to None.
-            tooltip: The tooltip text. Defaults to None.
-            icon: The icon to use. Defaults to None.
-            draggable: Whether the marker is draggable. Defaults to False.
+            popup: The popup text.
+            tooltip: The tooltip text.
+            icon: The icon to use.
+            draggable: Whether the marker is draggable.
         """
         if isinstance(location, list):
             location = tuple(location)
@@ -505,17 +503,15 @@ class Map(folium.Map):
         Args:
             url: The URL of the WMS web service.
             layers: Comma-separated list of WMS layers to show.
-            name: The layer name to use on the layer control. Defaults to None.
-            attribution: The attribution of the data layer. Defaults to ''.
-            overlay: Allows overlay. Defaults to True.
-            control: Adds the layer to the layer control. Defaults to True.
+            name: The layer name to use on the layer control.
+            attribution: The attribution of the data layer.
+            overlay: Allows overlay.
+            control: Adds the layer to the layer control.
             shown: A flag indicating whether the layer should be on by default.
-                Defaults to True.
             format: WMS image format (use ‘image/png’ for layers with transparency).
-                Defaults to 'image/png'.
-            transparent: Whether the layer shall allow transparency. Defaults to True.
-            version: Version of the WMS service to use. Defaults to "1.1.1".
-            styles: Comma-separated list of WMS styles. Defaults to "".
+            transparent: Whether the layer shall allow transparency.
+            version: Version of the WMS service to use.
+            styles: Comma-separated list of WMS styles.
         """
         try:
             folium.raster_layers.WmsTileLayer(
@@ -552,14 +548,12 @@ class Map(folium.Map):
         Args:
             tiles: The URL of the XYZ tile service.
             name: The layer name to use on the layer control.
-                Defaults to 'Untitled'.
-            attribution: The attribution of the data layer. Defaults to '.'.
-            overlay: Allows overlay. Defaults to True.
-            control: Adds the layer to the layer control. Defaults to True.
+            attribution: The attribution of the data layer.
+            overlay: Allows overlay.
+            control: Adds the layer to the layer control.
             shown: A flag indicating whether the layer should be on by default.
-                Defaults to True.
             opacity: Sets the opacity for the layer.
-            API_key: – API key for Cloudmade or Mapbox tiles. Defaults to True.
+            API_key: – API key for Cloudmade or Mapbox tiles.
         """
 
         if "max_zoom" not in kwargs:
@@ -597,12 +591,11 @@ class Map(folium.Map):
 
         Args:
             urlThe URL of the COG tile layer.
-            name: The layer name to use for the layer. Defaults to 'Untitled'.
-            attribution: The attribution to use. Defaults to '.'.
-            opacity: The opacity of the layer. Defaults to 1.
+            name: The layer name to use for the layer.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
             shown: A flag indicating whether the layer should be on by default.
-                Defaults to True.
-            bands: A list of bands to use. Defaults to None.
+            bands: A list of bands to use.
             titiler_endpoint: Titiler endpoint.
                 Defaults to "https://giswqs-titiler-endpoint.hf.space".
         """
@@ -652,12 +645,10 @@ class Map(folium.Map):
             bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
             titiler_endpoint: Titiler endpoint, e.g.,
                 "https://giswqs-titiler-endpoint.hf.space", "planetary-computer", "pc".
-                Defaults to None.
-            name: The layer name to use for the layer. Defaults to 'STAC Layer'.
-            attribution: The attribution to use. Defaults to ''.
-            opacity: The opacity of the layer. Defaults to 1.
+            name: The layer name to use for the layer.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
             shown: A flag indicating whether the layer should be on by default.
-                Defaults to True.
         """
         tile_url = stac_tile(
             url, collection, item, assets, bands, titiler_endpoint, **kwargs
@@ -699,20 +690,19 @@ class Map(folium.Map):
         Args:
             source: The path to the GeoTIFF file or the URL of the Cloud Optimized
                 GeoTIFF.
-            indexes: The band(s) to use. Band indexing starts at 1. Defaults to None.
+            indexes: The band(s) to use. Band indexing starts at 1.
             colormap: The name of the colormap from `matplotlib` to use when plotting a
                 single band. See
                 https://matplotlib.org/stable/gallery/color/colormap_reference.html.
                 Default is greyscale.
             vmin: The minimum value to use when colormapping the colormap when plotting
-                a single band. Defaults to None.
+                a single band.
             vmax: The maximum value to use when colormapping the colormap when plotting
-                a single band. Defaults to None.
+                a single band.
             nodata: The value from the band to use to interpret as not valid data.
-                Defaults to None.
             attribution: Attribution for the source raster. This defaults to a message
-                about it being a local file. Defaults to None.
-            layer_name: The layer name to use. Defaults to 'Raster'.
+                about it being a local file.
+            layer_name: The layer name to use.
             array_args: Additional arguments to pass to `array_to_image`.
                 Defaults to {}.
         """
@@ -766,19 +756,19 @@ class Map(folium.Map):
 
         Args:
             source: The path to the remote Cloud Optimized GeoTIFF.
-            band: The band to use. Band indexing starts at 1. Defaults to None.
+            band: The band to use. Band indexing starts at 1.
             palette: The name of the color palette from `palettable` to use when
                 plotting a single band. See
                 https://jiffyclub.github.io/palettable. Default is greyscale
             vmin: The minimum value to use when colormapping the palette when plotting a
-                single band. Defaults to None.
+                single band.
             vmax: The maximum value to use when colormapping the palette when plotting a
-                single band. Defaults to None.
+                single band.
             nodata: The value from the band to use to interpret as not valid
-                data. Defaults to None.
+                data.
             attribution: Attribution for the source raster. This defaults to a message
-                about it being a local file. Defaults to None.
-            layer_name: The layer name to use. Defaults to None.
+                about it being a local file.
+            layer_name: The layer name to use.
         """
         if isinstance(source, str) and source.startswith(("http://", "https://")):
             self.add_raster(
@@ -813,11 +803,11 @@ class Map(folium.Map):
             data: File path or HTTP URL to the input file or a list of data points in
                 the format of [[x1, y1, z1], [x2, y2, z2]]. For example,
                 https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/world_cities.csv
-            latitude: The column name of latitude. Defaults to "latitude".
-            longitude: The column name of longitude. Defaults to "longitude".
-            value: The column name of values. Defaults to "value".
-            name: Layer name to use. Defaults to "Heat map".
-            radius: Radius of each “point” of the heatmap. Defaults to 25.
+            latitude: The column name of latitude.
+            longitude: The column name of longitude.
+            value: The column name of values.
+            name: Layer name to use.
+            radius: Radius of each “point” of the heatmap.
 
         Raises:
             ValueError: If data is not a list.
@@ -856,20 +846,17 @@ class Map(folium.Map):
         argument to False.
 
         Args:
-            title: Title of the legend. Defaults to 'Legend'. Defaults to "Legend".
-            colors (list, optional): A list of legend colors. Defaults to None.
-            labels (list, optional): A list of legend labels. Defaults to None.
+            title: Title of the legend.
+            colors (list, optional): A list of legend colors.
+            labels (list, optional): A list of legend labels.
             legend_dict (dict, optional): A dictionary containing legend items as keys
                 and color as values.  If provided, legend_keys and legend_colors will be
-                ignored. Defaults to None.
-            builtin_legend: Name of the builtin legend to add to the map. Defaults to
-                None.
-            opacity: The opacity of the legend. Defaults to 1.0.
+                ignored.
+            builtin_legend: Name of the builtin legend to add to the map.
+            opacity: The opacity of the legend.
             position: The position of the legend, can be one of the following:
-                "topleft", "topright", "bottomleft", "bottomright". Defaults to
-                "bottomright".
-            draggable: If True, the legend can be dragged to a new position. Defaults to
-                True.
+                "topleft", "topright", "bottomleft", "bottomright".
+            draggable: If True, the legend can be dragged to a new position.
             style: Additional keyword arguments to style the legend, such as position,
                 bottom, right, z-index, border, background-color, border-radius,
                 padding, font-size, etc. The default style is:
@@ -917,7 +904,7 @@ class Map(folium.Map):
     def add_colorbar(
         self,
         vis_params,
-        index=None,
+        index: list | None = None,
         label: str = "",
         categorical: bool = False,
         step: int | None = None,
@@ -930,14 +917,12 @@ class Map(folium.Map):
             vis_params: TODO.
             index (list, optional):The values corresponding to each color. It has to be
                 sorted, and have the same length as colors. If None, a regular grid
-                between vmin and vmax is created. Defaults to None.
-            label: The caption for the colormap. Defaults to "".
-            categorical: Whether or not to create a categorical colormap. Defaults to
-                False.
-            step: The step to split the LinearColormap into a StepColormap. Defaults to
-                None.
+                between vmin and vmax is created.
+            label: The caption for the colormap.
+            categorical: Whether or not to create a categorical colormap.
+            step: The step to split the LinearColormap into a StepColormap.
             background_color: TODO.
-            # TODO: Fix these.
+            # TODO: Fix these are in vis_params:
             colors (list): The set of colors to be used for interpolation. Colors can be
                 provided in the form: * tuples of RGBA ints between 0 and 255 (e.g:
                 (255, 255, 0) or (255, 255, 0, 255)) * tuples of RGBA floats between
@@ -1027,33 +1012,33 @@ class Map(folium.Map):
         file, and add it to the map using m.add_image().
 
         Args:
-            width: Width of the colorbar in inches. Default is 4.0.
-            height: Height of the colorbar in inches. Default is 0.3.
-            vmin: Minimum value of the colorbar. Default is 0.
-            vmax: Maximum value of the colorbar. Default is 1.0.
+            width: Width of the colorbar in inches.
+            height: Height of the colorbar in inches.
+            vmin: Minimum value of the colorbar.
+            vmax: Maximum value of the colorbar.
             palette (list): List of colors to use for the colorbar. It can also be a
-                cmap name, such as ndvi, ndwi, dem, coolwarm. Default is None.
+                cmap name, such as ndvi, ndwi, dem, coolwarm.
             vis_params (dict): Visualization parameters as a dictionary. See
                 https://developers.google.com/earth-engine/guides/image_visualization for
                 options.
-            cmap: Matplotlib colormap. Defaults to "gray". See
+            cmap: Matplotlib colormap. See
                 https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py
                 for options.
-            discrete: Whether to create a discrete colorbar. Defaults to False.
-            label: Label for the colorbar. Defaults to None.
-            label_size: Font size for the colorbar label. Defaults to 12.
+            discrete: Whether to create a discrete colorbar.
+            label: Label for the colorbar.
+            label_size: Font size for the colorbar label.
             label_weight: Font weight for the colorbar label, can be "normal", "bold",
-                etc. Defaults to "normal".
-            tick_size: Font size for the colorbar tick labels. Defaults to 10.
-            bg_color: Background color for the colorbar. Defaults to "white".
+                etc.
+            tick_size: Font size for the colorbar tick labels.
+            bg_color: Background color for the colorbar.
             orientation: Orientation of the colorbar, such as "vertical" and
-                "horizontal". Defaults to "horizontal".
+                "horizontal".
             dpi: The resolution in dots per inch. If 'figure', use the figure's dpi
-                value. Defaults to "figure".
-            transparent: Whether to make the background transparent. Defaults to False.
+                value.
+            transparent: Whether to make the background transparent.
             position (tuple, optional): The position of the colormap in the format of
                 (x, y), the percentage ranging from 0 to 100, starting from the
-                lower-left corner. Defaults to (0, 0).
+                lower-left corner.
             **kwargs: Other keyword arguments to pass to matplotlib.pyplot.savefig().
 
         Returns:
@@ -1100,7 +1085,7 @@ class Map(folium.Map):
             column: The column name to use for styling.
             palette (list | dict): The palette (e.g., list of colors or a dict
                 containing label and color pairs) to use for styling.
-            layer_name: The name to be used for the new layer. Defaults to "Untitled".
+            layer_name: The name to be used for the new layer.
             shown: TODO
             opacity: TODO
         """
@@ -1123,7 +1108,7 @@ class Map(folium.Map):
 
         Args:
             in_shp: The input file path to the shapefile.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used.
 
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
@@ -1150,13 +1135,11 @@ class Map(folium.Map):
 
         Args:
             in_geojson: The input file path to the GeoJSON.
-            layer_name: The layer name to be used. Defaults to "Untitled".
-            encoding: The encoding of the GeoJSON file. Defaults to "utf-8".
+            layer_name: The layer name to be used.
+            encoding: The encoding of the GeoJSON file.
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
-            fields (list, optional): The fields to be displayed in the popup. Defaults
-                to None.
+                other than "on_hover" or "on_click" will be treated as None.
+            fields (list, optional): The fields to be displayed in the popup.
 
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
@@ -1253,11 +1236,10 @@ class Map(folium.Map):
 
         Args:
             in_kml: The input file path to the KML.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used.
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
-            fields: The fields to be displayed in the popup. Defaults to None.
+                other than "on_hover" or "on_click" will be treated as None.
+            fields: The fields to be displayed in the popup.
 
         Raises:
             FileNotFoundError: The provided KML file could not be found.
@@ -1295,12 +1277,11 @@ class Map(folium.Map):
 
         Args:
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used.
             zoom_to_layer: Whether to zoom to the layer.
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
-            fields: The fields to be displayed in the popup. Defaults to None.
+                other than "on_hover" or "on_click" will be treated as None.
+            fields: The fields to be displayed in the popup.
 
         """
         data = gdf_to_geojson(gdf, epsg="4326")
@@ -1331,7 +1312,7 @@ class Map(folium.Map):
             sql: SQL query to execute in selecting entries from database, or name of the
                 table to read from the database.
             con (sqlalchemy.engine.Engine): Active connection to the database to query.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used.
             zoom_to_layer: Whether to zoom to the layer.
         """
         if "fill_colors" in kwargs:
@@ -1353,7 +1334,7 @@ class Map(folium.Map):
         self,
         query,
         layer_name: str = "Untitled",
-        which_result=None,
+        which_result: int | None = None,
         by_osmid: bool = False,
         to_ee: bool = False,
         geodesic: bool = True,
@@ -1363,15 +1344,13 @@ class Map(folium.Map):
 
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-            layer_name: The layer name to be used. Defaults to "Untitled".
-            style (dict, optional): A dictionary specifying the style to be
-                used. Defaults to {}.
+            layer_name: The layer name to be used.
             which_result (INT, optional): Which geocoding result to use. if None,
                 auto-select the first (Multi)Polygon or raise an error if OSM doesn't
-                return one. to get the top match regardless of geometry type, set
-                which_result=1. Defaults to None.
+                return one. To get the top match regardless of geometry type, set
+                which_result=1.
             by_osmid: If True, handle query as an OSM ID for lookup rather than text
-                search. Defaults to False.
+                search.
             to_ee: Whether to convert the csv to an ee.FeatureCollection.
             geodesic: Whether line segments should be interpreted as spherical
                 geodesics. If false, indicates that line segments should be interpreted
@@ -1407,24 +1386,21 @@ class Map(folium.Map):
 
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-
             which_result: Which geocoding result to use. if None, auto-select the first
                 (Multi)Polygon or raise an error if OSM doesn't return one. to get the
-                top match regardless of geometry type, set which_result=1. Defaults to
-                None.
+                top match regardless of geometry type, set which_result=1.
             by_osmid: If True, handle query as an OSM ID for lookup rather than text
-                search. Defaults to False.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+                search.
+            layer_name: The layer name to be used.
             style: A dictionary specifying the style to be used. Defaults to {}.
-            hover_style: Hover style dictionary. Defaults to {}.
+            hover_style: Hover style dictionary.
             style_callback (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None.
+                takes the feature as argument.
             fill_colors: The random colors to use for filling polygons. Defaults to
                 ["black"].
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
+                other than "on_hover" or "on_click" will be treated as None.
         """
         style = style or {}
         hover_style = hover_style or {}
@@ -1472,18 +1448,17 @@ class Map(folium.Map):
                 return all building footprints in the area. tags = {‘amenity’:True,
                 ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return
                 all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            dist: Distance in meters. Defaults to 1000.
-            layer_name: The layer name to be used. Defaults to "Untitled".
-            style: A dictionary specifying the style to be used. Defaults to {}.
+            dist: Distance in meters.
+            layer_name: The layer name to be used.
+            style: A dictionary specifying the style to be used.
             hover_style: Hover style dictionary. Defaults to {}.
             style_callback: Styling function that is called for each feature, and should
                 return the feature style. This styling function takes the feature as
-                argument. Defaults to None.
+                argument.
             fill_colors: The random colors to use for filling polygons. Defaults to
                 ["black"].
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
+                other than "on_hover" or "on_click" will be treated as None.
         """
         style = style or {}
         hover_style = hover_style or {}
@@ -1530,19 +1505,17 @@ class Map(folium.Map):
                 all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
             which_result: Which geocoding result to use. if None, auto-select the first
                 (Multi)Polygon or raise an error if OSM doesn't return one. to get the
-                top match regardless of geometry type, set which_result=1. Defaults to
-                None.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+                top match regardless of geometry type, set which_result=1.
+            layer_name: The layer name to be used.
             style: A dictionary specifying the style to be used. Defaults to {}.
             hover_style: Hover style dictionary. Defaults to {}.
             style_callback (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None.
+                takes the feature as argument.
             fill_colors: The random colors to use for filling polygons. Defaults to
                 ["black"].
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
+                other than "on_hover" or "on_click" will be treated as None.
         """
         style = style or {}
         hover_style = hover_style or {}
@@ -1588,17 +1561,16 @@ class Map(folium.Map):
                 return all building footprints in the area. tags = {‘amenity’:True,
                 ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return
                 all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            dist: Distance in meters. Defaults to 1000.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            dist: Distance in meters.
+            layer_name: The layer name to be used.
             style: A dictionary specifying the style to be used. Defaults to {}.
             hover_style: Hover style dictionary. Defaults to {}.
             style_callback (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None.
+                takes the feature as argument.
             fill_colors: The random colors to use for filling polygons. Defaults to ["black"].
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
+                other than "on_hover" or "on_click" will be treated as None.
         """
         style = style or {}
         hover_style = hover_style or {}
@@ -1644,17 +1616,16 @@ class Map(folium.Map):
                 area. tags = {‘amenity’:True, ‘landuse’:[‘retail’,’commercial’],
                 ‘highway’:’bus_stop’} would return all amenities, landuse=retail,
                 landuse=commercial, and highway=bus_stop.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used.
             style: A dictionary specifying the style to be used. Defaults to {}.
             hover_style: Hover style dictionary. Defaults to {}.
             style_callback (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None.
+                takes the feature as argument.
             fill_colors (list, optional): The random colors to use for filling
                 polygons. Defaults to ["black"].
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
+                other than "on_hover" or "on_click" will be treated as None.
         """
         style = style or {}
         hover_style = hover_style or {}
@@ -1704,17 +1675,16 @@ class Map(folium.Map):
                 return all building footprints in the area. tags = {‘amenity’:True,
                 ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return
                 all amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used.
             style: A dictionary specifying the style to be used. Defaults to {}.
             hover_style: Hover style dictionary. Defaults to {}.
             style_callback (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None.
+                takes the feature as argument.
             fill_colors: The random colors to use for filling polygons. Defaults to
                 ["black"].
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
+                other than "on_hover" or "on_click" will be treated as None.
         """
         style = style or {}
         hover_style = hover_style or {}
@@ -1756,23 +1726,23 @@ class Map(folium.Map):
 
         Args:
             data: A csv or Pandas DataFrame containing x, y, z values.
-            x: The column name for the x values. Defaults to "longitude".
-            y: The column name for the y values. Defaults to "latitude".
-            popup: A list of column names to be used as the popup. Defaults to None.
-            min_width: The minimum width of the popup. Defaults to 100.
-            max_width: The maximum width of the popup. Defaults to 200.
-            layer_name: The name of the layer. Defaults to "Marker Cluster".
-            color_column: The column name for the color values. Defaults to None.
-            marker_colors: List of colors to be used for the markers. Defaults to None.
+            x: The column name for the x values.
+            y: The column name for the y values.
+            popup: A list of column names to be used as the popup.
+            min_width: The minimum width of the popup.
+            max_width: The maximum width of the popup.
+            layer_name: The name of the layer.
+            color_column: The column name for the color values.
+            marker_colors: List of colors to be used for the markers.
             icon_colors: List of colors to be used for the icons. Defaults to ['white'].
             icon_names: A list of names to be used for the icons. More icons can be
                 found at https://fontawesome.com/v4/icons or
                 https://getbootstrap.com/docs/3.3/components/?utm_source=pocket_mylist. Defaults
                 to ['info'].
-            angle: The angle of the icon. Defaults to 0.
+            angle: The angle of the icon.
             prefix: The prefix states the source of the icon. 'fa' for font-awesome or
-                'glyphicon' for bootstrap 3. Defaults to 'fa'.
-            add_legend: If True, a legend will be added to the map. Defaults to True.
+                'glyphicon' for bootstrap 3.
+            add_legend: If True, a legend will be added to the map.
             max_cluster_radius: The maximum radius that a cluster will cover from the
                 central marker (in pixels).
             **kwargs: Other keyword arguments to pass to folium.MarkerCluster(). For a
@@ -1912,13 +1882,13 @@ class Map(folium.Map):
         Args:
             data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z
                 values.
-            x: The column name for the x values. Defaults to "longitude".
-            y: The column name for the y values. Defaults to "latitude".
-            radius: The radius of the circle. Defaults to 10.
-            popup: A list of column names to be used as the popup. Defaults to None.
-            tooltip: A list of column names to be used as the tooltip. Defaults to None.
-            min_width: The minimum width of the popup. Defaults to 100.
-            max_width: The maximum width of the popup. Defaults to 200.
+            x: The column name for the x values.
+            y: The column name for the y values.
+            radius: The radius of the circle.
+            popup: A list of column names to be used as the popup.
+            tooltip: A list of column names to be used as the tooltip.
+            min_width: The minimum width of the popup.
+            max_width: The maximum width of the popup.
         """
         data = coreutils.github_raw_url(data)
 
@@ -2016,18 +1986,17 @@ class Map(folium.Map):
 
         Args:
             data (str | pd.DataFrame): A csv or Pandas DataFrame containing x, y, z values.
-            x: The column name for the x values. Defaults to "longitude".
-            y: The column name for the y values. Defaults to "latitude".
-            popup: A list of column names to be used as the popup. Defaults to None.
-            min_width: The minimum width of the popup. Defaults to 100.
-            max_width: The maximum width of the popup. Defaults to 200.
-            layer_name: The name of the layer. Defaults to "Marker Cluster".
-            icon: The Font-Awesome icon name to use to render the marker. Defaults to
-                None.
+            x: The column name for the x values.
+            y: The column name for the y values.
+            popup: A list of column names to be used as the popup.
+            min_width: The minimum width of the popup.
+            max_width: The maximum width of the popup.
+            layer_name: The name of the layer.
+            icon: The Font-Awesome icon name to use to render the marker.
             icon_shape: The shape of the marker, such as "retangle-dot",
-                "circle-dot". Defaults to 'circle-dot'.
-            border_width: The width of the border. Defaults to 3.
-            border_color: The color of the border. Defaults to '#0000ff'.
+                "circle-dot".
+            border_width: The width of the border.
+            border_color: The color of the border.
             kwargs: Additional keyword arguments to pass to BeautifyIcon. See
                 https://python-visualization.github.io/folium/plugins.html#folium.plugins.BeautifyIcon.
         """
@@ -2073,15 +2042,20 @@ class Map(folium.Map):
         layer_group.add_to(self)
 
     def add_planet_by_month(
-        self, year=2016, month=1, name=None, api_key=None, token_name="PLANET_API_KEY"
-    ):
+        self,
+        year: int = 2016,
+        month: int = 1,
+        name: str | None = None,
+        api_key: str | None = None,
+        token_name: str = "PLANET_API_KEY",
+    ) -> None:
         """Adds a Planet global mosaic by month to the map. To get a Planet API key, see https://developers.planet.com/quickstart/apis
 
         Args:
-            year (int, optional): The year of Planet global mosaic, must be >=2016. Defaults to 2016.
-            month (int, optional): The month of Planet global mosaic, must be 1-12. Defaults to 1.
-            name (str, optional): The layer name to use. Defaults to None.
-            api_key (str, optional): The Planet API key. Defaults to None.
+            year (int, optional): The year of Planet global mosaic, must be >=2016.
+            month (int, optional): The month of Planet global mosaic, must be 1-12.
+            name (str, optional): The layer name to use.
+            api_key (str, optional): The Planet API key.
             token_name (str, optional): The environment variable name of the API key. Defaults to "PLANET_API_KEY".
         """
         layer = planet_tile_by_month(
@@ -2090,16 +2064,21 @@ class Map(folium.Map):
         layer.add_to(self)
 
     def add_planet_by_quarter(
-        self, year=2016, quarter=1, name=None, api_key=None, token_name="PLANET_API_KEY"
-    ):
+        self,
+        year: int = 2016,
+        quarter: int = 1,
+        name: str | None = None,
+        api_key: str | None = None,
+        token_name: str = "PLANET_API_KEY",
+    ) -> None:
         """Adds a Planet global mosaic by quarter to the map. To get a Planet API key, see https://developers.planet.com/quickstart/apis
 
         Args:
-            year (int, optional): The year of Planet global mosaic, must be >=2016. Defaults to 2016.
-            quarter (int, optional): The quarter of Planet global mosaic, must be 1-12. Defaults to 1.
-            name (str, optional): The layer name to use. Defaults to None.
-            api_key (str, optional): The Planet API key. Defaults to None.
-            token_name (str, optional): The environment variable name of the API key. Defaults to "PLANET_API_KEY".
+            year: The year of Planet global mosaic, must be >=2016.
+            quarter (int, optional): The quarter of Planet global mosaic, must be 1-12.
+            name (str, optional): The layer name to use.
+            api_key (str, optional): The Planet API key.
+            token_name (str, optional): The environment variable name of the API key.
         """
         layer = planet_tile_by_quarter(
             year, quarter, name, api_key, token_name, tile_format="folium"
@@ -2112,7 +2091,7 @@ class Map(folium.Map):
         description: str = "",
         source_url: str = "",
         tags=None,
-        source_file=None,
+        source_file: str | None = None,
         open: bool = True,
         formatting=None,
         token: str | None = None,
@@ -2123,20 +2102,20 @@ class Map(folium.Map):
         Args:
 
             name: The document name - can include spaces, caps, symbols, etc.,
-                e.g., "Profit & Loss 2020". Defaults to "Folium Map".
+                e.g., "Profit & Loss 2020".
             description: A high-level description for the document, this is displayed in
-                searches and thumbnails. Defaults to ''.
+                searches and thumbnails.
             source_url: A URL pointing to the source code for the document, e.g. a
-                GitHub repo or a Colab notebook. Defaults to ''.
+                GitHub repo or a Colab notebook.
             tags (bool, optional): A list of tags (as strings) used to categorise your
-                document. Defaults to None.
+                document.
             source_file (str, optional): Path of jupyter notebook file to
-                upload. Defaults to None.
-            open: Whether to open the map. Defaults to True.
+                upload.
+            open: Whether to open the map.
             formatting (ReportFormatting, optional): Set the basic styling for your
                 report.
             token: The token to use to datapane to publish the map. See
-                https://docs.datapane.com/tut-getting-started. Defaults to None.
+                https://docs.datapane.com/tut-getting-started.
         """
         if os.environ.get("USE_MKDOCS") is not None:
             return
@@ -2172,7 +2151,7 @@ class Map(folium.Map):
         """Exports a map as an HTML file.
 
         Args:
-            filename: File path to the output HTML. Defaults to None.
+            filename: File path to the output HTML.
 
         Raises:
             ValueError: If it is an invalid HTML file.
@@ -2237,13 +2216,6 @@ class Map(folium.Map):
 
             return st_folium(self, width=width, height=height)
         else:
-            # if responsive:
-            #     make_map_responsive = """
-            #     <style>
-            #     [title~="st.iframe"] { width: 100%}
-            #     </style>
-            #     """
-            #     st.markdown(make_map_responsive, unsafe_allow_html=True)
             return components.html(
                 self.to_html(), width=width, height=height, scrolling=scrolling
             )
