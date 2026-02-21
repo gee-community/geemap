@@ -105,8 +105,8 @@ class Map(keplergl.KeplerGl):
         Args:
             in_geojson: The file path or http URL to the input GeoJSON or
                 a dictionary containing the geojson.
-            layer_name: The layer name to be used. Defaults to "Untitled".
-            config: Local path or HTTP URL to the config file. Defaults to None.
+            layer_name: The layer name to be used.
+            config: Local path or HTTP URL to the config file.
 
         Raises:
             FileNotFoundError: The provided GeoJSON file could not be found.
@@ -152,8 +152,8 @@ class Map(keplergl.KeplerGl):
 
         Args:
             in_shp: The input file path to the shapefile.
-            layer_name: The layer name to be used. Defaults to "Untitled".
-            config: Local path or HTTP URL to the config file. Defaults to None.
+            layer_name: The layer name to be used.
+            config: Local path or HTTP URL to the config file.
 
         Raises:
             FileNotFoundError: The provided shapefile could not be found.
@@ -196,9 +196,7 @@ class Map(keplergl.KeplerGl):
         Args:
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
             layer_name (str, optional): The layer name to be used.
-                Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file.
-                Defaults to None.
         """
 
         data = gdf_to_geojson(gdf, epsg="4326")
@@ -217,9 +215,7 @@ class Map(keplergl.KeplerGl):
         Args:
             df (DataFrame): A Pandas DataFrame.
             layer_name (str, optional): The layer name to be used.
-                Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file.
-                Defaults to None.
         """
         try:
             self.add_data(data=df, name=layer_name)
@@ -238,8 +234,8 @@ class Map(keplergl.KeplerGl):
 
         Args:
             in_csv: File path to the CSV.
-            layer_name: The layer name to be used. Defaults to "Untitled".
-            config: Local path or HTTP URL to the config file. Defaults to None.
+            layer_name: The layer name to be used.
+            config: Local path or HTTP URL to the config file.
         """
         df = pd.read_csv(in_csv)
         self.add_df(df, layer_name, config, **kwargs)
@@ -257,8 +253,8 @@ class Map(keplergl.KeplerGl):
             filename: Either the absolute or relative path to the file or URL to be
                 opened, or any object with a read() method (such as an open file or
                 StringIO).
-            layer_name: The layer name to use. Defaults to "Untitled".
-            config: Local path or HTTP URL to the config file. Defaults to None.
+            layer_name: The layer name to use.
+            config: Local path or HTTP URL to the config file.
         """
         if not filename.startswith(("http://", "https://")):
             filename = os.path.abspath(filename)
@@ -303,8 +299,8 @@ class Map(keplergl.KeplerGl):
 
         Args:
             in_kml: The input file path to the KML.
-            layer_name: The layer name to be used. Defaults to "Untitled".
-            config: Local path or HTTP URL to the config file. Defaults to None.
+            layer_name: The layer name to be used.
+            config: Local path or HTTP URL to the config file.
 
         Raises:
             FileNotFoundError: The provided KML file could not be found.
@@ -345,9 +341,7 @@ class Map(keplergl.KeplerGl):
                 of the table to read from the database.
             con (sqlalchemy.engine.Engine): Active connection to the database to query.
             layer_name (str, optional): The layer name to be used.
-                Defaults to "Untitled".
             config (str, optional): Local path or HTTP URL to the config file.
-                Defaults to None.
         """
         gdf = read_postgis(sql, con, **kwargs)
         gdf = gdf.to_crs("epsg:4326")
@@ -369,11 +363,10 @@ class Map(keplergl.KeplerGl):
         """Display a kepler.gl static map in a Jupyter Notebook.
 
         Args
-            width: Width of the map. Defaults to 950.
-            height: Height of the map. Defaults to 600.
+            width: Width of the map.
+            height: Height of the map.
             read_only: Whether to hide the side panel to disable map customization.
-                Defaults to False.
-            out_file: Output html file path. Defaults to None.
+            out_file: Output html file path.
         """
         if isinstance(self, keplergl.KeplerGl):
             if out_file is None:
@@ -407,7 +400,6 @@ class Map(keplergl.KeplerGl):
         Args:
             filename: The output file path to the HTML file.
             read_only: Whether to hide the side panel to disable map customization.
-                Defaults to False.
         """
         try:
             save = True
@@ -448,11 +440,11 @@ class Map(keplergl.KeplerGl):
         """Renders `keplergl.KeplerGl` map figure in a Streamlit app.
 
         Args:
-            width: Width of the map. Defaults to 800.
-            height: Height of the map. Defaults to 600.
-            responsive: Whether to make the map responsive. Defaults to True.
+            width: Width of the map.
+            height: Height of the map.
+            responsive: Whether to make the map responsive.
             scrolling: If True, show a scrollbar when the content is larger than the
-                iframe. Otherwise, do not show a scrollbar. Defaults to False.
+                iframe. Otherwise, do not show a scrollbar.
 
         Raises:
             ImportError: If streamlit is not installed.
@@ -477,7 +469,7 @@ class Map(keplergl.KeplerGl):
         """Loads a kepler.gl config file.
 
         Args:
-            config: Local path or HTTP URL to the config file. Defaults to None.
+            config: Local path or HTTP URL to the config file.
 
         Raises:
             FileNotFoundError: The provided config file could not be found.
