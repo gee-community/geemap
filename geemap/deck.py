@@ -219,7 +219,7 @@ class Map(pdk.Deck):
         """Adds a basemap to the map.
 
         Args:
-            basemap: Can be one of string from pydeck_basemaps. Defaults to 'HYBRID'.
+            basemap: Can be one of string from pydeck_basemaps.
         """
         import xyzservices
 
@@ -265,8 +265,8 @@ class Map(pdk.Deck):
 
         Args:
             gdf (GeoPandas.GeoDataFrame): The GeoPandas GeoDataFrame to add to the map.
-            layer_name: The layer name to be used. Defaults to None.
-            random_color_column: Column name to use for random color. Defaults to None.
+            layer_name: The layer name to be used.
+            random_color_column: Column name to use for random color.
 
         Raises:
             TypeError: gdf must be a GeoPandas GeoDataFrame.
@@ -334,8 +334,8 @@ class Map(pdk.Deck):
 
         Args:
             filename: The input file path to the vector dataset.
-            layer_name: The layer name to be used. Defaults to None.
-            random_color_column: Column name to use for random color. Defaults to None.
+            layer_name: The layer name to be used.
+            random_color_column: Column name to use for random color.
 
         Raises:
             FileNotFoundError: The provided vector file could not be found.
@@ -367,8 +367,8 @@ class Map(pdk.Deck):
 
         Args:
             filename: The input file path to the vector dataset.
-            layer_name: The layer name to be used. Defaults to None.
-            random_color_column: Column name to use for random color. Defaults to None.
+            layer_name: The layer name to be used.
+            random_color_column: Column name to use for random color.
 
         Raises:
             FileNotFoundError: The provided vector file could not be found.
@@ -386,8 +386,8 @@ class Map(pdk.Deck):
 
         Args:
             filename: The input file path to the vector dataset.
-            layer_name: The layer name to be used. Defaults to None.
-            random_color_column: Column name to use for random color. Defaults to None.
+            layer_name: The layer name to be used.
+            random_color_column: Column name to use for random color.
 
         Raises:
             FileNotFoundError: The provided vector file could not be found.
@@ -405,8 +405,8 @@ class Map(pdk.Deck):
 
         Args:
             filename: The input file path to the vector dataset.
-            layer_name): The layer name to be used. Defaults to None.
-            random_color_column: Column name to use for random color. Defaults to None.
+            layer_name): The layer name to be used.
+            random_color_column: Column name to use for random color.
 
         Raises:
             FileNotFoundError: The provided vector file could not be found.
