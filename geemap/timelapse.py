@@ -1522,9 +1522,7 @@ def sentinel1_timeseries(
     # Load and filter Sentinel-1 collection.
     col = ee.ImageCollection("COPERNICUS/S1_GRD").filterBounds(roi)
 
-    # Apply orbit filtering.
     if orbit:
-        # Convert orbit strings to uppercase for consistency.
         orbit_upper = [o.upper() for o in orbit]
         orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
         col = col.filter(orbit_filter)
@@ -5022,9 +5020,7 @@ def sentinel1_timelapse(
         ee.ImageCollection("COPERNICUS/S1_GRD").filterDate(start, end).filterBounds(roi)
     )
 
-    # Apply orbit filtering.
     if orbit:
-        # Convert orbit strings to uppercase for consistency.
         orbit_upper = [o.upper() for o in orbit]
         orbit_filter = ee.Filter.inList("orbitProperties_pass", orbit_upper)
         collection = collection.filter(orbit_filter)
