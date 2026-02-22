@@ -130,18 +130,17 @@ class Colorbar(ipywidgets.Output):
             vis_params: Visualization parameters as a dictionary. See
                 https://developers.google.com/earth-engine/guides/image_visualization # noqa
                 for options.
-            cmap: Matplotlib colormap. Defaults to "gray". See
+            cmap: Matplotlib colormap.
                 https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py # noqa
                 for options.
             discrete: Whether to create a discrete colorbar.
-                Defaults to False.
-            label: Label for the colorbar. Defaults to None.
+            label: Label for the colorbar.
             orientation: Orientation of the colorbar, such as "vertical" and
-                "horizontal". Defaults to "horizontal".
-            transparent_bg: Whether to use transparent background. Defaults to False.
-            font_size: Font size for the colorbar. Defaults to 9.
-            axis_off: Whether to turn off the axis. Defaults to False.
-            max_width: Maximum width of the colorbar in pixels.  Defaults to None.
+                "horizontal".
+            transparent_bg: Whether to use transparent background.
+            font_size: Font size for the colorbar.
+            axis_off: Whether to turn off the axis.
+            max_width: Maximum width of the colorbar in pixels.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
@@ -297,15 +296,14 @@ class Legend(anywidget.AnyWidget):
         """Adds a customized legend to the map.
 
          Args:
-            title: Title of the legend. Defaults to 'Legend'.
+            title: Title of the legend.
             legend_dict: A dictionary containing legend items as keys and color as
-                values. If provided, keys and colors will be ignored. Defaults to None.
-            keys: A list of legend keys. Defaults to None.
-            colors: A list of legend colors. Defaults to None.
-            position: Position of the legend. Defaults to 'bottomright'.
-            builtin_legend: Name of the builtin legend to add to the map. Defaults to
-                None.
-            add_header: Whether the legend can be closed or not. Defaults to True.
+                values. If provided, keys and colors will be ignored.
+            keys: A list of legend keys.
+            colors: A list of legend colors.
+            position: Position of the legend.
+            builtin_legend: Name of the builtin legend to add to the map.
+            add_header: Whether the legend can be closed or not.
             widget_args: Additional arguments. Only "show_close_button" is supported.
 
         Raises:
@@ -456,11 +454,11 @@ class Inspector(anywidget.AnyWidget):
 
         Args:
             host_map: The map to add the inspector widget to.
-            names: The list of layer names to be inspected.  Defaults to None.
-            visible: Whether to inspect visible layers only.  Defaults to True.
-            decimals: The number of decimal places to round the values. Defaults to 2.
-            opened: Whether the inspector is opened. Defaults to True.
-            show_close_button: Whether to show the close button. Defaults to True.
+            names: The list of layer names to be inspected.
+            visible: Whether to inspect visible layers only.
+            decimals: The number of decimal places to round the values.
+            opened: Whether the inspector is opened.
+            show_close_button: Whether to show the close button.
         """
         super().__init__()
 
