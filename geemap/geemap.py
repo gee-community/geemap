@@ -342,6 +342,7 @@ class Map(core.Map):
                 one of the standard Google Maps API map types. Defaults to 'HYBRID'.
             **kwargs: Additional keyword arguments.
         """
+        del kwargs  # Unused.
 
         try:
             self.add(mapTypeId)
@@ -1437,6 +1438,8 @@ class Map(core.Map):
             max_height: Max height of the widget (in pixels), if None it will respect
                 the content size. Defaults to None.
         """
+        del position  # Unused.
+
         if hasattr(self, "random_marker") and self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
@@ -1870,6 +1873,7 @@ class Map(core.Map):
                 'YYYY-MM-dd'.
             add_close_button: Whether to show the close button. Defaults to False.
         """
+        del kwargs  # Unused.
         left_vis = left_vis or {}
 
         controls = self.controls
@@ -1935,6 +1939,7 @@ class Map(core.Map):
         self.add(ipyleaflet.FullScreenControl())
 
         def left_dropdown_change(change):
+            del change  # Unused.
             left_dropdown_index = left_dropdown.index
             if left_dropdown_index is not None and left_dropdown_index >= 0:
                 try:
@@ -1966,6 +1971,7 @@ class Map(core.Map):
         left_dropdown.observe(left_dropdown_change, names="value")
 
         def right_dropdown_change(change) -> None:
+            del change  # Unused.
             right_dropdown_index = right_dropdown.index
             if right_dropdown_index is not None and right_dropdown_index >= 0:
                 try:
@@ -2780,6 +2786,7 @@ class Map(core.Map):
             hover_style = {"weight": style["weight"] + 1, "fillOpacity": 0.5}
 
         def random_color(feature):
+            del feature  # Unused.
             return {
                 "color": "black",
                 "fillColor": random.choice(fill_colors),
@@ -2840,6 +2847,7 @@ class Map(core.Map):
         close_button.observe(close_btn_click, "value")
 
         def update_html(feature, **kwargs):
+            del kwargs  # Unused.
             value = [
                 "<b>{}: </b>{}<br>".format(prop, feature["properties"][prop])
                 for prop in feature["properties"].keys()
@@ -3530,6 +3538,7 @@ class Map(core.Map):
         Raises:
             TypeError: If the ee_object is not ee.Image | ee.ImageCollection.
         """
+        del kwargs  # Unused.
         vis_params = vis_params or {}
 
         if isinstance(ee_object, ee.Image):
@@ -3617,6 +3626,7 @@ class Map(core.Map):
         slider_widget = widgets.HBox([slider, label, play_btn, pause_btn, close_btn])
 
         def play_click(b):
+            del b  # Unused.
 
             play_chk.value = True
 
@@ -3632,12 +3642,14 @@ class Map(core.Map):
             thread.start()
 
         def pause_click(b):
+            del b  # Unused.
             play_chk.value = False
 
         play_btn.on_click(play_click)
         pause_btn.on_click(pause_click)
 
         def slider_changed(change):
+            del change  # Unused.
             self.default_style = {"cursor": "wait"}
             index = slider.value - 1
             label.value = labels[index]
@@ -3650,6 +3662,7 @@ class Map(core.Map):
         slider.observe(slider_changed, "value")
 
         def close_click(b):
+            del b  # Unused.
             play_chk.value = False
             self.toolbar_reset()
             self.remove_ee_layer("Image X")
@@ -3769,6 +3782,8 @@ class Map(core.Map):
             spin: If True, the icon will spin. Defaults to False.
             add_legend: If True, a legend will be added to the map. Defaults to True.
         """
+        del kwargs  # Unused.
+
         icon_colors = icon_colors or ["white"]
         icon_names = icon_names or ["info"]
 
@@ -4097,6 +4112,8 @@ class Map(core.Map):
         """
         import streamlit.components.v1 as components
 
+        del kwargs  # Unused.
+
         return components.html(
             self.to_html(), width=width, height=height, scrolling=scrolling
         )
@@ -4234,6 +4251,8 @@ class Map(core.Map):
         """
         import xyzservices.providers as xyz
         from xyzservices import TileProvider
+
+        del kwargs  # Unused.
 
         if provider.startswith("xyz"):
             name = provider[4:]
@@ -4823,6 +4842,7 @@ class Map(core.Map):
         Returns:
             str: The HTML string to use in Gradio.
         """
+        del width, height, kwargs  # Unused.
         print(
             "The ipyleaflet plotting backend does not support this function. Please use the folium backend instead."
         )
@@ -5168,6 +5188,7 @@ def ts_inspector(
             break
 
     def left_change(change):
+        del change  # Unused.
         # pytype: disable=attribute-error
         split_control.left_layer.url = layers_dict[left_dropdown.value].url
         # pytype: enable=attribute-error
@@ -5175,6 +5196,7 @@ def ts_inspector(
     left_dropdown.observe(left_change, "value")
 
     def right_change(change):
+        del change  # Unused.
         # pytype: disable=attribute-error
         split_control.right_layer.url = layers_dict[right_dropdown.value].url
         # pytype: enable=attribute-error
