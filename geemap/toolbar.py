@@ -163,7 +163,7 @@ def inspector_gui(m: geemap.Map | None = None):
     """Generates a tool GUI template using ipywidgets.
 
     Args:
-        m: The leaflet Map object. Defaults to None.
+        m: The leaflet Map object.
 
     Returns:
         ipywidgets: The tool GUI widget.
@@ -532,7 +532,7 @@ def ee_plot_gui(m, position: str = "topright", **kwargs):
 
     Args:
         m (object): geemap.Map.
-        position: Position of the widget. Defaults to "topright".
+        position: Position of the widget.
     """
     close_btn = widgets.Button(
         icon="times",
@@ -778,8 +778,8 @@ def tool_template(m: geemap.Map | None = None, opened: bool = True):
     """Create a toolbar widget.
 
     Args:
-        m: The geemap.Map instance. Defaults to None.
-        opened: Whether to open the toolbar. Defaults to True.
+        m: The geemap.Map instance.
+        opened: Whether to open the toolbar.
     """
 
     widget_width = "250px"
@@ -957,9 +957,9 @@ def tool_header_template(
     """Create a toolbar widget.
 
     Args:
-        m: The geemap.Map instance. Defaults to None.
-        opened: Whether to open the toolbar. Defaults to True.
-        show_close_button: Whether to show the close button. Defaults to True.
+        m: The geemap.Map instance.
+        opened: Whether to open the toolbar.
+        show_close_button: Whether to show the close button.
     """
 
     widget_width = "250px"
@@ -1816,8 +1816,8 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     """Creates timelapse animations.
 
     Args:
-        m: A geemap Map instance. Defaults to None.
-        basemap: The basemap to use. Defaults to "HYBRID".
+        m: A geemap Map instance.
+        basemap: The basemap to use.
 
     Returns:
         ipywidgets: The interactive GUI.
@@ -2272,7 +2272,7 @@ def time_slider(m: geemap.Map | None = None):
     """Creates a time slider for visualizing any ee.ImageCollection.
 
     Args:
-        m: A geemap Map instance. Defaults to None.
+        m: A geemap Map instance.
 
     Returns:
         ipywidgets: The interactive GUI.
@@ -4607,7 +4607,7 @@ def plotly_search_basemaps(canvas):
     """The widget for search XYZ tile services.
 
     Args:
-        m (plotlymap.Map, optional): The Plotly Map object. Defaults to None.
+        m (plotlymap.Map, optional): The Plotly Map object.
 
     Returns:
         ipywidgets: The tool GUI widget.
