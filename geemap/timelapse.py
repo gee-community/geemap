@@ -4412,8 +4412,8 @@ def modis_ndvi_timelapse(
         overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
         mp4 (bool, optional): Whether to convert the output gif to mp4. Defaults to False.
         fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
-
     """
+    del kwargs  # Unused.
 
     if roi is None:
         roi = ee.Geometry.Polygon(
@@ -5825,6 +5825,8 @@ def add_sample_markers_to_gif(
         roi_bounds (list): [min_lon, min_lat, max_lon, max_lat] bounds of the ROI
         gif_dimensions (int): Dimensions of the GIF
     """
+    del gif_dimensions  # Unused.
+
     warnings.simplefilter("ignore")
 
     in_gif = os.path.abspath(in_gif)
@@ -5977,6 +5979,8 @@ def create_time_series_chart_frames(
     xlabel_interval="auto",
 ):
     """Create frames for the time series chart with current time indicator."""
+    del fps  # Unused.
+
     if not sample_data:
         return []
 
@@ -6134,6 +6138,8 @@ def combine_gif_with_chart(
     base_gif, chart_frames, chart_position, chart_size_ratio, spacer_width, fps, loop
 ):
     """Combine GIF with chart frames."""
+    del chart_size_ratio  # Unused.
+
     base_image = Image.open(base_gif)
     base_frames = []
 
@@ -7083,6 +7089,8 @@ def create_sentinel2_index_timelapse(
     **kwargs,
 ):
     """Create a Sentinel-2 timelapse with indices."""
+    del indices, kwargs  # Unused.
+
     if end_year is None:
         end_year = datetime.datetime.now().year
 
@@ -7184,6 +7192,8 @@ def create_s2_time_series_chart_frames(
     Returns:
         List of paths to chart frame images.
     """
+    del fps  # Unused.
+
     if not sample_data:
         return []
 
@@ -8327,6 +8337,8 @@ def create_landsat_index_timelapse(
     **kwargs,
 ):
     """Create a Landsat timelapse with indices."""
+    del indices, kwargs  # Unused.
+
     if end_year is None:
         end_year = get_current_year()
 
@@ -8425,6 +8437,8 @@ def create_landsat_time_series_chart_frames(
     Returns:
         List of paths to chart frame images.
     """
+    del fps  # Unused.
+
     if not sample_data:
         return []
 
