@@ -1,5 +1,7 @@
 """Various ipywidgets that can be added to a map."""
 
+from __future__ import annotations
+
 from collections.abc import Callable
 import enum
 import functools
@@ -445,7 +447,7 @@ class Inspector(anywidget.AnyWidget):
 
     def __init__(
         self,
-        host_map: "geemap.Map",
+        host_map: geemap.Map,
         names: str | list[str] | None = None,
         visible: bool = True,
         decimals: int = 2,
@@ -919,7 +921,7 @@ class LayerEditor(anywidget.AnyWidget):
         help="List of widget children",
     ).tag(sync=True, **ipywidgets.widget_serialization)
 
-    def __init__(self, host_map: "geemap.Map", layer_dict: dict[str, Any] | None):
+    def __init__(self, host_map: geemap.Map, layer_dict: dict[str, Any] | None):
         """Initializes a layer editor widget.
 
         Args:
