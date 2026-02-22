@@ -39,10 +39,9 @@ class Canvas:
 
         Args:
             map (go.FigureWidget): The map to display.
-            map_min_width: The minimum width of the map. Defaults to '90%'.
-            map_max_width: The maximum width of the map. Defaults to '98%'.
-            map_refresh: Whether to refresh the map when the map is resized. Defaults to
-              False.
+            map_min_width: The minimum width of the map.
+            map_max_width: The maximum width of the map.
+            map_refresh: Whether to refresh the map when the map is resized.
         """
         from .toolbar import plotly_toolbar
 
@@ -93,12 +92,12 @@ class Map(go.FigureWidget):
         More info at https://plotly.com/python/mapbox-layers/.
 
         Args:
-            center: Center of the map. Defaults to (20, 0).
-            zoom: Zoom level of the map. Defaults to 1.
+            center: Center of the map.
+            zoom: Zoom level of the map.
             basemap: Can be one of string from "open-street-map", "carto-positron",
                 "carto-darkmatter", "stamen-terrain", "stamen-toner" or
-                "stamen-watercolor". Defaults to 'open-street-map'.
-            height: Height of the map. Defaults to 600.
+                "stamen-watercolor".
+            height: Height of the map.
         """
         # Authenticates Earth Engine and initializes an Earth Engine session.
         if "ee_initialize" not in kwargs.keys():
@@ -134,11 +133,10 @@ class Map(go.FigureWidget):
         """Shows the map.
 
         Args:
-            toolbar: Whether to show the toolbar. Defaults to True.
-            map_min_width: The minimum width of the map. Defaults to '91%'.
-            map_max_width: The maximum width of the map. Defaults to '98%'.
-            refresh: Whether to refresh the map when the map is resized. Defaults to
-                False.
+            toolbar: Whether to show the toolbar.
+            map_min_width: The minimum width of the map.
+            map_max_width: The maximum width of the map.
+            refresh: Whether to refresh the map when the map is resized.
 
         Returns:
             Canvas: [description]
@@ -205,7 +203,7 @@ class Map(go.FigureWidget):
         Args:
             lat: Latitude.
             lon: Longitude.
-            zoom: Zoom level of the map. Defaults to None.
+            zoom: Zoom level of the map.
         """
         self.update_layout(
             mapbox=dict(
@@ -218,7 +216,7 @@ class Map(go.FigureWidget):
         """Adds a basemap to the map.
 
         Args:
-            basemap: Can be one of string from basemaps. Defaults to 'ROADMAP'.
+            basemap: Can be one of string from basemaps.
         """
         if basemap not in basemaps:
             raise ValueError(
@@ -249,7 +247,7 @@ class Map(go.FigureWidget):
                 https://plotly.com/python/mapbox-layers/ and
                 https://docs.mapbox.com/mapbox-gl-js/style-spec/
             access_token (str, optional): The Mapbox Access token. It can be set as an
-                environment variable "MAPBOX_TOKEN". Defaults to None.
+                environment variable "MAPBOX_TOKEN".
         """
 
         if access_token is None:
@@ -264,7 +262,7 @@ class Map(go.FigureWidget):
 
         Args:
             layer (plotly.graph_objects): Layer to add.
-            name: Name of the layer. Defaults to None.
+            name: Name of the layer.
         """
         if isinstance(name, str):
             layer.name = name
@@ -287,7 +285,7 @@ class Map(go.FigureWidget):
         """Clears all layers from the map.
 
         Args:
-            clear_basemap: If True, clears the basemap. Defaults to False.
+            clear_basemap: If True, clears the basemap.
         """
         if clear_basemap:
             self.data = []
@@ -354,7 +352,7 @@ class Map(go.FigureWidget):
 
         Args:
             name: Name of the layer to set.
-            show: If True, shows the layer. Defaults to True.
+            show: If True, shows the layer.
         """
 
         if name in self.get_tile_layers():
@@ -371,7 +369,7 @@ class Map(go.FigureWidget):
 
         Args:
             name: Name of the layer to set.
-            opacity: Opacity of the layer. Defaults to 1.0.
+            opacity: Opacity of the layer.
         """
 
         if name in self.get_tile_layers():
@@ -399,9 +397,9 @@ class Map(go.FigureWidget):
 
         Args:
             url: The URL of the tile layer.
-            name: Name of the layer. Defaults to 'TileLayer'.
-            attribution: The attribution to use. Defaults to "".
-            opacity: The opacity of the layer. Defaults to 1.
+            name: Name of the layer.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
         """
         layer = {
             "below": "traces",
@@ -429,8 +427,8 @@ class Map(go.FigureWidget):
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
             vis_params (dict, optional): The visualization parameters. Defaults to {}.
             name: The name of the layer. Defaults to 'Layer N'.
-            shown: A flag indicating whether the layer should be on by default. Defaults to True.
-            opacity: The layer's opacity represented as a number between 0 and 1. Defaults to 1.
+            shown: A flag indicating whether the layer should be on by default.
+            opacity: The layer's opacity represented as a number between 0 and 1.
         """
         image = None
 
@@ -520,10 +518,10 @@ class Map(go.FigureWidget):
         Args:
             url: The URL of the COG tile layer, e.g.,
                 https://github.com/opengeos/data/releases/download/raster/Libya-2023-07-01.tif
-            name: The layer name to use for the layer. Defaults to 'Untitled'.
-            attribution: The attribution to use. Defaults to ''.
-            opacity: The opacity of the layer. Defaults to 1.
-            bands (list, optional): The bands to use. Defaults to None.
+            name: The layer name to use for the layer.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
+            bands (list, optional): The bands to use.
             titiler_endpoint: Titiler endpoint. Defaults to
                 https://giswqs-titiler-endpoint.hf.space.
             **kwargs: Arbitrary keyword arguments, including bidx, expression, nodata,
@@ -564,10 +562,10 @@ class Map(go.FigureWidget):
             bands (list): A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]
             titiler_endpoint: Titiler endpoint, e.g.,
                 "https://giswqs-titiler-endpoint.hf.space", "planetary-computer",
-                "pc". Defaults to None.
-            name: The layer name to use for the layer. Defaults to 'STAC Layer'.
-            attribution: The attribution to use. Defaults to ''.
-            opacity: The opacity of the layer. Defaults to 1.
+                "pc".
+            name: The layer name to use for the layer.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
         """
         tile_url = stac_tile(
             url, collection, item, assets, bands, titiler_endpoint, **kwargs
@@ -591,14 +589,13 @@ class Map(go.FigureWidget):
         To get a Planet API key, see https://developers.planet.com/quickstart/apis/
 
         Args:
-            year: The year of Planet global mosaic, must be >=2016. Defaults to 2016.
-            month: The month of Planet global mosaic, must be 1-12. Defaults to 1.
-            api_key: The Planet API key. Defaults to None.
-            token_name: The environment variable name of the API key. Defaults to
-                "PLANET_API_KEY".
+            year: The year of Planet global mosaic, must be >=2016.
+            month: The month of Planet global mosaic, must be 1-12.
+            api_key: The Planet API key.
+            token_name: The environment variable name of the API key.
             name: Name of the layer. Defaults to 'TileLayer'.
-            attribution: The attribution to use. Defaults to "".
-            opacity: The opacity of the layer. Defaults to 1.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
         """
         if name is None:
             name = str(year) + "-" + str(month).zfill(2)
@@ -622,14 +619,13 @@ class Map(go.FigureWidget):
         To get a Planet API key, see https://developers.planet.com/quickstart/apis/
 
         Args:
-            year: The year of Planet global mosaic, must be >=2016. Defaults to 2016.
-            quarter: The quarter of Planet global mosaic, must be 1-4. Defaults to 1.
-            api_key: The Planet API key. Defaults to None.
-            token_name: The environment variable name of the API key. Defaults to
-                "PLANET_API_KEY".
+            year: The year of Planet global mosaic, must be >=2016.
+            quarter: The quarter of Planet global mosaic, must be 1-4.
+            api_key: The Planet API key.
+            token_name: The environment variable name of the API key.
             name: Name of the layer. Defaults to 'TileLayer'.
-            attribution: The attribution to use. Defaults to "".
-            opacity: The opacity of the layer. Defaults to 1.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
         """
         if name is None:
             name = str(year) + "-" + "q" + str(quarter)
@@ -653,17 +649,17 @@ class Map(go.FigureWidget):
             file: A string representing a local file path or a writeable object (e.g. a
                 pathlib.Path object or an open file descriptor)
             format: The desired image format. One of png, jpg, jpeg, webp, svg, pdf,
-                eps. Defaults to None.
+                eps.
             width: The width of the exported image in layout pixels. If the `scale`
                 property is 1.0, this will also be the width of the exported image in
-                physical pixels. Defaults to None.
+                physical pixels.
             height: The height of the exported image in layout pixels. If the `scale`
                 property is 1.0, this will also be the height of the exported image in
-                physical pixels. Defaults to None.
+                physical pixels.
             scale: The scale factor to use when exporting the figure. A scale factor
                 larger than 1.0 will increase the image resolution with respect to the
                 figure's layout pixel dimensions. Whereas as scale factor of less than
-                1.0 will decrease the image resolution. Defaults to None.
+                1.0 will decrease the image resolution.
         """
         self.write_image(
             file, format=format, width=width, height=height, scale=scale, **kwargs
@@ -682,9 +678,9 @@ class Map(go.FigureWidget):
         Args:
             data: File path to vector data, e.g.,
                 https://raw.githubusercontent.com/giswqs/leafmap/master/examples/data/countries.geojson
-            name: Name of the layer. Defaults to None.
-            z: Z value of the data. Defaults to None.
-            colorscale: Color scale of the data. Defaults to "Viridis".
+            name: Name of the layer.
+            z: Z value of the data.
+            colorscale: Color scale of the data.
         """
         import geopandas as gpd
 
@@ -728,13 +724,13 @@ class Map(go.FigureWidget):
             data (str | pd.DataFrame): File path or HTTP URL to the input file or a '.'
                 For example,
                 https://raw.githubusercontent.com/plotly/datasets/master/earthquakes-23k.csv
-            latitude: The column name of latitude. Defaults to "latitude".
-            longitude: The column name of longitude. Defaults to "longitude".
-            z: The column name of z values. Defaults to "value".
-            radius: Radius of each “point” of the heatmap. Defaults to 10.
+            latitude: The column name of latitude.
+            longitude: The column name of longitude.
+            z: The column name of z values.
+            radius: Radius of each “point” of the heatmap.
             colorscale: Color scale of the data, e.g., Viridis. See
-                https://plotly.com/python/builtin-colorscales. Defaults to None.
-            name: Layer name to use. Defaults to "Heat map".
+                https://plotly.com/python/builtin-colorscales.
+            name: Layer name to use.
         """
         if isinstance(data, str):
             df = pd.read_csv(data)
@@ -787,8 +783,8 @@ class Map(go.FigureWidget):
 
         Args:
             gdf (GeoDataFrame): A GeoDataFrame.
-            label_col: The column name of locations. Defaults to None.
-            color_col: The column name of color. Defaults to None.
+            label_col: The column name of locations.
+            color_col: The column name of color.
             labels: TODO
             opacity: TODO
             zoom: TODO
