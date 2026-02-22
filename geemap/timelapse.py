@@ -517,10 +517,8 @@ def add_text_to_gif(
         frames = []
         # Loop over each frame in the animated image.
         for index, frame in enumerate(ImageSequence.Iterator(image)):
-            # Draw the text on the frame.
             frame = frame.convert("RGB")
             draw = ImageDraw.Draw(frame)
-            # w, h = draw.textsize(text[index])
             draw.text(xy, text[index], font=font, fill=color)
             if add_progress_bar:
                 draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
@@ -989,7 +987,7 @@ def create_timelapse(
         step=step,
     )
 
-    # rename the bands to remove the '_reducer' characters from the band names.
+    # Rename the bands to remove the '_reducer' characters from the band names.
     col = col.map(
         lambda img: img.rename(
             img.bandNames().map(lambda name: ee.String(name).replace(f"_{reducer}", ""))
@@ -1808,7 +1806,7 @@ def sentinel2_timeseries_legacy(
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
 
-    # Get Sentinel 2 collections, both Level-1C (top of atmophere).
+    # Get Sentinel 2 collections, both Level-1C (top of atmophere)
     # and Level-2A (surface reflectance).
     MSILCcol = ee.ImageCollection("COPERNICUS/S2")
     MSI2Acol = ee.ImageCollection("COPERNICUS/S2_SR")
@@ -1971,12 +1969,9 @@ def sentinel2_timeseries_legacy(
         )
         imgList = months.map(getMonthlyComp)
 
-    # Convert image composite list to collection.
     imgCol = ee.ImageCollection.fromImages(imgList)
 
-    imgCol = imgCol.map(lambda img: img.clip(roi))
-
-    return imgCol
+    return imgCol.map(lambda img: img.clip(roi))
 
 
 def landsat_timeseries(
@@ -5245,7 +5240,7 @@ def vector_to_gif(
     H = bbox[3] - bbox[1]
 
     if xy is None:
-        # default text location is 5% width and 5% height of the image.
+        # Default text location is 5% width and 5% height of the image.
         xy = int(0.05 * W), int(0.05 * H)
     elif xy is not None and (not isinstance(xy, tuple)) and len(xy) == 2:
         raise Exception("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
