@@ -4022,43 +4022,42 @@ def goes_timelapse(
     * https://jstnbraaten.medium.com/goes-in-earth-engine-53fbc8783c16
 
     Args:
-        roi (ee.Geometry, optional): The region of interest. Defaults to None.
+        roi (ee.Geometry, optional): The region of interest.
         out_gif: The file path to save the gif.
-        start_date: Start date of the time series. Defaults to "2021-10-24T14:00:00".
-        end_date: End date of the time series. Defaults to "2021-10-25T01:00:00".
-        data: The GOES satellite data to use. Defaults to "GOES-17".
-        scan: The GOES scan to use. Defaults to "full_disk".
+        start_date: Start date of the time series.
+        end_date: End date of the time series.
+        data: The GOES satellite data to use.
+        scan: The GOES scan to use.
         bands: The bands to visualize. Defaults to ["CMI_C02", "CMI_GREEN", "CMI_C01"].
         dimensions: A number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum
             dimensions of the thumbnail to render, in pixels. If only one number is
             passed, it is used as the maximum, and the other dimension is computed by
-            proportional scaling. Defaults to 768.
-        framesPerSecond: Animation speed. Defaults to 10.
-        date_format: The date format to use. Defaults to "YYYY-MM-dd HH:mm".
+            proportional scaling.
+        framesPerSecond: Animation speed.
+        date_format: The date format to use.
         xy (tuple, optional): Top left corner of the text. It can be formatted like
-            this: (10, 10) or ('15%', '25%'). Defaults to None.
+            this: (10, 10) or ('15%', '25%').
         text_sequence (int, str, list, optional): Text to be drawn. It can be an integer
-            number, a string, or a list of strings. Defaults to None.
-        font_type: Font type. Defaults to "arial.ttf".
-        font_size: Font size. Defaults to 20.
+            number, a string, or a list of strings.
+        font_type: Font type.
+        font_size: Font size.
         font_color: Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255,
-            127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar: Whether to add a progress bar at the bottom of the
-            GIF. Defaults to True.
-        progress_bar_color: Color for the progress bar. Defaults to 'white'.
-        progress_bar_height: Height of the progress bar. Defaults to 5.
-        loop: controls how many times the animation repeats. The default, 1, means that
+            127, 0)), or hex code (e.g., '#ff00ff').
+        add_progress_bar: Whether to add a progress bar at the bottom of the GIF.
+        progress_bar_color: Color for the progress bar.
+        progress_bar_height: Height of the progress bar.
+        loop: controls how many times the animation repeats. 1 means that
             the animation will play once and then stop (displaying the last frame). A
-            value of 0 means that the animation will repeat forever. Defaults to 0.
-        crs: Coordinate reference system to use, e.g., "EPSG:3857". Defaults to None.
+            value of 0 means that the animation will repeat forever.
+        crs: Coordinate reference system to use, e.g., "EPSG:3857".
         overlay_data (int, str, list, optional): Administrative boundary to be drawn on
-            the timelapse. Defaults to None.
+            the timelapse.
         overlay_color: Color for the overlay data. Can be any color name or hex color
-            code. Defaults to 'black'.
-        overlay_width: Line width of the overlay. Defaults to 1.
-        overlay_opacity: Opacity of the overlay. Defaults to 1.0.
-        mp4: Whether to save the animation as an mp4 file. Defaults to False.
-        fading: If True, add fading effect to the timelapse. Defaults to False, no
+            code.
+        overlay_width: Line width of the overlay.
+        overlay_opacity: Opacity of the overlay.
+        mp4: Whether to save the animation as an mp4 file.
+        fading: If True, add fading effect to the timelapse. Defaults to no
             fading. To add fading effect, set it to True (1 second fading duration) or
             to an integer value (fading duration).
 
@@ -4193,30 +4192,30 @@ def goes_fire_timelapse(
 
     Args:
         out_gif (str): The file path to save the gif.
-        start_date (str, optional): The start date of the time series. Defaults to "2021-10-24T14:00:00".
-        end_date (str, optional): The end date of the time series. Defaults to "2021-10-25T01:00:00".
-        data (str, optional): The GOES satellite data to use. Defaults to "GOES-17".
-        scan (str, optional): The GOES scan to use. Defaults to "full_disk".
-        region (ee.Geometry, optional): The region of interest. Defaults to None.
-        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 10.
-        date_format (str, optional): The date format to use. Defaults to "YYYY-MM-dd HH:mm".
-        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        crs (str, optional): The coordinate reference system to use, e.g., "EPSG:3857". Defaults to None.
-        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        mp4 (bool, optional): Whether to convert the GIF to MP4. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        start_date (str, optional): The start date of the time series.
+        end_date (str, optional): The end date of the time series.
+        data (str, optional): The GOES satellite data to use.
+        scan (str, optional): The GOES scan to use.
+        region (ee.Geometry, optional): The region of interest.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling.
+        frames_per_second (int, optional): Animation speed.
+        date_format (str, optional): The date format to use.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%').
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings.
+        font_type (str, optional): Font type.
+        font_size (int, optional): Font size.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF.
+        progress_bar_color (str, optional): Color for the progress bar.
+        progress_bar_height (int, optional): Height of the progress bar.
+        loop (int, optional): controls how many times the animation repeats. 1 means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever.
+        crs (str, optional): The coordinate reference system to use, e.g., "EPSG:3857".
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code.
+        overlay_width (int, optional): Width of the overlay.
+        overlay_opacity (float, optional): Opacity of the overlay.
+        mp4 (bool, optional): Whether to convert the GIF to MP4.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Raises:
         Exception: Raise exception.
@@ -4290,11 +4289,11 @@ def modis_ndvi_doy_ts(
     """Create MODIS NDVI timeseries. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
 
     Args:
-        data (str, optional): Either "Terra" or "Aqua". Defaults to "Terra".
-        band (str, optional): Either the "NDVI" or "EVI" band. Defaults to "NDVI".
-        start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01". Defaults to None.
-        end_date (str, optional): The end date used to filter the image collection. Defaults to None.
-        region (ee.Geometry, optional): The geometry used to filter the image collection. Defaults to None.
+        data (str, optional): Either "Terra" or "Aqua".
+        band (str, optional): Either the "NDVI" or "EVI" band.
+        start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01".
+        end_date (str, optional): The end date used to filter the image collection.
+        region (ee.Geometry, optional): The geometry used to filter the image collection.
 
     Returns:
         ee.ImageCollection: The MODIS NDVI time series.
@@ -4382,33 +4381,31 @@ def modis_ndvi_timelapse(
     """Create MODIS NDVI timelapse. The source code is adapted from https://developers.google.com/earth-engine/tutorials/community/modis-ndvi-time-series-animation.
 
     Args:
-        roi (ee.Geometry, optional): The geometry used to filter the image collection. Defaults to None.
-        out_gif (str): The output gif file path. Defaults to None.
-        data (str, optional): Either "Terra" or "Aqua". Defaults to "Terra".
-        band (str, optional): Either the "NDVI" or "EVI" band. Defaults to "NDVI".
-        start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01". Defaults to None.
-        end_date (str, optional): The end date used to filter the image collection. Defaults to None.
-        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 10.
-        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
-        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        loop (int, optional): controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        mp4 (bool, optional): Whether to convert the output gif to mp4. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
-
+        roi (ee.Geometry, optional): The geometry used to filter the image collection.
+        out_gif (str): The output gif file path.
+        data (str, optional): Either "Terra" or "Aqua".
+        band (str, optional): Either the "NDVI" or "EVI" band.
+        start_date (str, optional): The start date used to filter the image collection, e.g., "2013-01-01".
+        end_date (str, optional): The end date used to filter the image collection.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling.
+        frames_per_second (int, optional): Animation speed.
+        crs (str, optional): The coordinate reference system to use.
+        xy (tuple, optional): Top left corner of the text. It can be formatted like this: (10, 10) or ('15%', '25%').
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings.
+        font_type (str, optional): Font type.
+        font_size (int, optional): Font size.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF.
+        progress_bar_color (str, optional): Color for the progress bar.
+        progress_bar_height (int, optional): Height of the progress bar.
+        loop (int, optional): controls how many times the animation repeats. 1 means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever.
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code.
+        overlay_width (int, optional): Width of the overlay.
+        overlay_opacity (float, optional): Opacity of the overlay.
+        mp4 (bool, optional): Whether to convert the output gif to mp4.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
     """
-
     if roi is None:
         roi = ee.Geometry.Polygon(
             [
@@ -4531,18 +4528,17 @@ def modis_ocean_color_timeseries(
         satellite (str): The satellite to use, can be either "Terra" or "Aqua".
         start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
         end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
-        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
-        bands (list, optional): The list of bands to use to create the timeseries. It must be a list of strings. Defaults to None.
-        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day'. Defaults to 'year'.
-        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
-        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        region (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object.
+        bands (list, optional): The list of bands to use to create the timeseries. It must be a list of strings.
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
-        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default. Defaults to 1.
+        parallel_scale (int, optional): A scaling factor used to limit memory use; using a larger parallel_scale (e.g. 2 or 4) may enable computations that run out of memory with the default.
 
     Returns:
         ee.ImageCollection: The timeseries.
     """
-
     if satellite not in ["Terra", "Aqua"]:
         raise Exception("Satellite must be 'Terra' or 'Aqua'.")
 
@@ -4628,48 +4624,48 @@ def modis_ocean_color_timelapse(
         satellite (str): The satellite to use, can be either "Terra" or "Aqua".
         start_date (str): The start date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
         end_date (str): The end date of the timeseries. It must be formatted like this: 'YYYY-MM-dd'.
-        roi (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object. Defaults to None.
-        bands (list, optional): A list of band names to use in the timelapse. Defaults to None.
-        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'. Defaults to 'year'.
-        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'. Defaults to 'median'.
-        drop_empty (bool, optional): Whether to drop empty images from the timeseries. Defaults to True.
+        roi (ee.Geometry, optional): The region to use to filter the collection of images. It must be an ee.Geometry object.
+        bands (list, optional): A list of band names to use in the timelapse.
+        frequency (str, optional): The frequency of the timeseries. It must be one of the following: 'year', 'month', 'day', 'hour', 'minute', 'second'.
+        reducer (str, optional):  The reducer to use to reduce the collection of images to a single value. It can be one of the following: 'median', 'mean', 'min', 'max', 'variance', 'sum'.
+        drop_empty (bool, optional): Whether to drop empty images from the timeseries.
         date_format (str, optional): A pattern, as described at http://joda-time.sourceforge.net/apidocs/org/joda/time/format/DateTimeFormat.html. Defaults to 'YYYY-MM-dd'.
-        out_gif (str): The output gif file path. Defaults to None.
-        palette (list, optional): A list of colors to render a single-band image in the timelapse. Defaults to None.
-        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. Defaults to None. See more at https://developers.google.com/earth-engine/guides/image_visualization.
-        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling. Defaults to 768.
-        frames_per_second (int, optional): Animation speed. Defaults to 10.
-        crs (str, optional): The coordinate reference system to use. Defaults to "EPSG:3857".
-        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse. Defaults to None.
-        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code. Defaults to 'black'.
-        overlay_width (int, optional): Width of the overlay. Defaults to 1.
-        overlay_opacity (float, optional): Opacity of the overlay. Defaults to 1.0.
-        title (str, optional): The title of the timelapse. Defaults to None.
-        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        add_text (bool, optional): Whether to add animated text to the timelapse. Defaults to True.
-        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings. Defaults to None.
-        font_type (str, optional): Font type. Defaults to "arial.ttf".
-        font_size (int, optional): Font size. Defaults to 20.
-        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').  Defaults to '#000000'.
-        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF. Defaults to True.
-        progress_bar_color (str, optional): Color for the progress bar. Defaults to 'white'.
-        progress_bar_height (int, optional): Height of the progress bar. Defaults to 5.
-        add_colorbar (bool, optional): Whether to add a colorbar to the timelapse. Defaults to False.
-        colorbar_width (float, optional): Width of the colorbar. Defaults to 6.0.
-        colorbar_height (float, optional): Height of the colorbar. Defaults to 0.4.
-        colorbar_label (str, optional): Label for the colorbar. Defaults to None.
-        colorbar_label_size (int, optional): Font size for the colorbar label. Defaults to 12.
-        colorbar_label_weight (str, optional): Font weight for the colorbar label. Defaults to 'normal'.
-        colorbar_tick_size (int, optional): Font size for the colorbar ticks. Defaults to 10.
-        colorbar_bg_color (str, optional): Background color for the colorbar, can be color like "white", "black". Defaults to None.
-        colorbar_orientation (str, optional): Orientation of the colorbar. Defaults to 'horizontal'.
-        colorbar_dpi (str, optional): DPI for the colorbar, can be numbers like 100, 300. Defaults to 'figure'.
-        colorbar_xy (tuple, optional): Lower left corner of the colorbar. It can be formatted like this: (10, 10) or ('15%', '25%'). Defaults to None.
-        colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300). Defaults to (300, 300).
-        loop (int, optional): Controls how many times the animation repeats. The default, 1, means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever. Defaults to 0.
-        mp4 (bool, optional): Whether to create an mp4 file. Defaults to False.
-        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to False, no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
+        out_gif (str): The output gif file path.
+        palette (list, optional): A list of colors to render a single-band image in the timelapse.
+        vis_params (dict, optional): A dictionary of visualization parameters to use in the timelapse. See more at https://developers.google.com/earth-engine/guides/image_visualization.
+        dimensions (int, optional): a number or pair of numbers (in format 'WIDTHxHEIGHT') Maximum dimensions of the thumbnail to render, in pixels. If only one number is passed, it is used as the maximum, and the other dimension is computed by proportional scaling.
+        frames_per_second (int, optional): Animation speed.
+        crs (str, optional): The coordinate reference system to use.
+        overlay_data (int, str, list, optional): Administrative boundary to be drawn on the timelapse.
+        overlay_color (str, optional): Color for the overlay data. Can be any color name or hex color code.
+        overlay_width (int, optional): Width of the overlay.
+        overlay_opacity (float, optional): Opacity of the overlay.
+        title (str, optional): The title of the timelapse.
+        title_xy (tuple, optional): Lower left corner of the title. It can be formatted like this: (10, 10) or ('15%', '25%').
+        add_text (bool, optional): Whether to add animated text to the timelapse.
+        title_xy (tuple, optional): Lower left corner of the text sequency. It can be formatted like this: (10, 10) or ('15%', '25%').
+        text_sequence (int, str, list, optional): Text to be drawn. It can be an integer number, a string, or a list of strings.
+        font_type (str, optional): Font type.
+        font_size (int, optional): Font size.
+        font_color (str, optional): Font color. It can be a string (e.g., 'red'), rgb tuple (e.g., (255, 127, 0)), or hex code (e.g., '#ff00ff').
+        add_progress_bar (bool, optional): Whether to add a progress bar at the bottom of the GIF.
+        progress_bar_color (str, optional): Color for the progress bar.
+        progress_bar_height (int, optional): Height of the progress bar.
+        add_colorbar (bool, optional): Whether to add a colorbar to the timelapse.
+        colorbar_width (float, optional): Width of the colorbar.
+        colorbar_height (float, optional): Height of the colorbar.
+        colorbar_label (str, optional): Label for the colorbar.
+        colorbar_label_size (int, optional): Font size for the colorbar label.
+        colorbar_label_weight (str, optional): Font weight for the colorbar label.
+        colorbar_tick_size (int, optional): Font size for the colorbar ticks.
+        colorbar_bg_color (str, optional): Background color for the colorbar, can be color like "white", "black".
+        colorbar_orientation (str, optional): Orientation of the colorbar.
+        colorbar_dpi (str, optional): DPI for the colorbar, can be numbers like 100, 300.
+        colorbar_xy (tuple, optional): Lower left corner of the colorbar. It can be formatted like this: (10, 10) or ('15%', '25%').
+        colorbar_size (tuple, optional): Size of the colorbar. It can be formatted like this: (300, 300).
+        loop (int, optional): Controls how many times the animation repeats. 1 means that the animation will play once and then stop (displaying the last frame). A value of 0 means that the animation will repeat forever.
+        mp4 (bool, optional): Whether to create an mp4 file.
+        fading (int | bool, optional): If True, add fading effect to the timelapse. Defaults to no fading. To add fading effect, set it to True (1 second fading duration) or to an integer value (fading duration).
 
     Returns:
         str: File path to the timelapse gif.
