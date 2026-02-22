@@ -289,6 +289,7 @@ def inspector_gui(m: geemap.Map | None = None):
     )
 
     def chk_change(change) -> None:
+        del change  # Unused.
         if hasattr(m, "pixel_values"):
             m.pixel_values = []
         if hasattr(m, "marker_cluster"):
@@ -534,6 +535,8 @@ def ee_plot_gui(m, position: str = "topright", **kwargs):
         m (object): geemap.Map.
         position: Position of the widget. Defaults to "topright".
     """
+    del kwargs  # Unused.
+
     close_btn = widgets.Button(
         icon="times",
         tooltip="Close the plot widget",
@@ -1223,6 +1226,7 @@ def open_data_widget(m):
     bands.observe(bands_changed, "value")
 
     def chooser_callback(chooser) -> None:
+        del chooser  # Unused.
         filepath.value = file_chooser.selected
 
         if file_type.value == "CSV":
@@ -1635,6 +1639,7 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
     tool_widget.children = children
 
     def run_button_clicked(b) -> None:
+        del b  # Unused.
         tool_output.outputs = ()
 
         required_params = required_inputs.copy()
@@ -1671,6 +1676,7 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
                 pass
 
     def help_button_clicked(b) -> None:
+        del b  # Unused.
         tool_output.outputs = ()
         with tool_output:
             html = widgets.HTML(
@@ -1680,6 +1686,7 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
         webbrowser.open_new_tab(tool_dict["link"])
 
     def code_button_clicked(b) -> None:
+        del b  # Unused.
         with tool_output:
             html = widgets.HTML(
                 value=f'<a href={tool_dict["link"]} target="_blank">{tool_dict["link"]}</a>'
@@ -1688,9 +1695,11 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
         webbrowser.open_new_tab(tool_dict["link"])
 
     def cancel_btn_clicked(b) -> None:
+        del b  # Unused.
         tool_output.outputs = ()
 
     def import_button_clicked(b) -> None:
+        del b  # Unused.
         tool_output.outputs = ()
 
         content = []
@@ -1800,6 +1809,7 @@ def build_toolbox(tools_dict, max_width: str = "1080px", max_height: str = "600p
     full_widget.cleanup = cleanup
 
     def close_btn_clicked(b) -> None:
+        del b  # Unused.
         full_widget.cleanup()
 
     close_btn.on_click(close_btn_clicked)
@@ -2052,6 +2062,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     )
 
     def nd_index_change(change) -> None:
+        del change  # Unused.
         if nd_indices.value == "Vegetation Index (NDVI)":
             first_band.value = "NIR"
             second_band.value = "Red"
@@ -2086,6 +2097,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     )
 
     def submit_clicked(b) -> None:
+        del b  # Unused.
         if start_year.value > end_year.value:
             print("The end year must be great than the start year.")
             return
@@ -2178,6 +2190,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     )
 
     def reset_btn_click(change) -> None:
+        del change  # Unused.
         output.outputs = ()
 
     reset_btn.on_click(reset_btn_click)
@@ -2568,6 +2581,7 @@ def time_slider(m: geemap.Map | None = None):
     )
 
     def add_color_clicked(b) -> None:
+        del b  # Unused.
         if color_picker.value is not None:
             if len(palette.value) == 0:
                 palette.value = color_picker.value[1:]
@@ -2575,6 +2589,7 @@ def time_slider(m: geemap.Map | None = None):
                 palette.value += ", " + color_picker.value[1:]
 
     def del_color_clicked(b) -> None:
+        del b  # Unused.
         if "," in palette.value:
             items = [item.strip() for item in palette.value.split(",")]
             palette.value = ", ".join(items[:-1])
@@ -2582,6 +2597,7 @@ def time_slider(m: geemap.Map | None = None):
             palette.value = ""
 
     def reset_color_clicked(b) -> None:
+        del b  # Unused.
         palette.value = ""
 
     add_color.on_click(add_color_clicked)
@@ -2589,6 +2605,7 @@ def time_slider(m: geemap.Map | None = None):
     reset_color.on_click(reset_color_clicked)
 
     def colormap_changed(change) -> None:
+        del change  # Unused.
         if change["new"]:
             n_class = None
             if classes.value != "Any":
@@ -2766,6 +2783,7 @@ def time_slider(m: geemap.Map | None = None):
     )
 
     def submit_clicked(b):
+        del b  # Unused.
         output.outputs = ()
         with output:
             if start_year.value > end_year.value:
@@ -2903,6 +2921,7 @@ def time_slider(m: geemap.Map | None = None):
     )
 
     def reset_btn_click(change) -> None:
+        del change  # Unused.
         output.outputs = ()
         collection.value = col_options[0]
         region.value = "User-drawn ROI"
@@ -3557,6 +3576,7 @@ def sankee_gui(m=None):
         )
 
         def plot_close_btn_clicked(b) -> None:
+            del b  # Unused.
             plot_widget.children = []
 
         plot_close_btn.on_click(plot_close_btn_clicked)
@@ -3570,6 +3590,7 @@ def sankee_gui(m=None):
         )
 
         def plot_reset_btn_clicked(b) -> None:
+            del b  # Unused.
             m.sankee_plot.update_layout(
                 width=600,
                 height=250,
@@ -3590,6 +3611,7 @@ def sankee_gui(m=None):
         )
 
         def plot_fullscreen_btn_clicked(b) -> None:
+            del b  # Unused.
             m.sankee_plot.update_layout(
                 width=1030,
                 height=int(m.layout.height[:-2]) - 60,
@@ -3610,6 +3632,7 @@ def sankee_gui(m=None):
         )
 
         def width_btn_clicked(b) -> None:
+            del b  # Unused.
             m.sankee_plot.update_layout(
                 width=1030,
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
@@ -3629,6 +3652,7 @@ def sankee_gui(m=None):
         )
 
         def height_btn_clicked(b) -> None:
+            del b  # Unused.
             m.sankee_plot.update_layout(
                 height=int(m.layout.height[:-2]) - 60,
                 margin=dict(l=10, r=10, b=10, t=50, pad=5),
@@ -3866,6 +3890,8 @@ def split_basemaps(
 ):
     from .geemap import basemaps
 
+    del kwargs  # Unused.
+
     controls = m.controls
     layers = m.layers
     m.layers = [m.layers[0]]
@@ -3942,6 +3968,7 @@ def split_basemaps(
             break
 
     def left_change(change) -> None:
+        del change  # Unused.
         # pytype: disable=attribute-error
         split_control.left_layer.url = layers_dict[left_dropdown.value].url
         # pytype: enable=attribute-error
@@ -3949,6 +3976,7 @@ def split_basemaps(
     left_dropdown.observe(left_change, "value")
 
     def right_change(change) -> None:
+        del change  # Unused.
         # pytype: disable=attribute-error
         split_control.right_layer.url = layers_dict[right_dropdown.value].url
         # pytype: enable=attribute-error
@@ -4594,6 +4622,7 @@ def plotly_basemap_gui(canvas, map_min_width="78%", map_max_width="98%"):
     dropdown.observe(on_click, "value")
 
     def close_click(change) -> None:
+        del change  # Unused.
         container_widget.children = []
         basemap_widget.close()
         map_widget.layout.width = map_max_width
@@ -4664,6 +4693,7 @@ def plotly_search_basemaps(canvas):
     )
 
     def search_callback(change) -> None:
+        del change  # Unused.
         providers.options = []
         if keyword.value != "":
             tiles = search_xyz_services(keyword=keyword.value)
