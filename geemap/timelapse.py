@@ -1814,7 +1814,7 @@ def sentinel2_timeseries_legacy(
     start_month = int(start_date[:2])
     start_day = int(start_date[3:5])
 
-    # Get Sentinel 2 collections, both Level-1C (top of atmophere)
+    # Get Sentinel 2 collections, both Level-1C (top of atmosphere)
     # and Level-2A (surface reflectance).
     MSILCcol = ee.ImageCollection("COPERNICUS/S2")
     MSI2Acol = ee.ImageCollection("COPERNICUS/S2_SR")
