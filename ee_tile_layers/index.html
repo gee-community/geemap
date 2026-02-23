@@ -7045,9 +7045,7 @@
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EEFoliumTileLayer</span><span class="p">(</span><span class="n">folium</span><span class="o">.</span><span class="n">raster_layers</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
+<span class="normal">153</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EEFoliumTileLayer</span><span class="p">(</span><span class="n">folium</span><span class="o">.</span><span class="n">raster_layers</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A Folium raster TileLayer that shows an EE object.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -7069,12 +7067,10 @@
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object: The object to add to the map.</span>
-<span class="sd">            vis_params: The visualization parameters. Defaults to None.</span>
-<span class="sd">            name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">            vis_params: The visualization parameters.</span>
+<span class="sd">            name: The name of the layer.</span>
 <span class="sd">            shown: A flag indicating whether the layer should be on by default.</span>
-<span class="sd">                Defaults to True.</span>
 <span class="sd">            opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
-<span class="sd">                Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
             <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
@@ -7156,7 +7152,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The visualization parameters. Defaults to None.</p>
+                <p>The visualization parameters.</p>
               </div>
             </td>
             <td>
@@ -7172,7 +7168,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the layer. Defaults to 'Layer untitled'.</p>
+                <p>The name of the layer.</p>
               </div>
             </td>
             <td>
@@ -7188,8 +7184,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A flag indicating whether the layer should be on by default.
-Defaults to True.</p>
+                <p>A flag indicating whether the layer should be on by default.</p>
               </div>
             </td>
             <td>
@@ -7205,8 +7200,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Layer's opacity represented as a number between 0 and 1.
-Defaults to 1.</p>
+                <p>Layer's opacity represented as a number between 0 and 1.</p>
               </div>
             </td>
             <td>
@@ -7256,9 +7250,7 @@ Defaults to 1.</p>
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
-<span class="normal">153</span>
-<span class="normal">154</span>
-<span class="normal">155</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">153</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">ee_object</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span>
@@ -7277,12 +7269,10 @@ Defaults to 1.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object: The object to add to the map.</span>
-<span class="sd">        vis_params: The visualization parameters. Defaults to None.</span>
-<span class="sd">        name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">        vis_params: The visualization parameters.</span>
+<span class="sd">        name: The name of the layer.</span>
 <span class="sd">        shown: A flag indicating whether the layer should be on by default.</span>
-<span class="sd">            Defaults to True.</span>
 <span class="sd">        opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
-<span class="sd">            Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
         <span class="n">ee_object</span><span class="p">,</span> <span class="n">_validate_vis_params</span><span class="p">(</span><span class="n">vis_params</span><span class="p">)</span>
@@ -7340,7 +7330,9 @@ Defaults to 1.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">158</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">156</span>
+<span class="normal">157</span>
+<span class="normal">158</span>
 <span class="normal">159</span>
 <span class="normal">160</span>
 <span class="normal">161</span>
@@ -7479,11 +7471,7 @@ Defaults to 1.</p>
 <span class="normal">294</span>
 <span class="normal">295</span>
 <span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EELeafletTileLayer</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
+<span class="normal">297</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">EELeafletTileLayer</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">TileLayer</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;An ipyleaflet TileLayer that shows an EE object.&quot;&quot;&quot;</span>
 
     <span class="n">EE_TYPES</span> <span class="o">=</span> <span class="p">(</span>
@@ -7513,12 +7501,10 @@ Defaults to 1.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object: The object to add to the map.</span>
-<span class="sd">            vis_params: The visualization parameters. Defaults to None.</span>
-<span class="sd">            name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">            vis_params: The visualization parameters.</span>
+<span class="sd">            name: The name of the layer.</span>
 <span class="sd">            shown: A flag indicating whether the layer should be on by default.</span>
-<span class="sd">                Defaults to True.</span>
 <span class="sd">            opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
-<span class="sd">                Defaults to 1.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
@@ -7693,7 +7679,7 @@ Defaults to 1.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The visualization parameters. Defaults to None.</p>
+                <p>The visualization parameters.</p>
               </div>
             </td>
             <td>
@@ -7709,7 +7695,7 @@ Defaults to 1.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the layer. Defaults to 'Layer untitled'.</p>
+                <p>The name of the layer.</p>
               </div>
             </td>
             <td>
@@ -7725,8 +7711,7 @@ Defaults to 1.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>A flag indicating whether the layer should be on by default.
-Defaults to True.</p>
+                <p>A flag indicating whether the layer should be on by default.</p>
               </div>
             </td>
             <td>
@@ -7742,8 +7727,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Layer's opacity represented as a number between 0 and 1.
-Defaults to 1.</p>
+                <p>Layer's opacity represented as a number between 0 and 1.</p>
               </div>
             </td>
             <td>
@@ -7756,7 +7740,9 @@ Defaults to 1.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">169</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">167</span>
+<span class="normal">168</span>
+<span class="normal">169</span>
 <span class="normal">170</span>
 <span class="normal">171</span>
 <span class="normal">172</span>
@@ -7790,11 +7776,7 @@ Defaults to 1.</p>
 <span class="normal">200</span>
 <span class="normal">201</span>
 <span class="normal">202</span>
-<span class="normal">203</span>
-<span class="normal">204</span>
-<span class="normal">205</span>
-<span class="normal">206</span>
-<span class="normal">207</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">203</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">ee_object</span><span class="p">:</span> <span class="p">(</span>
         <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span>
@@ -7813,12 +7795,10 @@ Defaults to 1.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object: The object to add to the map.</span>
-<span class="sd">        vis_params: The visualization parameters. Defaults to None.</span>
-<span class="sd">        name: The name of the layer. Defaults to &#39;Layer untitled&#39;.</span>
+<span class="sd">        vis_params: The visualization parameters.</span>
+<span class="sd">        name: The name of the layer.</span>
 <span class="sd">        shown: A flag indicating whether the layer should be on by default.</span>
-<span class="sd">            Defaults to True.</span>
 <span class="sd">        opacity: Layer&#39;s opacity represented as a number between 0 and 1.</span>
-<span class="sd">            Defaults to 1.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span> <span class="o">=</span> <span class="n">ee_object</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">url_format</span> <span class="o">=</span> <span class="n">_get_tile_url_format</span><span class="p">(</span>
@@ -7957,7 +7937,11 @@ Defaults to 1.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ee_tile_layers.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">263</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">259</span>
+<span class="normal">260</span>
+<span class="normal">261</span>
+<span class="normal">262</span>
+<span class="normal">263</span>
 <span class="normal">264</span>
 <span class="normal">265</span>
 <span class="normal">266</span>
@@ -7991,11 +7975,7 @@ Defaults to 1.</p>
 <span class="normal">294</span>
 <span class="normal">295</span>
 <span class="normal">296</span>
-<span class="normal">297</span>
-<span class="normal">298</span>
-<span class="normal">299</span>
-<span class="normal">300</span>
-<span class="normal">301</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">calculate_vis_minmax</span><span class="p">(</span>
+<span class="normal">297</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">calculate_vis_minmax</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="o">*</span><span class="p">,</span>
     <span class="n">bounds</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
