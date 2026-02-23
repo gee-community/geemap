@@ -2659,7 +2659,7 @@ class Map(folium.Map):
         Args:
             filename: File path or HTTP URL to the netCDF file.
             variables: The variable/band names to extract data from the netCDF
-                file. Defaults to None. If None, all variables will be extracted.
+                file. If None, all variables will be extracted.
             palette: The name of the color palette from `palettable` to use when
                 plotting a single band. See
                 https://jiffyclub.github.io/palettable. Default is greyscale
@@ -2764,10 +2764,10 @@ class Map(folium.Map):
                     An option to control brackets from mapclassify legend.
                     If True, open/closed interval brackets are shown in the legend.
             classification_kwds (dict, optional): Keyword arguments to pass to
-                mapclassify. Defaults to None.
+                mapclassify.
             style_function (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None. style_callback is a
+                takes the feature as argument. style_callback is a
                 function that takes the feature as argument and should return a
                 dictionary of the following form:
                     style_callback = lambda feat: {"fillColor": feat["properties"]["color"]}
@@ -2783,9 +2783,9 @@ class Map(folium.Map):
                         "dashArray": "9"
                         "clickable": True,
                     }
-            hightlight_function (function, optional): Highlighting function that is
+            highlight_function (function, optional): Highlighting function that is
                 called for each feature, and should return the feature style. This
-                styling function takes the feature as argument. Defaults to None.
+                styling function takes the feature as argument.
                 highlight_function is a function that takes the feature as argument and
                 should return a dictionary of the following form:
                     highlight_function = lambda feat: {"fillColor": feat["properties"]["color"]}
