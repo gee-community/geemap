@@ -2400,15 +2400,14 @@ class Map(folium.Map):
         Args:
             data (pd.DataFrame | ee.FeatureCollection): The input data to label.
             column: The column name of the data to label.
-            font_size: The font size of the labels. Defaults to "12pt".
-            font_color: The font color of the labels. Defaults to "black".
-            font_family: The font family of the labels. Defaults to "arial".
-            font_weight: The font weight of the labels, can be normal, bold. Defaults
-                to "normal".
-            x: The column name of the longitude. Defaults to "longitude".
-            y: The column name of the latitude. Defaults to "latitude".
-            draggable: Whether the labels are draggable. Defaults to True.
-            layer_name: The name of the layer. Defaults to "Labels".
+            font_size: The font size of the labels.
+            font_color: The font color of the labels.
+            font_family: The font family of the labels.
+            font_weight: The font weight of the labels, can be normal, bold.
+            x: The column name of the longitude.
+            y: The column name of the latitude.
+            draggable: Whether the labels are draggable.
+            layer_name: The name of the layer.
         """
         from folium.features import DivIcon
 
@@ -2480,9 +2479,9 @@ class Map(folium.Map):
 
         Args:
             left_layer: The left tile layer. Can be a local file path, HTTP URL, or a
-                basemap name. Defaults to 'TERRAIN'.
+                basemap name.
             right_layer: The right tile layer. Can be a local file path, HTTP URL, or a
-                basemap name. Defaults to 'OpenTopoMap'.
+                basemap name.
             left_args (dict, optional): The arguments for the left tile layer. Defaults to {}.
             right_args (dict, optional): The arguments for the right tile layer. Defaults to {}.
             left_label: TODO
@@ -2657,23 +2656,23 @@ class Map(folium.Map):
         Args:
             filename: File path or HTTP URL to the netCDF file.
             variables: The variable/band names to extract data from the netCDF
-                file. Defaults to None. If None, all variables will be extracted.
+                file. If None, all variables will be extracted.
             palette: The name of the color palette from `palettable` to use when
                 plotting a single band. See
                 https://jiffyclub.github.io/palettable. Default is greyscale
             vmin: The minimum value to use when colormapping the palette when plotting a
-                single band. Defaults to None.
+                single band.
             vmax: The maximum value to use when colormapping the palette when plotting a
-                single band. Defaults to None.
+                single band.
             nodata: The value from the band to use to interpret as not valid
-                data. Defaults to None.
+                data.
             attribution: Attribution for the source raster. This defaults to a message
-                about it being a local file. Defaults to None.
-            layer_name: The layer name to use. Defaults to "netCDF layer".
+                about it being a local file.
+            layer_name: The layer name to use.
             shift_lon: Flag to shift longitude values from [0, 360] to the range [-180,
-                180]. Defaults to True.
-            lat: Name of the latitude variable. Defaults to 'lat'.
-            lon: Name of the longitude variable. Defaults to 'lon'.
+                180].
+            lat: Name of the latitude variable.
+            lon: Name of the longitude variable.
         """
         if coreutils.in_colab_shell():
             print("The add_netcdf() function is not supported in Colab.")
@@ -2733,9 +2732,9 @@ class Map(folium.Map):
                 be a filepath to a vector dataset, a pandas dataframe, or a geopandas
                 geodataframe.
             column: The column to classify.
-            cmap: The name of a colormap recognized by matplotlib. Defaults to None.
-            colors: A list of colors to use for the classification. Defaults to None.
-            labels: A list of labels to use for the legend. Defaults to None.
+            cmap: The name of a colormap recognized by matplotlib.
+            colors: A list of colors to use for the classification.
+            labels: A list of labels to use for the legend.
             scheme: Name of a choropleth classification scheme (requires mapclassify).
                 Name of a choropleth classification scheme (requires mapclassify). A
                 mapclassify.MapClassifier object will be used under the hood. Supported
@@ -2745,27 +2744,27 @@ class Map(folium.Map):
                 'MaximumBreaks', 'NaturalBreaks', 'Quantiles', 'Percentiles', 'StdMean',
                 'UserDefined'). Arguments can be passed in classification_kwds.
             k: Number of classes (ignored if scheme is None or if column is
-                categorical). Default to 5.
+                categorical).
             legend_kwds (dict, optional): Keyword arguments to pass to
                 :func:`matplotlib.pyplot.legend` or
-                `matplotlib.pyplot.colorbar`. Defaults to None.
+                `matplotlib.pyplot.colorbar`.
                 Keyword arguments to pass to :func:`matplotlib.pyplot.legend` or
                 Additional accepted keywords when `scheme` is specified:
-                fmt : string
+                fmt: string
                     A formatting specification for the bin edges of the classes in the
                     legend. For example, to have no decimals: ``{"fmt": "{:.0f}"}``.
                 labels : list-like
                     A list of legend labels to override the auto-generated labblels.
                     Needs to have the same number of elements as the number of
                     classes (`k`).
-                interval : boolean (default False)
+                interval: boolean (default False)
                     An option to control brackets from mapclassify legend.
                     If True, open/closed interval brackets are shown in the legend.
             classification_kwds (dict, optional): Keyword arguments to pass to
-                mapclassify. Defaults to None.
+                mapclassify.
             style_function (function, optional): Styling function that is called for
                 each feature, and should return the feature style. This styling function
-                takes the feature as argument. Defaults to None. style_callback is a
+                takes the feature as argument. style_callback is a
                 function that takes the feature as argument and should return a
                 dictionary of the following form:
                     style_callback = lambda feat: {"fillColor": feat["properties"]["color"]}
@@ -2781,17 +2780,16 @@ class Map(folium.Map):
                         "dashArray": "9"
                         "clickable": True,
                     }
-            hightlight_function (function, optional): Highlighting function that is
+            highlight_function (function, optional): Highlighting function that is
                 called for each feature, and should return the feature style. This
-                styling function takes the feature as argument. Defaults to None.
+                styling function takes the feature as argument.
                 highlight_function is a function that takes the feature as argument and
                 should return a dictionary of the following form:
                     highlight_function = lambda feat: {"fillColor": feat["properties"]["color"]}
-            layer_name: The layer name to be used. Defaults to "Untitled".
+            layer_name: The layer name to be used.
             info_mode: Displays the attributes by either on_hover or on_click. Any value
-                other than "on_hover" or "on_click" will be treated as None. Defaults to
-                "on_hover".
-            encoding: The encoding of the GeoJSON file. Defaults to "utf-8".
+                other than "on_hover" or "on_click" will be treated as None.
+            encoding: The encoding of the GeoJSON file.
 
         """
         gdf, legend_dict = classify(  # pytype: disable=attribute-error
@@ -2868,7 +2866,7 @@ class Map(folium.Map):
         Args:
             image (str | ipywidgets.Image): The image to add.
             position (tuple, optional): The position of the image in the format of (x, y),
-                the percentage ranging from 0 to 100, starting from the lower-left corner. Defaults to (0, 0).
+                the percentage ranging from 0 to 100, starting from the lower-left corner.
         """
         if isinstance(image, str):
             if image.startswith(("http://", "https://")):
@@ -2905,7 +2903,7 @@ class Map(folium.Map):
 
         Args:
             content: The widget to add.
-            position: The position of the widget. Defaults to "bottomright".
+            position: The position of the widget.
         """
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
 
@@ -2933,7 +2931,7 @@ class Map(folium.Map):
 
         Args:
             html: The HTML to add.
-            position: The position of the widget. Defaults to "bottomright".
+            position: The position of the widget.
         """
 
         self.add_widget(html, position=position, **kwargs)
@@ -2955,14 +2953,14 @@ class Map(folium.Map):
 
         Args:
             text: The text to add.
-            fontsize: The font size. Defaults to 20.
-            fontcolor: The font color. Defaults to "black".
-            bold: Whether to use bold font. Defaults to False.
-            padding: The padding. Defaults to "5px".
-            background: Whether to use background. Defaults to True.
-            bg_color: The background color. Defaults to "white".
-            border_radius: The border radius. Defaults to "5px".
-            position: The position of the widget. Defaults to "bottomright".
+            fontsize: The font size.
+            fontcolor: The font color.
+            bold: Whether to use bold font.
+            padding: The padding.
+            background: Whether to use background.
+            bg_color: The background color.
+            border_radius: The border radius.
+            position: The position of the widget.
         """
 
         if background:
@@ -2982,8 +2980,8 @@ class Map(folium.Map):
             functions. See https://github.com/gradio-app/gradio/issues/3190
 
         Args:
-            width: The width of the map. Defaults to '100%'.
-            height: The height of the map. Defaults to '500px'.
+            width: The width of the map.
+            height: The height of the map.
 
         Returns:
             The HTML string to use in Gradio.
@@ -3315,11 +3313,9 @@ def ee_tile_layer(
     Args:
         ee_object (Collection|Feature|Image|MapId): The object to add to the map.
         vis_params: Visualization parameters. Defaults to {}.
-        name: The name of the layer. Defaults to 'Layer untitled'.
-        shown: A flag indicating whether the layer should be on by default. Defaults to
-            True.
-        opacity: The layer's opacity represented as a number between 0 and 1. Defaults
-            to 1.0.
+        name: The name of the layer.
+        shown: A flag indicating whether the layer should be on by default.
+        opacity: The layer's opacity represented as a number between 0 and 1.
     """
     vis_params = vis_params or {}
     image = None
