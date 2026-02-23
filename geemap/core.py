@@ -415,7 +415,7 @@ class MapInterface:
         Args:
             lon: Longitude of the center.
             lat: Latitude of the center.
-            zoom: Zoom level to set. Defaults to None.
+            zoom: Zoom level to set.
         """
         del lon, lat, zoom  # Unused.
         raise NotImplementedError()
@@ -430,8 +430,8 @@ class MapInterface:
 
         Args:
             ee_object: The Earth Engine object to center on.
-            zoom: Zoom level to set. Defaults to None.
-            max_error: The maximum error for the geometry. Defaults to 0.001.
+            zoom: Zoom level to set.
+            max_error: The maximum error for the geometry.
         """
         del ee_object, zoom, max_error  # Unused.
         raise NotImplementedError()
@@ -498,10 +498,10 @@ class MapInterface:
 
         Args:
             ee_object: The Earth Engine object to add as a layer.
-            vis_params: Visualization parameters. Defaults to None.
-            name: Name of the layer. Defaults to None.
-            shown: Whether the layer is shown. Defaults to True.
-            opacity: Opacity of the layer. Defaults to 1.0.
+            vis_params: Visualization parameters.
+            name: Name of the layer.
+            shown: Whether the layer is shown.
+            opacity: Opacity of the layer.
         """
         del ee_object, vis_params, name, shown, opacity  # Unused.
         raise NotImplementedError()
@@ -692,7 +692,7 @@ class Map(ipyleaflet.Map, MapInterface):
         """Returns the bounds of the current map view.
 
         Args:
-            as_geojson: If true, returns map bounds as GeoJSON. Defaults to False.
+            as_geojson: If true, returns map bounds as GeoJSON.
 
         Returns:
             [west, south, east, north] in degrees or a GeoJSON dictionary.
@@ -725,7 +725,7 @@ class Map(ipyleaflet.Map, MapInterface):
         Args:
             lon: Longitude of the center.
             lat: Latitude of the center.
-            zoom: Zoom level to set. Defaults to None.
+            zoom: Zoom level to set.
         """
         self.center = (lat, lon)
         if zoom is not None:
@@ -763,8 +763,8 @@ class Map(ipyleaflet.Map, MapInterface):
 
         Args:
             ee_object: The Earth Engine object to center on.
-            zoom: Zoom level to set. Defaults to None.
-            max_error: The maximum error for the geometry. Defaults to 0.001.
+            zoom: Zoom level to set.
+            max_error: The maximum error for the geometry.
         """
         geometry = self._get_geometry(ee_object, max_error).transform(
             maxError=max_error
@@ -789,7 +789,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
         Args:
             widget_type: The type of the widget to find.
-            return_control: Whether to return the control itself. Defaults to False.
+            return_control: Whether to return the control itself.
 
         Returns:
             The widget if found, else None.
@@ -813,7 +813,7 @@ class Map(ipyleaflet.Map, MapInterface):
 
         Args:
             obj: The object to add to the map.
-            position: The position to place the widget. Defaults to "".
+            position: The position to place the widget.
             **kwargs: Additional keyword arguments.
         """
         if not position:
@@ -953,7 +953,7 @@ class Map(ipyleaflet.Map, MapInterface):
         """Adds a draw control to the map.
 
         Args:
-            position: The position of the draw control. Defaults to "topleft".
+            position: The position of the draw control.
             **kwargs: Additional keyword arguments.
         """
         if self._draw_control:
@@ -1085,10 +1085,10 @@ class Map(ipyleaflet.Map, MapInterface):
 
         Args:
             ee_object: The Earth Engine object to add.
-            vis_params: Visualization parameters. Defaults to None.
-            name: The name of the layer. Defaults to None.
-            shown: Whether the layer is shown. Defaults to True.
-            opacity: The opacity of the layer. Defaults to 1.0.
+            vis_params: Visualization parameters.
+            name: The name of the layer.
+            shown: Whether the layer is shown.
+            opacity: The opacity of the layer.
         """
         # Call super if not an EE object.
         if not isinstance(ee_object, ee_tile_layers.EELeafletTileLayer.EE_TYPES):
@@ -1132,18 +1132,15 @@ class Map(ipyleaflet.Map, MapInterface):
         """Adds a customized legend to the map.
 
         Args:
-            title: Title of the legend. Defaults to 'Legend'.
+            title: Title of the legend.
             legend_dict: A dictionary containing legend items as keys and color as
-                values. If provided, keys and colors will be ignored. Defaults to None.
-            keys: A list of legend keys. Defaults to None.
-            colors: A list of legend colors. Defaults to None.
-            position: Position of the legend. Defaults to 'bottomright'.
+                values. If provided, keys and colors will be ignored.
+            keys: A list of legend keys.
+            colors: A list of legend colors.
+            position: Position of the legend.
             builtin_legend: Name of the builtin legend to add to the map.
-                Defaults to None.
             layer_name: The associated layer for the legend.
-                Defaults to None.
             add_header: Whether the legend can be closed or not.
-                Defaults to True.
             widget_args: Additional arguments passed to widget_template().
                 Defaults to {}.
         """
@@ -1191,20 +1188,20 @@ class Map(ipyleaflet.Map, MapInterface):
             vis_params: Visualization parameters as a dictionary. See
                 https://developers.google.com/earth-engine/guides/image_visualization for
                 options.
-            cmap: Matplotlib colormap. Defaults to "gray". See
+            cmap: Matplotlib colormap. See
                 https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py
                 for options.
-            discrete: Whether to create a discrete colorbar. Defaults to False.
-            label: Label for the colorbar. Defaults to None.
+            discrete: Whether to create a discrete colorbar.
+            label: Label for the colorbar.
             orientation: Orientation of the colorbar, such as "vertical" and
-                "horizontal". Defaults to "horizontal".
+                "horizontal".
             position: Position of the colorbar on the map. It can be one of: topleft,
-                topright, bottomleft, and bottomright. Defaults to "bottomright".
-            transparent_bg: Whether to use transparent background. Defaults to False.
-            layer_name: The layer name associated with the colorbar. Defaults to None.
-            font_size: Font size for the colorbar. Defaults to 9.
-            axis_off: Whether to turn off the axis. Defaults to False.
-            max_width: Maximum width of the colorbar in pixels. Defaults to None.
+                topright, bottomleft, and bottomright.
+            transparent_bg: Whether to use transparent background.
+            layer_name: The layer name associated with the colorbar.
+            font_size: Font size for the colorbar.
+            axis_off: Whether to turn off the axis.
+            max_width: Maximum width of the colorbar in pixels.
 
         Raises:
             TypeError: If the vis_params is not a dictionary.
