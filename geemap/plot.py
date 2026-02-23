@@ -65,7 +65,7 @@ def bar_chart(
         width: Width of the plot in pixels.
         height: Height of the plot in pixels.
         layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
-            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
+            such as {'title':'Plot Title', 'title_x':0.5}.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
             pattern_shape: str or int or Series or array-like
                 Either a name of a column in `data_frame`, or a pandas Series or
@@ -624,7 +624,7 @@ def histogram(
         width: Width of the plot in pixels.
         height: Height of the plot in pixels.
         layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
-            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
+            such as {'title':'Plot Title', 'title_x':0.5}.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
             pattern_shape: str or int or Series or array-like
                 Either a name of a column in `data_frame`, or a pandas Series or
