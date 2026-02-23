@@ -915,18 +915,18 @@ class Map(folium.Map):
 
         Args:
             vis_params: TODO.
-            index (list, optional):The values corresponding to each color. It has to be
-                sorted, and have the same length as colors. If None, a regular grid
-                between vmin and vmax is created.
+            index: The values corresponding to each color. It has to be sorted, and have
+                the same length as colors. If None, a regular grid between vmin and vmax
+                is created.
             label: The caption for the colormap.
             categorical: Whether or not to create a categorical colormap.
             step: The step to split the LinearColormap into a StepColormap.
             background_color: TODO.
-            # TODO: Fix these are in vis_params:
+            # TODO: Fix - these are in vis_params and are not normal args:
             colors (list): The set of colors to be used for interpolation. Colors can be
                 provided in the form: * tuples of RGBA ints between 0 and 255 (e.g:
                 (255, 255, 0) or (255, 255, 0, 255)) * tuples of RGBA floats between
-                0. and 1. (e.g: (1.,1.,0.) or (1., 1., 0., 1.)) * HTML-like string (e.g:
+                0. and 1. (e.g., (1.,1.,0.) or (1., 1., 0., 1.)) * HTML-like string (e.g.,
                 “#ffff00) * a color name or shortcut (e.g: “y” or “yellow”)
             vmin (int, optional): The minimal value for the colormap. Values lower than
               vmin will be bound directly to colors[0]. Defaults to 0.
@@ -1345,7 +1345,7 @@ class Map(folium.Map):
         Args:
             query (str | dict | list): Query string(s) or structured dict(s) to geocode.
             layer_name: The layer name to be used.
-            which_result (INT, optional): Which geocoding result to use. if None,
+            which_result: Which geocoding result to use. if None,
                 auto-select the first (Multi)Polygon or raise an error if OSM doesn't
                 return one. To get the top match regardless of geometry type, set
                 which_result=1.
@@ -2049,14 +2049,16 @@ class Map(folium.Map):
         api_key: str | None = None,
         token_name: str = "PLANET_API_KEY",
     ) -> None:
-        """Adds a Planet global mosaic by month to the map. To get a Planet API key, see https://developers.planet.com/quickstart/apis
+        """Adds a Planet global mosaic by month to the map.
+
+        To get a Planet API key, see https://developers.planet.com/quickstart/apis
 
         Args:
-            year (int, optional): The year of Planet global mosaic, must be >=2016.
-            month (int, optional): The month of Planet global mosaic, must be 1-12.
-            name (str, optional): The layer name to use.
-            api_key (str, optional): The Planet API key.
-            token_name (str, optional): The environment variable name of the API key. Defaults to "PLANET_API_KEY".
+            year: The year of Planet global mosaic, must be >=2016.
+            month: The month of Planet global mosaic, must be 1-12.
+            name: The layer name to use.
+            api_key: The Planet API key.
+            token_name: The environment variable name of the API key.
         """
         layer = planet_tile_by_month(
             year, month, name, api_key, token_name, tile_format="folium"
@@ -2075,10 +2077,10 @@ class Map(folium.Map):
 
         Args:
             year: The year of Planet global mosaic, must be >=2016.
-            quarter (int, optional): The quarter of Planet global mosaic, must be 1-12.
-            name (str, optional): The layer name to use.
-            api_key (str, optional): The Planet API key.
-            token_name (str, optional): The environment variable name of the API key.
+            quarter: The quarter of Planet global mosaic, must be 1-12.
+            name: The layer name to use.
+            api_key: The Planet API key.
+            token_name: The environment variable name of the API key.
         """
         layer = planet_tile_by_quarter(
             year, quarter, name, api_key, token_name, tile_format="folium"
@@ -2109,8 +2111,7 @@ class Map(folium.Map):
                 GitHub repo or a Colab notebook.
             tags (bool, optional): A list of tags (as strings) used to categorise your
                 document.
-            source_file (str, optional): Path of jupyter notebook file to
-                upload.
+            source_file: Path of jupyter notebook file to upload.
             open: Whether to open the map.
             formatting (ReportFormatting, optional): Set the basic styling for your
                 report.
