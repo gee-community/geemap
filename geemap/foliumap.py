@@ -318,6 +318,7 @@ class Map(folium.Map):
 
         https://ipython.readthedocs.io/en/stable/config/integrating.html#MyObject._repr_mimebundle_
         """
+        del kwargs  # Unused.
         if self.options["layersControl"]:
             self.add_layer_control()
 
@@ -2229,6 +2230,8 @@ class Map(folium.Map):
         """
         import streamlit.components.v1 as components
 
+        del kwargs  # Unused.
+
         if add_layer_control:
             self.add_layer_control()
 
@@ -2359,6 +2362,8 @@ class Map(folium.Map):
         """
         import xyzservices.providers as xyz
         from xyzservices import TileProvider
+
+        del kwargs  # Unused.
 
         if provider.startswith("xyz"):
             name = provider[4:]
@@ -2910,6 +2915,8 @@ class Map(folium.Map):
             content: The widget to add.
             position: The position of the widget. Defaults to "bottomright".
         """
+        del kwargs  # Unused.
+
         allowed_positions = ["topleft", "topright", "bottomleft", "bottomright"]
 
         if position not in allowed_positions:
@@ -2991,6 +2998,8 @@ class Map(folium.Map):
         Returns:
             The HTML string to use in Gradio.
         """
+        del kwargs  # Unused.
+
         if isinstance(width, int):
             width = f"{width}px"
         if isinstance(height, int):
@@ -3028,6 +3037,7 @@ class Map(folium.Map):
 
     def remove_labels(self, **kwargs):
         """Removes a layer from the map."""
+        del kwargs  # Unused.
         print("The folium plotting backend does not support removing labels.")
 
     def basemap_demo(self):
@@ -3039,6 +3049,7 @@ class Map(folium.Map):
         **kwargs,
     ):
         """Sets plotting options."""
+        del kwargs  # Unused.
         print("The folium plotting backend does not support this function.")
 
     def ts_inspector(
@@ -3052,6 +3063,8 @@ class Map(folium.Map):
         width="130px",
         **kwargs,
     ):
+        del left_ts, right_ts, left_names, right_names, left_vis, right_vis  # Unused.
+        del width, kwargs  # Unused.
         print("The folium plotting backend does not support this function.")
 
     def add_time_slider(
@@ -3068,9 +3081,12 @@ class Map(folium.Map):
         opacity=1.0,
         **kwargs,
     ):
+        del ee_object, vis_params, region, layer_name, labels, time_interval  # Unused.
+        del position, slider_length, date_format, opacity, kwargs  # Unused.
         print("The folium plotting backend does not support this function.")
 
-    def extract_values_to_points(self, filename):
+    def extract_values_to_points(self, filename: str):
+        del filename  # Unused.
         print("The folium plotting backend does not support this function.")
 
 
@@ -3442,4 +3458,6 @@ def linked_maps(
     label_position: str = "topright",
     **kwargs,
 ):
+    del rows, cols, height, ee_objects, vis_params  # Unused.
+    del labels, label_position, kwargs  # Unused.
     print("The folium plotting backend does not support this function.")
