@@ -1203,11 +1203,9 @@ def naip_timeseries(
     """Creates NAIP annual timeseries
 
     Args:
-        roi (object, optional): An ee.Geometry representing the region of
-            interest.
+        roi (object, optional): An ee.Geometry representing the region of interest.
         start_year: Starting year for the timeseries.
-        end_year: Ending year for the timeseries. Defaults to the
-            current year.
+        end_year: Ending year for the timeseries. Defaults to the current year.
         RGBN: Whether to retrieve 4-band NAIP imagery only.
         step: The step size to use when creating the date sequence.
 
