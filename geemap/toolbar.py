@@ -4607,7 +4607,7 @@ def plotly_search_basemaps(canvas):
     """The widget for search XYZ tile services.
 
     Args:
-        m (plotlymap.Map, optional): The Plotly Map object.
+        canvas (plotlymap.Map, optional): The Plotly Map object.
 
     Returns:
         ipywidgets: The tool GUI widget.
