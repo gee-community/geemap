@@ -10409,10 +10409,7 @@ the draw control.</p>
 <span class="normal">1399</span>
 <span class="normal">1400</span>
 <span class="normal">1401</span>
-<span class="normal">1402</span>
-<span class="normal">1403</span>
-<span class="normal">1404</span>
-<span class="normal">1405</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Map</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Map</span><span class="p">,</span> <span class="n">MapInterface</span><span class="p">):</span>
+<span class="normal">1402</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Map</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Map</span><span class="p">,</span> <span class="n">MapInterface</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Map class inherits the ipyleaflet Map class.</span>
 
 <span class="sd">    Args:</span>
@@ -10592,7 +10589,7 @@ the draw control.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            as_geojson: If true, returns map bounds as GeoJSON. Defaults to False.</span>
+<span class="sd">            as_geojson: If true, returns map bounds as GeoJSON.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            [west, south, east, north] in degrees or a GeoJSON dictionary.</span>
@@ -10625,7 +10622,7 @@ the draw control.</p>
 <span class="sd">        Args:</span>
 <span class="sd">            lon: Longitude of the center.</span>
 <span class="sd">            lat: Latitude of the center.</span>
-<span class="sd">            zoom: Zoom level to set. Defaults to None.</span>
+<span class="sd">            zoom: Zoom level to set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -10663,8 +10660,8 @@ the draw control.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object: The Earth Engine object to center on.</span>
-<span class="sd">            zoom: Zoom level to set. Defaults to None.</span>
-<span class="sd">            max_error: The maximum error for the geometry. Defaults to 0.001.</span>
+<span class="sd">            zoom: Zoom level to set.</span>
+<span class="sd">            max_error: The maximum error for the geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_geometry</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
             <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
@@ -10689,7 +10686,7 @@ the draw control.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            widget_type: The type of the widget to find.</span>
-<span class="sd">            return_control: Whether to return the control itself. Defaults to False.</span>
+<span class="sd">            return_control: Whether to return the control itself.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            The widget if found, else None.</span>
@@ -10713,7 +10710,7 @@ the draw control.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            obj: The object to add to the map.</span>
-<span class="sd">            position: The position to place the widget. Defaults to &quot;&quot;.</span>
+<span class="sd">            position: The position to place the widget.</span>
 <span class="sd">            **kwargs: Additional keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">position</span><span class="p">:</span>
@@ -10853,7 +10850,7 @@ the draw control.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a draw control to the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            position: The position of the draw control. Defaults to &quot;topleft&quot;.</span>
+<span class="sd">            position: The position of the draw control.</span>
 <span class="sd">            **kwargs: Additional keyword arguments.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_draw_control</span><span class="p">:</span>
@@ -10985,10 +10982,10 @@ the draw control.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object: The Earth Engine object to add.</span>
-<span class="sd">            vis_params: Visualization parameters. Defaults to None.</span>
-<span class="sd">            name: The name of the layer. Defaults to None.</span>
-<span class="sd">            shown: Whether the layer is shown. Defaults to True.</span>
-<span class="sd">            opacity: The opacity of the layer. Defaults to 1.0.</span>
+<span class="sd">            vis_params: Visualization parameters.</span>
+<span class="sd">            name: The name of the layer.</span>
+<span class="sd">            shown: Whether the layer is shown.</span>
+<span class="sd">            opacity: The opacity of the layer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Call super if not an EE object.</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee_tile_layers</span><span class="o">.</span><span class="n">EELeafletTileLayer</span><span class="o">.</span><span class="n">EE_TYPES</span><span class="p">):</span>
@@ -11032,18 +11029,15 @@ the draw control.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a customized legend to the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            title: Title of the legend. Defaults to &#39;Legend&#39;.</span>
+<span class="sd">            title: Title of the legend.</span>
 <span class="sd">            legend_dict: A dictionary containing legend items as keys and color as</span>
-<span class="sd">                values. If provided, keys and colors will be ignored. Defaults to None.</span>
-<span class="sd">            keys: A list of legend keys. Defaults to None.</span>
-<span class="sd">            colors: A list of legend colors. Defaults to None.</span>
-<span class="sd">            position: Position of the legend. Defaults to &#39;bottomright&#39;.</span>
+<span class="sd">                values. If provided, keys and colors will be ignored.</span>
+<span class="sd">            keys: A list of legend keys.</span>
+<span class="sd">            colors: A list of legend colors.</span>
+<span class="sd">            position: Position of the legend.</span>
 <span class="sd">            builtin_legend: Name of the builtin legend to add to the map.</span>
-<span class="sd">                Defaults to None.</span>
 <span class="sd">            layer_name: The associated layer for the legend.</span>
-<span class="sd">                Defaults to None.</span>
 <span class="sd">            add_header: Whether the legend can be closed or not.</span>
-<span class="sd">                Defaults to True.</span>
 <span class="sd">            widget_args: Additional arguments passed to widget_template().</span>
 <span class="sd">                Defaults to {}.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -11091,20 +11085,20 @@ the draw control.</p>
 <span class="sd">            vis_params: Visualization parameters as a dictionary. See</span>
 <span class="sd">                https://developers.google.com/earth-engine/guides/image_visualization for</span>
 <span class="sd">                options.</span>
-<span class="sd">            cmap: Matplotlib colormap. Defaults to &quot;gray&quot;. See</span>
+<span class="sd">            cmap: Matplotlib colormap. See</span>
 <span class="sd">                https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py</span>
 <span class="sd">                for options.</span>
-<span class="sd">            discrete: Whether to create a discrete colorbar. Defaults to False.</span>
-<span class="sd">            label: Label for the colorbar. Defaults to None.</span>
+<span class="sd">            discrete: Whether to create a discrete colorbar.</span>
+<span class="sd">            label: Label for the colorbar.</span>
 <span class="sd">            orientation: Orientation of the colorbar, such as &quot;vertical&quot; and</span>
-<span class="sd">                &quot;horizontal&quot;. Defaults to &quot;horizontal&quot;.</span>
+<span class="sd">                &quot;horizontal&quot;.</span>
 <span class="sd">            position: Position of the colorbar on the map. It can be one of: topleft,</span>
-<span class="sd">                topright, bottomleft, and bottomright. Defaults to &quot;bottomright&quot;.</span>
-<span class="sd">            transparent_bg: Whether to use transparent background. Defaults to False.</span>
-<span class="sd">            layer_name: The layer name associated with the colorbar. Defaults to None.</span>
-<span class="sd">            font_size: Font size for the colorbar. Defaults to 9.</span>
-<span class="sd">            axis_off: Whether to turn off the axis. Defaults to False.</span>
-<span class="sd">            max_width: Maximum width of the colorbar in pixels. Defaults to None.</span>
+<span class="sd">                topright, bottomleft, and bottomright.</span>
+<span class="sd">            transparent_bg: Whether to use transparent background.</span>
+<span class="sd">            layer_name: The layer name associated with the colorbar.</span>
+<span class="sd">            font_size: Font size for the colorbar.</span>
+<span class="sd">            axis_off: Whether to turn off the axis.</span>
+<span class="sd">            max_width: Maximum width of the colorbar in pixels.</span>
 
 <span class="sd">        Raises:</span>
 <span class="sd">            TypeError: If the vis_params is not a dictionary.</span>
@@ -11564,7 +11558,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The position to place the widget. Defaults to "".</p>
+                <p>The position to place the widget.</p>
               </div>
             </td>
             <td>
@@ -11649,7 +11643,7 @@ the draw control.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        obj: The object to add to the map.</span>
-<span class="sd">        position: The position to place the widget. Defaults to &quot;&quot;.</span>
+<span class="sd">        position: The position to place the widget.</span>
 <span class="sd">        **kwargs: Additional keyword arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">position</span><span class="p">:</span>
@@ -11748,7 +11742,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Visualization parameters. Defaults to None.</p>
+                <p>Visualization parameters.</p>
               </div>
             </td>
             <td>
@@ -11764,7 +11758,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the layer. Defaults to None.</p>
+                <p>The name of the layer.</p>
               </div>
             </td>
             <td>
@@ -11780,7 +11774,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether the layer is shown. Defaults to True.</p>
+                <p>Whether the layer is shown.</p>
               </div>
             </td>
             <td>
@@ -11796,7 +11790,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The opacity of the layer. Defaults to 1.0.</p>
+                <p>The opacity of the layer.</p>
               </div>
             </td>
             <td>
@@ -11862,10 +11856,10 @@ the draw control.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object: The Earth Engine object to add.</span>
-<span class="sd">        vis_params: Visualization parameters. Defaults to None.</span>
-<span class="sd">        name: The name of the layer. Defaults to None.</span>
-<span class="sd">        shown: Whether the layer is shown. Defaults to True.</span>
-<span class="sd">        opacity: The opacity of the layer. Defaults to 1.0.</span>
+<span class="sd">        vis_params: Visualization parameters.</span>
+<span class="sd">        name: The name of the layer.</span>
+<span class="sd">        shown: Whether the layer is shown.</span>
+<span class="sd">        opacity: The opacity of the layer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Call super if not an EE object.</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee_tile_layers</span><span class="o">.</span><span class="n">EELeafletTileLayer</span><span class="o">.</span><span class="n">EE_TYPES</span><span class="p">):</span>
@@ -11948,7 +11942,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Zoom level to set. Defaults to None.</p>
+                <p>Zoom level to set.</p>
               </div>
             </td>
             <td>
@@ -11964,7 +11958,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The maximum error for the geometry. Defaults to 0.001.</p>
+                <p>The maximum error for the geometry.</p>
               </div>
             </td>
             <td>
@@ -12014,8 +12008,8 @@ the draw control.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object: The Earth Engine object to center on.</span>
-<span class="sd">        zoom: Zoom level to set. Defaults to None.</span>
-<span class="sd">        max_error: The maximum error for the geometry. Defaults to 0.001.</span>
+<span class="sd">        zoom: Zoom level to set.</span>
+<span class="sd">        max_error: The maximum error for the geometry.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">geometry</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_geometry</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span>
         <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
@@ -12072,7 +12066,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If true, returns map bounds as GeoJSON. Defaults to False.</p>
+                <p>If true, returns map bounds as GeoJSON.</p>
               </div>
             </td>
             <td>
@@ -12136,7 +12130,7 @@ the draw control.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        as_geojson: If true, returns map bounds as GeoJSON. Defaults to False.</span>
+<span class="sd">        as_geojson: If true, returns map bounds as GeoJSON.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        [west, south, east, north] in degrees or a GeoJSON dictionary.</span>
@@ -12493,7 +12487,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Zoom level to set. Defaults to None.</p>
+                <p>Zoom level to set.</p>
               </div>
             </td>
             <td>
@@ -12522,7 +12516,7 @@ the draw control.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        lon: Longitude of the center.</span>
 <span class="sd">        lat: Latitude of the center.</span>
-<span class="sd">        zoom: Zoom level to set. Defaults to None.</span>
+<span class="sd">        zoom: Zoom level to set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -13035,7 +13029,7 @@ the draw control.</p>
 <span class="sd">        Args:</span>
 <span class="sd">            lon: Longitude of the center.</span>
 <span class="sd">            lat: Latitude of the center.</span>
-<span class="sd">            zoom: Zoom level to set. Defaults to None.</span>
+<span class="sd">            zoom: Zoom level to set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zoom</span>  <span class="c1"># Unused.</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -13050,8 +13044,8 @@ the draw control.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object: The Earth Engine object to center on.</span>
-<span class="sd">            zoom: Zoom level to set. Defaults to None.</span>
-<span class="sd">            max_error: The maximum error for the geometry. Defaults to 0.001.</span>
+<span class="sd">            zoom: Zoom level to set.</span>
+<span class="sd">            max_error: The maximum error for the geometry.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">max_error</span>  <span class="c1"># Unused.</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -13118,10 +13112,10 @@ the draw control.</p>
 
 <span class="sd">        Args:</span>
 <span class="sd">            ee_object: The Earth Engine object to add as a layer.</span>
-<span class="sd">            vis_params: Visualization parameters. Defaults to None.</span>
-<span class="sd">            name: Name of the layer. Defaults to None.</span>
-<span class="sd">            shown: Whether the layer is shown. Defaults to True.</span>
-<span class="sd">            opacity: Opacity of the layer. Defaults to 1.0.</span>
+<span class="sd">            vis_params: Visualization parameters.</span>
+<span class="sd">            name: Name of the layer.</span>
+<span class="sd">            shown: Whether the layer is shown.</span>
+<span class="sd">            opacity: Opacity of the layer.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">shown</span><span class="p">,</span> <span class="n">opacity</span>  <span class="c1"># Unused.</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -13409,7 +13403,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Visualization parameters. Defaults to None.</p>
+                <p>Visualization parameters.</p>
               </div>
             </td>
             <td>
@@ -13425,7 +13419,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Name of the layer. Defaults to None.</p>
+                <p>Name of the layer.</p>
               </div>
             </td>
             <td>
@@ -13441,7 +13435,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether the layer is shown. Defaults to True.</p>
+                <p>Whether the layer is shown.</p>
               </div>
             </td>
             <td>
@@ -13457,7 +13451,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Opacity of the layer. Defaults to 1.0.</p>
+                <p>Opacity of the layer.</p>
               </div>
             </td>
             <td>
@@ -13500,10 +13494,10 @@ the draw control.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object: The Earth Engine object to add as a layer.</span>
-<span class="sd">        vis_params: Visualization parameters. Defaults to None.</span>
-<span class="sd">        name: Name of the layer. Defaults to None.</span>
-<span class="sd">        shown: Whether the layer is shown. Defaults to True.</span>
-<span class="sd">        opacity: Opacity of the layer. Defaults to 1.0.</span>
+<span class="sd">        vis_params: Visualization parameters.</span>
+<span class="sd">        name: Name of the layer.</span>
+<span class="sd">        shown: Whether the layer is shown.</span>
+<span class="sd">        opacity: Opacity of the layer.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">vis_params</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">shown</span><span class="p">,</span> <span class="n">opacity</span>  <span class="c1"># Unused.</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -13563,7 +13557,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Zoom level to set. Defaults to None.</p>
+                <p>Zoom level to set.</p>
               </div>
             </td>
             <td>
@@ -13579,7 +13573,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The maximum error for the geometry. Defaults to 0.001.</p>
+                <p>The maximum error for the geometry.</p>
               </div>
             </td>
             <td>
@@ -13616,8 +13610,8 @@ the draw control.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        ee_object: The Earth Engine object to center on.</span>
-<span class="sd">        zoom: Zoom level to set. Defaults to None.</span>
-<span class="sd">        max_error: The maximum error for the geometry. Defaults to 0.001.</span>
+<span class="sd">        zoom: Zoom level to set.</span>
+<span class="sd">        max_error: The maximum error for the geometry.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">del</span> <span class="n">ee_object</span><span class="p">,</span> <span class="n">zoom</span><span class="p">,</span> <span class="n">max_error</span>  <span class="c1"># Unused.</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
@@ -13890,7 +13884,7 @@ the draw control.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Zoom level to set. Defaults to None.</p>
+                <p>Zoom level to set.</p>
               </div>
             </td>
             <td>
@@ -13918,7 +13912,7 @@ the draw control.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        lon: Longitude of the center.</span>
 <span class="sd">        lat: Latitude of the center.</span>
-<span class="sd">        zoom: Zoom level to set. Defaults to None.</span>
+<span class="sd">        zoom: Zoom level to set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">del</span> <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">zoom</span>  <span class="c1"># Unused.</span>
     <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span>
