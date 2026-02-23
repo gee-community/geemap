@@ -48,7 +48,6 @@ from .plot import *
 from .timelapse import *
 from . import toolbar
 
-
 basemaps = box.Box(xyz_to_leaflet(), frozen_box=True)
 
 
