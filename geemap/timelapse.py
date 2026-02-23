@@ -1421,7 +1421,7 @@ def sentinel1_filtering(
     remove_outliers: bool = True,
     **kwargs,
 ) -> ee.ImageCollection:
-    """Returns a filtered image collection of Sentinal-1 images.
+    """Returns a filtered image collection of Sentinel-1 images.
 
     Sentinel-1 data is collected with several different instrument configurations,
     resolutions, band combinations during both ascending and descending orbits. Because
