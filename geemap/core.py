@@ -1188,7 +1188,7 @@ class Map(ipyleaflet.Map, MapInterface):
             vis_params: Visualization parameters as a dictionary. See
                 https://developers.google.com/earth-engine/guides/image_visualization for
                 options.
-            cmap: Matplotlib colormap.
+            cmap: Matplotlib colormap. See
                 https://matplotlib.org/3.3.4/tutorials/colors/colormaps.html#sphx-glr-tutorials-colors-colormaps-py
                 for options.
             discrete: Whether to create a discrete colorbar.
