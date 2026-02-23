@@ -203,6 +203,7 @@ class Map(MapWidget):
 
     def _repr_html_(self, **kwargs):
         """Displays the map."""
+        del kwargs  # Unused.
 
         filename = os.environ.get("MAPLIBRE_OUTPUT", None)
         replace_key = os.environ.get("MAPTILER_REPLACE_KEY", False)
@@ -1389,6 +1390,7 @@ class Map(MapWidget):
         dropdown.observe(dropdown_event, "value")
 
         def update_layer(change):
+            del change  # Unused.
             self.set_visibility(dropdown.value, checkbox.value)
             self.set_opacity(dropdown.value, opacity_slider.value)
 
@@ -1501,6 +1503,7 @@ class Map(MapWidget):
         dropdown.observe(dropdown_event, "value")
 
         def update_layer(change):
+            del change  # Unused.
             self.set_layout_property(
                 dropdown.value, "visibility", "visible" if checkbox.value else "none"
             )
@@ -1590,6 +1593,7 @@ class Map(MapWidget):
         dropdown.observe(dropdown_event, "value")
 
         def update_layer(change):
+            del change  # Unused.
             self.set_visibility(dropdown.value, checkbox.value)
             self.set_opacity(dropdown.value, opacity_slider.value)
 
@@ -1965,6 +1969,7 @@ class Map(MapWidget):
         )
 
         def on_upload(change):
+            del change  # Unused.
             content = uploader.value[0]["content"]
             temp_file = coreutils.temp_file_path(extension=".geojson")
             with open(temp_file, "wb") as f:
@@ -2679,6 +2684,8 @@ class Container(v.Container):
 
         # Function to change column widths.
         def change_column_widths(*args, **kwargs):
+            del args, kwargs  # Unused.
+
             if toggle.v_model == 0:
                 left_col_layout.cols = 10
                 right_col_layout.cols = 2
