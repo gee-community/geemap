@@ -46,6 +46,8 @@ class Canvas:
         """
         from .toolbar import plotly_toolbar
 
+        del kwargs  # Unused.
+
         map_widget = widgets.Output(layout=widgets.Layout(width=map_max_width))
         with map_widget:
             display(map)
@@ -403,6 +405,8 @@ class Map(go.FigureWidget):
             attribution: The attribution to use. Defaults to "".
             opacity: The opacity of the layer. Defaults to 1.
         """
+        del kwargs  # Unused.
+
         layer = {
             "below": "traces",
             "sourcetype": "raster",

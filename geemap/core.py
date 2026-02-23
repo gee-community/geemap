@@ -885,6 +885,8 @@ class Map(ipyleaflet.Map, MapInterface):
             position: The position to place the toolbar.
             **kwargs: Additional keyword arguments.
         """
+        del kwargs  # Unused.
+
         if self._toolbar:
             return
 
