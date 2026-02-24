@@ -4465,7 +4465,7 @@ class Map(core.Map):
         time_index: int = 0,
         velocity_scale: float = 0.01,
         max_velocity: int = 20,
-        display_options: dict = {},  # TODO: Do not default to a mutable object.
+        display_options: dict[str, Any] | None = None,
         name: str = "Velocity",
     ) -> None:
         """Add a velocity layer to the map.
@@ -4496,6 +4496,8 @@ class Map(core.Map):
             ValueError: If the data is not a NetCDF file or an xarray Dataset.
         """
         import xarray as xr
+
+        display_options = display_options or {}
 
         # Velocity depends on traittypes Dataset that needs xarray.
         from ipyleaflet.velocity import Velocity
