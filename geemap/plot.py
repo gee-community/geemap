@@ -55,17 +55,17 @@ def bar_chart(
             Either a name of a column in `data_frame`, or a pandas Series or
             array_like object. Values from this column or array_like are used to
             assign color to marks.
-        descending: Whether to sort the data in descending order. Defaults to True.
-        sort_column: The column to sort the data. Defaults to None.
-        max_rows: Maximum number of rows to display. Defaults to None.
-        x_label: Label for the x axis. Defaults to None.
-        y_label: Label for the y axis. Defaults to None.
-        title: Title for the plot. Defaults to None.
-        legend_title: Title for the legend. Defaults to None.
-        width: Width of the plot in pixels. Defaults to None.
-        height: Height of the plot in pixels. Defaults to 500.
+        descending: Whether to sort the data in descending order.
+        sort_column: The column to sort the data.
+        max_rows: Maximum number of rows to display.
+        x_label: Label for the x axis.
+        y_label: Label for the y axis.
+        title: Title for the plot.
+        legend_title: Title for the legend.
+        width: Width of the plot in pixels.
+        height: Height of the plot in pixels.
         layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
-            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
+            such as {'title':'Plot Title', 'title_x':0.5}.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
             pattern_shape: str or int or Series or array-like
                 Either a name of a column in `data_frame`, or a pandas Series or
@@ -341,14 +341,14 @@ def line_chart(
             Either a name of a column in `data_frame`, or a pandas Series or
             array_like object. Values from this column or array_like are used to
             assign color to marks.
-        descending: Whether to sort the data in descending order. Defaults to None.
-        max_rows: Maximum number of rows to display. Defaults to None.
-        x_label: Label for the x axis. Defaults to None.
-        y_label: Label for the y axis. Defaults to None.
-        title: Title for the plot. Defaults to None.
-        legend_title: Title for the legend. Defaults to None.
-        width: Width of the plot in pixels. Defaults to None.
-        height: Height of the plot in pixels. Defaults to 500.
+        descending: Whether to sort the data in descending order.
+        max_rows: Maximum number of rows to display.
+        x_label: Label for the x axis.
+        y_label: Label for the y axis.
+        title: Title for the plot.
+        legend_title: Title for the legend.
+        width: Width of the plot in pixels.
+        height: Height of the plot in pixels.
         layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
             such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
@@ -616,15 +616,15 @@ def histogram(
             Either a name of a column in `data_frame`, or a pandas Series or
             array_like object. Values from this column or array_like are used to
             assign color to marks.
-        descending: Whether to sort the data in descending order. Defaults to None.
-        max_rows: Maximum number of rows to display. Defaults to None.
-        x_label: Label for the x axis. Defaults to None.
-        y_label: Label for the y axis. Defaults to None.
-        title: Title for the plot. Defaults to None.
-        width: Width of the plot in pixels. Defaults to None.
-        height: Height of the plot in pixels. Defaults to 500.
+        descending: Whether to sort the data in descending order.
+        max_rows: Maximum number of rows to display.
+        x_label: Label for the x axis.
+        y_label: Label for the y axis.
+        title: Title for the plot.
+        width: Width of the plot in pixels.
+        height: Height of the plot in pixels.
         layout_args: Layout arguments for the plot to be passed to fig.update_layout(),
-            such as {'title':'Plot Title', 'title_x':0.5}. Defaults to no args.
+            such as {'title':'Plot Title', 'title_x':0.5}.
         **kwargs: Any additional arguments to pass to plotly.express.bar(), such as:
             pattern_shape: str or int or Series or array-like
                 Either a name of a column in `data_frame`, or a pandas Series or
@@ -879,9 +879,9 @@ def pie_chart(
             Either a name of a column in `data_frame`, or a pandas Series or
             array_like object. Values from this column or array_like are used to
             set values associated to sectors.
-        descending: Whether to sort the data in descending order. Defaults to True.
-        max_rows: Maximum number of rows to display. Defaults to None.
-        other_label: Label for the "other" category. Defaults to None.
+        descending: Whether to sort the data in descending order.
+        max_rows: Maximum number of rows to display.
+        other_label: Label for the "other" category.
         color: str or int or Series or array-like
             Either a name of a column in `data_frame`, or a pandas Series or
             array_like object. Values from this column or array_like are used to

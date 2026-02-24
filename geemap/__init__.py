@@ -7,33 +7,22 @@ __version__ = "0.37.1.post0"
 import os
 import sys
 
+from .report import Report
+
 
 def in_colab_shell() -> bool:
     """Tests if the code is being executed within Google Colab."""
-    if "google.colab" in sys.modules:
-        return True
-    else:
-        return False
+    return "google.colab" in sys.modules
 
 
 def use_folium() -> bool:
     """Whether to use the folium or ipyleaflet plotting backend."""
-    if os.environ.get("USE_FOLIUM") is not None:
-        return True
-    else:
-        return False
+    return os.environ.get("USE_FOLIUM") is not None
 
 
 def _use_eerepr(token: str = "USE_EEREPR") -> bool:
-    """Whether to use eerepr for printing Earth Engine objects.
-
-    Returns:
-        bool: True if eerepr is used for printing Earth Engine objects.
-    """
-    if os.environ.get(token) is None:
-        return True
-    else:
-        return False
+    """Returns whether to use eerepr for printing Earth Engine objects."""
+    return os.environ.get(token) is None
 
 
 if use_folium():
@@ -44,11 +33,13 @@ else:
     except Exception as e:
         if in_colab_shell():
             print(
-                "Please restart Colab runtime after installation if you encounter any errors when importing geemap."
+                "Please restart Colab runtime after installation if you encounter any "
+                "errors when importing geemap."
             )
         else:
             print(
-                "Please restart Jupyter kernel after installation if you encounter any errors when importing geemap."
+                "Please restart Jupyter kernel after installation if you encounter any "
+                "errors when importing geemap."
             )
         raise e
 
@@ -56,5 +47,3 @@ if _use_eerepr():
     import eerepr
 
     eerepr.initialize()
-
-from .report import Report

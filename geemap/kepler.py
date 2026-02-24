@@ -221,6 +221,8 @@ class Map(keplergl.KeplerGl):
             config (str, optional): Local path or HTTP URL to the config file.
                 Defaults to None.
         """
+        del kwargs  # Unused.
+
         try:
             self.add_data(data=df, name=layer_name)
             self.load_config(config)
@@ -375,6 +377,8 @@ class Map(keplergl.KeplerGl):
                 Defaults to False.
             out_file: Output html file path. Defaults to None.
         """
+        del kwargs  # Unused.
+
         if isinstance(self, keplergl.KeplerGl):
             if out_file is None:
                 if os.environ.get("USE_MKDOCS") is not None:
@@ -409,6 +413,8 @@ class Map(keplergl.KeplerGl):
             read_only: Whether to hide the side panel to disable map customization.
                 Defaults to False.
         """
+        del kwargs  # Unused.
+
         try:
             save = True
             if filename is not None:
@@ -462,6 +468,8 @@ class Map(keplergl.KeplerGl):
         """
         import streamlit as st
         import streamlit.components.v1 as components
+
+        del kwargs  # Unused.
 
         html = self._repr_html_()
         if responsive:

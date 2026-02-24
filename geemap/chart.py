@@ -66,10 +66,9 @@ def transpose_df(  # pytype: disable=annotation-type-mismatch
     Args:
         df: The DataFrame to transpose.
         label_col: The column to set as the index before transposing.
-        index_name: The name to set for the index after transposing. Defaults to None.
+        index_name: The name to set for the index after transposing.
         indexes: A list of custom indexes to set after transposing. The length of this
-            list must match the number of rows in the transposed DataFrame. Defaults to
-            None.
+            list must match the number of rows in the transposed DataFrame.
 
     Returns:
         The transposed DataFrame.
@@ -129,10 +128,10 @@ def array_to_df(
 
     Args:
         y_values: The y-values to convert.
-        x_values: The x-values to convert. Defaults to None.
-        y_labels: The labels for the y-values. Defaults to None.
-        x_label: The label for the x-values. Defaults to "x".
-        axis: The axis along which to transpose the y-values if needed. Defaults to 1.
+        x_values: The x-values to convert.
+        y_labels: The labels for the y-values.
+        x_label: The label for the x-values.
+        axis: The axis along which to transpose the y-values if needed.
         **kwargs: Additional keyword arguments to pass to the pandas DataFrame constructor.
 
     Returns:
@@ -241,8 +240,8 @@ class Chart:
         """Save the chart as a PNG image.
 
         Args:
-            filepath: The path to save the PNG image. Defaults to 'chart.png'.
-            scale: The scale factor for the image. Defaults to 1.0.
+            filepath: The path to save the PNG image.
+            scale: The scale factor for the image.
         """
         self.figure.save_png(filepath, scale=scale)
 
@@ -277,7 +276,6 @@ class Chart:
                 'ScatterChart', 'LineChart', 'ColumnChart', 'BarChart',
                 'PieChart', 'AreaChart', and 'Table'.
             clear (bool): Whether to clear the current chart before setting a new one.
-                Defaults to True.
             **kwargs: Additional keyword arguments to pass to the bqplot Figure
                 or mark objects.
 
@@ -324,7 +322,7 @@ class Chart:
                     "#7f7f7f",
                     "#bcbd22",
                     "#17becf",
-                ]  # Default pie chart colors
+                ]  # Default pie chart colors.
         else:
             if colors is None:
                 colors = [
@@ -334,7 +332,7 @@ class Chart:
                     "red",
                     "purple",
                     "brown",
-                ]  # Default colors
+                ]  # Default colors.
 
         if chart_type == "IntervalChart":
 
@@ -563,7 +561,6 @@ class BarChart(BaseChartClass):
             default_labels: The default labels for the chart.
             name: The name of the chart.
             type: The type of bar chart ('grouped' or 'stacked').
-                Defaults to 'grouped'.
             **kwargs: Additional keyword arguments to set as attributes.
         """
         super().__init__(features, default_labels, name, **kwargs)
@@ -650,7 +647,7 @@ class LineChart(BarChart):
         Args:
             features: The features to plot.
             labels: The labels for the chart.
-            name: The name of the chart. Defaults to 'line.chart'.
+            name: The name of the chart.
             **kwargs: Additional keyword arguments to set as attributes.
         """
         super().__init__(features, labels, name, **kwargs)
@@ -700,7 +697,7 @@ class Feature_ByFeature(BarChart):
             features: The features to plot.
             x_property: The property to use for the x-axis.
             y_properties: The properties to use for the y-axis.
-            name: The name of the chart. Defaults to 'feature.byFeature'.
+            name: The name of the chart.
             **kwargs: Additional keyword arguments to set as attributes.
         """
         default_labels = y_properties
@@ -739,7 +736,7 @@ class Feature_ByProperty(BarChart):
             features: The features to plot.
             x_properties: The properties to use for the x-axis.
             series_property: The property to use for labeling the series.
-            name: The name of the chart. Defaults to 'feature.byProperty'.
+            name: The name of the chart.
             **kwargs: Additional keyword arguments to set as attributes.
 
         Raises:
@@ -798,9 +795,8 @@ class Feature_Groups(BarChart):
             x_property: The property to use for the x-axis.
             y_property: The property to use for the y-axis.
             series_property: The property to use for labeling the series.
-            name: The name of the chart. Defaults to 'feature.groups'.
+            name: The name of the chart.
             type: The type of bar chart ('grouped' or 'stacked').
-                Defaults to 'stacked'.
             **kwargs: Additional keyword arguments to set as attributes.
         """
         df = common.ee_to_df(features)
@@ -958,7 +954,7 @@ def feature_histogram(
             histogram; will be rounded up to a power of 2.
         min_bucket_width: Minimum histogram bucket width or null for any power of 2.
         show: Whether to show the chart. If not, it will return the bqplot chart object,
-            which can be used to retrieve data for the chart. Defaults to True.
+            which can be used to retrieve data for the chart.
         **kwargs: Additional keyword arguments to set as attributes.
 
     Raises:
@@ -1104,13 +1100,13 @@ def image_by_class(
         class_band: The band name to use as class labels.
         region: The region(s) to reduce.
         reducer: The reducer type for zonal statistics. Can be one of 'mean', 'median',
-            'sum', 'min', 'max', etc. Defaults to 'MEAN'.
+            'sum', 'min', 'max', etc.
         scale: The scale in meters at which to perform the analysis.
         class_labels: List of class labels.
         x_labels: List of x-axis labels.
         chart_type: The type of chart to create. Supported types are 'ScatterChart',
             'LineChart', 'ColumnChart', 'BarChart', 'PieChart', 'AreaChart', and
-            'Table'. Defaults to 'LineChart'.
+            'Table'.
         **kwargs: Additional keyword arguments.
     """
     fc = common.zonal_stats(

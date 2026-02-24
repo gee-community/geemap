@@ -595,9 +595,6 @@ def ee_export_image_collection_to_drive(
 
         images = ee_object.toList(count)
 
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
-
         for i in range(0, count):
             image = ee.Image(images.get(i))
             description = descriptions[i]
@@ -685,9 +682,6 @@ def ee_export_image_collection_to_asset(
             assetIds = descriptions
 
         images = ee_object.toList(count)
-
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
 
         for i in range(0, count):
             image = ee.Image(images.get(i))
@@ -789,9 +783,6 @@ def ee_export_image_collection_to_cloud_storage(
             descriptions = ee_object.aggregate_array("system:index").getInfo()
 
         images = ee_object.toList(count)
-
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
 
         for i in range(0, count):
             image = ee.Image(images.get(i))
@@ -1097,9 +1088,6 @@ def ee_export_vector_to_asset(
     if not isinstance(collection, ee.FeatureCollection):
         raise ValueError("The collection must be an ee.FeatureCollection.")
 
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
-
     if isinstance(assetId, str):
         if assetId.startswith("users/") or assetId.startswith("projects/"):
             pass
@@ -1162,9 +1150,6 @@ def ee_export_vector_to_cloud_storage(
             )
         )
 
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
-
     print(
         f"Exporting {description}... "
         "Please check the Task Manager from the JavaScript Code Editor."
@@ -1201,9 +1186,6 @@ def ee_export_vector_to_feature_view(
     """
     if not isinstance(collection, ee.FeatureCollection):
         raise ValueError("The collection must be an ee.FeatureCollection.")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1273,9 +1255,6 @@ def ee_export_video_to_drive(
     """
     if not isinstance(collection, ee.ImageCollection):
         raise TypeError("collection must be an ee.ImageCollection")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1352,9 +1331,6 @@ def ee_export_video_to_cloud_storage(
     """
     if not isinstance(collection, ee.ImageCollection):
         raise TypeError("collection must be an ee.ImageCollection")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1433,9 +1409,6 @@ def ee_export_map_to_cloud_storage(
     """
     if not isinstance(image, ee.Image):
         raise TypeError("image must be an ee.Image")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -12200,9 +12173,6 @@ def download_ee_image(
             zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
 
     """
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
-
     import geedim as gd
 
     if not isinstance(image, ee.Image):
@@ -12304,9 +12274,6 @@ def download_ee_image_tiles(
 
     """
     start = time.time()
-
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
 
     if not isinstance(features, ee.FeatureCollection):
         raise ValueError("features must be an ee.FeatureCollection.")
@@ -12418,9 +12385,6 @@ def download_ee_image_tiles_parallel(
     import joblib
 
     start = time.time()
-
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
 
     if not isinstance(features, ee.FeatureCollection):
         raise ValueError("features must be an ee.FeatureCollection.")
@@ -12627,9 +12591,6 @@ def plot_raster(
     """
     open_kwargs = open_kwargs or {}
 
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
-
     if coreutils.in_colab_shell():
         print("The plot_raster() function is not supported in Colab.")
         return
@@ -12690,9 +12651,6 @@ def plot_raster_3d(
         mesh_kwargs (dict, optional): The keyword arguments to pass to pyvista.mesh.warp_by_scalar(). Defaults to {}.
         **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
     """
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
-
     if coreutils.in_colab_shell():
         print("The plot_raster_3d() function is not supported in Colab.")
         return
@@ -13443,18 +13401,6 @@ def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
         image = dataset.filterBounds(region).mosaic().clipToCollection(region)
 
     download_ee_image(image, filename, region=region.geometry(), scale=scale, crs=crs)
-
-
-def use_mkdocs():
-    """Test if the current notebook is running in mkdocs.
-
-    Returns:
-        bool: True if the notebook is running in mkdocs.
-    """
-    if os.environ.get("USE_MKDOCS") is not None:
-        return True
-    else:
-        return False
 
 
 def create_legend(
