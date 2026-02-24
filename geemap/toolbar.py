@@ -2605,7 +2605,6 @@ def time_slider(m: geemap.Map | None = None):
     reset_color.on_click(reset_color_clicked)
 
     def colormap_changed(change) -> None:
-        del change  # Unused.
         if change["new"]:
             n_class = None
             if classes.value != "Any":
