@@ -8090,7 +8090,9 @@
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">545</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">543</span>
+<span class="normal">544</span>
+<span class="normal">545</span>
 <span class="normal">546</span>
 <span class="normal">547</span>
 <span class="normal">548</span>
@@ -8177,10 +8179,7 @@
 <span class="normal">629</span>
 <span class="normal">630</span>
 <span class="normal">631</span>
-<span class="normal">632</span>
-<span class="normal">633</span>
-<span class="normal">634</span>
-<span class="normal">635</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BarChart</span><span class="p">(</span><span class="n">BaseChartClass</span><span class="p">):</span>
+<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BarChart</span><span class="p">(</span><span class="n">BaseChartClass</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create Bar Chart.</span>
 
 <span class="sd">    All histogram/bar charts can use this object.</span>
@@ -8201,7 +8200,6 @@
 <span class="sd">            default_labels: The default labels for the chart.</span>
 <span class="sd">            name: The name of the chart.</span>
 <span class="sd">            type: The type of bar chart (&#39;grouped&#39; or &#39;stacked&#39;).</span>
-<span class="sd">                Defaults to &#39;grouped&#39;.</span>
 <span class="sd">            **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">default_labels</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -8369,8 +8367,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The type of bar chart ('grouped' or 'stacked').
-Defaults to 'grouped'.</p>
+                <p>The type of bar chart ('grouped' or 'stacked').</p>
               </div>
             </td>
             <td>
@@ -8399,7 +8396,9 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">551</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">549</span>
+<span class="normal">550</span>
+<span class="normal">551</span>
 <span class="normal">552</span>
 <span class="normal">553</span>
 <span class="normal">554</span>
@@ -8415,10 +8414,7 @@ Defaults to 'grouped'.</p>
 <span class="normal">564</span>
 <span class="normal">565</span>
 <span class="normal">566</span>
-<span class="normal">567</span>
-<span class="normal">568</span>
-<span class="normal">569</span>
-<span class="normal">570</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">567</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">default_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -8433,7 +8429,6 @@ Defaults to 'grouped'.</p>
 <span class="sd">        default_labels: The default labels for the chart.</span>
 <span class="sd">        name: The name of the chart.</span>
 <span class="sd">        type: The type of bar chart (&#39;grouped&#39; or &#39;stacked&#39;).</span>
-<span class="sd">            Defaults to &#39;grouped&#39;.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">default_labels</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -8460,16 +8455,16 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">572</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">569</span>
+<span class="normal">570</span>
+<span class="normal">571</span>
+<span class="normal">572</span>
 <span class="normal">573</span>
 <span class="normal">574</span>
 <span class="normal">575</span>
 <span class="normal">576</span>
 <span class="normal">577</span>
-<span class="normal">578</span>
-<span class="normal">579</span>
-<span class="normal">580</span>
-<span class="normal">581</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_tooltip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">578</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">generate_tooltip</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates a tooltip for the bar chart.&quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">x_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bar_chart</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">bq</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span>
@@ -8524,7 +8519,10 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">583</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">580</span>
+<span class="normal">581</span>
+<span class="normal">582</span>
+<span class="normal">583</span>
 <span class="normal">584</span>
 <span class="normal">585</span>
 <span class="normal">586</span>
@@ -8542,10 +8540,7 @@ Defaults to 'grouped'.</p>
 <span class="normal">598</span>
 <span class="normal">599</span>
 <span class="normal">600</span>
-<span class="normal">601</span>
-<span class="normal">602</span>
-<span class="normal">603</span>
-<span class="normal">604</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="normal">601</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the y-axis limits for the bar chart.</span>
 
 <span class="sd">    Returns:</span>
@@ -8589,7 +8584,10 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">606</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">603</span>
+<span class="normal">604</span>
+<span class="normal">605</span>
+<span class="normal">606</span>
 <span class="normal">607</span>
 <span class="normal">608</span>
 <span class="normal">609</span>
@@ -8615,10 +8613,7 @@ Defaults to 'grouped'.</p>
 <span class="normal">629</span>
 <span class="normal">630</span>
 <span class="normal">631</span>
-<span class="normal">632</span>
-<span class="normal">633</span>
-<span class="normal">634</span>
-<span class="normal">635</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots the bar chart.&quot;&quot;&quot;</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
@@ -8688,7 +8683,9 @@ Defaults to 'grouped'.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">471</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">469</span>
+<span class="normal">470</span>
+<span class="normal">471</span>
 <span class="normal">472</span>
 <span class="normal">473</span>
 <span class="normal">474</span>
@@ -8757,9 +8754,7 @@ Defaults to 'grouped'.</p>
 <span class="normal">537</span>
 <span class="normal">538</span>
 <span class="normal">539</span>
-<span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BaseChartClass</span><span class="p">:</span>
+<span class="normal">540</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BaseChartClass</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;This should include everything a chart module requires to plot figures.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -8942,7 +8937,9 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">474</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">472</span>
+<span class="normal">473</span>
+<span class="normal">474</span>
 <span class="normal">475</span>
 <span class="normal">476</span>
 <span class="normal">477</span>
@@ -8994,9 +8991,7 @@ Defaults to 'grouped'.</p>
 <span class="normal">523</span>
 <span class="normal">524</span>
 <span class="normal">525</span>
-<span class="normal">526</span>
-<span class="normal">527</span>
-<span class="normal">528</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">526</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">default_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -9073,9 +9068,9 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">540</span>
-<span class="normal">541</span>
-<span class="normal">542</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">538</span>
+<span class="normal">539</span>
+<span class="normal">540</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the string representation of the chart.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span>
 </code></pre></div></td></tr></table></div>
@@ -9104,10 +9099,10 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">530</span>
-<span class="normal">531</span>
-<span class="normal">532</span>
-<span class="normal">533</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">528</span>
+<span class="normal">529</span>
+<span class="normal">530</span>
+<span class="normal">531</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Placeholder method to get data for the chart.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
@@ -9137,10 +9132,10 @@ Defaults to 'grouped'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">535</span>
-<span class="normal">536</span>
-<span class="normal">537</span>
-<span class="normal">538</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">533</span>
+<span class="normal">534</span>
+<span class="normal">535</span>
+<span class="normal">536</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="nd">@classmethod</span>
 <span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Placeholder method to plot the chart.&quot;&quot;&quot;</span>
     <span class="k">pass</span>
@@ -9230,7 +9225,8 @@ Defaults to 'grouped'.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">172</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">171</span>
+<span class="normal">172</span>
 <span class="normal">173</span>
 <span class="normal">174</span>
 <span class="normal">175</span>
@@ -9524,9 +9520,7 @@ Defaults to 'grouped'.</p>
 <span class="normal">463</span>
 <span class="normal">464</span>
 <span class="normal">465</span>
-<span class="normal">466</span>
-<span class="normal">467</span>
-<span class="normal">468</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Chart</span><span class="p">:</span>
+<span class="normal">466</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Chart</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create and display various types of charts from a data table.</span>
 
 <span class="sd">    Attributes:</span>
@@ -9598,8 +9592,8 @@ Defaults to 'grouped'.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Save the chart as a PNG image.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            filepath: The path to save the PNG image. Defaults to &#39;chart.png&#39;.</span>
-<span class="sd">            scale: The scale factor for the image. Defaults to 1.0.</span>
+<span class="sd">            filepath: The path to save the PNG image.</span>
+<span class="sd">            scale: The scale factor for the image.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">save_png</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
 
@@ -9634,7 +9628,6 @@ Defaults to 'grouped'.</p>
 <span class="sd">                &#39;ScatterChart&#39;, &#39;LineChart&#39;, &#39;ColumnChart&#39;, &#39;BarChart&#39;,</span>
 <span class="sd">                &#39;PieChart&#39;, &#39;AreaChart&#39;, and &#39;Table&#39;.</span>
 <span class="sd">            clear (bool): Whether to clear the current chart before setting a new one.</span>
-<span class="sd">                Defaults to True.</span>
 <span class="sd">            **kwargs: Additional keyword arguments to pass to the bqplot Figure</span>
 <span class="sd">                or mark objects.</span>
 
@@ -9681,7 +9674,7 @@ Defaults to 'grouped'.</p>
                     <span class="s2">&quot;#7f7f7f&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;#bcbd22&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;#17becf&quot;</span><span class="p">,</span>
-                <span class="p">]</span>  <span class="c1"># Default pie chart colors</span>
+                <span class="p">]</span>  <span class="c1"># Default pie chart colors.</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
                 <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span>
@@ -9691,7 +9684,7 @@ Defaults to 'grouped'.</p>
                     <span class="s2">&quot;red&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;purple&quot;</span><span class="p">,</span>
                     <span class="s2">&quot;brown&quot;</span><span class="p">,</span>
-                <span class="p">]</span>  <span class="c1"># Default colors</span>
+                <span class="p">]</span>  <span class="c1"># Default colors.</span>
 
         <span class="k">if</span> <span class="n">chart_type</span> <span class="o">==</span> <span class="s2">&quot;IntervalChart&quot;</span><span class="p">:</span>
 
@@ -10022,7 +10015,8 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">183</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">182</span>
+<span class="normal">183</span>
 <span class="normal">184</span>
 <span class="normal">185</span>
 <span class="normal">186</span>
@@ -10071,8 +10065,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">229</span>
 <span class="normal">230</span>
 <span class="normal">231</span>
-<span class="normal">232</span>
-<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">232</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">data_table</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">chart_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;LineChart&quot;</span><span class="p">,</span>
@@ -10145,10 +10138,10 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">235</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">234</span>
+<span class="normal">235</span>
 <span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display the chart without toolbar.&quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">_set_plt_options</span><span class="p">()</span>
     <span class="n">display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="p">)</span>
@@ -10174,9 +10167,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">445</span>
-<span class="normal">446</span>
-<span class="normal">447</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_chart_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">443</span>
+<span class="normal">444</span>
+<span class="normal">445</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_chart_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current chart type, or None if no chart type is set.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">chart_type</span>
 </code></pre></div></td></tr></table></div>
@@ -10201,9 +10194,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">449</span>
-<span class="normal">450</span>
-<span class="normal">451</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTable</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">447</span>
+<span class="normal">448</span>
+<span class="normal">449</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data_table</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">DataTable</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the DataTable instance containing the chart data.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">data_table</span>
 </code></pre></div></td></tr></table></div>
@@ -10246,7 +10239,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The path to save the PNG image. Defaults to 'chart.png'.</p>
+                <p>The path to save the PNG image.</p>
               </div>
             </td>
             <td>
@@ -10262,7 +10255,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The scale factor for the image. Defaults to 1.0.</p>
+                <p>The scale factor for the image.</p>
               </div>
             </td>
             <td>
@@ -10275,19 +10268,19 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">240</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">239</span>
+<span class="normal">240</span>
 <span class="normal">241</span>
 <span class="normal">242</span>
 <span class="normal">243</span>
 <span class="normal">244</span>
 <span class="normal">245</span>
-<span class="normal">246</span>
-<span class="normal">247</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save_png</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;chart.png&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">246</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">save_png</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;chart.png&quot;</span><span class="p">,</span> <span class="n">scale</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Save the chart as a PNG image.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        filepath: The path to save the PNG image. Defaults to &#39;chart.png&#39;.</span>
-<span class="sd">        scale: The scale factor for the image. Defaults to 1.0.</span>
+<span class="sd">        filepath: The path to save the PNG image.</span>
+<span class="sd">        scale: The scale factor for the image.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">save_png</span><span class="p">(</span><span class="n">filepath</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -10348,8 +10341,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to clear the current chart before setting a new one.
-Defaults to True.</p>
+                <p>Whether to clear the current chart before setting a new one.</p>
               </div>
             </td>
             <td>
@@ -10402,7 +10394,8 @@ or mark objects.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">267</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">266</span>
+<span class="normal">267</span>
 <span class="normal">268</span>
 <span class="normal">269</span>
 <span class="normal">270</span>
@@ -10576,9 +10569,7 @@ or mark objects.</p>
 <span class="normal">438</span>
 <span class="normal">439</span>
 <span class="normal">440</span>
-<span class="normal">441</span>
-<span class="normal">442</span>
-<span class="normal">443</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_chart_type</span><span class="p">(</span>
+<span class="normal">441</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_chart_type</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">chart_type</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">clear</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -10591,7 +10582,6 @@ or mark objects.</p>
 <span class="sd">            &#39;ScatterChart&#39;, &#39;LineChart&#39;, &#39;ColumnChart&#39;, &#39;BarChart&#39;,</span>
 <span class="sd">            &#39;PieChart&#39;, &#39;AreaChart&#39;, and &#39;Table&#39;.</span>
 <span class="sd">        clear (bool): Whether to clear the current chart before setting a new one.</span>
-<span class="sd">            Defaults to True.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to pass to the bqplot Figure</span>
 <span class="sd">            or mark objects.</span>
 
@@ -10638,7 +10628,7 @@ or mark objects.</p>
                 <span class="s2">&quot;#7f7f7f&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;#bcbd22&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;#17becf&quot;</span><span class="p">,</span>
-            <span class="p">]</span>  <span class="c1"># Default pie chart colors</span>
+            <span class="p">]</span>  <span class="c1"># Default pie chart colors.</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">colors</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span>
@@ -10648,7 +10638,7 @@ or mark objects.</p>
                 <span class="s2">&quot;red&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;purple&quot;</span><span class="p">,</span>
                 <span class="s2">&quot;brown&quot;</span><span class="p">,</span>
-            <span class="p">]</span>  <span class="c1"># Default colors</span>
+            <span class="p">]</span>  <span class="c1"># Default colors.</span>
 
     <span class="k">if</span> <span class="n">chart_type</span> <span class="o">==</span> <span class="s2">&quot;IntervalChart&quot;</span><span class="p">:</span>
 
@@ -10808,13 +10798,13 @@ or mark objects.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">453</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">451</span>
+<span class="normal">452</span>
+<span class="normal">453</span>
 <span class="normal">454</span>
 <span class="normal">455</span>
 <span class="normal">456</span>
-<span class="normal">457</span>
-<span class="normal">458</span>
-<span class="normal">459</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_data_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">457</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_data_table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set a new DataTable for the chart.</span>
 
 <span class="sd">    Args:</span>
@@ -10874,14 +10864,14 @@ or mark objects.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">461</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">459</span>
+<span class="normal">460</span>
+<span class="normal">461</span>
 <span class="normal">462</span>
 <span class="normal">463</span>
 <span class="normal">464</span>
 <span class="normal">465</span>
-<span class="normal">466</span>
-<span class="normal">467</span>
-<span class="normal">468</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">466</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">set_options</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">options</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Set additional options for the chart.</span>
 
 <span class="sd">    Args:</span>
@@ -11206,7 +11196,10 @@ constructor.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">686</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">683</span>
+<span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
 <span class="normal">687</span>
 <span class="normal">688</span>
 <span class="normal">689</span>
@@ -11239,10 +11232,7 @@ constructor.</p>
 <span class="normal">716</span>
 <span class="normal">717</span>
 <span class="normal">718</span>
-<span class="normal">719</span>
-<span class="normal">720</span>
-<span class="normal">721</span>
-<span class="normal">722</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByFeature</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">719</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByFeature</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Define variables and get_data method for features by feature.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -11259,7 +11249,7 @@ constructor.</p>
 <span class="sd">            features: The features to plot.</span>
 <span class="sd">            x_property: The property to use for the x-axis.</span>
 <span class="sd">            y_properties: The properties to use for the y-axis.</span>
-<span class="sd">            name: The name of the chart. Defaults to &#39;feature.byFeature&#39;.</span>
+<span class="sd">            name: The name of the chart.</span>
 <span class="sd">            **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">default_labels</span> <span class="o">=</span> <span class="n">y_properties</span>
@@ -11377,7 +11367,7 @@ constructor.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the chart. Defaults to 'feature.byFeature'.</p>
+                <p>The name of the chart.</p>
               </div>
             </td>
             <td>
@@ -11406,7 +11396,10 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">689</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">686</span>
+<span class="normal">687</span>
+<span class="normal">688</span>
+<span class="normal">689</span>
 <span class="normal">690</span>
 <span class="normal">691</span>
 <span class="normal">692</span>
@@ -11422,10 +11415,7 @@ constructor.</p>
 <span class="normal">702</span>
 <span class="normal">703</span>
 <span class="normal">704</span>
-<span class="normal">705</span>
-<span class="normal">706</span>
-<span class="normal">707</span>
-<span class="normal">708</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">705</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -11439,7 +11429,7 @@ constructor.</p>
 <span class="sd">        features: The features to plot.</span>
 <span class="sd">        x_property: The property to use for the x-axis.</span>
 <span class="sd">        y_properties: The properties to use for the y-axis.</span>
-<span class="sd">        name: The name of the chart. Defaults to &#39;feature.byFeature&#39;.</span>
+<span class="sd">        name: The name of the chart.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">default_labels</span> <span class="o">=</span> <span class="n">y_properties</span>
@@ -11514,7 +11504,10 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">710</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">707</span>
+<span class="normal">708</span>
+<span class="normal">709</span>
+<span class="normal">710</span>
 <span class="normal">711</span>
 <span class="normal">712</span>
 <span class="normal">713</span>
@@ -11523,10 +11516,7 @@ constructor.</p>
 <span class="normal">716</span>
 <span class="normal">717</span>
 <span class="normal">718</span>
-<span class="normal">719</span>
-<span class="normal">720</span>
-<span class="normal">721</span>
-<span class="normal">722</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
+<span class="normal">719</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the x and y data for the chart.</span>
@@ -11581,7 +11571,10 @@ constructor.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">725</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">722</span>
+<span class="normal">723</span>
+<span class="normal">724</span>
+<span class="normal">725</span>
 <span class="normal">726</span>
 <span class="normal">727</span>
 <span class="normal">728</span>
@@ -11631,10 +11624,7 @@ constructor.</p>
 <span class="normal">772</span>
 <span class="normal">773</span>
 <span class="normal">774</span>
-<span class="normal">775</span>
-<span class="normal">776</span>
-<span class="normal">777</span>
-<span class="normal">778</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByProperty</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">775</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByProperty</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Define variables and get_data method for features by property.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -11651,7 +11641,7 @@ constructor.</p>
 <span class="sd">            features: The features to plot.</span>
 <span class="sd">            x_properties: The properties to use for the x-axis.</span>
 <span class="sd">            series_property: The property to use for labeling the series.</span>
-<span class="sd">            name: The name of the chart. Defaults to &#39;feature.byProperty&#39;.</span>
+<span class="sd">            name: The name of the chart.</span>
 <span class="sd">            **kwargs: Additional keyword arguments to set as attributes.</span>
 
 <span class="sd">        Raises:</span>
@@ -11786,7 +11776,7 @@ constructor.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the chart. Defaults to 'feature.byProperty'.</p>
+                <p>The name of the chart.</p>
               </div>
             </td>
             <td>
@@ -11838,7 +11828,10 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">728</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">725</span>
+<span class="normal">726</span>
+<span class="normal">727</span>
+<span class="normal">728</span>
 <span class="normal">729</span>
 <span class="normal">730</span>
 <span class="normal">731</span>
@@ -11863,10 +11856,7 @@ constructor.</p>
 <span class="normal">750</span>
 <span class="normal">751</span>
 <span class="normal">752</span>
-<span class="normal">753</span>
-<span class="normal">754</span>
-<span class="normal">755</span>
-<span class="normal">756</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">753</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">x_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
@@ -11880,7 +11870,7 @@ constructor.</p>
 <span class="sd">        features: The features to plot.</span>
 <span class="sd">        x_properties: The properties to use for the x-axis.</span>
 <span class="sd">        series_property: The property to use for labeling the series.</span>
-<span class="sd">        name: The name of the chart. Defaults to &#39;feature.byProperty&#39;.</span>
+<span class="sd">        name: The name of the chart.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to set as attributes.</span>
 
 <span class="sd">    Raises:</span>
@@ -11971,7 +11961,10 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">758</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">755</span>
+<span class="normal">756</span>
+<span class="normal">757</span>
+<span class="normal">758</span>
 <span class="normal">759</span>
 <span class="normal">760</span>
 <span class="normal">761</span>
@@ -11988,10 +11981,7 @@ constructor.</p>
 <span class="normal">772</span>
 <span class="normal">773</span>
 <span class="normal">774</span>
-<span class="normal">775</span>
-<span class="normal">776</span>
-<span class="normal">777</span>
-<span class="normal">778</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
+<span class="normal">775</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the x and y data for the chart.</span>
@@ -12054,7 +12044,10 @@ constructor.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">781</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">778</span>
+<span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
 <span class="normal">782</span>
 <span class="normal">783</span>
 <span class="normal">784</span>
@@ -12113,11 +12106,7 @@ constructor.</p>
 <span class="normal">837</span>
 <span class="normal">838</span>
 <span class="normal">839</span>
-<span class="normal">840</span>
-<span class="normal">841</span>
-<span class="normal">842</span>
-<span class="normal">843</span>
-<span class="normal">844</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_Groups</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">840</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_Groups</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Define variables and get_data method for feature groups.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -12137,9 +12126,8 @@ constructor.</p>
 <span class="sd">            x_property: The property to use for the x-axis.</span>
 <span class="sd">            y_property: The property to use for the y-axis.</span>
 <span class="sd">            series_property: The property to use for labeling the series.</span>
-<span class="sd">            name: The name of the chart. Defaults to &#39;feature.groups&#39;.</span>
+<span class="sd">            name: The name of the chart.</span>
 <span class="sd">            type: The type of bar chart (&#39;grouped&#39; or &#39;stacked&#39;).</span>
-<span class="sd">                Defaults to &#39;stacked&#39;.</span>
 <span class="sd">            **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">df</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ee_to_df</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
@@ -12295,7 +12283,7 @@ constructor.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the chart. Defaults to 'feature.groups'.</p>
+                <p>The name of the chart.</p>
               </div>
             </td>
             <td>
@@ -12311,8 +12299,7 @@ constructor.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The type of bar chart ('grouped' or 'stacked').
-Defaults to 'stacked'.</p>
+                <p>The type of bar chart ('grouped' or 'stacked').</p>
               </div>
             </td>
             <td>
@@ -12341,7 +12328,10 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">784</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">781</span>
+<span class="normal">782</span>
+<span class="normal">783</span>
+<span class="normal">784</span>
 <span class="normal">785</span>
 <span class="normal">786</span>
 <span class="normal">787</span>
@@ -12366,11 +12356,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">806</span>
 <span class="normal">807</span>
 <span class="normal">808</span>
-<span class="normal">809</span>
-<span class="normal">810</span>
-<span class="normal">811</span>
-<span class="normal">812</span>
-<span class="normal">813</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">809</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -12387,9 +12373,8 @@ Defaults to 'stacked'.</p>
 <span class="sd">        x_property: The property to use for the x-axis.</span>
 <span class="sd">        y_property: The property to use for the y-axis.</span>
 <span class="sd">        series_property: The property to use for labeling the series.</span>
-<span class="sd">        name: The name of the chart. Defaults to &#39;feature.groups&#39;.</span>
+<span class="sd">        name: The name of the chart.</span>
 <span class="sd">        type: The type of bar chart (&#39;grouped&#39; or &#39;stacked&#39;).</span>
-<span class="sd">            Defaults to &#39;stacked&#39;.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">df</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">ee_to_df</span><span class="p">(</span><span class="n">features</span><span class="p">)</span>
@@ -12469,7 +12454,11 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">815</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">811</span>
+<span class="normal">812</span>
+<span class="normal">813</span>
+<span class="normal">814</span>
+<span class="normal">815</span>
 <span class="normal">816</span>
 <span class="normal">817</span>
 <span class="normal">818</span>
@@ -12480,11 +12469,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">823</span>
 <span class="normal">824</span>
 <span class="normal">825</span>
-<span class="normal">826</span>
-<span class="normal">827</span>
-<span class="normal">828</span>
-<span class="normal">829</span>
-<span class="normal">830</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">826</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the new column names for the DataFrame.</span>
 
 <span class="sd">    Args:</span>
@@ -12569,7 +12554,11 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">832</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">828</span>
+<span class="normal">829</span>
+<span class="normal">830</span>
+<span class="normal">831</span>
+<span class="normal">832</span>
 <span class="normal">833</span>
 <span class="normal">834</span>
 <span class="normal">835</span>
@@ -12577,11 +12566,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">837</span>
 <span class="normal">838</span>
 <span class="normal">839</span>
-<span class="normal">840</span>
-<span class="normal">841</span>
-<span class="normal">842</span>
-<span class="normal">843</span>
-<span class="normal">844</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
+<span class="normal">840</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_column_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the x and y data for the chart.</span>
@@ -12636,7 +12621,10 @@ Defaults to 'stacked'.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">638</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">635</span>
+<span class="normal">636</span>
+<span class="normal">637</span>
+<span class="normal">638</span>
 <span class="normal">639</span>
 <span class="normal">640</span>
 <span class="normal">641</span>
@@ -12678,10 +12666,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
-<span class="normal">680</span>
-<span class="normal">681</span>
-<span class="normal">682</span>
-<span class="normal">683</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LineChart</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">680</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LineChart</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class to define variables and get_data method for a line chart.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -12696,7 +12681,7 @@ Defaults to 'stacked'.</p>
 <span class="sd">        Args:</span>
 <span class="sd">            features: The features to plot.</span>
 <span class="sd">            labels: The labels for the chart.</span>
-<span class="sd">            name: The name of the chart. Defaults to &#39;line.chart&#39;.</span>
+<span class="sd">            name: The name of the chart.</span>
 <span class="sd">            **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -12809,7 +12794,7 @@ Defaults to 'stacked'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the chart. Defaults to 'line.chart'.</p>
+                <p>The name of the chart.</p>
               </div>
             </td>
             <td>
@@ -12838,7 +12823,10 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">641</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">638</span>
+<span class="normal">639</span>
+<span class="normal">640</span>
+<span class="normal">641</span>
 <span class="normal">642</span>
 <span class="normal">643</span>
 <span class="normal">644</span>
@@ -12850,10 +12838,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">650</span>
 <span class="normal">651</span>
 <span class="normal">652</span>
-<span class="normal">653</span>
-<span class="normal">654</span>
-<span class="normal">655</span>
-<span class="normal">656</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">653</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -12865,7 +12850,7 @@ Defaults to 'stacked'.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        features: The features to plot.</span>
 <span class="sd">        labels: The labels for the chart.</span>
-<span class="sd">        name: The name of the chart. Defaults to &#39;line.chart&#39;.</span>
+<span class="sd">        name: The name of the chart.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to set as attributes.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">features</span><span class="p">,</span> <span class="n">labels</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
@@ -12891,7 +12876,10 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">658</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">655</span>
+<span class="normal">656</span>
+<span class="normal">657</span>
+<span class="normal">658</span>
 <span class="normal">659</span>
 <span class="normal">660</span>
 <span class="normal">661</span>
@@ -12913,10 +12901,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">677</span>
 <span class="normal">678</span>
 <span class="normal">679</span>
-<span class="normal">680</span>
-<span class="normal">681</span>
-<span class="normal">682</span>
-<span class="normal">683</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">680</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots the line chart.&quot;&quot;&quot;</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
@@ -13007,7 +12992,7 @@ Defaults to 'stacked'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The x-values to convert. Defaults to None.</p>
+                <p>The x-values to convert.</p>
               </div>
             </td>
             <td>
@@ -13023,7 +13008,7 @@ Defaults to 'stacked'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The labels for the y-values. Defaults to None.</p>
+                <p>The labels for the y-values.</p>
               </div>
             </td>
             <td>
@@ -13039,7 +13024,7 @@ Defaults to 'stacked'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The label for the x-values. Defaults to "x".</p>
+                <p>The label for the x-values.</p>
               </div>
             </td>
             <td>
@@ -13055,7 +13040,7 @@ Defaults to 'stacked'.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The axis along which to transpose the y-values if needed. Defaults to 1.</p>
+                <p>The axis along which to transpose the y-values if needed.</p>
               </div>
             </td>
             <td>
@@ -13107,7 +13092,8 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">120</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">119</span>
+<span class="normal">120</span>
 <span class="normal">121</span>
 <span class="normal">122</span>
 <span class="normal">123</span>
@@ -13155,8 +13141,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">165</span>
 <span class="normal">166</span>
 <span class="normal">167</span>
-<span class="normal">168</span>
-<span class="normal">169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_to_df</span><span class="p">(</span>
+<span class="normal">168</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_to_df</span><span class="p">(</span>
     <span class="n">y_values</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
     <span class="n">x_values</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">y_labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -13168,10 +13153,10 @@ Defaults to 'stacked'.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        y_values: The y-values to convert.</span>
-<span class="sd">        x_values: The x-values to convert. Defaults to None.</span>
-<span class="sd">        y_labels: The labels for the y-values. Defaults to None.</span>
-<span class="sd">        x_label: The label for the x-values. Defaults to &quot;x&quot;.</span>
-<span class="sd">        axis: The axis along which to transpose the y-values if needed. Defaults to 1.</span>
+<span class="sd">        x_values: The x-values to convert.</span>
+<span class="sd">        y_labels: The labels for the y-values.</span>
+<span class="sd">        x_label: The label for the x-values.</span>
+<span class="sd">        axis: The axis along which to transpose the y-values if needed.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to pass to the pandas DataFrame constructor.</span>
 
 <span class="sd">    Returns:</span>
@@ -13426,7 +13411,11 @@ Defaults to 'stacked'.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1857</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1853</span>
+<span class="normal">1854</span>
+<span class="normal">1855</span>
+<span class="normal">1856</span>
+<span class="normal">1857</span>
 <span class="normal">1858</span>
 <span class="normal">1859</span>
 <span class="normal">1860</span>
@@ -13462,11 +13451,7 @@ Defaults to 'stacked'.</p>
 <span class="normal">1890</span>
 <span class="normal">1891</span>
 <span class="normal">1892</span>
-<span class="normal">1893</span>
-<span class="normal">1894</span>
-<span class="normal">1895</span>
-<span class="normal">1896</span>
-<span class="normal">1897</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
+<span class="normal">1893</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
     <span class="n">x_labels</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -13803,7 +13788,11 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1424</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1420</span>
+<span class="normal">1421</span>
+<span class="normal">1422</span>
+<span class="normal">1423</span>
+<span class="normal">1424</span>
 <span class="normal">1425</span>
 <span class="normal">1426</span>
 <span class="normal">1427</span>
@@ -13923,11 +13912,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1541</span>
 <span class="normal">1542</span>
 <span class="normal">1543</span>
-<span class="normal">1544</span>
-<span class="normal">1545</span>
-<span class="normal">1546</span>
-<span class="normal">1547</span>
-<span class="normal">1548</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doy_series_by_year</span><span class="p">(</span>
+<span class="normal">1544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doy_series_by_year</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">band_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14159,7 +14144,11 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">847</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">843</span>
+<span class="normal">844</span>
+<span class="normal">845</span>
+<span class="normal">846</span>
+<span class="normal">847</span>
 <span class="normal">848</span>
 <span class="normal">849</span>
 <span class="normal">850</span>
@@ -14178,11 +14167,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">863</span>
 <span class="normal">864</span>
 <span class="normal">865</span>
-<span class="normal">866</span>
-<span class="normal">867</span>
-<span class="normal">868</span>
-<span class="normal">869</span>
-<span class="normal">870</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_feature</span><span class="p">(</span>
+<span class="normal">866</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_feature</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">y_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -14300,7 +14285,11 @@ feature in the legend.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">873</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">869</span>
+<span class="normal">870</span>
+<span class="normal">871</span>
+<span class="normal">872</span>
+<span class="normal">873</span>
 <span class="normal">874</span>
 <span class="normal">875</span>
 <span class="normal">876</span>
@@ -14324,11 +14313,7 @@ feature in the legend.</p>
 <span class="normal">894</span>
 <span class="normal">895</span>
 <span class="normal">896</span>
-<span class="normal">897</span>
-<span class="normal">898</span>
-<span class="normal">899</span>
-<span class="normal">900</span>
-<span class="normal">901</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_property</span><span class="p">(</span>
+<span class="normal">897</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_property</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">x_properties</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">series_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -14480,7 +14465,11 @@ feature in the legend.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">904</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">900</span>
+<span class="normal">901</span>
+<span class="normal">902</span>
+<span class="normal">903</span>
+<span class="normal">904</span>
 <span class="normal">905</span>
 <span class="normal">906</span>
 <span class="normal">907</span>
@@ -14506,11 +14495,7 @@ feature in the legend.</p>
 <span class="normal">927</span>
 <span class="normal">928</span>
 <span class="normal">929</span>
-<span class="normal">930</span>
-<span class="normal">931</span>
-<span class="normal">932</span>
-<span class="normal">933</span>
-<span class="normal">934</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_groups</span><span class="p">(</span>
+<span class="normal">930</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_groups</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">y_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -14655,7 +14640,7 @@ histogram; will be rounded up to a power of 2.</p>
             <td>
               <div class="doc-md-description">
                 <p>Whether to show the chart. If not, it will return the bqplot chart object,
-which can be used to retrieve data for the chart. Defaults to True.</p>
+which can be used to retrieve data for the chart.</p>
               </div>
             </td>
             <td>
@@ -14740,7 +14725,11 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 937</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 933</span>
+<span class="normal"> 934</span>
+<span class="normal"> 935</span>
+<span class="normal"> 936</span>
+<span class="normal"> 937</span>
 <span class="normal"> 938</span>
 <span class="normal"> 939</span>
 <span class="normal"> 940</span>
@@ -14883,11 +14872,7 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 <span class="normal">1077</span>
 <span class="normal">1078</span>
 <span class="normal">1079</span>
-<span class="normal">1080</span>
-<span class="normal">1081</span>
-<span class="normal">1082</span>
-<span class="normal">1083</span>
-<span class="normal">1084</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_histogram</span><span class="p">(</span>
+<span class="normal">1080</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_histogram</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="nb">property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">max_buckets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14911,7 +14896,7 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 <span class="sd">            histogram; will be rounded up to a power of 2.</span>
 <span class="sd">        min_bucket_width: Minimum histogram bucket width or null for any power of 2.</span>
 <span class="sd">        show: Whether to show the chart. If not, it will return the bqplot chart object,</span>
-<span class="sd">            which can be used to retrieve data for the chart. Defaults to True.</span>
+<span class="sd">            which can be used to retrieve data for the chart.</span>
 <span class="sd">        **kwargs: Additional keyword arguments to set as attributes.</span>
 
 <span class="sd">    Raises:</span>
@@ -15125,7 +15110,7 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
             <td>
               <div class="doc-md-description">
                 <p>The reducer type for zonal statistics. Can be one of 'mean', 'median',
-'sum', 'min', 'max', etc. Defaults to 'MEAN'.</p>
+'sum', 'min', 'max', etc.</p>
               </div>
             </td>
             <td>
@@ -15191,7 +15176,7 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
               <div class="doc-md-description">
                 <p>The type of chart to create. Supported types are 'ScatterChart',
 'LineChart', 'ColumnChart', 'BarChart', 'PieChart', 'AreaChart', and
-'Table'. Defaults to 'LineChart'.</p>
+'Table'.</p>
               </div>
             </td>
             <td>
@@ -15220,7 +15205,11 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1087</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1083</span>
+<span class="normal">1084</span>
+<span class="normal">1085</span>
+<span class="normal">1086</span>
+<span class="normal">1087</span>
 <span class="normal">1088</span>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
@@ -15267,11 +15256,7 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 <span class="normal">1131</span>
 <span class="normal">1132</span>
 <span class="normal">1133</span>
-<span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
-<span class="normal">1137</span>
-<span class="normal">1138</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_class</span><span class="p">(</span>
+<span class="normal">1134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_class</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">class_band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
@@ -15291,13 +15276,13 @@ which can be used to retrieve data for the chart. Defaults to True.</p>
 <span class="sd">        class_band: The band name to use as class labels.</span>
 <span class="sd">        region: The region(s) to reduce.</span>
 <span class="sd">        reducer: The reducer type for zonal statistics. Can be one of &#39;mean&#39;, &#39;median&#39;,</span>
-<span class="sd">            &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;, etc. Defaults to &#39;MEAN&#39;.</span>
+<span class="sd">            &#39;sum&#39;, &#39;min&#39;, &#39;max&#39;, etc.</span>
 <span class="sd">        scale: The scale in meters at which to perform the analysis.</span>
 <span class="sd">        class_labels: List of class labels.</span>
 <span class="sd">        x_labels: List of x-axis labels.</span>
 <span class="sd">        chart_type: The type of chart to create. Supported types are &#39;ScatterChart&#39;,</span>
 <span class="sd">            &#39;LineChart&#39;, &#39;ColumnChart&#39;, &#39;BarChart&#39;, &#39;PieChart&#39;, &#39;AreaChart&#39;, and</span>
-<span class="sd">            &#39;Table&#39;. Defaults to &#39;LineChart&#39;.</span>
+<span class="sd">            &#39;Table&#39;.</span>
 <span class="sd">        **kwargs: Additional keyword arguments.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fc</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">zonal_stats</span><span class="p">(</span>
@@ -15462,7 +15447,11 @@ function.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1141</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1137</span>
+<span class="normal">1138</span>
+<span class="normal">1139</span>
+<span class="normal">1140</span>
+<span class="normal">1141</span>
 <span class="normal">1142</span>
 <span class="normal">1143</span>
 <span class="normal">1144</span>
@@ -15488,11 +15477,7 @@ function.</p>
 <span class="normal">1164</span>
 <span class="normal">1165</span>
 <span class="normal">1166</span>
-<span class="normal">1167</span>
-<span class="normal">1168</span>
-<span class="normal">1169</span>
-<span class="normal">1170</span>
-<span class="normal">1171</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_region</span><span class="p">(</span>
+<span class="normal">1167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_region</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="p">,</span>
@@ -15773,7 +15758,11 @@ objects. For axes_options, see https://bqplot.github.io/bqplot/api/axes.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1174</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1170</span>
+<span class="normal">1171</span>
+<span class="normal">1172</span>
+<span class="normal">1173</span>
+<span class="normal">1174</span>
 <span class="normal">1175</span>
 <span class="normal">1176</span>
 <span class="normal">1177</span>
@@ -15886,11 +15875,7 @@ objects. For axes_options, see https://bqplot.github.io/bqplot/api/axes.</p>
 <span class="normal">1284</span>
 <span class="normal">1285</span>
 <span class="normal">1286</span>
-<span class="normal">1287</span>
-<span class="normal">1288</span>
-<span class="normal">1289</span>
-<span class="normal">1290</span>
-<span class="normal">1291</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series</span><span class="p">(</span>
+<span class="normal">1287</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">region_reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -16319,7 +16304,11 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1294</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1290</span>
+<span class="normal">1291</span>
+<span class="normal">1292</span>
+<span class="normal">1293</span>
+<span class="normal">1294</span>
 <span class="normal">1295</span>
 <span class="normal">1296</span>
 <span class="normal">1297</span>
@@ -16442,11 +16431,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1414</span>
 <span class="normal">1415</span>
 <span class="normal">1416</span>
-<span class="normal">1417</span>
-<span class="normal">1418</span>
-<span class="normal">1419</span>
-<span class="normal">1420</span>
-<span class="normal">1421</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series_by_region</span><span class="p">(</span>
+<span class="normal">1417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series_by_region</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">band_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
@@ -16820,7 +16805,11 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1551</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1547</span>
+<span class="normal">1548</span>
+<span class="normal">1549</span>
+<span class="normal">1550</span>
+<span class="normal">1551</span>
 <span class="normal">1552</span>
 <span class="normal">1553</span>
 <span class="normal">1554</span>
@@ -16919,11 +16908,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1647</span>
 <span class="normal">1648</span>
 <span class="normal">1649</span>
-<span class="normal">1650</span>
-<span class="normal">1651</span>
-<span class="normal">1652</span>
-<span class="normal">1653</span>
-<span class="normal">1654</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
+<span class="normal">1650</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -17178,7 +17163,11 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1657</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1653</span>
+<span class="normal">1654</span>
+<span class="normal">1655</span>
+<span class="normal">1656</span>
+<span class="normal">1657</span>
 <span class="normal">1658</span>
 <span class="normal">1659</span>
 <span class="normal">1660</span>
@@ -17202,11 +17191,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
 <span class="normal">1678</span>
 <span class="normal">1679</span>
 <span class="normal">1680</span>
-<span class="normal">1681</span>
-<span class="normal">1682</span>
-<span class="normal">1683</span>
-<span class="normal">1684</span>
-<span class="normal">1685</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
+<span class="normal">1681</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="p">,</span>
@@ -17510,7 +17495,11 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1688</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1684</span>
+<span class="normal">1685</span>
+<span class="normal">1686</span>
+<span class="normal">1687</span>
+<span class="normal">1688</span>
 <span class="normal">1689</span>
 <span class="normal">1690</span>
 <span class="normal">1691</span>
@@ -17587,11 +17576,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1762</span>
 <span class="normal">1763</span>
 <span class="normal">1764</span>
-<span class="normal">1765</span>
-<span class="normal">1766</span>
-<span class="normal">1767</span>
-<span class="normal">1768</span>
-<span class="normal">1769</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
+<span class="normal">1765</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -17980,7 +17965,11 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1772</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1768</span>
+<span class="normal">1769</span>
+<span class="normal">1770</span>
+<span class="normal">1771</span>
+<span class="normal">1772</span>
 <span class="normal">1773</span>
 <span class="normal">1774</span>
 <span class="normal">1775</span>
@@ -18058,11 +18047,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1847</span>
 <span class="normal">1848</span>
 <span class="normal">1849</span>
-<span class="normal">1850</span>
-<span class="normal">1851</span>
-<span class="normal">1852</span>
-<span class="normal">1853</span>
-<span class="normal">1854</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
+<span class="normal">1850</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -18269,7 +18254,8 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">103</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">102</span>
+<span class="normal">103</span>
 <span class="normal">104</span>
 <span class="normal">105</span>
 <span class="normal">106</span>
@@ -18282,8 +18268,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">113</span>
 <span class="normal">114</span>
 <span class="normal">115</span>
-<span class="normal">116</span>
-<span class="normal">117</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pivot_df</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+<span class="normal">116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pivot_df</span><span class="p">(</span><span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span> <span class="n">index</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">columns</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">values</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Pivots a DataFrame using the specified index, columns, and values.</span>
 
 <span class="sd">    Args:</span>
@@ -18371,7 +18356,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name to set for the index after transposing. Defaults to None.</p>
+                <p>The name to set for the index after transposing.</p>
               </div>
             </td>
             <td>
@@ -18388,8 +18373,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
             <td>
               <div class="doc-md-description">
                 <p>A list of custom indexes to set after transposing. The length of this
-list must match the number of rows in the transposed DataFrame. Defaults to
-None.</p>
+list must match the number of rows in the transposed DataFrame.</p>
               </div>
             </td>
             <td>
@@ -18459,51 +18443,50 @@ rows in the transposed DataFrame.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 56</span>
-<span class="normal"> 57</span>
-<span class="normal"> 58</span>
-<span class="normal"> 59</span>
-<span class="normal"> 60</span>
-<span class="normal"> 61</span>
-<span class="normal"> 62</span>
-<span class="normal"> 63</span>
-<span class="normal"> 64</span>
-<span class="normal"> 65</span>
-<span class="normal"> 66</span>
-<span class="normal"> 67</span>
-<span class="normal"> 68</span>
-<span class="normal"> 69</span>
-<span class="normal"> 70</span>
-<span class="normal"> 71</span>
-<span class="normal"> 72</span>
-<span class="normal"> 73</span>
-<span class="normal"> 74</span>
-<span class="normal"> 75</span>
-<span class="normal"> 76</span>
-<span class="normal"> 77</span>
-<span class="normal"> 78</span>
-<span class="normal"> 79</span>
-<span class="normal"> 80</span>
-<span class="normal"> 81</span>
-<span class="normal"> 82</span>
-<span class="normal"> 83</span>
-<span class="normal"> 84</span>
-<span class="normal"> 85</span>
-<span class="normal"> 86</span>
-<span class="normal"> 87</span>
-<span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
-<span class="normal"> 92</span>
-<span class="normal"> 93</span>
-<span class="normal"> 94</span>
-<span class="normal"> 95</span>
-<span class="normal"> 96</span>
-<span class="normal"> 97</span>
-<span class="normal"> 98</span>
-<span class="normal"> 99</span>
-<span class="normal">100</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">transpose_df</span><span class="p">(</span>  <span class="c1"># pytype: disable=annotation-type-mismatch</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">56</span>
+<span class="normal">57</span>
+<span class="normal">58</span>
+<span class="normal">59</span>
+<span class="normal">60</span>
+<span class="normal">61</span>
+<span class="normal">62</span>
+<span class="normal">63</span>
+<span class="normal">64</span>
+<span class="normal">65</span>
+<span class="normal">66</span>
+<span class="normal">67</span>
+<span class="normal">68</span>
+<span class="normal">69</span>
+<span class="normal">70</span>
+<span class="normal">71</span>
+<span class="normal">72</span>
+<span class="normal">73</span>
+<span class="normal">74</span>
+<span class="normal">75</span>
+<span class="normal">76</span>
+<span class="normal">77</span>
+<span class="normal">78</span>
+<span class="normal">79</span>
+<span class="normal">80</span>
+<span class="normal">81</span>
+<span class="normal">82</span>
+<span class="normal">83</span>
+<span class="normal">84</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span>
+<span class="normal">89</span>
+<span class="normal">90</span>
+<span class="normal">91</span>
+<span class="normal">92</span>
+<span class="normal">93</span>
+<span class="normal">94</span>
+<span class="normal">95</span>
+<span class="normal">96</span>
+<span class="normal">97</span>
+<span class="normal">98</span>
+<span class="normal">99</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">transpose_df</span><span class="p">(</span>  <span class="c1"># pytype: disable=annotation-type-mismatch</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">label_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">index_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -18516,10 +18499,9 @@ rows in the transposed DataFrame.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        df: The DataFrame to transpose.</span>
 <span class="sd">        label_col: The column to set as the index before transposing.</span>
-<span class="sd">        index_name: The name to set for the index after transposing. Defaults to None.</span>
+<span class="sd">        index_name: The name to set for the index after transposing.</span>
 <span class="sd">        indexes: A list of custom indexes to set after transposing. The length of this</span>
-<span class="sd">            list must match the number of rows in the transposed DataFrame. Defaults to</span>
-<span class="sd">            None.</span>
+<span class="sd">            list must match the number of rows in the transposed DataFrame.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The transposed DataFrame.</span>
