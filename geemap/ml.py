@@ -7,9 +7,9 @@
 
 from functools import partial
 import multiprocessing as mp
-import os
+import pathlib
 
-import ee
+from google3.third_party.earthengine_api.python import ee  # GOOGLE MODIFICATION
 import numpy as np
 import pandas as pd
 
@@ -175,8 +175,9 @@ def tree_to_string(
     max_depth = np.max(ordered_df.node_depth.astype(int))
     tree_str = f"1) root {n_samples[0]} 9999 9999 ({impurities.sum()})\n"
     previous_depth = -1
-    cnts = []
+    cnts: list[int] = []
     # Loop through the nodes and calculate the node number and values per node.
+    cnt = 0  # TODO: Is this correct? Added for pylint.
     for row in ordered_df.itertuples():
         node_depth = int(row.node_depth)
         left = int(row.children_left)
@@ -404,9 +405,9 @@ def trees_to_csv(trees: list[str], out_csv: str) -> None:
         trees: A list of strings (an ensemble of decision trees).
         out_csv: File path to the output csv.
     """
-    out_csv = os.path.abspath(out_csv)
-    with open(out_csv, "w") as f:
-        f.writelines([tree.replace("\n", "#") + "\n" for tree in trees])
+    out_path = pathlib.Path(out_csv).resolve()
+    content = "".join([tree.replace("\n", "#") + "\n" for tree in trees])
+    out_path.write_text(content, encoding="utf-8")
 
 
 def csv_to_classifier(in_csv: str) -> ee.Classifier | None:
@@ -420,11 +421,10 @@ def csv_to_classifier(in_csv: str) -> ee.Classifier | None:
     Returns:
         object: ee.Classifier.
     """
-    in_csv = os.path.join(in_csv)
+    in_path = pathlib.Path(in_csv)
 
     try:
-        with open(in_csv) as f:
-            lines = f.readlines()
+        lines = in_path.read_text(encoding="utf-8").splitlines()
     except FileNotFoundError:
         print(f"{in_csv} could not be found.")
         return None
