@@ -8,7 +8,7 @@
 import pandas as pd
 import plotly.express as px
 
-from .common import *
+from .common import get_direct_url
 from . import coreutils
 
 
@@ -260,7 +260,7 @@ def bar_chart(
         data = data.head(max_rows)
 
     if "labels" in kwargs:
-        labels = kwargs["labels"]
+        labels = kwargs.get("labels", {})
         kwargs.pop("labels")
     else:
         labels = {}
@@ -539,7 +539,7 @@ def line_chart(
         data = data.head(max_rows)
 
     if "labels" in kwargs:
-        labels = kwargs["labels"]
+        labels = kwargs.get("labels", {})
         kwargs.pop("labels")
     else:
         labels = {}
@@ -812,7 +812,7 @@ def histogram(
         data = data.head(max_rows)
 
     if "labels" in kwargs:
-        labels = kwargs["labels"]
+        labels = kwargs.get("labels", {})
     else:
         labels = {}
 
