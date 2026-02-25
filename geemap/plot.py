@@ -813,6 +813,7 @@ def histogram(
 
     if "labels" in kwargs:
         labels = kwargs.get("labels", {})
+        kwargs.pop("labels")
     else:
         labels = {}
 
