@@ -991,7 +991,7 @@ def create_legend(
     markevery=None,
     **kwargs,
 ):
-    del linewidth, linestyle, color, marker, markersize, markeredgewidth  # Unused.
+    del linestyle, color, markersize, markeredgewidth  # Unused.
     del markeredgecolor, markerfacecolor, markerfacecoloralt, fillstyle  # Unused.
     del antialiased, dash_capstyle, solid_capstyle, dash_joinstyle  # Unused.
     del solid_joinstyle, pickradius, drawstyle, markevery, kwargs  # Unused.
