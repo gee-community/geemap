@@ -177,7 +177,7 @@ def tree_to_string(
     previous_depth = -1
     cnts: list[int] = []
     # Loop through the nodes and calculate the node number and values per node.
-    cnt = 0  # TODO: Is this correct? Added for pylint.
+    cnt = 0
     for row in ordered_df.itertuples():
         node_depth = int(row.node_depth)
         left = int(row.children_left)
