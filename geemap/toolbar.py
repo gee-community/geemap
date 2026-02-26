@@ -133,8 +133,11 @@ class Toolbar(anywidget.AnyWidget):
             callback=self._toggle_callback,
             reset=True,
         )
-        self.main_tools = main_tools + ([self.toggle_widget] if extra_tools else [])
-        self.extra_tools = extra_tools
+        # Use hold_trait_notifications to avoid triggering widget serialization
+        # during initialization, which can cause issues in Solara and other environments.
+        with self.hold_trait_notifications():
+            self.main_tools = main_tools + ([self.toggle_widget] if extra_tools else [])
+            self.extra_tools = extra_tools
         for widget in self.main_tools + self.extra_tools:
             widget.callback_wrapper = lambda callback, value, tool: callback(
                 self.host_map, value, tool
