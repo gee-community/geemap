@@ -9,7 +9,7 @@ from functools import partial
 import multiprocessing as mp
 import pathlib
 
-from google3.third_party.earthengine_api.python import ee  # GOOGLE MODIFICATION
+import ee
 import numpy as np
 import pandas as pd
 
