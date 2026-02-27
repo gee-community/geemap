@@ -840,7 +840,7 @@ def ee_export_geojson(
     name = os.path.splitext(basename)[0]
     filetype = os.path.splitext(basename)[1][1:].lower()
 
-    if not (filetype.lower() in allowed_formats):
+    if filetype.lower() not in allowed_formats:
         print("The output file type must be geojson.")
         return
 
@@ -854,7 +854,7 @@ def ee_export_geojson(
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
-            if not (attribute in allowed_attributes):
+            if attribute not in allowed_attributes:
                 print(
                     "Attributes must be one chosen from: {} ".format(
                         ", ".join(allowed_attributes)
@@ -934,7 +934,7 @@ def ee_export_vector(
     if filetype == "shp":
         filename = filename.replace(".shp", ".zip")
 
-    if not (filetype.lower() in allowed_formats):
+    if filetype.lower() not in allowed_formats:
         raise ValueError(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -957,7 +957,7 @@ def ee_export_vector(
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
-            if not (attribute in allowed_attributes):
+            if attribute not in allowed_attributes:
                 raise ValueError(
                     "Attributes must be one chosen from: {} ".format(
                         ", ".join(allowed_attributes)
@@ -1043,7 +1043,7 @@ def ee_export_vector_to_drive(
         raise ValueError("The collection must be an ee.FeatureCollection.")
 
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp", "tfrecord"]
-    if not (fileFormat.lower() in allowed_formats):
+    if fileFormat.lower() not in allowed_formats:
         raise ValueError(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -1143,7 +1143,7 @@ def ee_export_vector_to_cloud_storage(
         raise ValueError("The collection must be an ee.FeatureCollection.")
 
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp", "tfrecord"]
-    if not (fileFormat.lower() in allowed_formats):
+    if fileFormat.lower() not in allowed_formats:
         raise ValueError(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -6574,7 +6574,7 @@ def zonal_stats(
     basename = os.path.basename(filename)
     filetype = os.path.splitext(basename)[1][1:].lower()
 
-    if not (filetype in allowed_formats):
+    if filetype not in allowed_formats:
         print(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -6641,7 +6641,7 @@ def zonal_stats(
     }
 
     if isinstance(stat_type, str):
-        if not (stat_type.upper() in allowed_statistics.keys()):
+        if stat_type.upper() not in allowed_statistics.keys():
             print(
                 "The statistics type must be one of the following: {}".format(
                     ", ".join(list(allowed_statistics.keys()))
@@ -6765,7 +6765,7 @@ def zonal_stats_by_group(
     basename = os.path.basename(filename)
     filetype = os.path.splitext(basename)[1][1:]
 
-    if not (filetype.lower() in allowed_formats):
+    if filetype.lower() not in allowed_formats:
         print(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -6778,7 +6778,7 @@ def zonal_stats_by_group(
         os.makedirs(out_dir)
 
     allowed_statistics = ["SUM", "PERCENTAGE"]
-    if not (stat_type.upper() in allowed_statistics):
+    if stat_type.upper() not in allowed_statistics:
         print(
             "The statistics type can only be one of {}".format(
                 ", ".join(allowed_statistics)
