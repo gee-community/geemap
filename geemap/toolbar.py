@@ -664,8 +664,6 @@ def ee_plot_gui(m, position: str = "topright", **kwargs):
                     m._plot_widget.clear_output()
                     with m._plot_widget:
                         print("No data for the clicked location.")
-                else:
-                    pass
                 m.default_style = {"cursor": "crosshair"}
 
     m.on_interaction(handle_interaction)
