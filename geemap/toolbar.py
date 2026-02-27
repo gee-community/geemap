@@ -68,15 +68,13 @@ class ToolbarItem(anywidget.AnyWidget):
         Args:
             icon: The icon name to use, from https://fonts.google.com/icons.
             tooltip: The tooltip text to show a user on hover.
-            callback: A callback function to execute when the item icon is
-              clicked. Its signature should be `callback(map, selected, item)`,
-              where `map` is the host map, `selected` is a boolean indicating if
-              the user selected or unselected the tool, and `item` is this
-              object.
-            control: The control widget associated with this item. Used to
-              cleanup state when toggled off.
-            reset: Whether to reset the selection after the callback has
-              finished.
+            callback: A callback function to execute when the item icon is clicked.  Its
+                signature should be `callback(map, selected, item)`, where `map` is the
+                host map, `selected` is a boolean indicating if the user selected or
+                unselected the tool, and `item` is this object.
+            control: The control widget associated with this item. Used to cleanup state
+                when toggled off.
+            reset: Whether to reset the selection after the callback has finished.
             active: Whether the tool is currently active.
         """
         super().__init__()
@@ -181,40 +179,6 @@ def inspector_gui(m: geemap.Map | None = None):
     widget_width = "250px"
     padding = "0px 5px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}
-    options = []
-    output = widgets.Output(
-        layout=widgets.Layout(
-            width=widget_width,
-            padding="0px 5px 5px 5px",
-            max_width=widget_width,
-        )
-    )
-    add_marker = widgets.Checkbox(
-        description="Add Marker at clicked location",
-        value=True,
-        indent=False,
-        layout=widgets.Layout(padding=padding, width=widget_width),
-    )
-    bands_chk = widgets.Checkbox(
-        description="Get pixel value for visible bands only",
-        indent=False,
-        layout=widgets.Layout(padding=padding, width=widget_width),
-    )
-    label = widgets.Text(
-        value="",
-        description="Class label:",
-        placeholder="Add a label to the marker",
-        style=style,
-        layout=widgets.Layout(width=widget_width, padding=padding),
-    )
-    dropdown = widgets.Dropdown(
-        options=options,
-        value=None,
-        description="Select a layer:",
-        layout=widgets.Layout(width=widget_width, padding=padding),
-        style=style,
-    )
-    marker_cluster = None
 
     if m is not None:
         marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
@@ -225,25 +189,47 @@ def inspector_gui(m: geemap.Map | None = None):
             setattr(m, "interact_mode", False)
 
         if not hasattr(m, "inspector_output"):
-            setattr(m, "inspector_output", output)
-        else:
-            output = m.inspector_output
+            inspector_output = widgets.Output(
+                layout=widgets.Layout(
+                    width=widget_width,
+                    padding="0px 5px 5px 5px",
+                    max_width=widget_width,
+                )
+            )
+            setattr(m, "inspector_output", inspector_output)
+
+        output = m.inspector_output
         output.outputs = ()
 
         if not hasattr(m, "inspector_add_marker"):
-            setattr(m, "inspector_add_marker", add_marker)
-        else:
-            add_marker = m.inspector_add_marker
+            inspector_add_marker = widgets.Checkbox(
+                description="Add Marker at clicked location",
+                value=True,
+                indent=False,
+                layout=widgets.Layout(padding=padding, width=widget_width),
+            )
+            setattr(m, "inspector_add_marker", inspector_add_marker)
+        add_marker = m.inspector_add_marker
 
         if not hasattr(m, "inspector_bands_chk"):
-            setattr(m, "inspector_bands_chk", bands_chk)
-        else:
-            bands_chk = m.inspector_bands_chk
+            inspector_bands_chk = widgets.Checkbox(
+                description="Get pixel value for visible bands only",
+                indent=False,
+                layout=widgets.Layout(padding=padding, width=widget_width),
+            )
+            setattr(m, "inspector_bands_chk", inspector_bands_chk)
+        bands_chk = m.inspector_bands_chk
 
         if not hasattr(m, "inspector_class_label"):
-            setattr(m, "inspector_class_label", label)
-        else:
-            label = m.inspector_class_label
+            inspector_label = widgets.Text(
+                value="",
+                description="Class label:",
+                placeholder="Add a label to the marker",
+                style=style,
+                layout=widgets.Layout(width=widget_width, padding=padding),
+            )
+            setattr(m, "inspector_class_label", inspector_label)
+        label = m.inspector_class_label
 
         options = []
         if hasattr(m, "cog_layer_dict"):
@@ -254,11 +240,16 @@ def inspector_gui(m: geemap.Map | None = None):
         else:
             default_option = options[0]
         if not hasattr(m, "inspector_dropdown"):
-            dropdown.options = options
-            dropdown.value = default_option
-            setattr(m, "inspector_dropdown", dropdown)
-        else:
-            dropdown = m.inspector_dropdown
+            inspector_dropdown = widgets.Dropdown(
+                options=options,
+                value=default_option,
+                description="Select a layer:",
+                layout=widgets.Layout(width=widget_width, padding=padding),
+                style=style,
+            )
+            setattr(m, "inspector_dropdown", inspector_dropdown)
+
+        dropdown = m.inspector_dropdown
 
     toolbar_button = widgets.ToggleButton(
         value=False,
@@ -1638,7 +1629,7 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
 
         required_params = required_inputs.copy()
         args2 = []
-        for arg in args.items():
+        for arg in args:
             line = ""
             if isinstance(args[arg], ipyfilechooser.FileChooser):
                 if arg in required_params and args[arg].selected is None:
@@ -3424,7 +3415,7 @@ def sankee_gui(m=None):
     Returns:
         ipywidgets: The interactive GUI.
     """
-    import sankee  # pytype: disable=import-error
+    import sankee
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
@@ -4089,7 +4080,7 @@ def _open_data_tool_callback(m, selected, item):
 @_cleanup_toolbar_item
 def _whitebox_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    import whiteboxgui.whiteboxgui as wbt  # pytype: disable=import-error
+    import whiteboxgui.whiteboxgui as wbt
 
     tools_dict = wbt.get_wbt_dict()
     wbt_toolbox = wbt.build_toolbox(
@@ -4449,6 +4440,7 @@ def plotly_toolbar(
                     index = m.find_layer_index(name)
                     layer = m.data[index]
                 else:
+                    # This should never get here, but we'll skip this iteration in case we do.
                     continue
 
                 layer_chk = widgets.Checkbox(
@@ -4854,7 +4846,7 @@ def plotly_whitebox_gui(canvas):
     Args:
         canvas (object): The plotly Map canvas.
     """
-    import whiteboxgui.whiteboxgui as wbt  # pytype: disable=import-error
+    import whiteboxgui.whiteboxgui as wbt
 
     container_widget = canvas.container_widget
     map_widget = canvas.map_widget
