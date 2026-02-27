@@ -11,6 +11,7 @@ from __future__ import annotations
 
 from collections.abc import Callable
 import importlib.resources
+import math
 import os
 import pathlib
 from typing import Any
@@ -28,19 +29,25 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import traitlets
 
+from . import common
 from . import coreutils
 from . import geemap
 from . import map_widgets
-from .common import *
+from . import timelapse
 from .conversion import js_snippet_to_py
-from .timelapse import *
+
+
+def js_path() -> pathlib.Path:
+    """Returns the path to the JavaScript files."""
+    base = pathlib.Path(__file__).parent
+    return base / "static"
 
 
 @map_widgets.Theme.apply
 class ToolbarItem(anywidget.AnyWidget):
     """A toolbar item widget for geemap."""
 
-    _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
+    _esm = js_path() / "toolbar_item.js"
     active = traitlets.Bool(False).tag(sync=True)
     primary = traitlets.Bool(True).tag(sync=True)
     icon = traitlets.Unicode("").tag(sync=True)
@@ -80,6 +87,7 @@ class ToolbarItem(anywidget.AnyWidget):
         self.active = active
 
     def toggle_off(self) -> None:
+        """Toggles the item off if it is active."""
         if self.active:
             self.active = False
 
@@ -94,7 +102,7 @@ class ToolbarItem(anywidget.AnyWidget):
 class Toolbar(anywidget.AnyWidget):
     """A toolbar that can be added to the map."""
 
-    _esm = pathlib.Path(__file__).parent / "static" / "toolbar.js"
+    _esm = js_path() / "toolbar.js"
 
     # The list of main tools.
     main_tools = map_widgets.TypedTuple(
@@ -364,7 +372,7 @@ def inspector_gui(m: geemap.Map | None = None):
                     df = pd.DataFrame(m.pixel_values)
                     temp_csv = coreutils.temp_file_path("csv")
                     df.to_csv(temp_csv, index=False)
-                    link = create_download_link(temp_csv)
+                    link = common.create_download_link(temp_csv)
                     with output:
                         output.outputs = ()
                         display(link)
@@ -408,7 +416,7 @@ def inspector_gui(m: geemap.Map | None = None):
                 else:
                     assets = None
 
-                result = stac_pixel_value(
+                result = common.stac_pixel_value(
                     lon,
                     lat,
                     layer_dict["url"],
@@ -441,7 +449,9 @@ def inspector_gui(m: geemap.Map | None = None):
                         bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]
                         m.zoom_to_bounds(bounds)
             elif layer_dict["type"] == "COG":
-                result = cog_pixel_value(lon, lat, layer_dict["url"], verbose=False)
+                result = common.cog_pixel_value(
+                    lon, lat, layer_dict["url"], verbose=False
+                )
                 if result is not None:
                     with output:
                         output.outputs = ()
@@ -465,7 +475,7 @@ def inspector_gui(m: geemap.Map | None = None):
                         m.zoom_to_bounds(bounds)
 
             elif layer_dict["type"] == "LOCAL":
-                result = local_tile_pixel_value(
+                result = common.local_tile_pixel_value(
                     lon, lat, layer_dict["tile_client"], verbose=False
                 )
                 if result is not None:
@@ -649,13 +659,11 @@ def ee_plot_gui(m, position: str = "topright", **kwargs):
                 b_names = ee_object.bandNames().getInfo()
                 dict_values = dict(zip(b_names, [dict_values_tmp[b] for b in b_names]))
                 generate_chart(dict_values, latlon)
-            except Exception as e:
+            except Exception:
                 if hasattr(m, "_plot_widget") and m._plot_widget is not None:
                     m._plot_widget.clear_output()
                     with m._plot_widget:
                         print("No data for the clicked location.")
-                else:
-                    pass
                 m.default_style = {"cursor": "crosshair"}
 
     m.on_interaction(handle_interaction)
@@ -682,36 +690,6 @@ def ee_plot_gui(m, position: str = "topright", **kwargs):
         generate_chart(dict_values, chart_point)
 
     draw_control.on_geometry_create(handle_draw)
-
-    def cleanup() -> None:
-        m._plot_checked = False
-
-        if (
-            hasattr(m, "plot_control")
-            and (m._plot_control is not None)
-            and (m._plot_control in m.controls)
-        ):
-            m._plot_widget.outputs = ()
-            m.remove_control(m._plot_control)
-
-        if (
-            m._plot_dropdown_control is not None
-            and m._plot_dropdown_control in m.controls
-        ):
-            m.remove_control(m._plot_dropdown_control)
-
-        widget.close()
-
-        m.on_interaction(handle_interaction, remove=True)
-        m._plot_widget = None
-        m.default_style = {"cursor": "default"}
-        if old_draw_control:
-            old_draw_control.open()
-            m.substitute(m.get_draw_control(), old_draw_control)
-        else:
-            m.remove_draw_control()
-
-    m._plot_dropdown_control.cleanup = cleanup
 
     def cleanup() -> None:
         if not hasattr(m, "_plot_dropdown_widget"):
@@ -1310,7 +1288,7 @@ def open_data_widget(m):
                 with tool_output:
                     if ext.lower() == ".shp":
                         if convert_bool.value:
-                            ee_object = shp_to_ee(file_path)
+                            ee_object = common.shp_to_ee(file_path)
                             m.addLayer(ee_object, {}, layer_name.value)
                         else:
                             m.add_shapefile(
@@ -1327,7 +1305,7 @@ def open_data_widget(m):
 
                     elif ext.lower() == ".csv":
                         if convert_bool.value:
-                            ee_object = csv_to_ee(
+                            ee_object = common.csv_to_ee(
                                 file_path, latitude.value, longitude.value
                             )
                             m.addLayer(ee_object, {}, layer_name.value)
@@ -1422,7 +1400,6 @@ def convert_js2py(m):
 
     def button_clicked(change) -> None:
         if change["new"] == "Convert":
-            from .conversion import create_new_cell, js_snippet_to_py
 
             if len(text_widget.value) > 0:
                 out_lines = js_snippet_to_py(
@@ -1459,6 +1436,11 @@ def convert_js2py(m):
 
 
 def collect_samples(m):
+    """A widget for collecting training samples.
+
+    Args:
+        m (object): geemap.Map
+    """
     full_widget = widgets.VBox()
     layout = widgets.Layout(width="100px")
     prop_label = widgets.Label(
@@ -1573,6 +1555,7 @@ def collect_samples(m):
 
 
 def get_tools_dict():
+    """Returns a dictionary of tools."""
     # pytype: disable=attribute-error
     pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
     # pytype: enable=attribute-error
@@ -1649,7 +1632,7 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
             if isinstance(args[arg], ipyfilechooser.FileChooser):
                 if arg in required_params and args[arg].selected is None:
                     with tool_output:
-                        print(f"Please provide inputs for required parameters.")
+                        print("Please provide inputs for required parameters.")
                         break
                 elif arg in required_params:
                     required_params.remove(arg)
@@ -1660,7 +1643,7 @@ def tool_gui(tool_dict, max_width: str = "420px", max_height: str = "600px"):
             elif isinstance(args[arg], widgets.Text):
                 if arg in required_params and len(args[arg].value) == 0:
                     with tool_output:
-                        print(f"Please provide inputs for required parameters.")
+                        print("Please provide inputs for required parameters.")
                         break
                 elif arg in required_params:
                     required_params.remove(arg)
@@ -1749,9 +1732,9 @@ def build_toolbox(tools_dict, max_width: str = "1080px", max_height: str = "600p
 
     categories = {}
     categories["All Tools"] = []
-    for key in tools_dict.keys():
+    for key in tools_dict:
         category = tools_dict[key]["category"]
-        if category not in categories.keys():
+        if category not in categories:
             categories[category] = []
         categories[category].append(tools_dict[key]["name"])
         categories["All Tools"].append(tools_dict[key]["name"])
@@ -1839,7 +1822,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}
 
-    current_year = get_current_year()
+    current_year = common.get_current_year()
 
     toolbar_button = widgets.ToggleButton(
         value=False,
@@ -1907,7 +1890,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
         "10",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    jslink_slider_label(speed, speed_label)
+    common.jslink_slider_label(speed, speed_label)
 
     cloud = widgets.Checkbox(
         value=True,
@@ -1927,7 +1910,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     )
 
     start_year_label = widgets.Label("1984")
-    jslink_slider_label(start_year, start_year_label)
+    common.jslink_slider_label(start_year, start_year_label)
 
     end_year = widgets.IntSlider(
         description="End Year:",
@@ -1939,7 +1922,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
         layout=widgets.Layout(width="138px", padding=padding),
     )
     end_year_label = widgets.Label(str(current_year))
-    jslink_slider_label(end_year, end_year_label)
+    common.jslink_slider_label(end_year, end_year_label)
 
     start_month = widgets.IntSlider(
         description="Start Month:",
@@ -1955,7 +1938,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
         "5",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    jslink_slider_label(start_month, start_month_label)
+    common.jslink_slider_label(start_month, start_month_label)
 
     end_month = widgets.IntSlider(
         description="End Month:",
@@ -1968,7 +1951,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     )
 
     end_month_label = widgets.Label("10")
-    jslink_slider_label(end_month, end_month_label)
+    common.jslink_slider_label(end_month, end_month_label)
 
     font_size = widgets.IntSlider(
         description="Font size:",
@@ -1981,7 +1964,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
     )
 
     font_size_label = widgets.Label("30")
-    jslink_slider_label(font_size, font_size_label)
+    common.jslink_slider_label(font_size, font_size_label)
 
     font_color = widgets.ColorPicker(
         concise=False,
@@ -2051,7 +2034,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
         "0",
         layout=widgets.Layout(width="35px", padding=padding),
     )
-    jslink_slider_label(nd_threshold, nd_threshold_label)
+    common.jslink_slider_label(nd_threshold, nd_threshold_label)
 
     nd_color = widgets.ColorPicker(
         concise=False,
@@ -2128,7 +2111,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
 
         if m is not None:
             m.default_style = {"cursor": "wait"}
-            out_dir = get_temp_dir()
+            out_dir = common.get_temp_dir()
             out_gif = os.path.join(
                 out_dir, f"timelapse_{coreutils.random_string(3)}.gif"
             )
@@ -2166,13 +2149,13 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
             with output:
                 output.clear_output()
                 if os.path.exists(out_gif):
-                    link = create_download_link(
+                    link = common.create_download_link(
                         out_gif,
                         title="Click here to download: ",
                     )
                     display(link)
                     if nd_bands is not None:
-                        link_nd = create_download_link(
+                        link_nd = common.create_download_link(
                             out_gif.replace(".gif", "_nd.gif"),
                             title="Click here to download: ",
                         )
@@ -2455,7 +2438,7 @@ def time_slider(m: geemap.Map | None = None):
     opacity_label = widgets.Label(
         "1", layout=widgets.Layout(width="40px", padding=padding)
     )
-    jslink_slider_label(opacity, opacity_label)
+    common.jslink_slider_label(opacity, opacity_label)
 
     gamma = widgets.FloatSlider(
         value=1,
@@ -2473,7 +2456,7 @@ def time_slider(m: geemap.Map | None = None):
     gamma_label = widgets.Label(
         "1", layout=widgets.Layout(width="40px", padding=padding)
     )
-    jslink_slider_label(gamma, gamma_label)
+    common.jslink_slider_label(gamma, gamma_label)
 
     color_picker = widgets.ColorPicker(
         concise=False,
@@ -2525,7 +2508,7 @@ def time_slider(m: geemap.Map | None = None):
 
                 try:
                     colors = plt.get_cmap(colormap.value, n_class)
-                except:
+                except Exception:
                     colors = plt.cm.get_cmap(colormap.value, n_class)
                 cmap_colors = [
                     mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)
@@ -2551,7 +2534,7 @@ def time_slider(m: geemap.Map | None = None):
                     ax, norm=norm, cmap=cmap, orientation="horizontal"
                 )
 
-                palette.value = ", ".join([color for color in cmap_colors])
+                palette.value = ", ".join(cmap_colors)
 
                 if m._colorbar_widget is None:
                     m._colorbar_widget = widgets.Output(
@@ -2612,7 +2595,7 @@ def time_slider(m: geemap.Map | None = None):
 
             try:
                 colors = plt.get_cmap(colormap.value, n_class)
-            except:
+            except Exception:
                 colors = plt.cm.get_cmap(colormap.value, n_class)
             cmap_colors = [mpl.colors.rgb2hex(colors(i))[1:] for i in range(colors.N)]
 
@@ -2680,7 +2663,7 @@ def time_slider(m: geemap.Map | None = None):
         "1",
         layout=widgets.Layout(width="25px", padding=padding),
     )
-    jslink_slider_label(speed, speed_label)
+    common.jslink_slider_label(speed, speed_label)
 
     prebuilt_options = widgets.VBox()
 
@@ -2691,7 +2674,7 @@ def time_slider(m: geemap.Map | None = None):
         style=style,
     )
 
-    current_year = get_current_year()
+    current_year = common.get_current_year()
 
     start_year = widgets.IntSlider(
         description="Start Year:",
@@ -2720,7 +2703,7 @@ def time_slider(m: geemap.Map | None = None):
     start_year.observe(year_change, "value")
 
     start_year_label = widgets.Label("1984")
-    jslink_slider_label(start_year, start_year_label)
+    common.jslink_slider_label(start_year, start_year_label)
 
     end_year = widgets.IntSlider(
         description="End Year:",
@@ -2735,7 +2718,7 @@ def time_slider(m: geemap.Map | None = None):
     end_year.observe(year_change, "value")
 
     end_year_label = widgets.Label(str(current_year))
-    jslink_slider_label(end_year, end_year_label)
+    common.jslink_slider_label(end_year, end_year_label)
 
     start_month = widgets.IntSlider(
         description="Start Month:",
@@ -2751,7 +2734,7 @@ def time_slider(m: geemap.Map | None = None):
         "1",
         layout=widgets.Layout(width="20px", padding=padding),
     )
-    jslink_slider_label(start_month, start_month_label)
+    common.jslink_slider_label(start_month, start_month_label)
 
     end_month = widgets.IntSlider(
         description="End Month:",
@@ -2764,7 +2747,7 @@ def time_slider(m: geemap.Map | None = None):
     )
 
     end_month_label = widgets.Label("12")
-    jslink_slider_label(end_month, end_month_label)
+    common.jslink_slider_label(end_month, end_month_label)
 
     prebuilt_options.children = [
         widgets.HBox([start_year, start_year_label, end_year, end_year_label]),
@@ -2847,8 +2830,9 @@ def time_slider(m: geemap.Map | None = None):
                 try:
                     layer_labels = [i.strip() for i in labels.value.split(",")]
                 except Exception as e:
-                    raise ValueError(e)
+                    raise ValueError(e) from e
 
+            ee_object = None
             if collection.value in m.ee_raster_layers:
                 layer = m.ee_layers[collection.value]
                 ee_object = layer["ee_object"]
@@ -2857,7 +2841,7 @@ def time_slider(m: geemap.Map | None = None):
                 end_date = str(end_month.value).zfill(2) + "-30"
 
                 if collection.value == "Landsat TM-ETM-OLI Surface Reflectance":
-                    ee_object = landsat_timeseries(
+                    ee_object = timelapse.landsat_timeseries(
                         roi,
                         int(start_year.value),
                         int(end_year.value),
@@ -2866,7 +2850,7 @@ def time_slider(m: geemap.Map | None = None):
                         cloud.value,
                     )
                 elif collection.value == "MOD13A2.006 Terra Vegetation Indices":
-                    ee_object = modis_timeseries(
+                    ee_object = timelapse.modis_timeseries(
                         roi=roi,
                         start_year=int(start_year.value),
                         end_year=int(end_year.value),
@@ -2875,7 +2859,7 @@ def time_slider(m: geemap.Map | None = None):
                     )
 
                 elif collection.value == "Sentinel-2 Surface Relectance":
-                    ee_object = sentinel2_timeseries(
+                    ee_object = timelapse.sentinel2_timeseries(
                         roi,
                         int(start_year.value),
                         int(end_year.value),
@@ -3172,7 +3156,15 @@ def time_slider(m: geemap.Map | None = None):
 
 
 def plot_transect(m=None):
-    from bqplot import pyplot as plt
+    """Creates a widget for plotting transects.
+
+    Args:
+        m: A geemap Map instance.
+
+    Returns:
+        ipywidgets: The interactive GUI.
+    """
+    from bqplot import pyplot as bqplt
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
@@ -3372,7 +3364,7 @@ def plot_transect(m=None):
                                 dist = float(dist_interval.value)
 
                             print("Computing ...")
-                            df = extract_transect(
+                            df = common.extract_transect(
                                 image,
                                 line,
                                 reducer.value,
@@ -3381,13 +3373,13 @@ def plot_transect(m=None):
                                 to_pandas=True,
                             )
                             output.outputs = ()
-                            fig = plt.figure(title=title.value)
+                            fig = bqplt.figure(title=title.value)
                             fig.layout.width = output.layout.max_width
                             fig.layout.height = output.layout.max_height
-                            plt.plot(df["distance"], df[reducer.value])
-                            plt.xlabel(xlabel.value)
-                            plt.ylabel(ylabel.value)
-                            plt.show()
+                            bqplt.plot(df["distance"], df[reducer.value])
+                            bqplt.xlabel(xlabel.value)
+                            bqplt.ylabel(ylabel.value)
+                            bqplt.show()
                     else:
                         print("Use drawing tool to draw a line")
         elif change["new"] == "Reset":
@@ -3413,6 +3405,14 @@ def plot_transect(m=None):
 
 
 def sankee_gui(m=None):
+    """Creates a widget for plotting Sankey diagrams.
+
+    Args:
+        m: A geemap Map instance.
+
+    Returns:
+        ipywidgets: The interactive GUI.
+    """
     import sankee
 
     widget_width = "250px"
@@ -3593,7 +3593,7 @@ def sankee_gui(m=None):
             m.sankee_plot.update_layout(
                 width=600,
                 height=250,
-                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                margin={"l": 10, "r": 10, "b": 10, "t": 50, "pad": 5},
             )
             with plot_output:
                 plot_output.outputs = ()
@@ -3614,7 +3614,7 @@ def sankee_gui(m=None):
             m.sankee_plot.update_layout(
                 width=1030,
                 height=int(m.layout.height[:-2]) - 60,
-                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                margin={"l": 10, "r": 10, "b": 10, "t": 50, "pad": 5},
             )
             with plot_output:
                 plot_output.outputs = ()
@@ -3634,7 +3634,7 @@ def sankee_gui(m=None):
             del b  # Unused.
             m.sankee_plot.update_layout(
                 width=1030,
-                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                margin={"l": 10, "r": 10, "b": 10, "t": 50, "pad": 5},
             )
             with plot_output:
                 plot_output.outputs = ()
@@ -3654,7 +3654,7 @@ def sankee_gui(m=None):
             del b  # Unused.
             m.sankee_plot.update_layout(
                 height=int(m.layout.height[:-2]) - 60,
-                margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                margin={"l": 10, "r": 10, "b": 10, "t": 50, "pad": 5},
             )
             with plot_output:
                 plot_output.outputs = ()
@@ -3677,13 +3677,13 @@ def sankee_gui(m=None):
         width_slider_label = widgets.Label(
             "600", layout=widgets.Layout(padding="0px 10px 0px 0px")
         )
-        jslink_slider_label(width_slider, width_slider_label)
+        common.jslink_slider_label(width_slider, width_slider_label)
 
         def width_changed(change) -> None:
             if change["new"]:
                 m.sankee_plot.update_layout(
                     width=width_slider.value,
-                    margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                    margin={"l": 10, "r": 10, "b": 10, "t": 50, "pad": 5},
                 )
                 with plot_output:
                     plot_output.outputs = ()
@@ -3704,13 +3704,13 @@ def sankee_gui(m=None):
         )
 
         height_slider_label = widgets.Label("250")
-        jslink_slider_label(height_slider, height_slider_label)
+        common.jslink_slider_label(height_slider, height_slider_label)
 
         def height_changed(change):
             if change["new"]:
                 m.sankee_plot.update_layout(
                     height=height_slider.value,
-                    margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                    margin={"l": 10, "r": 10, "b": 10, "t": 50, "pad": 5},
                 )
                 with plot_output:
                     plot_output.outputs = ()
@@ -3821,7 +3821,13 @@ def sankee_gui(m=None):
                         plot.update_layout(
                             width=600,
                             height=250,
-                            margin=dict(l=10, r=10, b=10, t=50, pad=5),
+                            margin={
+                                "l": 10,
+                                "r": 10,
+                                "b": 10,
+                                "t": 50,
+                                "pad": 5,
+                            },
                         )
                         plot_widget.children = [
                             widgets.HBox(
@@ -3876,10 +3882,10 @@ def sankee_gui(m=None):
         return toolbar_widget
 
 
-def _split_basemaps_tool_callback(map, selected, _) -> None:
+def _split_basemaps_tool_callback(m, selected, _) -> None:
     if selected:
         try:
-            split_basemaps(map, layers_dict=planet_tiles())
+            split_basemaps(m, layers_dict=common.planet_tiles())
         except Exception as e:
             print(e)
 
@@ -3887,6 +3893,15 @@ def _split_basemaps_tool_callback(map, selected, _) -> None:
 def split_basemaps(
     m, layers_dict=None, left_name=None, right_name=None, width="120px", **kwargs
 ):
+    """Splits the map into two panels with different basemaps.
+
+    Args:
+        m: A geemap Map instance.
+        layers_dict: A dictionary of basemaps to use.
+        left_name: The name of the left basemap.
+        right_name: The name of the right basemap.
+        width: The width of the dropdown widgets.
+    """
     from .geemap import basemaps
 
     del kwargs  # Unused.
@@ -3983,8 +3998,8 @@ def split_basemaps(
     right_dropdown.observe(right_change, "value")
 
 
-def _open_help_page_callback(map, selected, _):
-    del map  # Unused.
+def _open_help_page_callback(m, selected, _):
+    del m  # Unused.
     if selected:
         webbrowser.open_new_tab("https://geemap.org")
 
@@ -3996,9 +4011,9 @@ def _cleanup_toolbar_item(func):
     # contains a "cleanup" property, a function that removes the widget from the
     # map. The decorator will handle construction and cleanup, and will also
     # un-toggle the associated toolbar item.
-    def wrapper(map, selected, item) -> None:
+    def wrapper(m, selected, item) -> None:
         if selected:
-            item.control = func(map, selected, item)
+            item.control = func(m, selected, item)
             if not hasattr(item.control, "toggle_off"):
                 setattr(item.control, "toggle_off", item.toggle_off)
                 if hasattr(item.control, "cleanup"):
@@ -4019,49 +4034,49 @@ def _cleanup_toolbar_item(func):
 
 
 @_cleanup_toolbar_item
-def _inspector_tool_callback(map, selected, item):
+def _inspector_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    map.add_inspector()
-    return map._inspector
+    m.add_inspector()
+    return m._inspector  # pylint: disable=protected-access
 
 
 @_cleanup_toolbar_item
-def _plotting_tool_callback(map, selected, item):
+def _plotting_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    ee_plot_gui(map)
-    return map._plot_dropdown_control
+    ee_plot_gui(m)
+    return m._plot_dropdown_control  # pylint: disable=protected-access
 
 
 @_cleanup_toolbar_item
-def _timelapse_tool_callback(map, selected, item):
+def _timelapse_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    timelapse_gui(map)
-    return map.tool_control
+    timelapse_gui(m)
+    return m.tool_control
 
 
 @_cleanup_toolbar_item
-def _convert_js_tool_callback(map, selected, item):
+def _convert_js_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    convert_js2py(map)
-    return map._convert_ctrl
+    convert_js2py(m)
+    return m._convert_ctrl  # pylint: disable=protected-access
 
 
 @_cleanup_toolbar_item
-def _basemap_tool_callback(map, selected, item):
+def _basemap_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    map.add_basemap_widget()
-    return map._basemap_selector
+    m.add_basemap_widget()
+    return m._basemap_selector  # pylint: disable=protected-access
 
 
 @_cleanup_toolbar_item
-def _open_data_tool_callback(map, selected, item):
+def _open_data_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    open_data_widget(map)
-    return map._tool_output_ctrl
+    open_data_widget(m)
+    return m._tool_output_ctrl  # pylint: disable=protected-access
 
 
 @_cleanup_toolbar_item
-def _whitebox_tool_callback(map, selected, item):
+def _whitebox_tool_callback(m, selected, item):
     del selected, item  # Unused.
     import whiteboxgui.whiteboxgui as wbt
 
@@ -4070,61 +4085,61 @@ def _whitebox_tool_callback(map, selected, item):
         tools_dict,
         max_width="800px",
         max_height="500px",
-        sandbox_path=map.sandbox_path,
+        sandbox_path=m.sandbox_path,
     )
     wbt_control = ipyleaflet.WidgetControl(widget=wbt_toolbox, position="bottomright")
-    setattr(wbt_control, "cleanup", lambda: map.remove_control(wbt_control))
-    map.whitebox = wbt_control
-    map.add(wbt_control)
+    setattr(wbt_control, "cleanup", lambda: m.remove_control(wbt_control))
+    m.whitebox = wbt_control
+    m.add(wbt_control)
     return wbt_control
 
 
 @_cleanup_toolbar_item
-def _gee_toolbox_tool_callback(map, selected, item):
+def _gee_toolbox_tool_callback(m, selected, item):
     del selected, item  # Unused.
     tools_dict = get_tools_dict()
     gee_toolbox = build_toolbox(tools_dict, max_width="800px", max_height="500px")
     geetoolbox_control = ipyleaflet.WidgetControl(
         widget=gee_toolbox, position="bottomright"
     )
-    map.geetoolbox = geetoolbox_control
-    map.add(geetoolbox_control)
+    m.geetoolbox = geetoolbox_control
+    m.add(geetoolbox_control)
     return gee_toolbox
 
 
 @_cleanup_toolbar_item
-def _time_slider_tool_callback(map, selected, item):
+def _time_slider_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    time_slider(map)
-    return map.tool_control
+    time_slider(m)
+    return m.tool_control
 
 
 @_cleanup_toolbar_item
-def _collect_samples_tool_callback(map, selected, item):
+def _collect_samples_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    collect_samples(map)
-    return map.training_ctrl
+    collect_samples(m)
+    return m.training_ctrl
 
 
 @_cleanup_toolbar_item
-def _plot_transect_tool_callback(map, selected, item):
+def _plot_transect_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    plot_transect(map)
-    return map.tool_control
+    plot_transect(m)
+    return m.tool_control
 
 
 @_cleanup_toolbar_item
-def _sankee_tool_callback(map, selected, item):
+def _sankee_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    sankee_gui(map)
-    return map.tool_control
+    sankee_gui(m)
+    return m.tool_control
 
 
 @_cleanup_toolbar_item
-def _cog_stac_inspector_callback(map, selected, item):
+def _cog_stac_inspector_callback(m, selected, item):
     del selected, item  # Unused.
-    inspector_gui(map)
-    return map.tool_control
+    inspector_gui(m)
+    return m.tool_control
 
 
 _main_tools_cache: list[ToolbarItem] | None = None
@@ -4133,7 +4148,7 @@ _extra_tools_cache: list[ToolbarItem] | None = None
 
 def get_main_tools() -> list[ToolbarItem]:
     """Lazily create and return the main_tools list."""
-    global _main_tools_cache
+    global _main_tools_cache  # pylint: disable=global-statement
     if _main_tools_cache is None:
         _main_tools_cache = [
             ToolbarItem(
@@ -4167,7 +4182,7 @@ def get_main_tools() -> list[ToolbarItem]:
 
 def get_extra_tools() -> list[ToolbarItem]:
     """Lazily create and return the extra_tools list."""
-    global _extra_tools_cache
+    global _extra_tools_cache  # pylint: disable=global-statement
     if _extra_tools_cache is None:
         _extra_tools_cache = [
             ToolbarItem(
@@ -4422,6 +4437,9 @@ def plotly_toolbar(
                 elif name in m.get_data_layers():
                     index = m.find_layer_index(name)
                     layer = m.data[index]
+                else:
+                    # This should never get here, but we'll skip this iteration in case we do.
+                    continue
 
                 layer_chk = widgets.Checkbox(
                     value=layer.visible,
@@ -4502,6 +4520,11 @@ def plotly_toolbar(
 
 
 def plotly_tool_template(canvas):
+    """Creates a template for a Plotly-based tool widget.
+
+    Args:
+        canvas: The Plotly Map canvas object.
+    """
     container_widget = canvas.container_widget
     map_widget = canvas.map_widget
     map_width = "70%"
@@ -4583,7 +4606,9 @@ def plotly_basemap_gui(canvas, map_min_width="78%", map_max_width="98%"):
     """Widget for changing basemaps.
 
     Args:
-        m (object): geemap.Map.
+        canvas (object): The plotly Map canvas.
+        map_min_width: The minimum width of the map.
+        map_max_width: The maximum width of the map.
     """
     from .plotlymap import basemaps
 
@@ -4695,9 +4720,9 @@ def plotly_search_basemaps(canvas):
         del change  # Unused.
         providers.options = []
         if keyword.value != "":
-            tiles = search_xyz_services(keyword=keyword.value)
+            tiles = common.search_xyz_services(keyword=keyword.value)
             if checkbox.value:
-                tiles = tiles + search_qms(keyword=keyword.value)
+                tiles = tiles + common.search_qms(keyword=keyword.value)
             providers.options = tiles
 
     keyword.on_submit(search_callback)
@@ -4790,9 +4815,9 @@ def plotly_search_basemaps(canvas):
             providers.options = []
             output.outputs = ()
             if keyword.value != "":
-                tiles = search_xyz_services(keyword=keyword.value)
+                tiles = common.search_xyz_services(keyword=keyword.value)
                 if checkbox.value:
-                    tiles = tiles + search_qms(keyword=keyword.value)
+                    tiles = tiles + common.search_qms(keyword=keyword.value)
                 providers.options = tiles
             else:
                 with output:
@@ -4814,6 +4839,11 @@ def plotly_search_basemaps(canvas):
 
 
 def plotly_whitebox_gui(canvas):
+    """Widget for WhiteboxTools.
+
+    Args:
+        canvas (object): The plotly Map canvas.
+    """
     import whiteboxgui.whiteboxgui as wbt
 
     container_widget = canvas.container_widget
