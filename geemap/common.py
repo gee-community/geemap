@@ -10188,55 +10188,57 @@ def get_temp_dir() -> str:
 
 
 def create_contours(
-    image, min_value, max_value, interval, kernel=None, region=None, values=None
-):
-    """Creates contours from an image. Code adapted from https://mygeoblog.com/2017/01/28/contour-lines-in-gee. Credits to MyGeoBlog.
+    image: ee.Image,
+    min_value: float,
+    max_value: float,
+    interval: float,
+    kernel: ee.Kernel | None = None,
+    region: ee.Geometry | ee.FeatureCollection | None = None,
+    values: list[float] | ee.List | None = None,
+) -> ee.Image:
+    """Creates contours from an image.
+
+    Code adapted from https://mygeoblog.com/2017/01/28/contour-lines-in-gee.
 
     Args:
-        image (ee.Image): An image to create contours.
-        min_value (float): The minimum value of contours.
-        max_value (float): The maximum value of contours.
-        interval (float):  The interval between contours.
-        kernel (ee.Kernel, optional): The kernel to use for smoothing image. Defaults to None.
-        region (ee.Geometry | ee.FeatureCollection, optional): The region of interest. Defaults to None.
-        values (list, optional): A list of values to create contours for. Defaults to None.
-
-    Raises:
-        TypeError: The image must be an ee.Image.
-        TypeError: The region must be an ee.Geometry or ee.FeatureCollection.
+        image: An image to create contours.
+        min_value: The minimum value of contours.
+        max_value: The maximum value of contours.
+        interval: The interval between contours.
+        kernel: The kernel to use for smoothing image.
+        region: The region of interest.
+        values: Values to create contours for.
 
     Returns:
-        ee.Image: The image containing contours.
+        The image containing contours.
     """
     if not isinstance(image, ee.Image):
         raise TypeError("The image must be an ee.Image.")
-    if region is not None:
-        if isinstance(region, (ee.FeatureCollection, ee.Geometry)):
-            pass
-        else:
-            raise TypeError(
-                "The region must be an ee.Geometry or ee.FeatureCollection."
-            )
 
-    if kernel is None:
-        kernel = ee.Kernel.gaussian(5, 3)
+    if region is not None and not isinstance(
+        region, (ee.FeatureCollection, ee.Geometry)
+    ):
+        raise TypeError("The region must be an ee.Geometry or ee.FeatureCollection.")
+
+    kernel = kernel or ee.Kernel.gaussian(5, 3)
 
     if isinstance(values, list):
         values = ee.List(values)
     elif isinstance(values, ee.List):
         pass
-
-    if values is None:
+    elif values is None:
         values = ee.List.sequence(min_value, max_value, interval)
+    else:
+        raise TypeError("The values must be a list or ee.List.")
 
-    def contouring(value):
-        mycountour = (
+    def contouring(value: ee.Number) -> ee.Image:
+        contour = (
             image.convolve(kernel)
             .subtract(ee.Image.constant(value))
             .zeroCrossing()
             .multiply(ee.Image.constant(value).toFloat())
         )
-        return mycountour.mask(mycountour)
+        return contour.mask(contour)
 
     contours = values.map(contouring)
 
@@ -10245,8 +10247,8 @@ def create_contours(
             return ee.ImageCollection(contours).mosaic().clipToCollection(region)
         elif isinstance(region, ee.Geometry):
             return ee.ImageCollection(contours).mosaic().clip(region)
-    else:
-        return ee.ImageCollection(contours).mosaic()
+
+    return ee.ImageCollection(contours).mosaic()
 
 
 def get_local_tile_layer(

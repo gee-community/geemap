@@ -611,7 +611,49 @@ class CommonTest(unittest.TestCase):
     # TODO: test_create_download_button
     # TODO: test_gdf_to_geojson
     # TODO: test_get_temp_dir
-    # TODO: test_create_contours
+
+    def test_create_contours(self):
+        with (
+            mock.patch.object(ee.Kernel, "gaussian") as mock_gaussian,
+            mock.patch.object(ee.List, "sequence") as mock_sequence,
+            mock.patch.object(ee, "ImageCollection") as mock_ic,
+            mock.patch.object(ee.Image, "constant") as mock_constant,
+        ):
+            image = mock.MagicMock(spec=ee.Image)
+            region_geom = mock.MagicMock(spec=ee.Geometry)
+            region_fc = mock.MagicMock(spec=ee.FeatureCollection)
+            kernel = mock.MagicMock()
+            constant_img_mock = mock.MagicMock()
+            mock_constant.return_value = constant_img_mock
+            constant_img_mock.toFloat.return_value = mock.MagicMock()
+            mock_gaussian.return_value = kernel
+
+            list_mock = mock.MagicMock()
+            list_mock.map.return_value = "contours"
+            mock_sequence.return_value = list_mock
+
+            mosaic_mock = mock.MagicMock()
+            mosaic_mock.clip.return_value = "clip_geom_result"
+            mosaic_mock.clipToCollection.return_value = "clip_fc_result"
+            mock_ic.return_value.mosaic.return_value = mosaic_mock
+
+            self.assertEqual(common.create_contours(image, 0.0, 1.0, 0.5), mosaic_mock)
+            self.assertEqual(
+                common.create_contours(image, 0.0, 1.0, 0.5, region=region_geom),
+                "clip_geom_result",
+            )
+            self.assertEqual(
+                common.create_contours(image, 0.0, 1.0, 0.5, region=region_fc),
+                "clip_fc_result",
+            )
+
+            with self.assertRaisesRegex(TypeError, r"image must be an ee\.Image"):
+                common.create_contours("not an image", 0, 1, 0.5)
+
+            message = r"region must be an ee\.Geometry or ee\.FeatureCollection"
+            with self.assertRaisesRegex(TypeError, message):
+                common.create_contours(image, 0, 1, 0.5, region="not a geometry")
+
     # TODO: test_get_local_tile_layer
     # TODO: test_get_palettable
     # TODO: test_connect_postgis
