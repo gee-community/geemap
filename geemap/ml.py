@@ -25,19 +25,17 @@ def tree_to_string(
         feature_names (Iterable[str]): List of strings that define the name of features
             (i.e., bands) used to create the model
         labels (Iterable[numeric]): List of class labels to map outputs to, must be
-            numeric values. If None, then raw outputs will be used. default = None
+            numeric values. If None, then raw outputs will be used.
         output_mode: the output mode of the estimator. Options are "INFER",
-            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default =
-            "INFER"
+            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter).
 
     Returns:
-        tree_str (str): string representation of decision tree estimator
+        String representation of decision tree estimator.
 
     Raises:
         RuntimeError: raises run time error when function cannot determine if the
             estimator is for regression or classification problem.
     """
-
     # Extract out the information need to build the tree string.
     n_nodes = estimator.tree_.node_count
     children_left = estimator.tree_.children_left
@@ -261,10 +259,9 @@ def rf_to_strings(estimator, feature_names, processes=2, output_mode="INFER"):
         feature_names (list[str]): List of strings that define the name of features
             (i.e., bands) used to create the model.
         processes (int): Number of cpu processes to spawn. Increasing processes will
-            improve speed for large models. default = 2
+            improve speed for large models.
         output_mode (str): Output mode of the estimator. Options are "INFER",
-            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default =
-            "INFER"
+            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter).
 
     Returns:
         trees (list[str]): list of strings where each string represents a decision tree
@@ -372,10 +369,7 @@ def export_trees_to_fc(trees, asset_id, description="geemap_rf_export"):
     Args:
         trees (list[str]): List of string representation of the decision trees.
         asset_id (str): ee asset id path to export the feature collection to.
-
-    kwargs:
-        description (str): optional description to provide export information. default =
-            "geemap_rf_export"
+        description (str): optional description to provide export information.
     """
     # Create a null geometry point.
     # This is needed to properly export the feature collection.
