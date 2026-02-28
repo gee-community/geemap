@@ -258,10 +258,7 @@ def bar_chart(
     if isinstance(max_rows, int):
         data = data.head(max_rows)
 
-    if "labels" in kwargs:
-        labels = kwargs.pop("labels", {})
-    else:
-        labels = {}
+    labels = kwargs.pop("labels", {})
 
     if x_label is not None:
         labels[x] = x_label  # pytype: disable=unsupported-operands
@@ -535,10 +532,7 @@ def line_chart(
     if isinstance(max_rows, int):
         data = data.head(max_rows)
 
-    if "labels" in kwargs:
-        labels = kwargs.pop("labels", {})
-    else:
-        labels = {}
+    labels = kwargs.pop("labels", {})
 
     if x_label is not None:
         labels[x] = x_label
@@ -806,10 +800,7 @@ def histogram(
     if isinstance(max_rows, int):
         data = data.head(max_rows)
 
-    if "labels" in kwargs:
-        labels = kwargs.pop("labels", {})
-    else:
-        labels = {}
+    labels = kwargs.pop("labels", {})
 
     if x_label is not None:
         labels[x] = x_label
