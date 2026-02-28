@@ -75,12 +75,12 @@ class Map(MapWidget):
         """Create a Map object.
 
         Args:
-            center: The center of the map (lon, lat). Defaults to (0, 20).
-            zoom: The zoom level of the map. Defaults to 1.
+            center: The center of the map (lon, lat).
+            zoom: The zoom level of the map.
             pitch: The pitch of the map. Measured in degrees away from the plane of the
-                screen (0-85) Defaults to 0.
+                screen (0-85).
             bearing: The bearing of the map. Measured in degrees counter-clockwise from
-                north. Defaults to 0.
+                north.
             style: The style of the map. It can be a string or a URL.  If it is a
                 string, it must be one of the following: "dark-matter", "positron",
                 "voyager", "positron-nolabels", "dark-matter-nolabels",
@@ -88,10 +88,9 @@ class Map(MapWidget):
                 can also use any of the MapTiler styles, such as aquarelle, backdrop,
                 basic, bright, dataviz, landscape, ocean, openstreetmap, outdoor,
                 satellite, streets, toner, topo, winter, etc. If it is a URL, it must
-                point to a MapLibre style JSON. Defaults to "dark-matter".
-            height: The height of the map. Defaults to "600px".
-            controls: The controls and their positions on the map. Defaults to
-                {"fullscreen": "top-right", "scale": "bottom-left"}.
+                point to a MapLibre style JSON.
+            height: The height of the map.
+            controls: The controls and their positions on the map.
             **kwargs: Additional keyword arguments that are passed to the MapOptions
                 class.  See
                 https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
@@ -287,7 +286,7 @@ class Map(MapWidget):
             control: The control to add to the map. Can be one of the following:
                 'scale', 'fullscreen', 'geolocate', 'navigation', "attribution", and
                 "draw".
-            position: The position of the control. Defaults to "top-right".
+            position: The position of the control.
             **kwargs: Additional keyword arguments that are passed to the control object.
 
         Raises:
@@ -336,11 +335,10 @@ class Map(MapWidget):
 
         Args:
             options (Optional[Dict[str, Any]]): Configuration options for the
-                drawing control. Defaults to None.
-            position (str): The position of the control on the map. Defaults
-                to "top-left".
+                drawing control.
+            position (str): The position of the control on the map.
             geojson (Optional[Dict[str, Any]]): Initial GeoJSON data to load
-                into the drawing control. Defaults to None.
+                into the drawing control.
             **kwargs (Any): Additional keyword arguments to be passed to the
                 drawing control.
         """
@@ -451,11 +449,11 @@ class Map(MapWidget):
             basemap: The basemap to add. Can be one of the predefined strings, an
                 instance of xyzservices.TileProvider, or a key from the basemaps
                 dictionary. Defaults to None, which adds the basemap widget.
-            opacity: The opacity of the basemap. Defaults to 1.0.
-            visible: Whether the basemap is visible or not. Defaults to True.
+            opacity: The opacity of the basemap.
+            visible: Whether the basemap is visible or not.
             attribution (str, optional): The attribution text to display for the
                 basemap. If None, the attribution text is taken from the basemap or the
-                TileProvider. Defaults to None.
+                TileProvider.
             **kwargs: Additional keyword arguments that are passed to the
                 RasterTileSource class. See https://bit.ly/4erD2MQ for more information.
 
@@ -550,8 +548,8 @@ class Map(MapWidget):
                 properties are applied.
             name: The name of the layer. If None, a random name is generated.
             fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
-                the GeoJSON data. Defaults to True.
-            visible: Whether the layer is visible or not.  Defaults to True.
+                the GeoJSON data.
+            visible: Whether the layer is visible or not.
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are
@@ -661,8 +659,8 @@ class Map(MapWidget):
                 properties are applied.
             name: The name of the layer. If None, a random name is generated.
             fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
-                the GeoJSON data. Defaults to True.
-            visible: Whether the layer is visible or not.  Defaults to True.
+                the GeoJSON data.
+            visible: Whether the layer is visible or not.
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
@@ -716,8 +714,8 @@ class Map(MapWidget):
                 properties are applied.
             name: The name of the layer. If None, a random name is generated.
             fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
-                the GeoJSON data. Defaults to True.
-            visible: Whether the layer is visible or not.  Defaults to True.
+                the GeoJSON data.
+            visible: Whether the layer is visible or not.
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
@@ -763,10 +761,10 @@ class Map(MapWidget):
 
         Args:
             url: The URL of the tile layer.
-            name: The name to use for the layer. Defaults to ' Tile Layer'.
-            attribution: The attribution to use for the layer.  Defaults to ''.
-            visible: Whether the layer should be visible by default. Defaults to True.
-            tile_size: The size of the tiles in the layer.  Defaults to 256.
+            name: The name to use for the layer.
+            attribution: The attribution to use for the layer.
+            visible: Whether the layer should be visible by default.
+            tile_size: The size of the tiles in the layer.
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
@@ -809,10 +807,10 @@ class Map(MapWidget):
             url: The URL of the tile layer.
             layers: The layers to include in the WMS request.
             format: The format of the tiles in the layer.
-            name: The name to use for the layer. Defaults to 'WMS Layer'.
-            attribution: The attribution to use for the layer. Defaults to ''.
-            visible: Whether the layer should be visible by default. Defaults to True.
-            tile_size: The size of the tiles in the layer.  Defaults to 256.
+            name: The name to use for the layer.
+            attribution: The attribution to use for the layer.
+            visible: Whether the layer should be visible by default.
+            tile_size: The size of the tiles in the layer.
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
@@ -863,11 +861,10 @@ class Map(MapWidget):
             vis_params (dict): Visualization parameters. For example, {'min': 0, 'max': 100}.
             asset_id: The ID of the Earth Engine asset.
             name: The name of the tile layer. If not provided, the asset ID will be
-                used. Default is None.
-            opacity: The opacity of the tile layer (0 to 1).  Default is 1.
-            attribution: The attribution text to be displayed. Default is "Google Earth
-                Engine".
-            visible: Whether the tile layer should be shown on the map. Default is True.
+                used.
+            opacity: The opacity of the tile layer (0 to 1).
+            attribution: The attribution text to be displayed.
+            visible: Whether the tile layer should be shown on the map.
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             ee_initialize: Whether to initialize the Earth Engine
@@ -946,19 +943,16 @@ class Map(MapWidget):
         Args:
             url (str): The URL of the COG tile layer.
             name (str, optional): The name to use for the layer. If None, a
-                random name is generated. Defaults to None.
+                random name is generated.
             attribution (str, optional): The attribution to use for the layer.
-                Defaults to ''.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.0.
+            opacity (float, optional): The opacity of the layer.
             visible (bool, optional): Whether the layer should be visible by default.
-                Defaults to True.
             bands (list, optional): A list of bands to use for the layer.
-                Defaults to None.
             nodata (float, optional): The nodata value to use for the layer.
             titiler_endpoint (str, optional): The endpoint of the titiler service.
                 Defaults to "https://giswqs-titiler-endpoint.hf.space".
             fit_bounds (bool, optional): Whether to adjust the viewport of
-                the map to fit the bounds of the layer. Defaults to True.
+                the map to fit the bounds of the layer.
             **kwargs: Arbitrary keyword arguments, including bidx, expression,
                 nodata, unscale, resampling, rescale, color_formula, colormap,
                     colormap_name, return_mask. See https://developmentseed.org/titiler/endpoints/cog/
@@ -967,7 +961,6 @@ class Map(MapWidget):
                         rescaling to multiple bands, use something like
                         `rescale=["164,223","130,211","99,212"]`.
         """
-
         if name is None:
             name = "COG_" + coreutils.random_string()
 
@@ -1004,28 +997,26 @@ class Map(MapWidget):
         visibility, and fit bounds.
 
         Args:
-            url: HTTP URL to a STAC item, e.g., https://bit.ly/3VlttGm. Defaults to
-                None.
+            url: HTTP URL to a STAC item, e.g., https://bit.ly/3VlttGm.
             collection: The Microsoft Planetary Computer STAC collection ID, e.g.,
-                landsat-8-c2-l2. Defaults to None.
+                landsat-8-c2-l2.
             item: The Microsoft Planetary Computer STAC item ID, e.g.,
-                LC08_L2SP_047027_20201204_02_T1. Defaults to None.
+                LC08_L2SP_047027_20201204_02_T1.
             assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7",
-                "SR_B5", "SR_B4"]. Defaults to None.
-            bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"]. Defaults to
-                None.
+                "SR_B5", "SR_B4"].
+            bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"].
             no_data: The nodata value to use for the layer.
             titiler_endpoint: Titiler endpoint, e.g.,
                 "https://giswqs-titiler-endpoint.hf.space",
                 "https://planetarycomputer.microsoft.com/api/data/v1",
-                "planetary-computer", "pc". Defaults to None.
-            name: The layer name to use for the layer. Defaults to 'STAC Layer'.
-            attribution: The attribution to use. Defaults to ''.
-            opacity: The opacity of the layer. Defaults to 1.
+                "planetary-computer", "pc".
+            name: The layer name to use for the layer.
+            attribution: The attribution to use.
+            opacity: The opacity of the layer.
             visible: A flag indicating whether the layer should be on by
-                default. Defaults to True.
+                default.
             fit_bounds: A flag indicating whether the map should be zoomed to the layer
-                extent. Defaults to True.
+                extent.
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             **kwargs: Arbitrary keyword arguments, including bidx, expression,
@@ -1087,25 +1078,25 @@ class Map(MapWidget):
             source (str): The path to the GeoTIFF file or the URL of the Cloud
                 Optimized GeoTIFF.
             indexes (int, optional): The band(s) to use. Band indexing starts
-                at 1. Defaults to None.
+                at 1.
             colormap (str, optional): The name of the colormap from `matplotlib`
                 to use when plotting a single band.
                 See https://matplotlib.org/stable/gallery/color/colormap_reference.html.
                 Default is greyscale.
             vmin (float, optional): The minimum value to use when colormapping
-                the palette when plotting a single band. Defaults to None.
+                the palette when plotting a single band.
             vmax (float, optional): The maximum value to use when colormapping
-                the palette when plotting a single band. Defaults to None.
+                the palette when plotting a single band.
             nodata (float, optional): The value from the band to use to interpret
-                as not valid data. Defaults to None.
+                as not valid data.
             attribution (str, optional): Attribution for the source raster. This
-                defaults to a message about it being a local file. Defaults to None.
-            layer_name (str, optional): The layer name to use. Defaults to 'Raster'.
-            layer_index (int, optional): The index of the layer. Defaults to None.
+                defaults to a message about it being a local file.
+            layer_name (str, optional): The layer name to use.
+            layer_index (int, optional): The index of the layer.
             zoom_to_layer (bool, optional): Whether to zoom to the extent of the
-                layer. Defaults to True.
-            visible (bool, optional): Whether the layer is visible. Defaults to True.
-            opacity (float, optional): The opacity of the layer. Defaults to 1.0.
+                layer.
+            visible (bool, optional): Whether the layer is visible.
+            opacity (float, optional): The opacity of the layer.
             array_args (dict, optional): Additional arguments to pass to
                 `array_to_memory_file` when reading the raster. Defaults to {}.
             client_args (dict, optional): Additional arguments to pass to
@@ -1162,17 +1153,16 @@ class Map(MapWidget):
 
         Args:
             output: The output HTML file. If None, the HTML content is returned as a
-                string. Defaults
-            title: The title of the HTML page. Defaults to 'My Awesome Map'.
-            width: The width of the map. Defaults to '100%'.
-            height: The height of the map. Defaults to '100%'.
+                string.
+            title: The title of the HTML page.
+            width: The width of the map.
+            height: The height of the map.
             replace_key: Whether to replace the API key in the HTML.  If True, the API
                 key is replaced with the public API key.  The API key is read from the
                 environment variable `MAPTILER_KEY`.  The public API key is read from
-                the environment variable `MAPTILER_KEY_PUBLIC`.  Defaults to False.
+                the environment variable `MAPTILER_KEY_PUBLIC`.
             remove_port: Whether to remove the port number from the HTML.
-            preview: Whether to preview the HTML file in a web browser.  Defaults to
-                False.
+            preview: Whether to preview the HTML file in a web browser.
             overwrite: Whether to overwrite the output file if it already exists.
             **kwargs: Additional keyword arguments that are passed to the
                 `maplibre.ipywidget.MapWidget.to_html()` method.
@@ -1620,16 +1610,16 @@ class Map(MapWidget):
 
         Args:
             url: The URL of the PMTiles file.
-            style: The CSS style to apply to the layer. Defaults to None.  See
+            style: The CSS style to apply to the layer. See
                 https://docs.mapbox.com/style-spec/reference/layers/ for more info.
-            visible: Whether the layer should be shown initially. Defaults to True.
-            opacity: The opacity of the layer. Defaults to 1.0.
-            exclude_mask: Whether to exclude the mask layer. Defaults to False.
-            tooltip: Whether to show tooltips on the layer. Defaults to True.
-            properties: The properties to use for the tooltips. Defaults to None.
-            template: The template to use for the tooltips. Defaults to None.
-            attribution: The attribution to use for the layer. Defaults to 'PMTiles'.
-            fit_bounds: Whether to zoom to the layer extent. Defaults to True.
+            visible: Whether the layer should be shown initially.
+            opacity: The opacity of the layer.
+            exclude_mask: Whether to exclude the mask layer.
+            tooltip: Whether to show tooltips on the layer.
+            properties: The properties to use for the tooltips.
+            template: The template to use for the tooltips.
+            attribution: The attribution to use for the layer.
+            fit_bounds: Whether to zoom to the layer extent.
             **kwargs: Additional keyword arguments to pass to the PMTilesLayer
                 constructor.
         """
@@ -1695,8 +1685,8 @@ class Map(MapWidget):
             lng_lat: A list of two floats representing the longitude and latitude of the
                 marker.
             popup: The text to display in a popup when the marker is clicked. Defaults
-                to None.
-            options: A dictionary of options to customize the marker. Defaults to None.
+                to {}.
+            options: A dictionary of options to customize the marker. Defaults to {}.
         """
 
         if marker is None:
@@ -1717,10 +1707,10 @@ class Map(MapWidget):
         Args:
             lon: The longitude of the location to fly to.
             lat: The latitude of the location to fly to.
-            zoom: The zoom level to use when flying to the location. Defaults to None.
-            speed: The speed of the fly animation.  Defaults to None.
+            zoom: The zoom level to use when flying to the location.
+            speed: The speed of the fly animation.
             essential: Whether the flyTo animation is considered essential and not
-                affected by prefers-reduced-motion. Defaults to True.
+                affected by prefers-reduced-motion.
             **kwargs: Additional keyword arguments to pass to the flyTo function.
         """
         center = [lon, lat]
@@ -1906,8 +1896,8 @@ class Map(MapWidget):
         Args:
             width: The width of the iframe. If None, the width will be determined by
                 Streamlit.
-            height: The height of the iframe. Default is 600.
-            scrolling: Whether the iframe should be scrollable.  Default is False.
+            height: The height of the iframe.
+            scrolling: Whether the iframe should be scrollable.
             **kwargs: Additional arguments to pass to the Streamlit iframe function.
 
         Returns:
@@ -2044,8 +2034,8 @@ class Map(MapWidget):
 
         Args:
             satellite: TODO.
-            exaggeration: The terrain exaggeration. Defaults to 1.
-            token: The token to use to retrieve the API key. Defaults to "MAPTILER_KEY".
+            exaggeration: The terrain exaggeration.
+            token: The token to use to retrieve the API key.
             api_key: The API key. If not provided, it will be retrieved using the token.
 
         Returns:
@@ -2204,15 +2194,15 @@ class Map(MapWidget):
 
         Args:
             text: The text to add to the map.
-            fontsize: The font size of the text. Defaults to 20.
-            fontcolor: The color of the text. Defaults to "black".
-            bold: If True, the text will be bold. Defaults to False.
-            padding: The padding around the text. Defaults to "5px".
-            bg_color: The background color of the text widget. Defaults to "white".
+            fontsize: The font size of the text.
+            fontcolor: The color of the text.
+            bold: If True, the text will be bold.
+            padding: The padding around the text.
+            bg_color: The background color of the text widget.
                 To make the background transparent, set this to "transparent".
                 To make the background half transparent, set this to "rgba(255, 255, 255, 0.5)".
-            border_radius: The border radius of the text widget. Defaults to "5px".
-            position: The position of the text widget on the map. Defaults to "bottom-right".
+            border_radius: The border radius of the text widget.
+            position: The position of the text widget on the map.
             **kwargs: Additional CSS properties to apply to the text widget.
         """
         from maplibre.controls import InfoBoxControl
@@ -2249,8 +2239,7 @@ class Map(MapWidget):
                 make the background transparent, set this to "transparent".  To make the
                 background half transparent, set this to "rgba(255, 255, 255, 0.5)".
             position: The position of the HTML content on the map. Can be one of
-                "top-left", "top-right", "bottom-left", "bottom-right". Defaults to
-                "bottom-right".
+                "top-left", "top-right", "bottom-left", "bottom-right".
             **kwargs: Additional keyword arguments for future use.
         """
         # Check if an HTML string contains local images and convert them to base64.
@@ -2276,18 +2265,18 @@ class Map(MapWidget):
         specified.
 
         Args:
-            title: The title of the legend. Defaults to "Legend".
+            title: The title of the legend.
             legend_dict: A dictionary with legend items as keys and colors as values.
-                If provided, `labels` and `colors` will be ignored. Defaults to None.
-            labels: A list of legend labels. Defaults to None.
-            colors: A list of colors corresponding to the labels. Defaults to None.
-            fontsize: The font size of the legend text. Defaults to 15.
+                If provided, `labels` and `colors` will be ignored.
+            labels: A list of legend labels.
+            colors: A list of colors corresponding to the labels.
+            fontsize: The font size of the legend text.
             bg_color: The background color of the legend. Defaults to "white". To make
                 the background transparent, set this to "transparent". To make the
                 background half transparent, set this to "rgba(255, 255, 255, 0.5)".
             position: The position of the legend on the map. Can be one of "top-left",
-                "top-right", "bottom-left", "bottom-right". Defaults to "bottom-right".
-            builtin_legend: The name of a built-in legend to use. Defaults to None.
+                "top-right", "bottom-left", "bottom-right".
+            builtin_legend: The name of a built-in legend to use.
             **kwargs: Additional keyword arguments for future use.
         """
         from .legends import builtin_legends
@@ -2434,26 +2423,25 @@ class Map(MapWidget):
         label, and orientation.
 
         Args:
-            width: Width of the colorbar in inches. Defaults to 3.0.
-            height: Height of the colorbar in inches. Defaults to 0.2.
-            vmin: Minimum value of the colorbar. Defaults to 0.
-            vmax: Maximum value of the colorbar. Defaults to 1.0.
-            palette: List of colors or a colormap name for the colorbar. Defaults to
-                None.
+            width: Width of the colorbar in inches.
+            height: Height of the colorbar in inches.
+            vmin: Minimum value of the colorbar.
+            vmax: Maximum value of the colorbar.
+            palette: List of colors or a colormap name for the colorbar.
             vis_params: Visualization parameters as a dictionary.
-            cmap: Matplotlib colormap name. Defaults to "gray".
-            discrete: Whether to create a discrete colorbar. Defaults to False.
-            label: Label for the colorbar. Defaults to None.
-            label_size: Font size for the colorbar label. Defaults to 10.
-            label_weight: Font weight for the colorbar label. Defaults to "normal".
-            tick_size: Font size for the colorbar tick labels. Defaults to 8.
-            bg_color: Background color for the colorbar. Defaults to "white".
+            cmap: Matplotlib colormap name.
+            discrete: Whether to create a discrete colorbar.
+            label: Label for the colorbar.
+            label_size: Font size for the colorbar label.
+            label_weight: Font weight for the colorbar label.
+            tick_size: Font size for the colorbar tick labels.
+            bg_color: Background color for the colorbar.
             orientation: Orientation of the colorbar ("vertical" or
-                "horizontal"). Defaults to "horizontal".
+                "horizontal").
             dpi: Resolution in dots per inch. If 'figure', uses the figure's dpi
-                value. Defaults to "figure".
-            transparent: Whether the background is transparent. Defaults to False.
-            position: Position of the colorbar on the map. Defaults to "bottom-right".
+                value.
+            transparent: Whether the background is transparent.
+            position: Position of the colorbar on the map.
             **kwargs: Additional keyword arguments passed to matplotlib.pyplot.savefig().
 
         Returns:
@@ -2504,15 +2492,15 @@ class Map(MapWidget):
 
         Args:
             layer_ids: A list of layer IDs to include in the control. If None, all
-                layers in the map will be included. Defaults to None.
+                layers in the map will be included.
             theme: The theme for the layer switcher control. Can be "default" or other
-                custom themes. Defaults to "default".
+                custom themes.
             css_text: Custom CSS text for styling the layer control. If None, a default
-                style will be applied.  Defaults to None.
+                style will be applied.
             position: The position of the layer control on the map. Can be "top-left",
-                "top-right", "bottom-left", or "bottom-right". Defaults to "top-left".
+                "top-right", "bottom-left", or "bottom-right".
             bg_layers: If True, background layers will be included in the
-                control. Defaults to False.
+                control.
         """
         from maplibre.controls import LayerSwitcherControl
 
@@ -2555,9 +2543,9 @@ class Map(MapWidget):
         parameter.
 
         Args:
-            name: The name of the 3D buildings layer. Defaults to "buildings".
+            name: The name of the 3D buildings layer.
             min_zoom: The minimum zoom level at which the 3D buildings will start to be
-                visible. Defaults to 15.
+                visible.
             values: A list of height values (in meters) used for color
                 interpolation. Defaults to [0, 200, 400].
             colors: A list of colors corresponding to the 'values' list. Each color is
@@ -2633,9 +2621,9 @@ class Map(MapWidget):
             coordinates: A list of four coordinates in [longitude, latitude] format,
                 specifying the corners of the video. The coordinates order should be
                 top-left, top-right, bottom-right, bottom-left.
-            layer_id: The ID for the video layer. Defaults to "video".
+            layer_id: The ID for the video layer.
             before_id: The ID of an existing layer to insert the new layer before. If
-                None, the layer will be added on top. Defaults to None.
+                None, the layer will be added on top.
         """
         if isinstance(urls, str):
             urls = [urls]
@@ -2720,7 +2708,7 @@ def construct_maptiler_style(style: str, api_key: str | None = None) -> str:
             openstreetmap, outdoor, satellite, streets, toner, topo, winter, etc.
         api_key: An optional API key for accessing MapTiler services. If None, the
             function attempts to retrieve the API key using a predefined
-            method. Defaults to None.
+            method.
 
     Returns:
         The URL for the requested MapTiler style. If the request fails, returns a URL
@@ -2765,13 +2753,13 @@ def maptiler_3d_style(
             following: aquarelle, backdrop, basic, bright, dataviz, hillshade,
             landscape, ocean, openstreetmap, outdoor, satellite, streets, toner, topo,
             winter, etc.
-        exaggeration: The terrain exaggeration. Defaults to 1.
-        tile_size: The size of the tiles. Defaults to 512.
+        exaggeration: The terrain exaggeration.
+        tile_size: The size of the tiles.
         tile_type: The type of the tiles. It can be one of the following: webp, png,
-            jpg. Defaults to None.
-        max_zoom: The maximum zoom level. Defaults to 24.
-        hillshade: Whether to include hillshade. Defaults to True.
-        token: The token to use to retrieve the API key. Defaults to "MAPTILER_KEY".
+            jpg.
+        max_zoom: The maximum zoom level.
+        hillshade: Whether to include hillshade.
+        token: The token to use to retrieve the API key.
         api_key: The API key. If not provided, it will be retrieved using the token.
 
     Returns:
