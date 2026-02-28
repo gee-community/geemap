@@ -7811,14 +7811,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">737</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">735</span>
+<span class="normal">736</span>
+<span class="normal">737</span>
 <span class="normal">738</span>
 <span class="normal">739</span>
 <span class="normal">740</span>
 <span class="normal">741</span>
-<span class="normal">742</span>
-<span class="normal">743</span>
-<span class="normal">744</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">742</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new cell in Jupyter notebook based on the contents.</span>
 
 <span class="sd">    Args:</span>
@@ -7882,7 +7882,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The output file path for the downloaded JavaScript. Defaults to None.</p>
+                <p>The output file path for the downloaded JavaScript.</p>
               </div>
             </td>
             <td>
@@ -7895,7 +7895,13 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1240</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1234</span>
+<span class="normal">1235</span>
+<span class="normal">1236</span>
+<span class="normal">1237</span>
+<span class="normal">1238</span>
+<span class="normal">1239</span>
+<span class="normal">1240</span>
 <span class="normal">1241</span>
 <span class="normal">1242</span>
 <span class="normal">1243</span>
@@ -7930,18 +7936,12 @@
 <span class="normal">1272</span>
 <span class="normal">1273</span>
 <span class="normal">1274</span>
-<span class="normal">1275</span>
-<span class="normal">1276</span>
-<span class="normal">1277</span>
-<span class="normal">1278</span>
-<span class="normal">1279</span>
-<span class="normal">1280</span>
-<span class="normal">1281</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Downloads JavaScript source code from a GEE App.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        url: The URL of the GEE App.</span>
-<span class="sd">        out_file: The output file path for the downloaded JavaScript. Defaults to None.</span>
+<span class="sd">        out_file: The output file path for the downloaded JavaScript.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cwd</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
     <span class="n">out_file_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">url</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.js&quot;</span>
@@ -8031,14 +8031,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1133</span>
-<span class="normal">1134</span>
-<span class="normal">1135</span>
-<span class="normal">1136</span>
-<span class="normal">1137</span>
-<span class="normal">1138</span>
-<span class="normal">1139</span>
-<span class="normal">1140</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1127</span>
+<span class="normal">1128</span>
+<span class="normal">1129</span>
+<span class="normal">1130</span>
+<span class="normal">1131</span>
+<span class="normal">1132</span>
+<span class="normal">1133</span>
+<span class="normal">1134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes a Jupyter notebook and save output cells.</span>
 
 <span class="sd">    Args:</span>
@@ -8099,7 +8099,13 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1143</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1137</span>
+<span class="normal">1138</span>
+<span class="normal">1139</span>
+<span class="normal">1140</span>
+<span class="normal">1141</span>
+<span class="normal">1142</span>
+<span class="normal">1143</span>
 <span class="normal">1144</span>
 <span class="normal">1145</span>
 <span class="normal">1146</span>
@@ -8108,13 +8114,7 @@
 <span class="normal">1149</span>
 <span class="normal">1150</span>
 <span class="normal">1151</span>
-<span class="normal">1152</span>
-<span class="normal">1153</span>
-<span class="normal">1154</span>
-<span class="normal">1155</span>
-<span class="normal">1156</span>
-<span class="normal">1157</span>
-<span class="normal">1158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes all notebooks in the given directory recursively and saves output cells.</span>
 
 <span class="sd">    Args:</span>
@@ -8218,7 +8218,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The starting bracket to search for. Defaults to '{'.</p>
+                <p>The starting bracket to search for.</p>
               </div>
             </td>
             <td>
@@ -8333,7 +8333,7 @@
 <span class="sd">        lines: The input list of lines.</span>
 <span class="sd">        start_line_index: The line index where the starting bracket is located.</span>
 <span class="sd">        start_char_index: The position index of the starting bracket.</span>
-<span class="sd">        matching_char: The starting bracket to search for. Defaults to &#39;{&#39;.</span>
+<span class="sd">        matching_char: The starting bracket to search for.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        matching_line_index: Line index where the matching closing bracket is located.</span>
@@ -8436,7 +8436,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Separator. Defaults to ':'.</p>
+                <p>Separator.</p>
               </div>
             </td>
             <td>
@@ -8544,7 +8544,7 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        line: A string.</span>
-<span class="sd">        sep: Separator. Defaults to &#39;:&#39;.</span>
+<span class="sd">        sep: Separator.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A string with keys quoted.</span>
@@ -8643,7 +8643,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The folder to copy the JavaScript examples to. Defaults to None.</p>
+                <p>The folder to copy the JavaScript examples to.</p>
               </div>
             </td>
             <td>
@@ -8679,7 +8679,12 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">897</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">892</span>
+<span class="normal">893</span>
+<span class="normal">894</span>
+<span class="normal">895</span>
+<span class="normal">896</span>
+<span class="normal">897</span>
 <span class="normal">898</span>
 <span class="normal">899</span>
 <span class="normal">900</span>
@@ -8698,16 +8703,11 @@
 <span class="normal">913</span>
 <span class="normal">914</span>
 <span class="normal">915</span>
-<span class="normal">916</span>
-<span class="normal">917</span>
-<span class="normal">918</span>
-<span class="normal">919</span>
-<span class="normal">920</span>
-<span class="normal">921</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">916</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets Earth Engine JavaScript examples from the geemap package.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        out_dir: The folder to copy the JavaScript examples to. Defaults to None.</span>
+<span class="sd">        out_dir: The folder to copy the JavaScript examples to.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        The folder containing the JavaScript examples.</span>
@@ -8768,8 +8768,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If True, downloads the latest notebook template from GitHub.
-Defaults to False.</p>
+                <p>If True, downloads the latest notebook template from GitHub.</p>
               </div>
             </td>
             <td>
@@ -8785,7 +8784,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Set the output file path of the notebook template. Defaults to None.</p>
+                <p>Set the output file path of the notebook template.</p>
               </div>
             </td>
             <td>
@@ -8821,7 +8820,12 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">924</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">919</span>
+<span class="normal">920</span>
+<span class="normal">921</span>
+<span class="normal">922</span>
+<span class="normal">923</span>
+<span class="normal">924</span>
 <span class="normal">925</span>
 <span class="normal">926</span>
 <span class="normal">927</span>
@@ -8850,21 +8854,14 @@ Defaults to False.</p>
 <span class="normal">950</span>
 <span class="normal">951</span>
 <span class="normal">952</span>
-<span class="normal">953</span>
-<span class="normal">954</span>
-<span class="normal">955</span>
-<span class="normal">956</span>
-<span class="normal">957</span>
-<span class="normal">958</span>
-<span class="normal">959</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span>
+<span class="normal">953</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span>
     <span class="n">download_latest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the Earth Engine Jupyter notebook template.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        download_latest: If True, downloads the latest notebook template from GitHub.</span>
-<span class="sd">            Defaults to False.</span>
-<span class="sd">        out_file: Set the output file path of the notebook template. Defaults to None.</span>
+<span class="sd">        out_file: Set the output file path of the notebook template.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        File path of the template.</span>
@@ -8964,7 +8961,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to import ee. Defaults to True.</p>
+                <p>Whether to import ee.</p>
               </div>
             </td>
             <td>
@@ -8980,7 +8977,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to import geemap. Defaults to False.</p>
+                <p>Whether to import geemap.</p>
               </div>
             </td>
             <td>
@@ -8996,7 +8993,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to show the map. Defaults to True.</p>
+                <p>Whether to show the map.</p>
               </div>
             </td>
             <td>
@@ -9012,7 +9009,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the map variable. Defaults to "m".</p>
+                <p>The name of the map variable.</p>
               </div>
             </td>
             <td>
@@ -9048,7 +9045,9 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">747</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">745</span>
+<span class="normal">746</span>
+<span class="normal">747</span>
 <span class="normal">748</span>
 <span class="normal">749</span>
 <span class="normal">750</span>
@@ -9117,9 +9116,7 @@ Defaults to False.</p>
 <span class="normal">813</span>
 <span class="normal">814</span>
 <span class="normal">815</span>
-<span class="normal">816</span>
-<span class="normal">817</span>
-<span class="normal">818</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_snippet_to_py</span><span class="p">(</span>
+<span class="normal">816</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_snippet_to_py</span><span class="p">(</span>
     <span class="n">in_js_snippet</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">add_new_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">import_ee</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -9132,10 +9129,10 @@ Defaults to False.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        in_js_snippet: Earth Engine JavaScript within triple quotes.</span>
 <span class="sd">        add_new_cell: Whether add the converted Python to a new cell.</span>
-<span class="sd">        import_ee: Whether to import ee. Defaults to True.</span>
-<span class="sd">        import_geemap: Whether to import geemap. Defaults to False.</span>
-<span class="sd">        show_map: Whether to show the map. Defaults to True.</span>
-<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        import_ee: Whether to import ee.</span>
+<span class="sd">        import_geemap: Whether to import geemap.</span>
+<span class="sd">        show_map: Whether to show the map.</span>
+<span class="sd">        Map: The name of the map variable.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        A list of lines of Python script.</span>
@@ -9247,7 +9244,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>File path of the output Python script. Defaults to None.</p>
+                <p>File path of the output Python script.</p>
               </div>
             </td>
             <td>
@@ -9263,8 +9260,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to add "from ee_plugin import Map" to the output script.
-Defaults to True.</p>
+                <p>Whether to add "from ee_plugin import Map" to the output script.</p>
               </div>
             </td>
             <td>
@@ -9280,7 +9276,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub repo url. Defaults to None.</p>
+                <p>GitHub repo url.</p>
               </div>
             </td>
             <td>
@@ -9296,7 +9292,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to add "Map" to the output script. Defaults to True.</p>
+                <p>Whether to add "Map" to the output script.</p>
               </div>
             </td>
             <td>
@@ -9312,8 +9308,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to add "import geemap" to the output script.
-Defaults to False.</p>
+                <p>Whether to add "import geemap" to the output script.</p>
               </div>
             </td>
             <td>
@@ -9329,7 +9324,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the map variable. Defaults to "m".</p>
+                <p>The name of the map variable.</p>
               </div>
             </td>
             <td>
@@ -9765,9 +9760,7 @@ Defaults to False.</p>
 <span class="normal">729</span>
 <span class="normal">730</span>
 <span class="normal">731</span>
-<span class="normal">732</span>
-<span class="normal">733</span>
-<span class="normal">734</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python</span><span class="p">(</span>
+<span class="normal">732</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">use_qgis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -9780,14 +9773,12 @@ Defaults to False.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_file: File path of the input JavaScript.</span>
-<span class="sd">        out_file: File path of the output Python script. Defaults to None.</span>
+<span class="sd">        out_file: File path of the output Python script.</span>
 <span class="sd">        use_qgis: Whether to add &quot;from ee_plugin import Map&quot; to the output script.</span>
-<span class="sd">            Defaults to True.</span>
-<span class="sd">        github_repo: GitHub repo url. Defaults to None.</span>
-<span class="sd">        show_map: Whether to add &quot;Map&quot; to the output script. Defaults to True.</span>
+<span class="sd">        github_repo: GitHub repo url.</span>
+<span class="sd">        show_map: Whether to add &quot;Map&quot; to the output script.</span>
 <span class="sd">        import_geemap: Whether to add &quot;import geemap&quot; to the output script.</span>
-<span class="sd">            Defaults to False.</span>
-<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        Map: The name of the map variable.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Python script.</span>
@@ -10226,8 +10217,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The output folder containing Earth Engine Python files.
-Defaults to None.</p>
+                <p>The output folder containing Earth Engine Python files.</p>
               </div>
             </td>
             <td>
@@ -10243,8 +10233,7 @@ Defaults to None.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to add "from ee_plugin import Map" to the output file.
-Defaults to True.</p>
+                <p>Whether to add "from ee_plugin import Map" to the output file.</p>
               </div>
             </td>
             <td>
@@ -10260,7 +10249,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub repo url. Defaults to None.</p>
+                <p>GitHub repo url.</p>
               </div>
             </td>
             <td>
@@ -10276,8 +10265,7 @@ Defaults to True.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to add "import geemap" to the output file.
-Defaults to False.</p>
+                <p>Whether to add "import geemap" to the output file.</p>
               </div>
             </td>
             <td>
@@ -10293,7 +10281,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the map variable. Defaults to "m".</p>
+                <p>The name of the map variable.</p>
               </div>
             </td>
             <td>
@@ -10306,7 +10294,9 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">821</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">819</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
 <span class="normal">822</span>
 <span class="normal">823</span>
 <span class="normal">824</span>
@@ -10345,12 +10335,7 @@ Defaults to False.</p>
 <span class="normal">857</span>
 <span class="normal">858</span>
 <span class="normal">859</span>
-<span class="normal">860</span>
-<span class="normal">861</span>
-<span class="normal">862</span>
-<span class="normal">863</span>
-<span class="normal">864</span>
-<span class="normal">865</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python_dir</span><span class="p">(</span>
+<span class="normal">860</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">use_qgis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -10363,13 +10348,10 @@ Defaults to False.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        in_dir: The input folder containing Earth Engine JavaScript files.</span>
 <span class="sd">        out_dir: The output folder containing Earth Engine Python files.</span>
-<span class="sd">            Defaults to None.</span>
 <span class="sd">        use_qgis: Whether to add &quot;from ee_plugin import Map&quot; to the output file.</span>
-<span class="sd">            Defaults to True.</span>
-<span class="sd">        github_repo: GitHub repo url. Defaults to None.</span>
+<span class="sd">        github_repo: GitHub repo url.</span>
 <span class="sd">        import_geemap: Whether to add &quot;import geemap&quot; to the output file.</span>
-<span class="sd">            Defaults to False.</span>
-<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        Map: The name of the map variable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine JavaScripts to Python scripts...&quot;</span><span class="p">)</span>
     <span class="n">in_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span>
@@ -10483,7 +10465,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub username. Defaults to None.</p>
+                <p>GitHub username.</p>
               </div>
             </td>
             <td>
@@ -10499,7 +10481,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub repo name. Defaults to None.</p>
+                <p>GitHub repo name.</p>
               </div>
             </td>
             <td>
@@ -10515,7 +10497,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the map variable. Defaults to "m".</p>
+                <p>The name of the map variable.</p>
               </div>
             </td>
             <td>
@@ -10528,7 +10510,13 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1006</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1000</span>
+<span class="normal">1001</span>
+<span class="normal">1002</span>
+<span class="normal">1003</span>
+<span class="normal">1004</span>
+<span class="normal">1005</span>
+<span class="normal">1006</span>
 <span class="normal">1007</span>
 <span class="normal">1008</span>
 <span class="normal">1009</span>
@@ -10600,13 +10588,7 @@ Defaults to False.</p>
 <span class="normal">1075</span>
 <span class="normal">1076</span>
 <span class="normal">1077</span>
-<span class="normal">1078</span>
-<span class="normal">1079</span>
-<span class="normal">1080</span>
-<span class="normal">1081</span>
-<span class="normal">1082</span>
-<span class="normal">1083</span>
-<span class="normal">1084</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
+<span class="normal">1078</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -10620,9 +10602,9 @@ Defaults to False.</p>
 <span class="sd">        in_file: Input Earth Engine Python script.</span>
 <span class="sd">        template_file: Input Jupyter notebook template.</span>
 <span class="sd">        out_file: Output Jupyter notebook.</span>
-<span class="sd">        github_username: GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
-<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        github_username: GitHub username.</span>
+<span class="sd">        github_repo: GitHub repo name.</span>
+<span class="sd">        Map: The name of the map variable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
 
@@ -10757,7 +10739,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Output folder. Defaults to None.</p>
+                <p>Output folder.</p>
               </div>
             </td>
             <td>
@@ -10773,7 +10755,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub username. Defaults to None.</p>
+                <p>GitHub username.</p>
               </div>
             </td>
             <td>
@@ -10789,7 +10771,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub repo name. Defaults to None.</p>
+                <p>GitHub repo name.</p>
               </div>
             </td>
             <td>
@@ -10805,7 +10787,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the map variable. Defaults to "m".</p>
+                <p>The name of the map variable.</p>
               </div>
             </td>
             <td>
@@ -10818,7 +10800,13 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1087</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1081</span>
+<span class="normal">1082</span>
+<span class="normal">1083</span>
+<span class="normal">1084</span>
+<span class="normal">1085</span>
+<span class="normal">1086</span>
+<span class="normal">1087</span>
 <span class="normal">1088</span>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
@@ -10855,13 +10843,7 @@ Defaults to False.</p>
 <span class="normal">1121</span>
 <span class="normal">1122</span>
 <span class="normal">1123</span>
-<span class="normal">1124</span>
-<span class="normal">1125</span>
-<span class="normal">1126</span>
-<span class="normal">1127</span>
-<span class="normal">1128</span>
-<span class="normal">1129</span>
-<span class="normal">1130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
+<span class="normal">1124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -10874,10 +10856,10 @@ Defaults to False.</p>
 <span class="sd">    Args:</span>
 <span class="sd">        in_dir: Input folder containing Earth Engine Python scripts.</span>
 <span class="sd">        template_file: Input jupyter notebook template file.</span>
-<span class="sd">        out_dir: Output folder. Defaults to None.</span>
-<span class="sd">        github_username: GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
-<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        out_dir: Output folder.</span>
+<span class="sd">        github_username: GitHub username.</span>
+<span class="sd">        github_repo: GitHub repo name.</span>
+<span class="sd">        Map: The name of the map variable.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Converting Earth Engine Python scripts to Jupyter notebooks ...&quot;</span><span class="p">)</span>
 
@@ -11062,7 +11044,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the map variable. Defaults to "m".</p>
+                <p>The name of the map variable.</p>
               </div>
             </td>
             <td>
@@ -11098,7 +11080,12 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">868</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span>
+<span class="normal">866</span>
+<span class="normal">867</span>
+<span class="normal">868</span>
 <span class="normal">869</span>
 <span class="normal">870</span>
 <span class="normal">871</span>
@@ -11119,17 +11106,12 @@ Defaults to False.</p>
 <span class="normal">886</span>
 <span class="normal">887</span>
 <span class="normal">888</span>
-<span class="normal">889</span>
-<span class="normal">890</span>
-<span class="normal">891</span>
-<span class="normal">892</span>
-<span class="normal">893</span>
-<span class="normal">894</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">889</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes &#39;from ee_plugin import Map&#39; from an Earth Engine Python file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_file: Input file path of the Python script.</span>
-<span class="sd">        Map: The name of the map variable. Defaults to &quot;m&quot;.</span>
+<span class="sd">        Map: The name of the map variable.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        Lines &#39;from ee_plugin import Map&#39; removed or None.</span>
@@ -11227,26 +11209,26 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 984</span>
-<span class="normal"> 985</span>
-<span class="normal"> 986</span>
-<span class="normal"> 987</span>
-<span class="normal"> 988</span>
-<span class="normal"> 989</span>
-<span class="normal"> 990</span>
-<span class="normal"> 991</span>
-<span class="normal"> 992</span>
-<span class="normal"> 993</span>
-<span class="normal"> 994</span>
-<span class="normal"> 995</span>
-<span class="normal"> 996</span>
-<span class="normal"> 997</span>
-<span class="normal"> 998</span>
-<span class="normal"> 999</span>
-<span class="normal">1000</span>
-<span class="normal">1001</span>
-<span class="normal">1002</span>
-<span class="normal">1003</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">978</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span>
+<span class="normal">982</span>
+<span class="normal">983</span>
+<span class="normal">984</span>
+<span class="normal">985</span>
+<span class="normal">986</span>
+<span class="normal">987</span>
+<span class="normal">988</span>
+<span class="normal">989</span>
+<span class="normal">990</span>
+<span class="normal">991</span>
+<span class="normal">992</span>
+<span class="normal">993</span>
+<span class="normal">994</span>
+<span class="normal">995</span>
+<span class="normal">996</span>
+<span class="normal">997</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts footer from the notebook template.</span>
 
 <span class="sd">    Args:</span>
@@ -11342,7 +11324,13 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">962</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span>
+<span class="normal">961</span>
+<span class="normal">962</span>
 <span class="normal">963</span>
 <span class="normal">964</span>
 <span class="normal">965</span>
@@ -11355,13 +11343,7 @@ Defaults to False.</p>
 <span class="normal">972</span>
 <span class="normal">973</span>
 <span class="normal">974</span>
-<span class="normal">975</span>
-<span class="normal">976</span>
-<span class="normal">977</span>
-<span class="normal">978</span>
-<span class="normal">979</span>
-<span class="normal">980</span>
-<span class="normal">981</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">975</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts header from the notebook template.</span>
 
 <span class="sd">    Args:</span>
@@ -11437,7 +11419,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub username. Defaults to None.</p>
+                <p>GitHub username.</p>
               </div>
             </td>
             <td>
@@ -11453,7 +11435,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub repo name. Defaults to None.</p>
+                <p>GitHub repo name.</p>
               </div>
             </td>
             <td>
@@ -11466,7 +11448,13 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1161</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1155</span>
+<span class="normal">1156</span>
+<span class="normal">1157</span>
+<span class="normal">1158</span>
+<span class="normal">1159</span>
+<span class="normal">1160</span>
+<span class="normal">1161</span>
 <span class="normal">1162</span>
 <span class="normal">1163</span>
 <span class="normal">1164</span>
@@ -11513,21 +11501,15 @@ Defaults to False.</p>
 <span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
-<span class="normal">1208</span>
-<span class="normal">1209</span>
-<span class="normal">1210</span>
-<span class="normal">1211</span>
-<span class="normal">1212</span>
-<span class="normal">1213</span>
-<span class="normal">1214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
+<span class="normal">1208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates notebook header (binder and Google Colab URLs).</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_file: The input Jupyter notebook.</span>
-<span class="sd">        github_username: GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
+<span class="sd">        github_username: GitHub username.</span>
+<span class="sd">        github_repo: GitHub repo name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">github_username</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">github_username</span> <span class="o">=</span> <span class="s2">&quot;giswqs&quot;</span>
@@ -11629,7 +11611,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub username. Defaults to None.</p>
+                <p>GitHub username.</p>
               </div>
             </td>
             <td>
@@ -11645,7 +11627,7 @@ Defaults to False.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>GitHub repo name. Defaults to None.</p>
+                <p>GitHub repo name.</p>
               </div>
             </td>
             <td>
@@ -11658,7 +11640,13 @@ Defaults to False.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1217</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1211</span>
+<span class="normal">1212</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span>
+<span class="normal">1215</span>
+<span class="normal">1216</span>
+<span class="normal">1217</span>
 <span class="normal">1218</span>
 <span class="normal">1219</span>
 <span class="normal">1220</span>
@@ -11672,21 +11660,15 @@ Defaults to False.</p>
 <span class="normal">1228</span>
 <span class="normal">1229</span>
 <span class="normal">1230</span>
-<span class="normal">1231</span>
-<span class="normal">1232</span>
-<span class="normal">1233</span>
-<span class="normal">1234</span>
-<span class="normal">1235</span>
-<span class="normal">1236</span>
-<span class="normal">1237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
+<span class="normal">1231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates header (binder and Google Colab URLs) of all notebooks in a folder.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        in_dir: The input directory containing Jupyter notebooks.</span>
-<span class="sd">        github_username: GitHub username. Defaults to None.</span>
-<span class="sd">        github_repo: GitHub repo name. Defaults to None.</span>
+<span class="sd">        github_username: GitHub username.</span>
+<span class="sd">        github_repo: GitHub repo name.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.ipynb&quot;</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">file</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">files</span><span class="p">):</span>
