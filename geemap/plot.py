@@ -8,7 +8,7 @@
 import pandas as pd
 import plotly.express as px
 
-from .common import get_direct_url
+from . import common
 from . import coreutils
 
 
@@ -237,8 +237,7 @@ def bar_chart(
     if isinstance(data, str):
         if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
-            data = get_direct_url(data)
-
+            data = common.get_direct_url(data)
         data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
@@ -260,8 +259,7 @@ def bar_chart(
         data = data.head(max_rows)
 
     if "labels" in kwargs:
-        labels = kwargs.get("labels", {})
-        kwargs.pop("labels")
+        labels = kwargs.pop("labels", {})
     else:
         labels = {}
 
@@ -523,8 +521,7 @@ def line_chart(
     if isinstance(data, str):
         if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
-            data = get_direct_url(data)
-
+            data = common.get_direct_url(data)
         data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
@@ -539,8 +536,7 @@ def line_chart(
         data = data.head(max_rows)
 
     if "labels" in kwargs:
-        labels = kwargs.get("labels", {})
-        kwargs.pop("labels")
+        labels = kwargs.pop("labels", {})
     else:
         labels = {}
 
@@ -796,8 +792,7 @@ def histogram(
     if isinstance(data, str):
         if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
-            data = get_direct_url(data)
-
+            data = common.get_direct_url(data)
         data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
@@ -812,8 +807,7 @@ def histogram(
         data = data.head(max_rows)
 
     if "labels" in kwargs:
-        labels = kwargs.get("labels", {})
-        kwargs.pop("labels")
+        labels = kwargs.pop("labels", {})
     else:
         labels = {}
 
@@ -942,8 +936,7 @@ def pie_chart(
     if isinstance(data, str):
         if data.startswith(("http://", "https://")):
             data = coreutils.github_raw_url(data)
-            data = get_direct_url(data)
-
+            data = common.get_direct_url(data)
         data = pd.read_csv(data)
 
     if not isinstance(data, pd.DataFrame):
