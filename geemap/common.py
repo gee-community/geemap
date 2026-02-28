@@ -10204,7 +10204,7 @@ def create_contours(
         image: An image to create contours.
         min_value: The minimum value of contours.
         max_value: The maximum value of contours.
-        interval:  The interval between contours.
+        interval: The interval between contours.
         kernel: The kernel to use for smoothing image.
         region: The region of interest.
         values: Values to create contours for.
