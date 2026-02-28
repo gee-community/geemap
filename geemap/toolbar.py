@@ -2878,7 +2878,9 @@ def time_slider(m: geemap.Map | None = None):
                             print("4-band NAIP imagery not available before 2009.")
                             return
 
-                    ee_object = naip_timeseries(roi, start_year.value, end_year.value)
+                    ee_object = timelapse.naip_timeseries(
+                        roi, start_year.value, end_year.value
+                    )
 
             m.add_time_slider(
                 ee_object,
