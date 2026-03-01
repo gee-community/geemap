@@ -1917,8 +1917,8 @@ def show_html(html: str) -> widgets.HTML:
             content = f.read()
 
         return widgets.HTML(value=content)
-    else:
-        return widgets.HTML(value=html)
+
+    return widgets.HTML(value=html)
 
 
 def has_transparency(img) -> bool:
@@ -1997,8 +1997,8 @@ def system_fonts(show_full_path: bool = False) -> list[str]:
 
     if show_full_path:
         return font_list
-    else:
-        return font_names
+
+    return font_names
 
 
 ########################################
@@ -3650,8 +3650,8 @@ def geocode(location: str, max_rows: int = 10, reverse: bool = False):
 
         if len(locations) > 0:
             return locations
-        else:
-            return None
+
+        return None
 
     else:
         try:
@@ -3702,10 +3702,7 @@ def is_latlon_valid(location: str) -> bool:
 
     try:
         lat, lon = float(latlon[0]), float(latlon[1])
-        if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
-            return True
-        else:
-            return False
+        return lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180
     except Exception as e:
         print(e)
         return False
@@ -3734,8 +3731,8 @@ def latlon_from_text(location: str) -> tuple[float, float] | None:
         lat, lon = latlon[0], latlon[1]
         if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
             return lat, lon
-        else:
-            return None
+
+        return None
 
     except Exception as e:
         print(e)
@@ -3971,10 +3968,10 @@ def ee_api_to_csv(
         if not outfile.endswith(".csv"):
             print("The output file must end with .csv")
             return
-        else:
-            out_dir = os.path.dirname(outfile)
-            if not os.path.exists(out_dir):
-                os.makedirs(out_dir)
+
+        out_dir = os.path.dirname(outfile)
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
 
     url = "https://developers.google.com/earth-engine/api_docs"
 
@@ -4425,10 +4422,10 @@ def ee_user_id() -> str | None:
     roots = ee.data.getAssetRoots()
     if len(roots) == 0:
         return None
-    else:
-        root = ee.data.getAssetRoots()[0]
-        user_id = root["id"].replace("projects/earthengine-legacy/assets/", "")
-        return user_id
+
+    root = ee.data.getAssetRoots()[0]
+    user_id = root["id"].replace("projects/earthengine-legacy/assets/", "")
+    return user_id
 
 
 def build_asset_tree(limit: int = 100):
@@ -4694,7 +4691,8 @@ def file_browser(
     if not os.path.exists(in_dir):
         print("The provided directory does not exist.")
         return
-    elif not os.path.isdir(in_dir):
+
+    if not os.path.isdir(in_dir):
         print("The provided path is not a valid directory.")
         return
 
@@ -4887,8 +4885,8 @@ def file_browser(
 
     if return_sep_widgets:
         return left_widget, right_widget, tree_dict
-    else:
-        return full_widget
+
+    return full_widget
 
 
 ########################################
@@ -5496,9 +5494,9 @@ def cog_pixel_value(
     if "detail" in r:
         print(r["detail"])
         return None
-    else:
-        values = r["values"]
-        return dict(zip(bands, values))
+
+    values = r["values"]
+    return dict(zip(bands, values))
 
 
 def stac_tile(
@@ -6082,10 +6080,10 @@ def stac_pixel_value(
         if verbose:
             print(r["detail"])
         return None
-    else:
-        values = [v[0] for v in r["values"]]
-        assert isinstance(assets, str)  # For pytype.
-        return dict(zip(assets.split(","), values))
+
+    values = [v[0] for v in r["values"]]
+    assert isinstance(assets, str)  # For pytype.
+    return dict(zip(assets.split(","), values))
 
 
 def local_tile_pixel_value(
@@ -6289,10 +6287,10 @@ def get_bounds(
             ymaxs.append(ymax)
         if north_up:
             return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
-        else:
-            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
 
-    elif "geometries" in geometry:
+        return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    if "geometries" in geometry:
         # Input is a geometry collection.
         xmins = []
         ymins = []
@@ -6306,22 +6304,22 @@ def get_bounds(
             ymaxs.append(ymax)
         if north_up:
             return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
-        else:
-            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
 
-    elif "coordinates" in geometry:
+        return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    if "coordinates" in geometry:
         # Input is a singular geometry object
         if transform is not None:
             xyz = list(explode(geometry["coordinates"]))
             xyz_px = [transform * point for point in xyz]
             xyz = tuple(zip(*xyz_px))
             return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
-        else:
-            xyz = tuple(zip(*list(explode(geometry["coordinates"]))))
-            if north_up:
-                return min(xyz[0]), min(xyz[1]), max(xyz[0]), max(xyz[1])
-            else:
-                return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
+
+        xyz = tuple(zip(*list(explode(geometry["coordinates"]))))
+        if north_up:
+            return min(xyz[0]), min(xyz[1]), max(xyz[0]), max(xyz[1])
+
+        return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
 
     # all valid inputs returned above, so whatever falls through is an error
     raise ValueError(
@@ -6668,8 +6666,8 @@ def zonal_stats(
     )
     if return_fc:
         return result
-    else:
-        ee_export_vector(result, filename, timeout=timeout, proxies=proxies)
+
+    ee_export_vector(result, filename, timeout=timeout, proxies=proxies)
 
 
 zonal_statistics = zonal_stats
@@ -6869,8 +6867,8 @@ def zonal_stats_by_group(
     final_result = init_result.map(set_attribute)
     if return_fc:
         return final_result
-    else:
-        ee_export_vector(final_result, filename, timeout=timeout, proxies=proxies)
+
+    ee_export_vector(final_result, filename, timeout=timeout, proxies=proxies)
 
 
 zonal_statistics_by_group = zonal_stats_by_group
@@ -7274,8 +7272,8 @@ def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
     hist = ee.Dictionary(result.first().get("histogram"))
     if return_hist:
         return hist
-    else:
-        return hist.keys()
+
+    return hist.keys()
 
 
 def image_histogram(
@@ -7438,8 +7436,8 @@ def image_stats_by_zone(
         check_file_path(out_csv)
         df.to_csv(out_csv, index=False)
         return out_csv
-    else:
-        return df
+
+    return df
 
 
 def latitude_grid(
@@ -8576,15 +8574,15 @@ def is_GCS(in_shp):
             f"The projection file {in_prj} could not be found. Assuming the dataset is in a geographic coordinate system (GCS)."
         )
         return True
-    else:
-        with open(in_prj) as f:
-            esri_wkt = f.read()
-        epsg4326 = pycrs.parse.from_epsg_code(4326).to_proj4()
-        try:
-            crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
-            return crs == epsg4326
-        except Exception:
-            return False
+
+    with open(in_prj) as f:
+        esri_wkt = f.read()
+    epsg4326 = pycrs.parse.from_epsg_code(4326).to_proj4()
+    try:
+        crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
+        return crs == epsg4326
+    except Exception:
+        return False
 
 
 def kml_to_shp(in_kml, out_shp, **kwargs):
@@ -9046,8 +9044,8 @@ def extract_pixel_values(
         values_tmp = dict_values.getInfo()
         values = [values_tmp[i] for i in band_names]
         return dict(zip(band_names, values))
-    else:
-        return dict_values
+
+    return dict_values
 
 
 def list_vars(var_type=None):
@@ -9214,8 +9212,8 @@ def random_sampling(
 
     if to_pandas:
         return ee_to_df(points)
-    else:
-        return points
+
+    return points
 
 
 def osm_to_gdf(
@@ -9997,10 +9995,10 @@ def search_xyz_services(keyword, name=None, list_only=True, add_prefix=True):
     if list_only:
         if add_prefix:
             return ["xyz." + provider for provider in providers]
-        else:
-            return [provider for provider in providers]
-    else:
-        return providers
+
+        return [provider for provider in providers]
+
+    return providers
 
 
 def search_qms(keyword, limit=10, list_only=True, add_prefix=True, timeout=300):
@@ -10048,10 +10046,11 @@ def get_wms_layers(url: str, return_titles: bool = False):
     wms = WebMapService(url)
     layers = list(wms.contents)
     layers.sort()
+
     if return_titles:
         return layers, [wms[layer].title for layer in layers]
-    else:
-        return layers
+
+    return layers
 
 
 def read_file_from_url(
@@ -10072,10 +10071,11 @@ def read_file_from_url(
             line.decode(encoding).rstrip()
             for line in urllib.request.urlopen(url).readlines()
         ]
-    elif return_type == "string":
-        return urllib.request.urlopen(url).read().decode(encoding)
-    else:
+
+    if return_type != "string":
         raise ValueError("The return type must be either list or string.")
+
+    return urllib.request.urlopen(url).read().decode(encoding)
 
 
 def create_download_button(
@@ -10116,7 +10116,8 @@ def create_download_button(
             return st.download_button(
                 label, data, file_name, mime, key, help, on_click, args, **kwargs
             )
-        elif data.endswith(".gif") or data.endswith(".png") or data.endswith(".jpg"):
+
+        if data.endswith(".gif") or data.endswith(".png") or data.endswith(".jpg"):
             if mime is None:
                 mime = f"image/{os.path.splitext(data)[1][1:]}"
 
@@ -10133,19 +10134,18 @@ def create_download_button(
                     **kwargs,
                 )
 
-        else:
-            return st.download_button(
-                label,
-                label,
-                data,
-                file_name,
-                mime,
-                key,
-                help,
-                on_click,
-                args,
-                **kwargs,
-            )
+        return st.download_button(
+            label,
+            label,
+            data,
+            file_name,
+            mime,
+            key,
+            help,
+            on_click,
+            args,
+            **kwargs,
+        )
 
 
 def gdf_to_geojson(gdf, out_geojson=None, epsg=None):
@@ -10169,17 +10169,16 @@ def gdf_to_geojson(gdf, out_geojson=None, epsg=None):
 
     if out_geojson is None:
         return geojson
-    else:
-        ext = os.path.splitext(out_geojson)[1]
-        if ext.lower() not in [".json", ".geojson"]:
-            raise TypeError(
-                "The output file extension must be either .json or .geojson"
-            )
-        out_dir = os.path.dirname(out_geojson)
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
 
-        gdf.to_file(out_geojson, driver="GeoJSON")
+    ext = os.path.splitext(out_geojson)[1]
+    if ext.lower() not in [".json", ".geojson"]:
+        raise TypeError("The output file extension must be either .json or .geojson")
+
+    out_dir = os.path.dirname(out_geojson)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    gdf.to_file(out_geojson, driver="GeoJSON")
 
 
 def get_temp_dir() -> str:
@@ -10245,8 +10244,9 @@ def create_contours(
     if region is not None:
         if isinstance(region, ee.FeatureCollection):
             return ee.ImageCollection(contours).mosaic().clipToCollection(region)
-        elif isinstance(region, ee.Geometry):
+        if isinstance(region, ee.Geometry):
             return ee.ImageCollection(contours).mosaic().clip(region)
+        # Should never reach here.
 
     return ee.ImageCollection(contours).mosaic()
 
@@ -10441,8 +10441,8 @@ def get_local_tile_layer(
 
     if return_client:
         return tile_layer, tile_client
-    else:
-        return tile_layer
+
+    return tile_layer
 
 
 def get_palettable(types=None):
@@ -10889,8 +10889,8 @@ def cog_validate(source, verbose=False):
 
     if verbose:
         return cog_info(source)
-    else:
-        return cog_validate(source)
+
+    return cog_validate(source)
 
 
 def gdf_to_df(gdf, drop_geom=True) -> pd.DataFrame:
@@ -10905,8 +10905,8 @@ def gdf_to_df(gdf, drop_geom=True) -> pd.DataFrame:
     """
     if drop_geom:
         return pd.DataFrame(gdf.drop(columns=["geometry"]))
-    else:
-        return pd.DataFrame(gdf)
+
+    return pd.DataFrame(gdf)
 
 
 def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
@@ -11009,8 +11009,8 @@ def gdf_bounds(gdf, return_geom=False):
     bounds = gdf.total_bounds
     if return_geom:
         return bbox_to_gdf(bbox=bounds)
-    else:
-        return bounds
+
+    return bounds
 
 
 def gdf_centroid(gdf, return_geom=False):
@@ -11023,14 +11023,13 @@ def gdf_centroid(gdf, return_geom=False):
     Returns:
         list | gpd.GeoDataFrame: A bounding box in the form of a list (lon, lat) or GeoDataFrame.
     """
-
     warnings.filterwarnings("ignore")
 
     centroid = gdf_bounds(gdf, return_geom=True).centroid
     if return_geom:
         return centroid
-    else:
-        return centroid.x[0], centroid.y[0]
+
+    return centroid.x[0], centroid.y[0]
 
 
 def gdf_geom_type(gdf, first_only=True):
@@ -11043,11 +11042,10 @@ def gdf_geom_type(gdf, first_only=True):
     Returns:
         str: The geometry type of the GeoDataFrame.
     """
-
     if first_only:
         return gdf.geometry.type[0]
-    else:
-        return gdf.geometry.type
+
+    return gdf.geometry.type
 
 
 def image_to_numpy(image):
@@ -11292,10 +11290,10 @@ def convert_lidar(
 
     if destination is None:
         return las
-    else:
-        destination = check_file_path(destination)
-        write_lidar(las, destination, **kwargs)
-        return destination
+
+    destination = check_file_path(destination)
+    write_lidar(las, destination, **kwargs)
+    return destination
 
 
 def write_lidar(
@@ -11570,8 +11568,8 @@ def netcdf_to_tif(
 
     if return_vars:
         return output, allowed_vars
-    else:
-        return output
+
+    return output
 
 
 def read_netcdf(filename, **kwargs):
@@ -12962,8 +12960,8 @@ def ee_vector_style(
 
     if return_fc:
         return result
-    else:
-        return result.style(**{"styleProperty": "style", "neighborhood": neighborhood})
+
+    return result.style(**{"styleProperty": "style", "neighborhood": neighborhood})
 
 
 def get_direct_url(url: str) -> str:
@@ -13271,10 +13269,10 @@ def download_ned(
 
     if return_url:
         return links
-    else:
-        for index, link in enumerate(links):
-            print(f"Downloading {index + 1} of {len(links)}: {os.path.basename(link)}")
-            coreutils.download_file(link, filepaths[index], **download_args)
+
+    for index, link in enumerate(links):
+        print(f"Downloading {index + 1} of {len(links)}: {os.path.basename(link)}")
+        coreutils.download_file(link, filepaths[index], **download_args)
 
 
 def mosaic(
@@ -13475,7 +13473,8 @@ def create_legend(
         if not isinstance(colors, list):
             print("The legend colors must be a list.")
             return
-        elif all(isinstance(item, tuple) for item in colors):
+
+        if all(isinstance(item, tuple) for item in colors):
             try:
                 colors = [coreutils.rgb_to_hex(x) for x in colors]
             except Exception as e:
@@ -13647,11 +13646,11 @@ def create_legend(
 
     legend_text = "".join(content)
 
-    if output is not None:
-        with open(output, "w") as f:
-            f.write(legend_text)
-    else:
+    if output is None:
         return legend_text
+
+    with open(output, "w") as f:
+        f.write(legend_text)
 
 
 def is_arcpy():
@@ -13673,7 +13672,7 @@ def arc_active_map():
         arcpy.Map: The active map in ArcGIS Pro.
     """
     if is_arcpy():
-        import arcpy
+        import arcpy  # pytype: disable=import-error
 
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         m = aprx.activeMap
@@ -14172,7 +14171,7 @@ def get_geometry_coords(
                 coords = [lnglat_to_meters(x, 0)[0] for x in coords]
             return coords
 
-        elif coord_type == "y":
+        if coord_type == "y":
             # Get the y coordinates of the exterior
             coords = list(exterior.coords.xy[1])
             if mercator:
@@ -14185,7 +14184,8 @@ def get_geometry_coords(
             if mercator:
                 coords = [lnglat_to_meters(x, 0)[0] for x in coords]
             return coords
-        elif coord_type == "y":
+
+        if coord_type == "y":
             coords = list(row[geom].coords.xy[1])
             if mercator:
                 coords = [lnglat_to_meters(0, y)[1] for y in coords]
@@ -14201,7 +14201,7 @@ def get_geometry_coords(
                 coords = lnglat_to_meters(coords, 0)[0]
             return coords
 
-        elif coord_type == "y":
+        if coord_type == "y":
             # Get the y coordinates of the exterior
             coords = exterior.coords.xy[1][0]
             if mercator:
@@ -14365,8 +14365,8 @@ def tms_to_geotiff(
                 if ext != (0, 0):
                     return False
             return True
-        else:
-            return extrema[0] == (0, 0)
+
+        return extrema[0] == (0, 0)
 
     def paste_tile(bigim, base_size, tile, corner_xy, bbox):
         if tile is None:
@@ -14421,10 +14421,13 @@ def tms_to_geotiff(
                 retry -= 1
                 if not retry:
                     raise
+
         if r.status_code == 404:
             return None
-        elif not r.content:
+
+        if not r.content:
             return None
+
         r.raise_for_status()
         return r.content
 
@@ -15226,10 +15229,11 @@ def replace_hyphens_in_keys(d: dict | list | Any) -> dict | list | Any:
     """
     if isinstance(d, dict):
         return {k.replace("-", "_"): replace_hyphens_in_keys(v) for k, v in d.items()}
-    elif isinstance(d, list):
+
+    if isinstance(d, list):
         return [replace_hyphens_in_keys(i) for i in d]
-    else:
-        return d
+
+    return d
 
 
 def remove_port_from_string(data: str) -> str:
