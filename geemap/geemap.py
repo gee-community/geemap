@@ -2380,16 +2380,16 @@ class Map(core.Map):
         if not isinstance(width, str):
             print("width must be a string.")
             return
-        elif width.endswith("px") or width.endswith("%"):
-            pass
-        else:
+
+        if not width.endswith("px") and not width.endswith("%"):
             print("width must end with px or %")
             return
 
         if not isinstance(height, str):
             print("height must be a string.")
             return
-        elif not height.endswith("px"):
+
+        if not height.endswith("px"):
             print("height must end with px")
             return
 
@@ -5232,11 +5232,11 @@ def get_basemap(name: str) -> ipyleaflet.TileLayer | ipyleaflet.WMSLayer:
                     transparent=basemap["transparent"],
                 )
             return layer
-        else:
-            raise ValueError(
-                "Basemap must be a string. Please choose from: "
-                + str(list(basemaps.keys()))
-            )
+
+        raise ValueError(
+            "Basemap must be a string. Please choose from: "
+            + str(list(basemaps.keys()))
+        )
     else:
         raise ValueError(
             "Basemap must be a string. Please choose from: "
