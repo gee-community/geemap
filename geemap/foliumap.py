@@ -3088,15 +3088,13 @@ class SplitControl(Layer):
         >>> sidebyside.add_to(m)
     """
 
-    _template = Template(
-        """
+    _template = Template("""
         {% macro script(this, kwargs) %}
             var {{ this.get_name() }} = L.control.sideBySide(
                 {{ this.layer_left.get_name() }}, {{ this.layer_right.get_name() }}
             ).addTo({{ this._parent.get_name() }});
         {% endmacro %}
-        """
-    )
+        """)
 
     def __init__(
         self, layer_left, layer_right, name=None, overlay=True, control=False, show=True
@@ -3143,15 +3141,13 @@ class SideBySideLayers(JSCSSMixin, Layer):
         >>> sidebyside.add_to(m)
     """
 
-    _template = Template(
-        """
+    _template = Template("""
         {% macro script(this, kwargs) %}
             var {{ this.get_name() }} = L.control.sideBySide(
                 {{ this.layer_left.get_name() }}, {{ this.layer_right.get_name() }}
             ).addTo({{ this._parent.get_name() }});
         {% endmacro %}
-        """
-    )
+        """)
 
     default_js = [
         (
@@ -3173,8 +3169,7 @@ class CustomControl(MacroElement):
     Adopted from https://github.com/python-visualization/folium/pull/1662
     """
 
-    _template = Template(
-        """
+    _template = Template("""
         {% macro script(this, kwargs) %}
         L.Control.CustomControl = L.Control.extend({
             onAdd: function(map) {
@@ -3193,8 +3188,7 @@ class CustomControl(MacroElement):
             { position: "{{ this.position }}" }
         ).addTo({{ this._parent.get_name() }});
         {% endmacro %}
-    """
-    )
+    """)
 
     def __init__(self, html, position: str = "bottomleft"):
         def escape_backticks(text: str) -> str:
@@ -3209,8 +3203,7 @@ class CustomControl(MacroElement):
 class FloatText(MacroElement):
     """Adds a floating image in HTML canvas on top of the map."""
 
-    _template = Template(
-        """
+    _template = Template("""
             {% macro header(this,kwargs) %}
                 <style>
                     #{{this.get_name()}} {
@@ -3248,8 +3241,7 @@ class FloatText(MacroElement):
                 }
             </style>
             {% endmacro %}
-            """
-    )
+            """)
 
     def __init__(self, text, bottom=75, left=75):
         super().__init__()

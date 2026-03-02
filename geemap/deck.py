@@ -17,7 +17,6 @@ from . import examples
 from .geemap import basemaps
 from .osm import *
 
-
 try:
     import pydeck as pdk
 

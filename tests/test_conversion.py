@@ -50,14 +50,12 @@ class TestConversion(unittest.TestCase):
         self.assertEqual(char_index, -1)
 
     def test_find_matching_bracket_not_at_start(self):
-        source = textwrap.dedent(
-            """\
+        source = textwrap.dedent("""\
             [
               {
                 }
             ]
-        """
-        ).splitlines()
+        """).splitlines()
         line_index, char_index = conversion.find_matching_bracket(source, 1, 2)
         self.assertEqual(line_index, 2)
         self.assertEqual(char_index, 4)

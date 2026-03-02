@@ -305,14 +305,10 @@ def create_code_cell(code: str = "", where: str = "below") -> None:
         pass
 
     encoded_code = (base64.b64encode(str.encode(code))).decode()
-    display(
-        Javascript(
-            f"""
+    display(Javascript(f"""
         var code = IPython.notebook.insert_cell_{where}('code');
         code.set_text(atob("{encoded_code}"));
-    """
-        )
-    )
+    """))
 
 
 def geometry_type(ee_object: Any) -> str:
