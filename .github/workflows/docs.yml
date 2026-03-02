@@ -10,7 +10,7 @@ jobs:
         runs-on: ubuntu-latest
         strategy:
             matrix:
-                python-version: ["3.12"]
+                python-version: ["3.13"]
 
         env:
             USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
