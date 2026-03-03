@@ -14556,43 +14556,35 @@ def ee_to_geotiff(
 
     Args:
         ee_object (ee.Image | ee.FeatureCollection): The Earth Engine object to download.
-        output (str): The output path for the GeoTIFF.
+        output: The output path for the GeoTIFF.
         # TODO: What is the proper type for bbox?
-        bbox (str, optional): The bounding box in the format [xmin, ymin, xmax, ymax]. Defaults to None,
+        bbox: The bounding box in the format [xmin, ymin, xmax, ymax]. Defaults to None,
             which is the bounding box of the Earth Engine object.
-        vis_params (dict, optional): Visualization parameters. Defaults to {}.
-        zoom (int, optional): The zoom level to download the image at. Defaults to None.
-        resolution (float, optional): The resolution in meters to download the image at. Defaults to None.
-        crs (str, optional): The CRS of the output image. Defaults to "EPSG:3857".
-        to_cog (bool, optional): Whether to convert the image to Cloud Optimized GeoTIFF. Defaults to False.
-        quiet (bool, optional): Whether to hide the download progress bar. Defaults to False.
+        vis_params: Visualization parameters. Defaults to {}.
+        zoom: The zoom level to download the image at.
+        resolution: The resolution in meters to download the image at.
+        crs: The CRS of the output image.
+        to_cog: Whether to convert the image to Cloud Optimized GeoTIFF.
+        quiet: Whether to hide the download progress bar.
     """
     vis_params = vis_params or {}
 
-    image = None
-
-    if (
-        not isinstance(ee_object, ee.Image)
-        and not isinstance(ee_object, ee.ImageCollection)
-        and not isinstance(ee_object, ee.FeatureCollection)
-        and not isinstance(ee_object, ee.Feature)
-        and not isinstance(ee_object, ee.Geometry)
+    if not isinstance(
+        ee_object,
+        (ee.Image, ee.ImageCollection, ee.FeatureCollection, ee.Feature, ee.Geometry),
     ):
-        err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
-        raise AttributeError(err_str)
+        raise AttributeError(
+            "The image argument in 'addLayer' function must be an instance of one of "
+            "ee.Image, ee.Geometry, ee.Feature, or ee.FeatureCollection."
+        )
+
+    image = None
 
     if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
 
-        width = 2
-
-        if "width" in vis_params:
-            width = vis_params["width"]
-
-        color = "000000"
-
-        if "color" in vis_params:
-            color = vis_params["color"]
+        width = vis_params.get("width", 2)
+        color = vis_params.get("color", "000000")
 
         image_fill = features.style(**{"fillColor": color}).updateMask(
             ee.Image.constant(0.5)
