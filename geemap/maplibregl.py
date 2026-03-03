@@ -92,7 +92,7 @@ class Map(MapWidget):
             height: The height of the map.
             controls: The controls and their positions on the map.
             **kwargs: Additional keyword arguments that are passed to the MapOptions
-                class.  See
+                class. See
                 https://maplibre.org/maplibre-gl-js/docs/API/type-aliases/MapOptions/
                 for more information.
         """
@@ -543,7 +543,7 @@ class Map(MapWidget):
                 'heatmap', 'hillshade'. If None, the type is inferred from the GeoJSON
                 data.
             filter: The filter to apply to the layer. If None, no filter is applied.
-            paint: The paint properties to apply to the layer.  If None, no paint
+            paint: The paint properties to apply to the layer. If None, no paint
                 properties are applied.
             name: The name of the layer. If None, a random name is generated.
             fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
@@ -709,7 +709,7 @@ class Map(MapWidget):
             layer_type: The type of the layer. If None, the type is inferred from the
                 GeoJSON data.
             filter: The filter to apply to the layer. If None, no filter is applied.
-            paint: The paint properties to apply to the layer.  If None, no paint
+            paint: The paint properties to apply to the layer. If None, no paint
                 properties are applied.
             name: The name of the layer. If None, a random name is generated.
             fit_bounds: Whether to adjust the viewport of the map to fit the bounds of
@@ -2230,9 +2230,9 @@ class Map(MapWidget):
 
         Args:
             html: The HTML content to add.
-            bg_color: The background color of the HTML content. Defaults to "white".  To
-                make the background transparent, set this to "transparent".  To make the
-                background half transparent, set this to "rgba(255, 255, 255, 0.5)".
+            bg_color: The background color of the HTML content. To make the background
+                transparent, set this to "transparent".  To make the background half
+                transparent, set this to "rgba(255, 255, 255, 0.5)".
             position: The position of the HTML content on the map. Can be one of
                 "top-left", "top-right", "bottom-left", "bottom-right".
             **kwargs: Additional keyword arguments for future use.
@@ -2266,9 +2266,9 @@ class Map(MapWidget):
             labels: A list of legend labels.
             colors: A list of colors corresponding to the labels.
             fontsize: The font size of the legend text.
-            bg_color: The background color of the legend. Defaults to "white". To make
-                the background transparent, set this to "transparent". To make the
-                background half transparent, set this to "rgba(255, 255, 255, 0.5)".
+            bg_color: The background color of the legend. To make the background
+                transparent, set this to "transparent". To make the background half
+                transparent, set this to "rgba(255, 255, 255, 0.5)".
             position: The position of the legend on the map. Can be one of "top-left",
                 "top-right", "bottom-left", "bottom-right".
             builtin_legend: The name of a built-in legend to use.
@@ -2526,8 +2526,8 @@ class Map(MapWidget):
         self,
         name: str = "buildings",
         min_zoom: int = 15,
-        values: list[int] = [0, 200, 400],
-        colors: list[str] = ["lightgray", "royalblue", "lightblue"],
+        values: list[int] | None = None,
+        colors: list[str] | None = None,
     ) -> None:
         """Adds a 3D buildings layer to the map.
 
@@ -2550,6 +2550,9 @@ class Map(MapWidget):
         Raises:
             ValueError: If the lengths of 'values' and 'colors' lists do not match.
         """
+        values = values or [0, 200, 400]
+        colors = colors or ["lightgray", "royalblue", "lightblue"]
+
         MAPTILER_KEY = coreutils.get_env_var("MAPTILER_KEY")
         source = {
             "url": f"https://api.maptiler.com/tiles/v3/tiles.json?key={MAPTILER_KEY}",
