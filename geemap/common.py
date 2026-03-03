@@ -14514,16 +14514,18 @@ def tms_to_geotiff(
         print(e)
 
 
-def tif_to_jp2(filename, output, creationOptions=None):
+def tif_to_jp2(
+    filename: str, output: str, creationOptions: list[str] | None = None
+) -> None:
     """Converts a GeoTIFF to JPEG2000.
 
     Args:
-        filename (str): The path to the GeoTIFF file.
-        output (str): The path to the output JPEG2000 file.
-        creationOptions (list): A list of creation options for the JPEG2000 file. See
-            https://gdal.org/drivers/raster/jp2openjpeg.html. For example, to specify the compression
-            ratio, use `["QUALITY=20"]`. A value of 20 means the file will be 20% of the size in comparison
-            to uncompressed data.
+        filename: The path to the GeoTIFF file.
+        output: The path to the output JPEG2000 file.
+        creationOptions: A list of creation options for the JPEG2000 file. See
+            https://gdal.org/drivers/raster/jp2openjpeg.html. For example, to specify
+            the compression ratio, use `["QUALITY=20"]`. A value of 20 means the file
+            will be 20% of the size in comparison to uncompressed data.
     """
     from osgeo import gdal
 
@@ -14535,9 +14537,10 @@ def tif_to_jp2(filename, output, creationOptions=None):
     if not output.endswith(".jp2"):
         output += ".jp2"
 
-    in_ds = gdal.Open(filename)
-    gdal.Translate(output, in_ds, format="JP2OpenJPEG", creationOptions=creationOptions)
-    in_ds = None
+    with gdal.Open(filename) as in_ds:
+        gdal.Translate(
+            output, in_ds, format="JP2OpenJPEG", creationOptions=creationOptions
+        )
 
 
 def ee_to_geotiff(
