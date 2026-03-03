@@ -14676,28 +14676,24 @@ def jslink_slider_label(
 
 
 def check_basemap(basemap: str) -> str:
-    """Check Google basemaps
+    """Returns the normalized Google basemap name.
 
     Args:
         basemap: The basemap name.
-
-    Returns:
-        The basemap name.
     """
-    if isinstance(basemap, str):
-        map_dict = {
-            "ROADMAP": "Google Maps",
-            "SATELLITE": "Google Satellite",
-            "TERRAIN": "Google Terrain",
-            "HYBRID": "Google Hybrid",
-        }
-
-        if basemap.upper() in map_dict.keys():
-            return map_dict[basemap.upper()]
-        else:
-            return basemap
-    else:
+    if not isinstance(basemap, str):
         return basemap
+
+    map_dict = {
+        "ROADMAP": "Google Maps",
+        "SATELLITE": "Google Satellite",
+        "TERRAIN": "Google Terrain",
+        "HYBRID": "Google Hybrid",
+    }
+    if basemap.upper() in map_dict.keys():
+        return map_dict[basemap.upper()]
+
+    return basemap
 
 
 def get_ee_token():
