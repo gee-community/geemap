@@ -14575,7 +14575,8 @@ def ee_to_geotiff(
     ):
         raise AttributeError(
             "The image argument in 'addLayer' function must be an instance of one of "
-            "ee.Image, ee.Geometry, ee.Feature, or ee.FeatureCollection."
+            "ee.Image, ee.ImageCollection, ee.Geometry, ee.Feature, or "
+            "ee.FeatureCollection."
         )
 
     image = None
