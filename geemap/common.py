@@ -55,7 +55,6 @@ import plotly.express as px
 import requests
 
 from . import colormaps
-from .coreutils import *
 from . import coreutils
 
 
