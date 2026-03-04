@@ -2,8 +2,9 @@ import pathlib
 import tempfile
 import unittest
 
-from geemap import cartoee
 import matplotlib.pyplot as plt
+
+from geemap import cartoee
 
 try:
     import cartopy.crs as ccrs
@@ -32,8 +33,10 @@ class TestCartoee(unittest.TestCase):
     def test_buffer_box(self):
         bbox = [1.1, 2.9, 3.1, 4.9]
         interval = 1
+        # pylint: disable-next: protected-access
         self.assertEqual(cartoee._buffer_box(bbox, interval), (1.0, 3.0, 3.0, 5.0))
         bbox = [1.0, 3.0, 3.0, 5.0]
+        # pylint: disable-next: protected-access
         self.assertEqual(cartoee._buffer_box(bbox, interval), (1.0, 3.0, 3.0, 5.0))
 
     def test_bbox_to_extent(self):
