@@ -3,8 +3,9 @@
 
 import unittest
 
-import geemap.report
 import scooby
+
+import geemap.report
 
 
 class TestReport(unittest.TestCase):
