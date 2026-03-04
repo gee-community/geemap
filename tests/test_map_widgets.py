@@ -333,7 +333,7 @@ class TestLegend(unittest.TestCase):
         )
         self.assertListEqual(
             legend.legend_colors,
-            list(f"#{color}" for color in legends.builtin_legends["NLCD"].values()),
+            [f"#{color}" for color in legends.builtin_legends["NLCD"].values()],
         )
 
     def test_legend_unable_to_convert_rgb_to_hex(self):
