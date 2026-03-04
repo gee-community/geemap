@@ -3549,7 +3549,7 @@ def save_colorbar(
         norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
     if "palette" in vis_params:
-        hexcodes = to_hex_colors(vis_params["palette"])
+        hexcodes = coreutils.to_hex_colors(vis_params["palette"])
         if discrete:
             cmap = mpl.colors.ListedColormap(hexcodes)
             vals = np.linspace(vmin, vmax, cmap.N + 1)
