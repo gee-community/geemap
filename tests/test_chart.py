@@ -31,30 +31,30 @@ class ChartTest(unittest.TestCase):
         data = {"label": ["A", "B"], "val1": [1, 2], "val2": [3, 4]}
         df = pd.DataFrame(data)
 
-        # Test basic transpose
+        # Test basic transpose.
         transposed = chart.transpose_df(df, "label")
         self.assertEqual(transposed.shape, (2, 2))
         self.assertEqual(list(transposed.columns), ["A", "B"])
         self.assertEqual(list(transposed.index), ["val1", "val2"])
         self.assertEqual(transposed["A"]["val1"], 1)
 
-        # Test with index_name
+        # Test with index_name.
         transposed_with_index_name = chart.transpose_df(
             df, "label", index_name="Metrics"
         )
         self.assertEqual(transposed_with_index_name.columns.name, "Metrics")
 
-        # Test with custom indexes
+        # Test with custom indexes.
         transposed_with_indexes = chart.transpose_df(
             df, "label", indexes=["Value 1", "Value 2"]
         )
         self.assertEqual(list(transposed_with_indexes.index), ["Value 1", "Value 2"])
 
-        # Test invalid label_col
+        # Test invalid label_col.
         with self.assertRaises(ValueError):
             chart.transpose_df(df, "invalid_col")
 
-        # Test invalid indexes length
+        # Test invalid indexes length.
         with self.assertRaises(ValueError):
             chart.transpose_df(df, "label", indexes=["Only one"])
 

@@ -6,8 +6,11 @@ from unittest import mock
 import ee
 import ipyleaflet
 
-from geemap import core, map_widgets, toolbar
-from tests import fake_ee, fake_map
+from geemap import core
+from geemap import map_widgets
+from geemap import toolbar
+from tests import fake_ee
+from tests import fake_map
 
 
 @mock.patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
@@ -317,8 +320,7 @@ class TestAbstractDrawControl(unittest.TestCase):
 
         self._draw_control.create(self.geo_json)
         self.assertEqual(len(self._draw_control.geometries), 1)
-        # When clear_draw_control is False, does not delete the underlying
-        # geometries.
+        # When clear_draw_control is False, does not delete the underlying geometries.
         self._draw_control.reset(clear_draw_control=False)
         self.assertEqual(len(self._draw_control.geometries), 0)
         self.assertEqual(len(self._draw_control.geo_jsons), 1)
@@ -334,8 +336,8 @@ class TestAbstractDrawControl(unittest.TestCase):
         self.assertEqual(self._draw_control.last_draw_action, core.DrawActions.CREATED)
         self.assertEqual(self._draw_control.last_geometry, geometry2)
 
-        # When there are two geometries and the removed geometry is the last
-        # one, then we treat it like an undo.
+        # When there are two geometries and the removed geometry is the last one, then
+        # we treat it like an undo.
         self._draw_control.remove_geometry(geometry2)
         self.assertEqual(len(self._draw_control.geometries), 1)
         self.assertEqual(len(self._draw_control.properties), 1)

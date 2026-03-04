@@ -14,13 +14,13 @@ from unittest import mock
 import zipfile
 
 import ee
-from geemap import colormaps
-from geemap import common
 import ipywidgets
 from PIL import Image
 import psutil
 import requests
 
+from geemap import colormaps
+from geemap import common
 from tests import fake_ee
 
 
@@ -989,12 +989,12 @@ class CommonTest(unittest.TestCase):
         def select_side_effect(band_selector):
             if band_selector == "SR_B.":
                 return optical_bands_mock
-            elif band_selector == "ST_B.*":
+            if band_selector == "ST_B.*":
                 return thermal_bands_mock
-            elif band_selector == "QA_PIXEL":
+            if band_selector == "QA_PIXEL":
                 return qa_pixel_mock
-            else:
-                raise ValueError(f"Unexpected band selector: {band_selector}")
+
+            raise ValueError(f"Unexpected band selector: {band_selector}")
 
         image.select.side_effect = select_side_effect
 
