@@ -1,15 +1,19 @@
 #!/usr/bin/env python
 """Tests for `map_widgets` module."""
 import unittest
-from unittest.mock import patch, MagicMock, Mock, ANY
+from unittest import mock
 
 import ee
 import ipywidgets
+from matplotlib import colorbar
+from matplotlib import colors
 from matplotlib import pyplot
 
-from geemap import coreutils, map_widgets
-from tests import fake_ee, fake_map
-from geemap.legends import builtin_legends
+from geemap import coreutils
+from geemap import legends
+from geemap import map_widgets
+from tests import fake_ee
+from tests import fake_map
 
 
 def _get_colormaps() -> list[str]:
@@ -27,46 +31,48 @@ class TestColorbar(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
-        self.fig_mock = MagicMock()
-        self.ax_mock = MagicMock()
-        self.subplots_mock = patch("matplotlib.pyplot.subplots").start()
+        self.fig_mock = mock.MagicMock()
+        self.ax_mock = mock.MagicMock()
+        self.subplots_mock = mock.patch.object(pyplot, "subplots").start()
         self.subplots_mock.return_value = (self.fig_mock, self.ax_mock)
 
-        self.colorbar_base_mock = MagicMock()
-        self.colorbar_base_class_mock = patch(
-            "matplotlib.colorbar.ColorbarBase"
+        self.colorbar_base_mock = mock.MagicMock()
+        self.colorbar_base_class_mock = mock.patch.object(
+            colorbar, "ColorbarBase"
         ).start()
         self.colorbar_base_class_mock.return_value = self.colorbar_base_mock
 
-        self.normalize_mock = MagicMock()
-        self.normalize_class_mock = patch("matplotlib.colors.Normalize").start()
+        self.normalize_mock = mock.MagicMock()
+        self.normalize_class_mock = mock.patch.object(colors, "Normalize").start()
         self.normalize_class_mock.return_value = self.normalize_mock
 
-        self.boundary_norm_mock = MagicMock()
-        self.boundary_norm_class_mock = patch("matplotlib.colors.BoundaryNorm").start()
+        self.boundary_norm_mock = mock.MagicMock()
+        self.boundary_norm_class_mock = mock.patch.object(
+            colors, "BoundaryNorm"
+        ).start()
         self.boundary_norm_class_mock.return_value = self.boundary_norm_mock
 
-        self.listed_colormap = MagicMock()
-        self.listed_colormap_class_mock = patch(
-            "matplotlib.colors.ListedColormap"
+        self.listed_colormap = mock.MagicMock()
+        self.listed_colormap_class_mock = mock.patch.object(
+            colors, "ListedColormap"
         ).start()
         self.listed_colormap_class_mock.return_value = self.listed_colormap
 
-        self.linear_segmented_colormap_mock = MagicMock()
-        self.colormap_from_list_mock = patch(
-            "matplotlib.colors.LinearSegmentedColormap.from_list"
+        self.linear_segmented_colormap_mock = mock.MagicMock()
+        self.colormap_from_list_mock = mock.patch.object(
+            colors.LinearSegmentedColormap, "from_list"
         ).start()
         self.colormap_from_list_mock.return_value = self.linear_segmented_colormap_mock
 
-        check_cmap_mock = patch("geemap.common.check_cmap").start()
+        check_cmap_mock = mock.patch.object(coreutils, "check_cmap").start()
         check_cmap_mock.side_effect = lambda x: x
 
-        self.cmap_mock = MagicMock()
-        self.get_cmap_mock = patch("matplotlib.pyplot.get_cmap").start()
+        self.cmap_mock = mock.MagicMock()
+        self.get_cmap_mock = mock.patch.object(pyplot, "get_cmap").start()
         self.get_cmap_mock.return_value = self.cmap_mock
 
     def tearDown(self):
-        patch.stopall()
+        mock.patch.stopall()
         super().tearDown()
 
     def test_colorbar_no_args(self):
@@ -163,7 +169,7 @@ class TestColorbar(unittest.TestCase):
         map_widgets.Colorbar(
             vis_params={"palette": self.TEST_COLORS, "min": -1}, discrete=True
         )
-        self.boundary_norm_class_mock.assert_called_with([-1], ANY)
+        self.boundary_norm_class_mock.assert_called_with([-1], mock.ANY)
         self.listed_colormap_class_mock.assert_called_with(self.TEST_COLORS_HEX)
         self.colorbar_base_class_mock.assert_called_with(
             self.ax_mock,
@@ -175,7 +181,7 @@ class TestColorbar(unittest.TestCase):
 
     def test_colorbar_vis_params_palette_as_list(self):
         map_widgets.Colorbar(vis_params=self.TEST_COLORS, discrete=True)
-        self.boundary_norm_class_mock.assert_called_with([0], ANY)
+        self.boundary_norm_class_mock.assert_called_with([0], mock.ANY)
         self.listed_colormap_class_mock.assert_called_with(self.TEST_COLORS_HEX)
         self.colorbar_base_class_mock.assert_called_with(
             self.ax_mock,
@@ -187,7 +193,7 @@ class TestColorbar(unittest.TestCase):
 
     def test_colorbar_kwargs_colors(self):
         map_widgets.Colorbar(colors=self.TEST_COLORS, discrete=True)
-        self.boundary_norm_class_mock.assert_called_with([0], ANY)
+        self.boundary_norm_class_mock.assert_called_with([0], mock.ANY)
         self.listed_colormap_class_mock.assert_called_with(self.TEST_COLORS_HEX)
         self.colorbar_base_class_mock.assert_called_with(
             self.ax_mock,
@@ -215,13 +221,23 @@ class TestColorbar(unittest.TestCase):
     def test_colorbar_opacity(self):
         map_widgets.Colorbar(vis_params={"opacity": 0.5}, colors=self.TEST_COLORS)
         self.colorbar_base_class_mock.assert_called_with(
-            ANY, norm=ANY, alpha=0.5, cmap=ANY, orientation=ANY, colors=ANY
+            mock.ANY,
+            norm=mock.ANY,
+            alpha=0.5,
+            cmap=mock.ANY,
+            orientation=mock.ANY,
+            colors=mock.ANY,
         )
 
     def test_colorbar_alpha(self):
         map_widgets.Colorbar(alpha=0.5, colors=self.TEST_COLORS)
         self.colorbar_base_class_mock.assert_called_with(
-            ANY, norm=ANY, alpha=0.5, cmap=ANY, orientation=ANY, colors=ANY
+            mock.ANY,
+            norm=mock.ANY,
+            alpha=0.5,
+            cmap=mock.ANY,
+            orientation=mock.ANY,
+            colors=mock.ANY,
         )
 
     def test_colorbar_invalid_alpha(self):
@@ -312,10 +328,12 @@ class TestLegend(unittest.TestCase):
 
     def test_legend_with_builtin_legends(self):
         legend = map_widgets.Legend(builtin_legend="NLCD")
-        self.assertListEqual(legend.legend_keys, list(builtin_legends["NLCD"].keys()))
+        self.assertListEqual(
+            legend.legend_keys, list(legends.builtin_legends["NLCD"].keys())
+        )
         self.assertListEqual(
             legend.legend_colors,
-            list(f"#{color}" for color in builtin_legends["NLCD"].values()),
+            list(f"#{color}" for color in legends.builtin_legends["NLCD"].values()),
         )
 
     def test_legend_unable_to_convert_rgb_to_hex(self):
@@ -333,7 +351,7 @@ class TestLegend(unittest.TestCase):
 
     def test_legend_builtin_legend_not_allowed(self):
         expected_regex = "The builtin legend must be one of the following: {}".format(
-            ", ".join(builtin_legends)
+            ", ".join(legends.builtin_legends)
         )
         with self.assertRaisesRegex(ValueError, expected_regex):
             map_widgets.Legend(builtin_legend="invalid_builtin_legend")
@@ -355,12 +373,12 @@ class TestLegend(unittest.TestCase):
             map_widgets.Legend(keys=["test_key"], colors="invalid_colors")
 
 
-@patch.object(ee, "Algorithms", fake_ee.Algorithms)
-@patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
-@patch.object(ee, "Feature", fake_ee.Feature)
-@patch.object(ee, "Geometry", fake_ee.Geometry)
-@patch.object(ee, "Image", fake_ee.Image)
-@patch.object(ee, "String", fake_ee.String)
+@mock.patch.object(ee, "Algorithms", fake_ee.Algorithms)
+@mock.patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
+@mock.patch.object(ee, "Feature", fake_ee.Feature)
+@mock.patch.object(ee, "Geometry", fake_ee.Geometry)
+@mock.patch.object(ee, "Image", fake_ee.Image)
+@mock.patch.object(ee, "String", fake_ee.String)
 class TestInspector(unittest.TestCase):
     """Tests for the Inspector class in the `map_widgets` module."""
 
@@ -557,9 +575,10 @@ def _create_fake_map() -> fake_map.FakeMap:
     return ret
 
 
-@unittest.mock.patch(
-    "geemap.map_widgets.LayerManagerRow._traitlet_link_type",
-    new=unittest.mock.Mock(return_value=ipywidgets.link),
+@mock.patch.object(
+    map_widgets.LayerManagerRow,
+    "_traitlet_link_type",
+    new=mock.Mock(return_value=ipywidgets.link),
 )  # jslink isn't supported in ipywidgets
 class TestLayerManagerRow(unittest.TestCase):
     """Tests for the LayerManagerRow class in the `layer_manager` module."""
@@ -754,7 +773,7 @@ class TestBasemapSelector(unittest.TestCase):
     def test_basemap_close(self):
         """Tests that triggering the closing button fires the close callback."""
         widget = map_widgets.BasemapSelector(self.basemap_list, "DEFAULT")
-        on_close_mock = Mock()
+        on_close_mock = mock.Mock()
         widget.on_close = on_close_mock
         msg = {"type": "click", "id": "close"}
         widget._handle_custom_msg(msg, [])  # pylint: disable=protected-access
@@ -763,17 +782,17 @@ class TestBasemapSelector(unittest.TestCase):
     def test_basemap_change(self):
         """Tests that value change fires the basemap_changed callback."""
         widget = map_widgets.BasemapSelector(self.basemap_list, "provider.resource-2")
-        on_apply_mock = Mock()
+        on_apply_mock = mock.Mock()
         widget.on_basemap_changed = on_apply_mock
         msg = {"type": "click", "id": "apply"}
         widget._handle_custom_msg(msg, [])  # pylint: disable=protected-access
         on_apply_mock.assert_called_once_with("provider.resource-2")
 
 
-@patch.object(ee, "Feature", fake_ee.Feature)
-@patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
-@patch.object(ee, "Geometry", fake_ee.Geometry)
-@patch.object(ee, "Image", fake_ee.Image)
+@mock.patch.object(ee, "Feature", fake_ee.Feature)
+@mock.patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)
+@mock.patch.object(ee, "Geometry", fake_ee.Geometry)
+@mock.patch.object(ee, "Image", fake_ee.Image)
 class TestLayerEditor(unittest.TestCase):
     """Tests for the `LayerEditor` class in the `map_widgets` module."""
 
@@ -787,7 +806,7 @@ class TestLayerEditor(unittest.TestCase):
     def setUp(self):
         super().setUp()
         self._fake_map = fake_map.FakeMap()
-        pyplot.show = Mock()  # Plotting isn't captured by output widgets.
+        pyplot.show = mock.Mock()  # Plotting isn't captured by output widgets.
 
     def test_layer_editor_no_map(self):
         """Tests that a valid map must be passed in."""
@@ -838,7 +857,7 @@ class TestLayerEditor(unittest.TestCase):
 
     def test_layer_editor_handle_calculate_band_stats(self):
         """Tests that calculate band stats works."""
-        send_mock = MagicMock()
+        send_mock = mock.MagicMock()
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.Image())
         )
@@ -859,7 +878,7 @@ class TestLayerEditor(unittest.TestCase):
 
     def test_layer_editor_handle_calculate_palette(self):
         """Tests that calculate palette works."""
-        send_mock = MagicMock()
+        send_mock = mock.MagicMock()
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.Image())
         )
@@ -886,7 +905,7 @@ class TestLayerEditor(unittest.TestCase):
 
     def test_layer_editor_handle_calculate_field(self):
         """Tests that calculate fields works."""
-        send_mock = MagicMock()
+        send_mock = mock.MagicMock()
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
         )
@@ -906,7 +925,7 @@ class TestLayerEditor(unittest.TestCase):
 
     def test_layer_editor_handle_calculate_field_values(self):
         """Tests that calculate field values works."""
-        send_mock = MagicMock()
+        send_mock = mock.MagicMock()
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
         )
@@ -927,7 +946,7 @@ class TestLayerEditor(unittest.TestCase):
 
     def test_layer_editor_handle_close_click(self):
         """Tests that close click events are handled."""
-        on_close_mock = MagicMock()
+        on_close_mock = mock.MagicMock()
         widget = map_widgets.LayerEditor(
             self._fake_map, self._fake_layer_dict(ee.FeatureCollection())
         )
