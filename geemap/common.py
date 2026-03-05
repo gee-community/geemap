@@ -13671,7 +13671,7 @@ def arc_active_map():
         arcpy.Map: The active map in ArcGIS Pro.
     """
     if is_arcpy():
-        import arcpy  # pytype: disable=import-error
+        import arcpy
 
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         m = aprx.activeMap
