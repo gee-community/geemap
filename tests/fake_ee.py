@@ -1,5 +1,8 @@
 """Fake ee module for use with testing."""
 
+# pylint: disable=invalid-name
+# pylint: disable=too-few-public-methods
+
 import box
 
 
@@ -7,7 +10,7 @@ class Image:
     def __init__(self, *_, **__):
         pass
 
-    @classmethod
+    @staticmethod
     def constant(self, *_, **__):
         return Image()
 
@@ -78,21 +81,21 @@ class Geometry:
     geometry = None
 
     def __init__(self, *args, **kwargs):
-        if len(args):
+        if args:
             self.geometry = args[0]
         if kwargs.get("type"):
             self.geom_type = kwargs.get("type")
 
-    @classmethod
-    def Point(self, *_, **__):
+    @staticmethod
+    def Point(*_, **__):
         return Geometry(type=String("Point"))
 
-    @classmethod
-    def BBox(self, *_, **__):
+    @staticmethod
+    def BBox(*_, **__):
         return Geometry(type=String("BBox"))
 
-    @classmethod
-    def Polygon(self, *_, **__):
+    @staticmethod
+    def Polygon(*_, **__):
         return Geometry(type=String("Polygon"))
 
     def transform(self, *_, **__):
@@ -138,10 +141,12 @@ class Geometry:
 
 
 class String:
+    value: str
+
     def __init__(self, value):
         self.value = value
 
-    def compareTo(self, other_str):
+    def compareTo(self, other_str) -> bool:
         return self.value == other_str.value
 
     def getInfo(self, *_, **__):
@@ -152,7 +157,7 @@ class FeatureCollection:
     features = []
 
     def __init__(self, *args, **_):
-        if len(args):
+        if args:
             self.features = args[0]
 
     def style(self, *_, **__):
