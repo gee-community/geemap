@@ -14714,9 +14714,6 @@ def geotiff_to_image(image: str, output: str) -> None:
     Args:
         image: The path to the input GeoTIFF file.
         output: The path to save the output JPEG/PNG file.
-
-    Returns:
-        None
     """
     import rasterio
     from PIL import Image
@@ -14754,20 +14751,19 @@ def xee_to_image(
 
     Args:
         xds (xr.Dataset): The xarray Dataset to convert to images.
-        filenames (str | list[str]] | None): Output filenames for the images.
-            If a single string is provided, it will be used as the filename for all images.
-            If a list of strings is provided, the filenames will be used in order. Defaults to None.
-        out_dir (str, optional): Output directory for the images. Defaults to current working directory.
-        crs (str, optional): Coordinate reference system (CRS) of the output images.
-            If not provided, the CRS is inferred from the Dataset's attributes ('crs' attribute) or set to 'EPSG:4326'.
-        nodata (float, optional): The nodata value used for the output images. Defaults to None.
-        driver (str, optional): Driver used for writing the output images, such as 'GTiff'. Defaults to "COG".
-        time_unit (str, optional): Time unit used for generating default filenames. Defaults to 'D'.
-        quiet (bool, optional): If True, suppresses progress messages. Defaults to False.
-        **kwargs: Additional keyword arguments passed to rioxarray's `rio.to_raster()` function.
-
-    Returns:
-        None
+        filenames: Output filenames for the images. If a single string is provided, it
+            will be used as the filename for all images. If a list of strings is
+            provided, the filenames will be used in order.
+        out_dir: Output directory for the images. Defaults to current working directory.
+        crs: Coordinate reference system (CRS) of the output images.  If not provided,
+            the CRS is inferred from the Dataset's attributes ('crs' attribute) or set
+            to 'EPSG:4326'.
+        nodata: The nodata value used for the output images.
+        driver: Driver used for writing the output images, such as 'GTiff'.
+        time_unit: Time unit used for generating default filenames.
+        quiet: If True, suppresses progress messages.
+        **kwargs: Additional keyword arguments passed to rioxarray's `rio.to_raster()`
+            function.
 
     Raises:
         ValueError: If the number of filenames doesn't match the number of time steps in the Dataset.
@@ -14799,15 +14795,15 @@ def xee_to_image(
 
     for index, time in enumerate(xds.time.values):
         if nodata is not None:
-            # Create a Boolean mask where all three variables are zero (nodata)
+            # Create a Boolean mask where all three variables are zero (nodata).
             mask = (xds == nodata).all(dim="time")
-            # Set nodata values based on the mask for all variables
+            # Set nodata values based on the mask for all variables.
             xds = xds.where(~mask, other=np.nan)
 
         if not quiet:
             print(f"Processing {index + 1}/{len(xds.time.values)}: {time}")
         image = xds.sel(time=time)
-        # transform the image to suit rioxarray format
+        # Transform the image to suit rioxarray format.
         image = (
             image.rename({y_dim: "y", x_dim: "x"})
             .transpose("y", "x")
@@ -15141,16 +15137,14 @@ def xarray_to_raster(dataset, filename: str, **kwargs) -> None:
         dataset (xr.Dataset): The input xarray Dataset to be converted.
         filename: The output filename for the raster file.
         **kwargs: Additional keyword arguments passed to the `rio.to_raster()` method.
-            See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.
-
-    Returns:
-        None
+            https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html
+            for more info.
     """
     import rioxarray
 
     dims = list(dataset.dims)
 
-    new_names = {}
+    new_names: dict[str:str] = {}
 
     if "lat" in dims:
         new_names["lat"] = "y"
