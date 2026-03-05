@@ -1,7 +1,5 @@
 """Tests for the foliumap module."""
 
-from __future__ import annotations
-
 import json
 import os
 import tempfile
@@ -10,7 +8,6 @@ from unittest import mock
 
 try:
     import sys
-    import importlib
     import folium
 
     _fake_basemaps = {
@@ -75,38 +72,34 @@ class FoliumapTest(unittest.TestCase):
     def _make_map(self, **kwargs) -> foliumap.Map:
         return foliumap.Map(ee_initialize=False, **kwargs)
 
-    # ------------------------------------------------------------------ #
-    # Map initialization
-    # ------------------------------------------------------------------ #
-
-    def test_map_init_default_params(self) -> None:
+    def test_map_init_default_params(self):
         m = self._make_map()
         self.assertIsInstance(m, folium.Map)
         self.assertEqual(m.location, [20, 0])
         self.assertEqual(m.options["zoom"], 2)
 
-    def test_map_init_custom_center(self) -> None:
+    def test_map_init_custom_center(self):
         m = self._make_map(center=[40, -100])
         self.assertEqual(m.location, [40, -100])
 
-    def test_map_init_custom_zoom(self) -> None:
+    def test_map_init_custom_zoom(self):
         m = self._make_map(zoom=10)
         self.assertEqual(m.options["zoom"], 10)
 
-    def test_map_init_location_param(self) -> None:
+    def test_map_init_location_param(self):
         m = self._make_map(location=[35, 139])
         self.assertEqual(m.location, [35, 139])
 
-    def test_map_baseclass(self) -> None:
+    def test_map_baseclass(self):
         m = self._make_map()
         self.assertEqual(m.baseclass, "folium")
 
-    def test_map_init_draw_features_empty(self) -> None:
+    def test_map_init_draw_features_empty(self):
         m = self._make_map()
         self.assertEqual(m.draw_features, [])
         self.assertIsNone(m.draw_last_feature)
 
-    def test_map_max_zoom_default(self) -> None:
+    def test_map_max_zoom_default(self):
         m = self._make_map()
         # The default fit_bounds call uses maxZoom; verify via the FitBounds child.
         fit_children = [
@@ -115,11 +108,7 @@ class FoliumapTest(unittest.TestCase):
         self.assertTrue(len(fit_children) > 0)
         self.assertEqual(fit_children[0].options.get("maxZoom"), 2)
 
-    # ------------------------------------------------------------------ #
-    # set_center
-    # ------------------------------------------------------------------ #
-
-    def test_set_center_updates_bounds(self) -> None:
+    def test_set_center_updates_bounds(self):
         m = self._make_map()
         m.set_center(-122.4, 37.8, zoom=12)
         # folium stores bounds via FitBounds children, not in get_bounds().
@@ -130,11 +119,7 @@ class FoliumapTest(unittest.TestCase):
         self.assertAlmostEqual(last.bounds[0][0], 37.8, places=1)
         self.assertAlmostEqual(last.bounds[0][1], -122.4, places=1)
 
-    # ------------------------------------------------------------------ #
-    # zoom_to_bounds
-    # ------------------------------------------------------------------ #
-
-    def test_zoom_to_bounds_updates_bounds(self) -> None:
+    def test_zoom_to_bounds_updates_bounds(self):
         m = self._make_map()
         m.zoom_to_bounds([-122.5, 37.5, -122.0, 38.0])
         # folium stores bounds via FitBounds children.
@@ -149,11 +134,7 @@ class FoliumapTest(unittest.TestCase):
         self.assertAlmostEqual(north, 38.0, places=1)
         self.assertAlmostEqual(east, -122.0, places=1)
 
-    # ------------------------------------------------------------------ #
-    # add_tile_layer
-    # ------------------------------------------------------------------ #
-
-    def test_add_tile_layer_increases_children(self) -> None:
+    def test_add_tile_layer_increases_children(self):
         m = self._make_map()
         children_before = len(m._children)
         m.add_tile_layer(
@@ -163,7 +144,7 @@ class FoliumapTest(unittest.TestCase):
         )
         self.assertGreater(len(m._children), children_before)
 
-    def test_add_tile_layer_name_in_children(self) -> None:
+    def test_add_tile_layer_name_in_children(self):
         m = self._make_map()
         m.add_tile_layer(
             tiles="https://tile.example.com/{z}/{x}/{y}.png",
@@ -177,11 +158,7 @@ class FoliumapTest(unittest.TestCase):
         # The tile layer name should appear in children tile_name attributes.
         self.assertIn("MyTiles", child_names)
 
-    # ------------------------------------------------------------------ #
-    # add_wms_layer
-    # ------------------------------------------------------------------ #
-
-    def test_add_wms_layer_increases_children(self) -> None:
+    def test_add_wms_layer_increases_children(self):
         m = self._make_map()
         children_before = len(m._children)
         m.add_wms_layer(
@@ -191,32 +168,24 @@ class FoliumapTest(unittest.TestCase):
         )
         self.assertGreater(len(m._children), children_before)
 
-    # ------------------------------------------------------------------ #
-    # add_marker
-    # ------------------------------------------------------------------ #
-
-    def test_add_marker_list(self) -> None:
+    def test_add_marker_list(self):
         m = self._make_map()
         children_before = len(m._children)
         m.add_marker(location=[37.8, -122.4], popup="Test")
         self.assertGreater(len(m._children), children_before)
 
-    def test_add_marker_tuple(self) -> None:
+    def test_add_marker_tuple(self):
         m = self._make_map()
         children_before = len(m._children)
         m.add_marker(location=(37.8, -122.4), tooltip="Tooltip")
         self.assertGreater(len(m._children), children_before)
 
-    def test_add_marker_invalid_type_raises(self) -> None:
+    def test_add_marker_invalid_type_raises(self):
         m = self._make_map()
         with self.assertRaises(TypeError):
             m.add_marker(location="invalid")
 
-    # ------------------------------------------------------------------ #
-    # add_geojson
-    # ------------------------------------------------------------------ #
-
-    def test_add_geojson_from_dict(self) -> None:
+    def test_add_geojson_from_dict(self):
         m = self._make_map()
         geojson_data = {
             "type": "FeatureCollection",
@@ -235,7 +204,7 @@ class FoliumapTest(unittest.TestCase):
         m.add_geojson(geojson_data, layer_name="GeoJSON Test")
         self.assertGreater(len(m._children), children_before)
 
-    def test_add_geojson_from_file(self) -> None:
+    def test_add_geojson_from_file(self):
         geojson_data = {
             "type": "FeatureCollection",
             "features": [
@@ -258,44 +227,36 @@ class FoliumapTest(unittest.TestCase):
             m.add_geojson(filepath, layer_name="File GeoJSON")
             self.assertGreater(len(m._children), children_before)
 
-    def test_add_geojson_file_not_found_raises(self) -> None:
+    def test_add_geojson_file_not_found_raises(self):
         m = self._make_map()
         with self.assertRaises(Exception):
             m.add_geojson("/nonexistent/path.geojson")
 
-    def test_add_geojson_invalid_type_raises(self) -> None:
+    def test_add_geojson_invalid_type_raises(self):
         m = self._make_map()
         with self.assertRaises(Exception):
             m.add_geojson(12345)
 
-    # ------------------------------------------------------------------ #
-    # add_heatmap
-    # ------------------------------------------------------------------ #
-
-    def test_add_heatmap_from_list(self) -> None:
+    def test_add_heatmap_from_list(self):
         m = self._make_map()
         data = [[37.8, -122.4, 1.0], [37.9, -122.3, 2.0]]
         children_before = len(m._children)
         m.add_heatmap(data=data, name="Heat")
         self.assertGreater(len(m._children), children_before)
 
-    def test_add_heatmap_invalid_data_raises(self) -> None:
+    def test_add_heatmap_invalid_data_raises(self):
         m = self._make_map()
         with self.assertRaises(ValueError):
             m.add_heatmap(data=12345)
 
-    # ------------------------------------------------------------------ #
-    # to_html
-    # ------------------------------------------------------------------ #
-
-    def test_to_html_returns_string(self) -> None:
+    def test_to_html_returns_string(self):
         m = self._make_map()
         html = m.to_html()
         self.assertIsInstance(html, str)
         self.assertIn("<html>", html.lower())
         self.assertIn("leaflet", html.lower())
 
-    def test_to_html_saves_file(self) -> None:
+    def test_to_html_saves_file(self):
         with tempfile.TemporaryDirectory() as tmpdir:
             filepath = os.path.join(tmpdir, "test_map.html")
             m = self._make_map()
@@ -306,26 +267,18 @@ class FoliumapTest(unittest.TestCase):
             self.assertIn("<html>", content.lower())
             self.assertIn("leaflet", content.lower())
 
-    def test_to_html_invalid_extension_raises(self) -> None:
+    def test_to_html_invalid_extension_raises(self):
         m = self._make_map()
         with self.assertRaises(ValueError):
             m.to_html("output.txt")
 
-    # ------------------------------------------------------------------ #
-    # add_layer_control
-    # ------------------------------------------------------------------ #
-
-    def test_add_layer_control(self) -> None:
+    def test_add_layer_control(self):
         m = self._make_map()
         children_before = len(m._children)
         m.add_layer_control()
         self.assertGreater(len(m._children), children_before)
 
-    # ------------------------------------------------------------------ #
-    # set_control_visibility
-    # ------------------------------------------------------------------ #
-
-    def test_set_control_visibility_adds_children(self) -> None:
+    def test_set_control_visibility_adds_children(self):
         m = self._make_map()
         children_before = len(m._children)
         m.set_control_visibility(
@@ -335,26 +288,18 @@ class FoliumapTest(unittest.TestCase):
         )
         self.assertGreater(len(m._children), children_before)
 
-    # ------------------------------------------------------------------ #
-    # setOptions
-    # ------------------------------------------------------------------ #
-
-    def test_set_options_adds_basemap(self) -> None:
+    def test_set_options_adds_basemap(self):
         m = self._make_map()
         children_before = len(m._children)
         m.setOptions("HYBRID")
         self.assertGreater(len(m._children), children_before)
 
-    def test_set_options_invalid_basemap_raises(self) -> None:
+    def test_set_options_invalid_basemap_raises(self):
         m = self._make_map()
         with self.assertRaises(Exception):
             m.setOptions("INVALID_BASEMAP_XYZ")
 
-    # ------------------------------------------------------------------ #
-    # add_cog_mosaic (deprecated)
-    # ------------------------------------------------------------------ #
-
-    def test_add_cog_mosaic_raises_not_implemented(self) -> None:
+    def test_add_cog_mosaic_raises_not_implemented(self):
         m = self._make_map()
         with self.assertRaises(NotImplementedError):
             m.add_cog_mosaic()
