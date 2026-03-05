@@ -1,5 +1,10 @@
 """Fake map used for testing."""
 
+# pylint: disable=too-few-public-methods
+# pylint: disable=too-many-arguments
+# pylint; disable=too-many-instance-attributes
+# pylint: disable=too-many-positional-arguments
+
 import unittest
 
 import ee
@@ -32,15 +37,15 @@ class FakeMap:
 
     def on_interaction(self, func, remove=False):
         if remove:
-            if func in self.interaction_handlers:
-                self.interaction_handlers.remove(func)
-            else:
+            if func not in self.interaction_handlers:
                 raise ValueError("Removing an unknown on_interaction func.")
+
+            self.interaction_handlers.remove(func)
         else:
             if func in self.interaction_handlers:
                 raise ValueError("This on_interaction func already exists.")
-            else:
-                self.interaction_handlers.add(func)
+
+            self.interaction_handlers.add(func)
 
     def click(self, coordinates, event_type):
         for handler in self.interaction_handlers:
@@ -53,7 +58,7 @@ class FakeMap:
     def bounds(self):
         return ((1, 2), (3, 4))
 
-    def find_layer_index(self, name):
+    def find_layer_index(self, name) -> int:
         layers = self.layers
 
         for index, layer in enumerate(layers):
@@ -108,6 +113,7 @@ class FakeMap:
             self.layers[i] = new_layer
 
     def add_basemap(self, basemap="HYBRID", show=True, **kwargs):
+        del kwargs  # Unused.
         self.add_layer(FakeTileLayer(name=basemap, visible=show))
 
     def _add_legend(
@@ -188,7 +194,8 @@ class FakeEeTileLayer:
         percent: float | None = None,
         sigma: float | None = None,
     ) -> tuple[float, float]:
-        return (21, 42)
+        del bounds, bands, percent, sigma  # Unused.
+        return 21, 42
 
 
 class FakeTileLayer(ipywidgets.Widget):
