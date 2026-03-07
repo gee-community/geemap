@@ -7,6 +7,8 @@ __version__ = "0.37.1.post0"
 import os
 import sys
 
+import eerepr
+
 from .report import Report
 
 
@@ -44,6 +46,4 @@ else:
         raise e
 
 if _use_eerepr():
-    import eerepr
-
     eerepr.initialize()
