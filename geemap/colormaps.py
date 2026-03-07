@@ -82,9 +82,9 @@ def get_palette(
     https://matplotlib.org/stable/tutorials/colors/colormaps.html.
 
     Args:
-        cmap_name: The name of the matplotlib colormap. Defaults to None.
-        n_class: The number of colors. Defaults to None.
-        hashtag: Whether to return a list of hex colors. Defaults to False.
+        cmap_name: The name of the matplotlib colormap.
+        n_class: The number of colors.
+        hashtag: Whether to return a list of hex colors.
     """
     if cmap_name in ["ndvi", "ndwi", "dem", "dw", "esri_lulc"]:
         colors = _palette_dict[cmap_name]
@@ -100,8 +100,8 @@ def get_palette(
     def add_hashtag(color: str) -> str:
         if color.startswith("#"):
             return color
-        else:
-            return f"#{color}"
+
+        return f"#{color}"
 
     if hashtag:
         colors = [add_hashtag(color) for color in colors]
@@ -123,13 +123,13 @@ def get_colorbar(
 
     Args:
         colors: A list of hex colors.
-        vmin: The minimum value range. Defaults to 0.
-        vmax: The maximum value range. Defaults to 1.0.
-        width: The width of the colormap. Defaults to 6.0.
-        height: The height of the colormap. Defaults to 0.4.
-        orientation: The orientation of the colormap. Defaults to "horizontal".
+        vmin: The minimum value range.
+        vmax: The maximum value range.
+        width: The width of the colormap.
+        height: The height of the colormap.
+        orientation: The orientation of the colormap.
         discrete: Whether to create a discrete colormap.
-        return_fig: Whether to return the figure. Defaults to False.
+        return_fig: Whether to return the figure.
     """
     hexcodes = [i if i[0] == "#" else "#" + i for i in colors]
     fig, ax = plt.subplots(figsize=(width, height))
@@ -144,8 +144,8 @@ def get_colorbar(
 
     if return_fig:
         return fig
-    else:
-        plt.show()
+
+    plt.show()
 
 
 def list_colormaps(add_extra: bool = False, lowercase: bool = False) -> list[str]:
@@ -180,15 +180,15 @@ def plot_colormap(
 
     Args:
         cmap: The name of the colormap.
-        width: The width of the colormap. Defaults to 8.0.
-        height: The height of the colormap. Defaults to 0.4.
-        orientation: The orientation of the colormap. Defaults to "horizontal".
-        vmin: The minimum value range. Defaults to 0.
-        vmax: The maximum value range. Defaults to 1.0.
-        axis_off: Whether to turn axis off. Defaults to True.
-        show_name: Whether to show the colormap name. Defaults to False.
-        font_size: Font size of the text. Defaults to 12.
-        return_fig: Whether to return the figure. Defaults to False.
+        width: The width of the colormap.
+        height: The height of the colormap.
+        orientation: The orientation of the colormap.
+        vmin: The minimum value range.
+        vmax: The maximum value range.
+        axis_off: Whether to turn axis off.
+        show_name: Whether to show the colormap name.
+        font_size: Font size of the text.
+        return_fig: Whether to return the figure.
     """
     fig, ax = plt.subplots(figsize=(width, height))
     col_map = mpl.colormaps[cmap]
@@ -207,8 +207,8 @@ def plot_colormap(
 
     if return_fig:
         return fig
-    else:
-        plt.show()
+
+    plt.show()
 
 
 def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
@@ -241,15 +241,19 @@ def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
     plt.show()
 
 
-for index, cmap_name in enumerate(list_colormaps()):
-    if index < len(list_colormaps()):
-        color_dict = {}
-        color_dict["default"] = get_palette(cmap_name)
-        for i in range(3, 13):
-            name = "n" + str(i).zfill(2)
-            colors = get_palette(cmap_name, i)
-            color_dict[name] = colors
-        _palette_dict[cmap_name] = color_dict
+def get_palettes() -> box.Box:
+    """Returns a dictionary of colormaps and their associated palettes."""
+    for index, cmap_name in enumerate(list_colormaps()):
+        if index < len(list_colormaps()):
+            color_dict = {}
+            color_dict["default"] = get_palette(cmap_name)
+            for i in range(3, 13):
+                name = "n" + str(i).zfill(2)
+                colors = get_palette(cmap_name, i)
+                color_dict[name] = colors
+            _palette_dict[cmap_name] = color_dict
+
+    return box.Box(_palette_dict, frozen_box=True)
 
 
-palettes = box.Box(_palette_dict, frozen_box=True)
+palettes = get_palettes()
