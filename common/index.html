@@ -15229,7 +15229,7 @@ to "WebMercatorQuad".</p>
 <span class="sd">        arcpy.Map: The active map in ArcGIS Pro.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">is_arcpy</span><span class="p">():</span>
-        <span class="kn">import</span><span class="w"> </span><span class="nn">arcpy</span>  <span class="c1"># pytype: disable=import-error</span>
+        <span class="kn">import</span><span class="w"> </span><span class="nn">arcpy</span>
 
         <span class="n">aprx</span> <span class="o">=</span> <span class="n">arcpy</span><span class="o">.</span><span class="n">mp</span><span class="o">.</span><span class="n">ArcGISProject</span><span class="p">(</span><span class="s2">&quot;CURRENT&quot;</span><span class="p">)</span>
         <span class="n">m</span> <span class="o">=</span> <span class="n">aprx</span><span class="o">.</span><span class="n">activeMap</span>
@@ -16001,7 +16001,11 @@ columns, bands). Defaults to True.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14963</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14959</span>
+<span class="normal">14960</span>
+<span class="normal">14961</span>
+<span class="normal">14962</span>
+<span class="normal">14963</span>
 <span class="normal">14964</span>
 <span class="normal">14965</span>
 <span class="normal">14966</span>
@@ -16140,11 +16144,7 @@ columns, bands). Defaults to True.</p>
 <span class="normal">15099</span>
 <span class="normal">15100</span>
 <span class="normal">15101</span>
-<span class="normal">15102</span>
-<span class="normal">15103</span>
-<span class="normal">15104</span>
-<span class="normal">15105</span>
-<span class="normal">15106</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_to_image</span><span class="p">(</span>
+<span class="normal">15102</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_to_image</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">output</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -16511,7 +16511,11 @@ to None.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14827</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14823</span>
+<span class="normal">14824</span>
+<span class="normal">14825</span>
+<span class="normal">14826</span>
+<span class="normal">14827</span>
 <span class="normal">14828</span>
 <span class="normal">14829</span>
 <span class="normal">14830</span>
@@ -16640,11 +16644,7 @@ to None.</p>
 <span class="normal">14953</span>
 <span class="normal">14954</span>
 <span class="normal">14955</span>
-<span class="normal">14956</span>
-<span class="normal">14957</span>
-<span class="normal">14958</span>
-<span class="normal">14959</span>
-<span class="normal">14960</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_to_memory_file</span><span class="p">(</span>
+<span class="normal">14956</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_to_memory_file</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
     <span class="n">source</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">dtype</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -19030,7 +19030,13 @@ function.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15436</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15430</span>
+<span class="normal">15431</span>
+<span class="normal">15432</span>
+<span class="normal">15433</span>
+<span class="normal">15434</span>
+<span class="normal">15435</span>
+<span class="normal">15436</span>
 <span class="normal">15437</span>
 <span class="normal">15438</span>
 <span class="normal">15439</span>
@@ -19044,13 +19050,7 @@ function.</p>
 <span class="normal">15447</span>
 <span class="normal">15448</span>
 <span class="normal">15449</span>
-<span class="normal">15450</span>
-<span class="normal">15451</span>
-<span class="normal">15452</span>
-<span class="normal">15453</span>
-<span class="normal">15454</span>
-<span class="normal">15455</span>
-<span class="normal">15456</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_html_string</span><span class="p">(</span><span class="n">html_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">15450</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_html_string</span><span class="p">(</span><span class="n">html_string</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Check if an HTML string contains local images and convert them to base64.</span>
 
 <span class="sd">    Args:</span>
@@ -48118,29 +48118,6 @@ to False.</p>
     </table>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code>None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>None</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
               <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14711</span>
@@ -48168,18 +48145,12 @@ to False.</p>
 <span class="normal">14733</span>
 <span class="normal">14734</span>
 <span class="normal">14735</span>
-<span class="normal">14736</span>
-<span class="normal">14737</span>
-<span class="normal">14738</span>
-<span class="normal">14739</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geotiff_to_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">14736</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">geotiff_to_image</span><span class="p">(</span><span class="n">image</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">output</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a GeoTIFF file to a JPEG/PNG image.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        image: The path to the input GeoTIFF file.</span>
 <span class="sd">        output: The path to save the output JPEG/PNG file.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">rasterio</span>
     <span class="kn">from</span><span class="w"> </span><span class="nn">PIL</span><span class="w"> </span><span class="kn">import</span> <span class="n">Image</span>
@@ -51559,7 +51530,13 @@ float between 0.0 (completely transparent) and 1.0 (completely opaque).</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15175</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15169</span>
+<span class="normal">15170</span>
+<span class="normal">15171</span>
+<span class="normal">15172</span>
+<span class="normal">15173</span>
+<span class="normal">15174</span>
+<span class="normal">15175</span>
 <span class="normal">15176</span>
 <span class="normal">15177</span>
 <span class="normal">15178</span>
@@ -51570,13 +51547,7 @@ float between 0.0 (completely transparent) and 1.0 (completely opaque).</p>
 <span class="normal">15183</span>
 <span class="normal">15184</span>
 <span class="normal">15185</span>
-<span class="normal">15186</span>
-<span class="normal">15187</span>
-<span class="normal">15188</span>
-<span class="normal">15189</span>
-<span class="normal">15190</span>
-<span class="normal">15191</span>
-<span class="normal">15192</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hex_to_rgba</span><span class="p">(</span><span class="n">hex_color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">15186</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">hex_to_rgba</span><span class="p">(</span><span class="n">hex_color</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">opacity</span><span class="p">:</span> <span class="nb">float</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts a hex color code to an RGBA color string.</span>
 
 <span class="sd">    Args:</span>
@@ -57368,18 +57339,18 @@ Args:
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15123</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15119</span>
+<span class="normal">15120</span>
+<span class="normal">15121</span>
+<span class="normal">15122</span>
+<span class="normal">15123</span>
 <span class="normal">15124</span>
 <span class="normal">15125</span>
 <span class="normal">15126</span>
 <span class="normal">15127</span>
 <span class="normal">15128</span>
 <span class="normal">15129</span>
-<span class="normal">15130</span>
-<span class="normal">15131</span>
-<span class="normal">15132</span>
-<span class="normal">15133</span>
-<span class="normal">15134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_on_aws</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">15130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_on_aws</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the notebook is running on AWS.&quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 
@@ -57413,18 +57384,18 @@ Args:
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15109</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15105</span>
+<span class="normal">15106</span>
+<span class="normal">15107</span>
+<span class="normal">15108</span>
+<span class="normal">15109</span>
 <span class="normal">15110</span>
 <span class="normal">15111</span>
 <span class="normal">15112</span>
 <span class="normal">15113</span>
 <span class="normal">15114</span>
 <span class="normal">15115</span>
-<span class="normal">15116</span>
-<span class="normal">15117</span>
-<span class="normal">15118</span>
-<span class="normal">15119</span>
-<span class="normal">15120</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_studio_lab</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">15116</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">is_studio_lab</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns True if the notebook is running on Studio Lab.&quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">psutil</span>
 
@@ -68364,7 +68335,13 @@ the amount of data downloaded.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15249</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15243</span>
+<span class="normal">15244</span>
+<span class="normal">15245</span>
+<span class="normal">15246</span>
+<span class="normal">15247</span>
+<span class="normal">15248</span>
+<span class="normal">15249</span>
 <span class="normal">15250</span>
 <span class="normal">15251</span>
 <span class="normal">15252</span>
@@ -68418,13 +68395,7 @@ the amount of data downloaded.</p>
 <span class="normal">15300</span>
 <span class="normal">15301</span>
 <span class="normal">15302</span>
-<span class="normal">15303</span>
-<span class="normal">15304</span>
-<span class="normal">15305</span>
-<span class="normal">15306</span>
-<span class="normal">15307</span>
-<span class="normal">15308</span>
-<span class="normal">15309</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pmtiles_metadata</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
+<span class="normal">15303</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pmtiles_metadata</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">int</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Fetch the metadata from a local or remote .pmtiles file.</span>
 
 <span class="sd">    This function retrieves metadata from a PMTiles file, whether it&#39;s local or hosted remotely.</span>
@@ -68710,7 +68681,13 @@ not exist in the PMTiles file.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15312</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15306</span>
+<span class="normal">15307</span>
+<span class="normal">15308</span>
+<span class="normal">15309</span>
+<span class="normal">15310</span>
+<span class="normal">15311</span>
+<span class="normal">15312</span>
 <span class="normal">15313</span>
 <span class="normal">15314</span>
 <span class="normal">15315</span>
@@ -68825,13 +68802,7 @@ not exist in the PMTiles file.</p>
 <span class="normal">15424</span>
 <span class="normal">15425</span>
 <span class="normal">15426</span>
-<span class="normal">15427</span>
-<span class="normal">15428</span>
-<span class="normal">15429</span>
-<span class="normal">15430</span>
-<span class="normal">15431</span>
-<span class="normal">15432</span>
-<span class="normal">15433</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pmtiles_style</span><span class="p">(</span>
+<span class="normal">15427</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">pmtiles_style</span><span class="p">(</span>
     <span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">layers</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">cmap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;Set3&quot;</span><span class="p">,</span>
@@ -70871,7 +70842,13 @@ description, function form, return type, arguments, html.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15230</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15224</span>
+<span class="normal">15225</span>
+<span class="normal">15226</span>
+<span class="normal">15227</span>
+<span class="normal">15228</span>
+<span class="normal">15229</span>
+<span class="normal">15230</span>
 <span class="normal">15231</span>
 <span class="normal">15232</span>
 <span class="normal">15233</span>
@@ -70881,13 +70858,7 @@ description, function form, return type, arguments, html.</p>
 <span class="normal">15237</span>
 <span class="normal">15238</span>
 <span class="normal">15239</span>
-<span class="normal">15240</span>
-<span class="normal">15241</span>
-<span class="normal">15242</span>
-<span class="normal">15243</span>
-<span class="normal">15244</span>
-<span class="normal">15245</span>
-<span class="normal">15246</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_port_from_string</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">15240</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_port_from_string</span><span class="p">(</span><span class="n">data</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes the port number from all URLs in the given string.</span>
 
 <span class="sd">    Args::</span>
@@ -71120,7 +71091,13 @@ description, function form, return type, arguments, html.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15211</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15205</span>
+<span class="normal">15206</span>
+<span class="normal">15207</span>
+<span class="normal">15208</span>
+<span class="normal">15209</span>
+<span class="normal">15210</span>
+<span class="normal">15211</span>
 <span class="normal">15212</span>
 <span class="normal">15213</span>
 <span class="normal">15214</span>
@@ -71130,13 +71107,7 @@ description, function form, return type, arguments, html.</p>
 <span class="normal">15218</span>
 <span class="normal">15219</span>
 <span class="normal">15220</span>
-<span class="normal">15221</span>
-<span class="normal">15222</span>
-<span class="normal">15223</span>
-<span class="normal">15224</span>
-<span class="normal">15225</span>
-<span class="normal">15226</span>
-<span class="normal">15227</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">replace_hyphens_in_keys</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Any</span><span class="p">:</span>
+<span class="normal">15221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">replace_hyphens_in_keys</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="nb">list</span> <span class="o">|</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Recursively replaces hyphens with underscores in dictionary keys.</span>
 
 <span class="sd">    Args:</span>
@@ -71239,20 +71210,20 @@ description, function form, return type, arguments, html.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15195</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15189</span>
+<span class="normal">15190</span>
+<span class="normal">15191</span>
+<span class="normal">15192</span>
+<span class="normal">15193</span>
+<span class="normal">15194</span>
+<span class="normal">15195</span>
 <span class="normal">15196</span>
 <span class="normal">15197</span>
 <span class="normal">15198</span>
 <span class="normal">15199</span>
 <span class="normal">15200</span>
 <span class="normal">15201</span>
-<span class="normal">15202</span>
-<span class="normal">15203</span>
-<span class="normal">15204</span>
-<span class="normal">15205</span>
-<span class="normal">15206</span>
-<span class="normal">15207</span>
-<span class="normal">15208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">replace_top_level_hyphens</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Any</span><span class="p">:</span>
+<span class="normal">15202</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">replace_top_level_hyphens</span><span class="p">(</span><span class="n">d</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span> <span class="o">|</span> <span class="n">Any</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Replaces hyphens with underscores in top-level dictionary keys.</span>
 
@@ -80283,7 +80254,8 @@ https://developers.google.com/earth-engine/datasets/catalog/MODIS_051_MCD12Q1.</
             <td>
               <div class="doc-md-description">
                 <p>Additional keyword arguments passed to the <code>rio.to_raster()</code> method.
-See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.</p>
+https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html
+for more info.</p>
               </div>
             </td>
             <td>
@@ -80294,32 +80266,13 @@ See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html f
     </table>
 
 
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code>None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>None</p>
-              </div>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15137</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">15133</span>
+<span class="normal">15134</span>
+<span class="normal">15135</span>
+<span class="normal">15136</span>
+<span class="normal">15137</span>
 <span class="normal">15138</span>
 <span class="normal">15139</span>
 <span class="normal">15140</span>
@@ -80348,29 +80301,21 @@ See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html f
 <span class="normal">15163</span>
 <span class="normal">15164</span>
 <span class="normal">15165</span>
-<span class="normal">15166</span>
-<span class="normal">15167</span>
-<span class="normal">15168</span>
-<span class="normal">15169</span>
-<span class="normal">15170</span>
-<span class="normal">15171</span>
-<span class="normal">15172</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xarray_to_raster</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">15166</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xarray_to_raster</span><span class="p">(</span><span class="n">dataset</span><span class="p">,</span> <span class="n">filename</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Convert an xarray Dataset to a raster file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        dataset (xr.Dataset): The input xarray Dataset to be converted.</span>
 <span class="sd">        filename: The output filename for the raster file.</span>
 <span class="sd">        **kwargs: Additional keyword arguments passed to the `rio.to_raster()` method.</span>
-<span class="sd">            See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
+<span class="sd">            https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html</span>
+<span class="sd">            for more info.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">rioxarray</span>
 
     <span class="n">dims</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">dataset</span><span class="o">.</span><span class="n">dims</span><span class="p">)</span>
 
-    <span class="n">new_names</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">new_names</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">:</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">if</span> <span class="s2">&quot;lat&quot;</span> <span class="ow">in</span> <span class="n">dims</span><span class="p">:</span>
         <span class="n">new_names</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;y&quot;</span>
@@ -80442,13 +80387,13 @@ See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html f
                 <code>filenames</code>
             </td>
             <td>
-                  <code>str | list[str]] | None</code>
+                  <code><span title="str">str</span> | <span title="list">list</span>[<span title="str">str</span>] | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Output filenames for the images.
-If a single string is provided, it will be used as the filename for all images.
-If a list of strings is provided, the filenames will be used in order. Defaults to None.</p>
+                <p>Output filenames for the images. If a single string is provided, it
+will be used as the filename for all images. If a list of strings is
+provided, the filenames will be used in order.</p>
               </div>
             </td>
             <td>
@@ -80460,7 +80405,7 @@ If a list of strings is provided, the filenames will be used in order. Defaults 
                 <code>out_dir</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
@@ -80476,12 +80421,13 @@ If a list of strings is provided, the filenames will be used in order. Defaults 
                 <code>crs</code>
             </td>
             <td>
-                  <code><span title="str">str</span></code>
+                  <code><span title="str">str</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Coordinate reference system (CRS) of the output images.
-If not provided, the CRS is inferred from the Dataset's attributes ('crs' attribute) or set to 'EPSG:4326'.</p>
+                <p>Coordinate reference system (CRS) of the output images.  If not provided,
+the CRS is inferred from the Dataset's attributes ('crs' attribute) or set
+to 'EPSG:4326'.</p>
               </div>
             </td>
             <td>
@@ -80493,11 +80439,11 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
                 <code>nodata</code>
             </td>
             <td>
-                  <code><span title="float">float</span></code>
+                  <code><span title="float">float</span> | None</code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The nodata value used for the output images. Defaults to None.</p>
+                <p>The nodata value used for the output images.</p>
               </div>
             </td>
             <td>
@@ -80513,7 +80459,7 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Driver used for writing the output images, such as 'GTiff'. Defaults to "COG".</p>
+                <p>Driver used for writing the output images, such as 'GTiff'.</p>
               </div>
             </td>
             <td>
@@ -80529,7 +80475,7 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Time unit used for generating default filenames. Defaults to 'D'.</p>
+                <p>Time unit used for generating default filenames.</p>
               </div>
             </td>
             <td>
@@ -80545,7 +80491,7 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
             </td>
             <td>
               <div class="doc-md-description">
-                <p>If True, suppresses progress messages. Defaults to False.</p>
+                <p>If True, suppresses progress messages.</p>
               </div>
             </td>
             <td>
@@ -80560,34 +80506,12 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Additional keyword arguments passed to rioxarray's <code>rio.to_raster()</code> function.</p>
+                <p>Additional keyword arguments passed to rioxarray's <code>rio.to_raster()</code>
+function.</p>
               </div>
             </td>
             <td>
                   <code>{}</code>
-            </td>
-          </tr>
-      </tbody>
-    </table>
-
-
-    <p><span class="doc-section-title">Returns:</span></p>
-    <table>
-      <thead>
-        <tr>
-          <th>Type</th>
-          <th>Description</th>
-        </tr>
-      </thead>
-      <tbody>
-          <tr class="doc-section-item">
-            <td>
-                  <code>None</code>
-            </td>
-            <td>
-              <div class="doc-md-description">
-                <p>None</p>
-              </div>
             </td>
           </tr>
       </tbody>
@@ -80619,7 +80543,10 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/common.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14742</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">14739</span>
+<span class="normal">14740</span>
+<span class="normal">14741</span>
+<span class="normal">14742</span>
 <span class="normal">14743</span>
 <span class="normal">14744</span>
 <span class="normal">14745</span>
@@ -80697,11 +80624,7 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
 <span class="normal">14817</span>
 <span class="normal">14818</span>
 <span class="normal">14819</span>
-<span class="normal">14820</span>
-<span class="normal">14821</span>
-<span class="normal">14822</span>
-<span class="normal">14823</span>
-<span class="normal">14824</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xee_to_image</span><span class="p">(</span>
+<span class="normal">14820</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">xee_to_image</span><span class="p">(</span>
     <span class="n">xds</span><span class="p">,</span>
     <span class="n">filenames</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -80716,20 +80639,19 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
 
 <span class="sd">    Args:</span>
 <span class="sd">        xds (xr.Dataset): The xarray Dataset to convert to images.</span>
-<span class="sd">        filenames (str | list[str]] | None): Output filenames for the images.</span>
-<span class="sd">            If a single string is provided, it will be used as the filename for all images.</span>
-<span class="sd">            If a list of strings is provided, the filenames will be used in order. Defaults to None.</span>
-<span class="sd">        out_dir (str, optional): Output directory for the images. Defaults to current working directory.</span>
-<span class="sd">        crs (str, optional): Coordinate reference system (CRS) of the output images.</span>
-<span class="sd">            If not provided, the CRS is inferred from the Dataset&#39;s attributes (&#39;crs&#39; attribute) or set to &#39;EPSG:4326&#39;.</span>
-<span class="sd">        nodata (float, optional): The nodata value used for the output images. Defaults to None.</span>
-<span class="sd">        driver (str, optional): Driver used for writing the output images, such as &#39;GTiff&#39;. Defaults to &quot;COG&quot;.</span>
-<span class="sd">        time_unit (str, optional): Time unit used for generating default filenames. Defaults to &#39;D&#39;.</span>
-<span class="sd">        quiet (bool, optional): If True, suppresses progress messages. Defaults to False.</span>
-<span class="sd">        **kwargs: Additional keyword arguments passed to rioxarray&#39;s `rio.to_raster()` function.</span>
-
-<span class="sd">    Returns:</span>
-<span class="sd">        None</span>
+<span class="sd">        filenames: Output filenames for the images. If a single string is provided, it</span>
+<span class="sd">            will be used as the filename for all images. If a list of strings is</span>
+<span class="sd">            provided, the filenames will be used in order.</span>
+<span class="sd">        out_dir: Output directory for the images. Defaults to current working directory.</span>
+<span class="sd">        crs: Coordinate reference system (CRS) of the output images.  If not provided,</span>
+<span class="sd">            the CRS is inferred from the Dataset&#39;s attributes (&#39;crs&#39; attribute) or set</span>
+<span class="sd">            to &#39;EPSG:4326&#39;.</span>
+<span class="sd">        nodata: The nodata value used for the output images.</span>
+<span class="sd">        driver: Driver used for writing the output images, such as &#39;GTiff&#39;.</span>
+<span class="sd">        time_unit: Time unit used for generating default filenames.</span>
+<span class="sd">        quiet: If True, suppresses progress messages.</span>
+<span class="sd">        **kwargs: Additional keyword arguments passed to rioxarray&#39;s `rio.to_raster()`</span>
+<span class="sd">            function.</span>
 
 <span class="sd">    Raises:</span>
 <span class="sd">        ValueError: If the number of filenames doesn&#39;t match the number of time steps in the Dataset.</span>
@@ -80761,15 +80683,15 @@ If not provided, the CRS is inferred from the Dataset's attributes ('crs' attrib
 
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">time</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">xds</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">nodata</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="c1"># Create a Boolean mask where all three variables are zero (nodata)</span>
+            <span class="c1"># Create a Boolean mask where all three variables are zero (nodata).</span>
             <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="n">xds</span> <span class="o">==</span> <span class="n">nodata</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">dim</span><span class="o">=</span><span class="s2">&quot;time&quot;</span><span class="p">)</span>
-            <span class="c1"># Set nodata values based on the mask for all variables</span>
+            <span class="c1"># Set nodata values based on the mask for all variables.</span>
             <span class="n">xds</span> <span class="o">=</span> <span class="n">xds</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="o">~</span><span class="n">mask</span><span class="p">,</span> <span class="n">other</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Processing </span><span class="si">{</span><span class="n">index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">xds</span><span class="o">.</span><span class="n">time</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">time</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">image</span> <span class="o">=</span> <span class="n">xds</span><span class="o">.</span><span class="n">sel</span><span class="p">(</span><span class="n">time</span><span class="o">=</span><span class="n">time</span><span class="p">)</span>
-        <span class="c1"># transform the image to suit rioxarray format</span>
+        <span class="c1"># Transform the image to suit rioxarray format.</span>
         <span class="n">image</span> <span class="o">=</span> <span class="p">(</span>
             <span class="n">image</span><span class="o">.</span><span class="n">rename</span><span class="p">({</span><span class="n">y_dim</span><span class="p">:</span> <span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">x_dim</span><span class="p">:</span> <span class="s2">&quot;x&quot;</span><span class="p">})</span>
             <span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="s2">&quot;x&quot;</span><span class="p">)</span>
