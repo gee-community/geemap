@@ -590,7 +590,7 @@ def search_qms(keywords: str, limit: int = 10) -> list[Any] | None:
     qms_api = "https://qms.nextgis.com/api/v1/geoservices"
 
     services = requests.get(
-        f"{qms_api}/?search={keywords}&type=tms&epsg=3857&limit={str(limit)}"
+        f"{qms_api}/?search={keywords}&type=tms&epsg=3857&limit={limit}"
     )
     services = services.json()
     if services["count"] == 0:
