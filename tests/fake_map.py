@@ -2,7 +2,7 @@
 
 # pylint: disable=too-few-public-methods
 # pylint: disable=too-many-arguments
-# pylint; disable=too-many-instance-attributes
+# pylint: disable=too-many-instance-attributes
 # pylint: disable=too-many-positional-arguments
 
 import unittest
