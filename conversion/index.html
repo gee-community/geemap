@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.4">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
     
     
       
@@ -7404,10 +7404,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">236</span>
-<span class="normal">237</span>
-<span class="normal">238</span>
-<span class="normal">239</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">239</span>
 <span class="normal">240</span>
 <span class="normal">241</span>
 <span class="normal">242</span>
@@ -7497,7 +7494,12 @@
 <span class="normal">326</span>
 <span class="normal">327</span>
 <span class="normal">328</span>
-<span class="normal">329</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_map_functions</span><span class="p">(</span><span class="n">input_lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">329</span>
+<span class="normal">330</span>
+<span class="normal">331</span>
+<span class="normal">332</span>
+<span class="normal">333</span>
+<span class="normal">334</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">check_map_functions</span><span class="p">(</span><span class="n">input_lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts Earth Engine map function.</span>
 
 <span class="sd">    Args:</span>
@@ -7507,7 +7509,7 @@
 <span class="sd">        Output JavaScript with map function.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">output_lines</span> <span class="o">=</span> <span class="p">[]</span>
-    <span class="n">currentNumOfNestedFuncs</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">current_num_of_nested_funcs</span> <span class="o">=</span> <span class="mi">0</span>
     <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">input_lines</span><span class="p">):</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.map(&quot;</span><span class="p">)</span>
@@ -7541,23 +7543,25 @@
                 <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                 <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">func_header</span><span class="p">)</span>
 
-                <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">current_num_of_nested_funcs</span> <span class="o">+=</span> <span class="mi">1</span>
 
                 <span class="n">new_lines</span> <span class="o">=</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
 
                 <span class="n">new_lines</span> <span class="o">=</span> <span class="n">check_map_functions</span><span class="p">(</span><span class="n">new_lines</span><span class="p">)</span>
 
                 <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">new_lines</span><span class="p">):</span>
-                    <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">currentNumOfNestedFuncs</span><span class="p">)</span> <span class="o">+</span> <span class="n">tmp_line</span><span class="p">)</span>
+                    <span class="n">output_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">(</span><span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">current_num_of_nested_funcs</span><span class="p">)</span> <span class="o">+</span> <span class="n">tmp_line</span>
+                    <span class="p">)</span>
                     <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span><span class="p">:</span>
-                        <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="n">current_num_of_nested_funcs</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span><span class="p">:</span>
-                        <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                        <span class="n">current_num_of_nested_funcs</span> <span class="o">-=</span> <span class="mi">1</span>
                     <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
                         <span class="s2">&quot;&quot;</span>  <span class="c1"># pytype: disable=unsupported-operands</span>
                     <span class="p">)</span>
 
-                <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="n">current_num_of_nested_funcs</span> <span class="o">-=</span> <span class="mi">1</span>
 
                 <span class="n">header_line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">func_start_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">func_name</span>
                 <span class="n">header_line</span> <span class="o">=</span> <span class="n">header_line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
@@ -7667,10 +7671,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">173</span>
-<span class="normal">174</span>
-<span class="normal">175</span>
-<span class="normal">176</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">176</span>
 <span class="normal">177</span>
 <span class="normal">178</span>
 <span class="normal">179</span>
@@ -7712,7 +7713,10 @@
 <span class="normal">215</span>
 <span class="normal">216</span>
 <span class="normal">217</span>
-<span class="normal">218</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_for_loop</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">218</span>
+<span class="normal">219</span>
+<span class="normal">220</span>
+<span class="normal">221</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_for_loop</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Converts JavaScript for loop to Python for loop.</span>
 
 <span class="sd">    Args:</span>
@@ -7811,14 +7815,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">735</span>
-<span class="normal">736</span>
-<span class="normal">737</span>
-<span class="normal">738</span>
-<span class="normal">739</span>
-<span class="normal">740</span>
-<span class="normal">741</span>
-<span class="normal">742</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">741</span>
+<span class="normal">742</span>
+<span class="normal">743</span>
+<span class="normal">744</span>
+<span class="normal">745</span>
+<span class="normal">746</span>
+<span class="normal">747</span>
+<span class="normal">748</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">create_new_cell</span><span class="p">(</span><span class="n">contents</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">replace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a new cell in Jupyter notebook based on the contents.</span>
 
 <span class="sd">    Args:</span>
@@ -7895,13 +7899,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1234</span>
-<span class="normal">1235</span>
-<span class="normal">1236</span>
-<span class="normal">1237</span>
-<span class="normal">1238</span>
-<span class="normal">1239</span>
-<span class="normal">1240</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1240</span>
 <span class="normal">1241</span>
 <span class="normal">1242</span>
 <span class="normal">1243</span>
@@ -7936,7 +7934,13 @@
 <span class="normal">1272</span>
 <span class="normal">1273</span>
 <span class="normal">1274</span>
-<span class="normal">1275</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1275</span>
+<span class="normal">1276</span>
+<span class="normal">1277</span>
+<span class="normal">1278</span>
+<span class="normal">1279</span>
+<span class="normal">1280</span>
+<span class="normal">1281</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">download_gee_app</span><span class="p">(</span><span class="n">url</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Downloads JavaScript source code from a GEE App.</span>
 
 <span class="sd">    Args:</span>
@@ -7965,13 +7969,13 @@
 
     <span class="n">urllib</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">urlretrieve</span><span class="p">(</span><span class="n">json_url</span><span class="p">,</span> <span class="n">json_path</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_file_path</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f1</span><span class="p">:</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">json_path</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f2</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">f2</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">:</span>
                 <span class="n">items</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">n&quot;</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">items</span><span class="p">):</span>
-                    <span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">index</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="mi">0</span> <span class="o">&lt;</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">items</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                         <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;</span><span class="se">\\</span><span class="s1">&quot;&#39;</span><span class="p">,</span> <span class="s1">&#39;&quot;&#39;</span><span class="p">)</span>
                         <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
                         <span class="n">item</span> <span class="o">=</span> <span class="n">item</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">r&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
@@ -8031,14 +8035,14 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1127</span>
-<span class="normal">1128</span>
-<span class="normal">1129</span>
-<span class="normal">1130</span>
-<span class="normal">1131</span>
-<span class="normal">1132</span>
-<span class="normal">1133</span>
-<span class="normal">1134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1133</span>
+<span class="normal">1134</span>
+<span class="normal">1135</span>
+<span class="normal">1136</span>
+<span class="normal">1137</span>
+<span class="normal">1138</span>
+<span class="normal">1139</span>
+<span class="normal">1140</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes a Jupyter notebook and save output cells.</span>
 
 <span class="sd">    Args:</span>
@@ -8099,13 +8103,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1137</span>
-<span class="normal">1138</span>
-<span class="normal">1139</span>
-<span class="normal">1140</span>
-<span class="normal">1141</span>
-<span class="normal">1142</span>
-<span class="normal">1143</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1143</span>
 <span class="normal">1144</span>
 <span class="normal">1145</span>
 <span class="normal">1146</span>
@@ -8114,7 +8112,13 @@
 <span class="normal">1149</span>
 <span class="normal">1150</span>
 <span class="normal">1151</span>
-<span class="normal">1152</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">1152</span>
+<span class="normal">1153</span>
+<span class="normal">1154</span>
+<span class="normal">1155</span>
+<span class="normal">1156</span>
+<span class="normal">1157</span>
+<span class="normal">1158</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">execute_notebook_dir</span><span class="p">(</span><span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Executes all notebooks in the given directory recursively and saves output cells.</span>
 
 <span class="sd">    Args:</span>
@@ -8264,13 +8268,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">28</span>
-<span class="normal">29</span>
-<span class="normal">30</span>
-<span class="normal">31</span>
-<span class="normal">32</span>
-<span class="normal">33</span>
-<span class="normal">34</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">34</span>
 <span class="normal">35</span>
 <span class="normal">36</span>
 <span class="normal">37</span>
@@ -8321,7 +8319,10 @@
 <span class="normal">82</span>
 <span class="normal">83</span>
 <span class="normal">84</span>
-<span class="normal">85</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_matching_bracket</span><span class="p">(</span>
+<span class="normal">85</span>
+<span class="normal">86</span>
+<span class="normal">87</span>
+<span class="normal">88</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">find_matching_bracket</span><span class="p">(</span>
     <span class="n">lines</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
     <span class="n">start_line_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
     <span class="n">start_char_index</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -8343,12 +8344,9 @@
     <span class="n">matching_char_index</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
 
     <span class="n">matching_chars</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;{&quot;</span><span class="p">:</span> <span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;(&quot;</span><span class="p">:</span> <span class="s2">&quot;)&quot;</span><span class="p">,</span> <span class="s2">&quot;[&quot;</span><span class="p">:</span> <span class="s2">&quot;]&quot;</span><span class="p">}</span>
-    <span class="k">if</span> <span class="n">matching_char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">matching_chars</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
-        <span class="nb">print</span><span class="p">(</span>
-            <span class="s2">&quot;The matching character must be one of the following: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
-                <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">matching_chars</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
-            <span class="p">)</span>
-        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">matching_char</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">matching_chars</span><span class="p">:</span>
+        <span class="n">characters</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">matching_chars</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;The matching character must be one of the following: </span><span class="si">{</span><span class="n">characters</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">matching_line_index</span><span class="p">,</span> <span class="n">matching_char_index</span>
 
     <span class="c1"># Create a deque to use it as a stack.</span>
@@ -8472,10 +8470,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 88</span>
-<span class="normal"> 89</span>
-<span class="normal"> 90</span>
-<span class="normal"> 91</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 91</span>
 <span class="normal"> 92</span>
 <span class="normal"> 93</span>
 <span class="normal"> 94</span>
@@ -8537,7 +8532,10 @@
 <span class="normal">150</span>
 <span class="normal">151</span>
 <span class="normal">152</span>
-<span class="normal">153</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">format_params</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">153</span>
+<span class="normal">154</span>
+<span class="normal">155</span>
+<span class="normal">156</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">format_params</span><span class="p">(</span><span class="n">line</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">sep</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;:&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Formats keys in a dictionary and adds quotes to the keys.</span>
 
 <span class="sd">    For example, {min: 0, max: 10} will result in (&#39;min&#39;: 0, &#39;max&#39;: 10)</span>
@@ -8679,14 +8677,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">892</span>
-<span class="normal">893</span>
-<span class="normal">894</span>
-<span class="normal">895</span>
-<span class="normal">896</span>
-<span class="normal">897</span>
-<span class="normal">898</span>
-<span class="normal">899</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">899</span>
 <span class="normal">900</span>
 <span class="normal">901</span>
 <span class="normal">902</span>
@@ -8703,7 +8694,14 @@
 <span class="normal">913</span>
 <span class="normal">914</span>
 <span class="normal">915</span>
-<span class="normal">916</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="normal">916</span>
+<span class="normal">917</span>
+<span class="normal">918</span>
+<span class="normal">919</span>
+<span class="normal">920</span>
+<span class="normal">921</span>
+<span class="normal">922</span>
+<span class="normal">923</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_js_examples</span><span class="p">(</span><span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets Earth Engine JavaScript examples from the geemap package.</span>
 
 <span class="sd">    Args:</span>
@@ -8820,14 +8818,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">919</span>
-<span class="normal">920</span>
-<span class="normal">921</span>
-<span class="normal">922</span>
-<span class="normal">923</span>
-<span class="normal">924</span>
-<span class="normal">925</span>
-<span class="normal">926</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">926</span>
 <span class="normal">927</span>
 <span class="normal">928</span>
 <span class="normal">929</span>
@@ -8854,7 +8845,14 @@
 <span class="normal">950</span>
 <span class="normal">951</span>
 <span class="normal">952</span>
-<span class="normal">953</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span>
+<span class="normal">953</span>
+<span class="normal">954</span>
+<span class="normal">955</span>
+<span class="normal">956</span>
+<span class="normal">957</span>
+<span class="normal">958</span>
+<span class="normal">959</span>
+<span class="normal">960</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_nb_template</span><span class="p">(</span>
     <span class="n">download_latest</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">out_file</span><span class="p">:</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the Earth Engine Jupyter notebook template.</span>
@@ -9045,13 +9043,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">745</span>
-<span class="normal">746</span>
-<span class="normal">747</span>
-<span class="normal">748</span>
-<span class="normal">749</span>
-<span class="normal">750</span>
-<span class="normal">751</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">751</span>
 <span class="normal">752</span>
 <span class="normal">753</span>
 <span class="normal">754</span>
@@ -9116,7 +9108,14 @@
 <span class="normal">813</span>
 <span class="normal">814</span>
 <span class="normal">815</span>
-<span class="normal">816</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_snippet_to_py</span><span class="p">(</span>
+<span class="normal">816</span>
+<span class="normal">817</span>
+<span class="normal">818</span>
+<span class="normal">819</span>
+<span class="normal">820</span>
+<span class="normal">821</span>
+<span class="normal">822</span>
+<span class="normal">823</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_snippet_to_py</span><span class="p">(</span>
     <span class="n">in_js_snippet</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">add_new_cell</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">import_ee</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -9144,7 +9143,7 @@
     <span class="c1"># Add quotes around keys.</span>
     <span class="n">in_js_snippet</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([a-zA-Z0-9_]+)\s*:&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;&quot;\1&quot;:&#39;</span><span class="p">,</span> <span class="n">in_js_snippet</span><span class="p">)</span>
 
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_js</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_js</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">in_js_snippet</span><span class="p">)</span>
     <span class="n">js_to_python</span><span class="p">(</span>
         <span class="n">in_js</span><span class="p">,</span>
@@ -9169,7 +9168,8 @@
                 <span class="n">next_line</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">and</span> <span class="n">next_line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                     <span class="k">continue</span>
-                <span class="k">elif</span> <span class="s2">&quot;.style(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;.style(**&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+
+                <span class="k">if</span> <span class="s2">&quot;.style(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;.style(**&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;.style(&quot;</span><span class="p">,</span> <span class="s2">&quot;.style(**&quot;</span><span class="p">)</span>
                     <span class="n">out_lines</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="s2">&quot;({&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
@@ -9360,12 +9360,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">332</span>
-<span class="normal">333</span>
-<span class="normal">334</span>
-<span class="normal">335</span>
-<span class="normal">336</span>
-<span class="normal">337</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">337</span>
 <span class="normal">338</span>
 <span class="normal">339</span>
 <span class="normal">340</span>
@@ -9760,7 +9755,13 @@
 <span class="normal">729</span>
 <span class="normal">730</span>
 <span class="normal">731</span>
-<span class="normal">732</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python</span><span class="p">(</span>
+<span class="normal">732</span>
+<span class="normal">733</span>
+<span class="normal">734</span>
+<span class="normal">735</span>
+<span class="normal">736</span>
+<span class="normal">737</span>
+<span class="normal">738</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">use_qgis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -9840,11 +9841,11 @@
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">lines</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">readlines</span><span class="p">()</span>
 
-            <span class="n">numIncorrectParameters</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">checkNextLineForPrint</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">False</span>
-            <span class="n">currentDictionaryScopeDepth</span> <span class="o">=</span> <span class="mi">0</span>
-            <span class="n">currentNumOfNestedFuncs</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">num_incorrect_parameters</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">check_next_line_for_print</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">should_check_for_empty_lines</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">current_dictionary_scope_depth</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">current_num_of_nested_funcs</span> <span class="o">=</span> <span class="mi">0</span>
 
             <span class="c1"># We need to remove all spaces from the beginning of each line to accurately</span>
             <span class="c1"># format the indentation.</span>
@@ -9879,20 +9880,20 @@
                         <span class="p">)</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span><span class="p">)</span>
 
                         <span class="k">if</span> <span class="s2">&quot;func_&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">current_num_of_nested_funcs</span> <span class="o">+=</span> <span class="mi">1</span>
 
                             <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
                                 <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
                             <span class="p">):</span>
                                 <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">current_num_of_nested_funcs</span> <span class="o">+=</span> <span class="mi">1</span>
                                 <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;function&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                                    <span class="n">current_num_of_nested_funcs</span> <span class="o">-=</span> <span class="mi">1</span>
                                 <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                                    <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">currentNumOfNestedFuncs</span>
+                                    <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">current_num_of_nested_funcs</span>
                                 <span class="p">)</span> <span class="o">+</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span>
 
-                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="n">current_num_of_nested_funcs</span> <span class="o">-=</span> <span class="mi">1</span>
 
                         <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span><span class="n">bracket_index</span><span class="p">]</span> <span class="o">+</span> <span class="n">line</span><span class="p">[</span><span class="n">bracket_index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
                         <span class="k">if</span> <span class="n">matching_line_index</span> <span class="o">==</span> <span class="n">index</span><span class="p">:</span>
@@ -9916,6 +9917,7 @@
                             <span class="s2">&quot;closing curly brackets appear on the same line as the &quot;</span>
                             <span class="s2">&quot;function keyword.&quot;</span>
                         <span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                         <span class="k">return</span>
 
                     <span class="n">line</span> <span class="o">=</span> <span class="p">(</span>
@@ -9945,20 +9947,20 @@
                         <span class="n">matching_char_index</span><span class="p">,</span>
                     <span class="p">)</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span><span class="p">)</span>
 
-                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">current_num_of_nested_funcs</span> <span class="o">+=</span> <span class="mi">1</span>
 
                     <span class="k">for</span> <span class="n">sub_index</span><span class="p">,</span> <span class="n">tmp_line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span>
                         <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:</span> <span class="n">matching_line_index</span><span class="p">]</span>
                     <span class="p">):</span>
                         <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
-                            <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">currentNumOfNestedFuncs</span>
+                            <span class="s2">&quot;    &quot;</span> <span class="o">*</span> <span class="n">current_num_of_nested_funcs</span>
                         <span class="p">)</span> <span class="o">+</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span>
                         <span class="k">if</span> <span class="s2">&quot;{&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;if&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;for&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">current_num_of_nested_funcs</span> <span class="o">+=</span> <span class="mi">1</span>
                         <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span> <span class="ow">and</span> <span class="s2">&quot;if&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;for&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                            <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                            <span class="n">current_num_of_nested_funcs</span> <span class="o">-=</span> <span class="mi">1</span>
 
-                    <span class="n">currentNumOfNestedFuncs</span> <span class="o">-=</span> <span class="mi">1</span>
+                    <span class="n">current_num_of_nested_funcs</span> <span class="o">-=</span> <span class="mi">1</span>
 
                     <span class="k">if</span> <span class="p">(</span><span class="n">matching_line_index</span> <span class="o">==</span> <span class="n">index</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
                         <span class="k">pass</span>
@@ -10046,34 +10048,34 @@
 
                 <span class="c1"># Checks if an equal sign is at the end of a line. If so, add</span>
                 <span class="c1"># backslashes.</span>
-                <span class="k">if</span> <span class="n">shouldCheckForEmptyLines</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">should_check_for_empty_lines</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span> <span class="ow">or</span> <span class="s2">&quot;#&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                         <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">):</span>
                             <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;[&quot;</span>
-                            <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">False</span>
+                            <span class="n">should_check_for_empty_lines</span> <span class="o">=</span> <span class="kc">False</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="n">line</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">False</span>
+                        <span class="n">should_check_for_empty_lines</span> <span class="o">=</span> <span class="kc">False</span>
 
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\\</span><span class="s2">&quot;</span>
-                    <span class="n">shouldCheckForEmptyLines</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="n">should_check_for_empty_lines</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="c1"># Adds getInfo at the end of print statements involving maps</span>
-                <span class="n">endOfPrintReplaced</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">end_of_print_replaced</span> <span class="o">=</span> <span class="kc">False</span>
 
-                <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;print(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;=&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="n">checkNextLineForPrint</span><span class="p">:</span>
+                <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;print(&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;=&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">)</span> <span class="ow">or</span> <span class="n">check_next_line_for_print</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
                         <span class="k">if</span> <span class="n">line</span><span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;)&quot;</span><span class="p">:</span>
                             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="p">[:</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.getInfo())&quot;</span>
                             <span class="c1"># print(line)</span>
-                            <span class="n">endOfPrintReplaced</span> <span class="o">=</span> <span class="kc">True</span>
+                            <span class="n">end_of_print_replaced</span> <span class="o">=</span> <span class="kc">True</span>
                             <span class="k">break</span>
-                    <span class="k">if</span> <span class="n">endOfPrintReplaced</span><span class="p">:</span>
-                        <span class="n">checkNextLineForPrint</span> <span class="o">=</span> <span class="kc">False</span>
+                    <span class="k">if</span> <span class="n">end_of_print_replaced</span><span class="p">:</span>
+                        <span class="n">check_next_line_for_print</span> <span class="o">=</span> <span class="kc">False</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="n">checkNextLineForPrint</span> <span class="o">=</span> <span class="kc">True</span>
+                        <span class="n">check_next_line_for_print</span> <span class="o">=</span> <span class="kc">True</span>
 
                 <span class="c1"># Removes potential commas after imports. Causes tuple type errors.</span>
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">):</span>
@@ -10091,22 +10093,22 @@
                     <span class="ow">and</span> <span class="s2">&quot;cast&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span>
                 <span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">numIncorrectParameters</span> <span class="o">=</span> <span class="n">numIncorrectParameters</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">num_incorrect_parameters</span> <span class="o">=</span> <span class="n">num_incorrect_parameters</span> <span class="o">+</span> <span class="mi">1</span>
 
-                <span class="k">if</span> <span class="n">numIncorrectParameters</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">num_incorrect_parameters</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;})&quot;</span><span class="p">):</span>
                         <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;})&quot;</span><span class="p">,</span> <span class="s2">&quot;)&quot;</span><span class="p">)</span>
-                        <span class="n">numIncorrectParameters</span> <span class="o">=</span> <span class="n">numIncorrectParameters</span> <span class="o">-</span> <span class="mi">1</span>
+                        <span class="n">num_incorrect_parameters</span> <span class="o">=</span> <span class="n">num_incorrect_parameters</span> <span class="o">-</span> <span class="mi">1</span>
                     <span class="k">else</span><span class="p">:</span>
-                        <span class="k">if</span> <span class="n">currentDictionaryScopeDepth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">current_dictionary_scope_depth</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
                             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;: &quot;</span><span class="p">,</span> <span class="s2">&quot;=&quot;</span><span class="p">)</span>
                             <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">,</span> <span class="s2">&quot; =&quot;</span><span class="p">)</span>
 
                 <span class="k">if</span> <span class="s2">&quot;= {&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s2">&quot;({&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
-                    <span class="n">currentDictionaryScopeDepth</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="n">current_dictionary_scope_depth</span> <span class="o">+=</span> <span class="mi">1</span>
 
-                <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">currentDictionaryScopeDepth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">currentDictionaryScopeDepth</span> <span class="o">-=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">current_dictionary_scope_depth</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">current_dictionary_scope_depth</span> <span class="o">-=</span> <span class="mi">1</span>
 
                 <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">):</span>
                     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span> <span class="o">+</span> <span class="s2">&quot; </span><span class="se">\\</span><span class="s2">&quot;</span>
@@ -10294,14 +10296,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">819</span>
-<span class="normal">820</span>
-<span class="normal">821</span>
-<span class="normal">822</span>
-<span class="normal">823</span>
-<span class="normal">824</span>
-<span class="normal">825</span>
-<span class="normal">826</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">826</span>
 <span class="normal">827</span>
 <span class="normal">828</span>
 <span class="normal">829</span>
@@ -10335,7 +10330,14 @@
 <span class="normal">857</span>
 <span class="normal">858</span>
 <span class="normal">859</span>
-<span class="normal">860</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python_dir</span><span class="p">(</span>
+<span class="normal">860</span>
+<span class="normal">861</span>
+<span class="normal">862</span>
+<span class="normal">863</span>
+<span class="normal">864</span>
+<span class="normal">865</span>
+<span class="normal">866</span>
+<span class="normal">867</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">js_to_python_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">use_qgis</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
@@ -10510,14 +10512,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1000</span>
-<span class="normal">1001</span>
-<span class="normal">1002</span>
-<span class="normal">1003</span>
-<span class="normal">1004</span>
-<span class="normal">1005</span>
-<span class="normal">1006</span>
-<span class="normal">1007</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1007</span>
 <span class="normal">1008</span>
 <span class="normal">1009</span>
 <span class="normal">1010</span>
@@ -10588,7 +10583,14 @@
 <span class="normal">1075</span>
 <span class="normal">1076</span>
 <span class="normal">1077</span>
-<span class="normal">1078</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
+<span class="normal">1078</span>
+<span class="normal">1079</span>
+<span class="normal">1080</span>
+<span class="normal">1081</span>
+<span class="normal">1082</span>
+<span class="normal">1083</span>
+<span class="normal">1084</span>
+<span class="normal">1085</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -10800,14 +10802,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1081</span>
-<span class="normal">1082</span>
-<span class="normal">1083</span>
-<span class="normal">1084</span>
-<span class="normal">1085</span>
-<span class="normal">1086</span>
-<span class="normal">1087</span>
-<span class="normal">1088</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1088</span>
 <span class="normal">1089</span>
 <span class="normal">1090</span>
 <span class="normal">1091</span>
@@ -10843,7 +10838,13 @@
 <span class="normal">1121</span>
 <span class="normal">1122</span>
 <span class="normal">1123</span>
-<span class="normal">1124</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
+<span class="normal">1124</span>
+<span class="normal">1125</span>
+<span class="normal">1126</span>
+<span class="normal">1127</span>
+<span class="normal">1128</span>
+<span class="normal">1129</span>
+<span class="normal">1130</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">py_to_ipynb_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">template_file</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">out_dir</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -10866,7 +10867,6 @@
     <span class="n">in_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span>
     <span class="n">files</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">qgis_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*_geemap.py&quot;</span><span class="p">))</span>
-    <span class="n">py_files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">(</span><span class="n">in_dir</span><span class="p">)</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.py&quot;</span><span class="p">))</span>
 
     <span class="n">files</span> <span class="o">=</span> <span class="n">qgis_files</span>
 
@@ -10963,10 +10963,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">221</span>
-<span class="normal">222</span>
-<span class="normal">223</span>
-<span class="normal">224</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">224</span>
 <span class="normal">225</span>
 <span class="normal">226</span>
 <span class="normal">227</span>
@@ -10975,7 +10972,10 @@
 <span class="normal">230</span>
 <span class="normal">231</span>
 <span class="normal">232</span>
-<span class="normal">233</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_all_indentation</span><span class="p">(</span><span class="n">input_lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">233</span>
+<span class="normal">234</span>
+<span class="normal">235</span>
+<span class="normal">236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_all_indentation</span><span class="p">(</span><span class="n">input_lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes indentation for reformatting with Python&#39;s indentation rules.</span>
 
 <span class="sd">    Args:</span>
@@ -11080,14 +11080,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">863</span>
-<span class="normal">864</span>
-<span class="normal">865</span>
-<span class="normal">866</span>
-<span class="normal">867</span>
-<span class="normal">868</span>
-<span class="normal">869</span>
-<span class="normal">870</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">870</span>
 <span class="normal">871</span>
 <span class="normal">872</span>
 <span class="normal">873</span>
@@ -11106,7 +11099,14 @@
 <span class="normal">886</span>
 <span class="normal">887</span>
 <span class="normal">888</span>
-<span class="normal">889</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">889</span>
+<span class="normal">890</span>
+<span class="normal">891</span>
+<span class="normal">892</span>
+<span class="normal">893</span>
+<span class="normal">894</span>
+<span class="normal">895</span>
+<span class="normal">896</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">Map</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;m&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes &#39;from ee_plugin import Map&#39; from an Earth Engine Python file.</span>
 
 <span class="sd">    Args:</span>
@@ -11129,8 +11129,8 @@
                     <span class="n">line_tmp</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="n">start_index</span> <span class="o">+</span> <span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
                     <span class="k">if</span> <span class="n">line_tmp</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                         <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="n">start_index</span> <span class="o">+</span> <span class="n">i</span> <span class="p">:]</span>
-                    <span class="k">else</span><span class="p">:</span>
-                        <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+
+                    <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
             <span class="k">elif</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">Map</span><span class="si">}</span><span class="s2"> = geemap.Map()&quot;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="p">:]</span>
 </code></pre></div></td></tr></table></div>
@@ -11209,26 +11209,26 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">978</span>
-<span class="normal">979</span>
-<span class="normal">980</span>
-<span class="normal">981</span>
-<span class="normal">982</span>
-<span class="normal">983</span>
-<span class="normal">984</span>
-<span class="normal">985</span>
-<span class="normal">986</span>
-<span class="normal">987</span>
-<span class="normal">988</span>
-<span class="normal">989</span>
-<span class="normal">990</span>
-<span class="normal">991</span>
-<span class="normal">992</span>
-<span class="normal">993</span>
-<span class="normal">994</span>
-<span class="normal">995</span>
-<span class="normal">996</span>
-<span class="normal">997</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 985</span>
+<span class="normal"> 986</span>
+<span class="normal"> 987</span>
+<span class="normal"> 988</span>
+<span class="normal"> 989</span>
+<span class="normal"> 990</span>
+<span class="normal"> 991</span>
+<span class="normal"> 992</span>
+<span class="normal"> 993</span>
+<span class="normal"> 994</span>
+<span class="normal"> 995</span>
+<span class="normal"> 996</span>
+<span class="normal"> 997</span>
+<span class="normal"> 998</span>
+<span class="normal"> 999</span>
+<span class="normal">1000</span>
+<span class="normal">1001</span>
+<span class="normal">1002</span>
+<span class="normal">1003</span>
+<span class="normal">1004</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_footer</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts footer from the notebook template.</span>
 
 <span class="sd">    Args:</span>
@@ -11324,14 +11324,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">956</span>
-<span class="normal">957</span>
-<span class="normal">958</span>
-<span class="normal">959</span>
-<span class="normal">960</span>
-<span class="normal">961</span>
-<span class="normal">962</span>
-<span class="normal">963</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">963</span>
 <span class="normal">964</span>
 <span class="normal">965</span>
 <span class="normal">966</span>
@@ -11343,7 +11336,14 @@
 <span class="normal">972</span>
 <span class="normal">973</span>
 <span class="normal">974</span>
-<span class="normal">975</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">975</span>
+<span class="normal">976</span>
+<span class="normal">977</span>
+<span class="normal">978</span>
+<span class="normal">979</span>
+<span class="normal">980</span>
+<span class="normal">981</span>
+<span class="normal">982</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">template_header</span><span class="p">(</span><span class="n">in_template</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Extracts header from the notebook template.</span>
 
 <span class="sd">    Args:</span>
@@ -11448,13 +11448,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1155</span>
-<span class="normal">1156</span>
-<span class="normal">1157</span>
-<span class="normal">1158</span>
-<span class="normal">1159</span>
-<span class="normal">1160</span>
-<span class="normal">1161</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1161</span>
 <span class="normal">1162</span>
 <span class="normal">1163</span>
 <span class="normal">1164</span>
@@ -11501,7 +11495,13 @@
 <span class="normal">1205</span>
 <span class="normal">1206</span>
 <span class="normal">1207</span>
-<span class="normal">1208</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
+<span class="normal">1208</span>
+<span class="normal">1209</span>
+<span class="normal">1210</span>
+<span class="normal">1211</span>
+<span class="normal">1212</span>
+<span class="normal">1213</span>
+<span class="normal">1214</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header</span><span class="p">(</span>
     <span class="n">in_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates notebook header (binder and Google Colab URLs).</span>
@@ -11553,7 +11553,7 @@
 
         <span class="n">output_lines</span> <span class="o">=</span> <span class="n">new_header</span> <span class="o">+</span> <span class="n">content</span>
 
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
             <span class="n">f</span><span class="o">.</span><span class="n">writelines</span><span class="p">(</span><span class="n">output_lines</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -11640,13 +11640,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1211</span>
-<span class="normal">1212</span>
-<span class="normal">1213</span>
-<span class="normal">1214</span>
-<span class="normal">1215</span>
-<span class="normal">1216</span>
-<span class="normal">1217</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1217</span>
 <span class="normal">1218</span>
 <span class="normal">1219</span>
 <span class="normal">1220</span>
@@ -11660,7 +11654,13 @@
 <span class="normal">1228</span>
 <span class="normal">1229</span>
 <span class="normal">1230</span>
-<span class="normal">1231</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
+<span class="normal">1231</span>
+<span class="normal">1232</span>
+<span class="normal">1233</span>
+<span class="normal">1234</span>
+<span class="normal">1235</span>
+<span class="normal">1236</span>
+<span class="normal">1237</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_nb_header_dir</span><span class="p">(</span>
     <span class="n">in_dir</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">github_username</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">github_repo</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates header (binder and Google Colab URLs) of all notebooks in a folder.</span>
@@ -11757,10 +11757,7 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/conversion.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">156</span>
-<span class="normal">157</span>
-<span class="normal">158</span>
-<span class="normal">159</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">159</span>
 <span class="normal">160</span>
 <span class="normal">161</span>
 <span class="normal">162</span>
@@ -11771,7 +11768,10 @@
 <span class="normal">167</span>
 <span class="normal">168</span>
 <span class="normal">169</span>
-<span class="normal">170</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">use_math</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="normal">170</span>
+<span class="normal">171</span>
+<span class="normal">172</span>
+<span class="normal">173</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">use_math</span><span class="p">(</span><span class="n">lines</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">str</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Checks if an Earth Engine uses Math library.</span>
 
 <span class="sd">    Args:</span>
