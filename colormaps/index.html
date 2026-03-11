@@ -7403,18 +7403,16 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="normal">252</span>
 <span class="normal">253</span>
 <span class="normal">254</span>
-<span class="normal">255</span>
-<span class="normal">256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_palettes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span><span class="p">:</span>
+<span class="normal">255</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_palettes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of colormaps and their associated palettes.&quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">cmap_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_colormaps</span><span class="p">()):</span>
-        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_colormaps</span><span class="p">()):</span>
-            <span class="n">color_dict</span> <span class="o">=</span> <span class="p">{}</span>
-            <span class="n">color_dict</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_palette</span><span class="p">(</span><span class="n">cmap_name</span><span class="p">)</span>
-            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">):</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;n&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
-                <span class="n">colors</span> <span class="o">=</span> <span class="n">get_palette</span><span class="p">(</span><span class="n">cmap_name</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
-                <span class="n">color_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">colors</span>
-            <span class="n">_palette_dict</span><span class="p">[</span><span class="n">cmap_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">color_dict</span>
+    <span class="k">for</span> <span class="n">cmap_name</span> <span class="ow">in</span> <span class="n">list_colormaps</span><span class="p">():</span>
+        <span class="n">color_dict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">color_dict</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_palette</span><span class="p">(</span><span class="n">cmap_name</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">):</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;n&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">colors</span> <span class="o">=</span> <span class="n">get_palette</span><span class="p">(</span><span class="n">cmap_name</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+            <span class="n">color_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">colors</span>
+        <span class="n">_palette_dict</span><span class="p">[</span><span class="n">cmap_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">color_dict</span>
 
     <span class="k">return</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">_palette_dict</span><span class="p">,</span> <span class="n">frozen_box</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
