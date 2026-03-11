@@ -8231,7 +8231,7 @@ access token.</p>
     <span class="n">qms_api</span> <span class="o">=</span> <span class="s2">&quot;https://qms.nextgis.com/api/v1/geoservices&quot;</span>
 
     <span class="n">services</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
-        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">qms_api</span><span class="si">}</span><span class="s2">/?search=</span><span class="si">{</span><span class="n">keywords</span><span class="si">}</span><span class="s2">&amp;type=tms&amp;epsg=3857&amp;limit=</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">limit</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+        <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">qms_api</span><span class="si">}</span><span class="s2">/?search=</span><span class="si">{</span><span class="n">keywords</span><span class="si">}</span><span class="s2">&amp;type=tms&amp;epsg=3857&amp;limit=</span><span class="si">{</span><span class="n">limit</span><span class="si">}</span><span class="s2">&quot;</span>
     <span class="p">)</span>
     <span class="n">services</span> <span class="o">=</span> <span class="n">services</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">services</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
