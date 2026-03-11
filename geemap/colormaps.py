@@ -243,7 +243,7 @@ def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
 
 def get_palettes() -> box.Box:
     """Returns a dictionary of colormaps and their associated palettes."""
-    for index, cmap_name in enumerate(list_colormaps()):
+    for cmap_name in list_colormaps():
         color_dict = {}
         color_dict["default"] = get_palette(cmap_name)
         for i in range(3, 13):
