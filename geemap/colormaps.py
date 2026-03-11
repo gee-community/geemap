@@ -244,14 +244,13 @@ def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
 def get_palettes() -> box.Box:
     """Returns a dictionary of colormaps and their associated palettes."""
     for index, cmap_name in enumerate(list_colormaps()):
-        if index < len(list_colormaps()):
-            color_dict = {}
-            color_dict["default"] = get_palette(cmap_name)
-            for i in range(3, 13):
-                name = "n" + str(i).zfill(2)
-                colors = get_palette(cmap_name, i)
-                color_dict[name] = colors
-            _palette_dict[cmap_name] = color_dict
+        color_dict = {}
+        color_dict["default"] = get_palette(cmap_name)
+        for i in range(3, 13):
+            name = "n" + str(i).zfill(2)
+            colors = get_palette(cmap_name, i)
+            color_dict[name] = colors
+        _palette_dict[cmap_name] = color_dict
 
     return box.Box(_palette_dict, frozen_box=True)
 
