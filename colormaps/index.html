@@ -911,6 +911,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.colormaps.get_palettes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_palettes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.colormaps.list_colormaps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6867,6 +6878,17 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#geemap.colormaps.get_palettes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        get_palettes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#geemap.colormaps.list_colormaps" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -7004,7 +7026,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The minimum value range. Defaults to 0.</p>
+                <p>The minimum value range.</p>
               </div>
             </td>
             <td>
@@ -7020,7 +7042,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The maximum value range. Defaults to 1.0.</p>
+                <p>The maximum value range.</p>
               </div>
             </td>
             <td>
@@ -7036,7 +7058,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The width of the colormap. Defaults to 6.0.</p>
+                <p>The width of the colormap.</p>
               </div>
             </td>
             <td>
@@ -7052,7 +7074,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The height of the colormap. Defaults to 0.4.</p>
+                <p>The height of the colormap.</p>
               </div>
             </td>
             <td>
@@ -7068,7 +7090,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The orientation of the colormap. Defaults to "horizontal".</p>
+                <p>The orientation of the colormap.</p>
               </div>
             </td>
             <td>
@@ -7100,7 +7122,7 @@
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to return the figure. Defaults to False.</p>
+                <p>Whether to return the figure.</p>
               </div>
             </td>
             <td>
@@ -7163,13 +7185,13 @@
 
 <span class="sd">    Args:</span>
 <span class="sd">        colors: A list of hex colors.</span>
-<span class="sd">        vmin: The minimum value range. Defaults to 0.</span>
-<span class="sd">        vmax: The maximum value range. Defaults to 1.0.</span>
-<span class="sd">        width: The width of the colormap. Defaults to 6.0.</span>
-<span class="sd">        height: The height of the colormap. Defaults to 0.4.</span>
-<span class="sd">        orientation: The orientation of the colormap. Defaults to &quot;horizontal&quot;.</span>
+<span class="sd">        vmin: The minimum value range.</span>
+<span class="sd">        vmax: The maximum value range.</span>
+<span class="sd">        width: The width of the colormap.</span>
+<span class="sd">        height: The height of the colormap.</span>
+<span class="sd">        orientation: The orientation of the colormap.</span>
 <span class="sd">        discrete: Whether to create a discrete colormap.</span>
-<span class="sd">        return_fig: Whether to return the figure. Defaults to False.</span>
+<span class="sd">        return_fig: Whether to return the figure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">hexcodes</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">if</span> <span class="n">i</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;#&quot;</span> <span class="k">else</span> <span class="s2">&quot;#&quot;</span> <span class="o">+</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
@@ -7184,8 +7206,8 @@
 
     <span class="k">if</span> <span class="n">return_fig</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fig</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -7230,7 +7252,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The name of the matplotlib colormap. Defaults to None.</p>
+                <p>The name of the matplotlib colormap.</p>
               </div>
             </td>
             <td>
@@ -7246,7 +7268,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The number of colors. Defaults to None.</p>
+                <p>The number of colors.</p>
               </div>
             </td>
             <td>
@@ -7262,7 +7284,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to return a list of hex colors. Defaults to False.</p>
+                <p>Whether to return a list of hex colors.</p>
               </div>
             </td>
             <td>
@@ -7323,9 +7345,9 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 <span class="sd">    https://matplotlib.org/stable/tutorials/colors/colormaps.html.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        cmap_name: The name of the matplotlib colormap. Defaults to None.</span>
-<span class="sd">        n_class: The number of colors. Defaults to None.</span>
-<span class="sd">        hashtag: Whether to return a list of hex colors. Defaults to False.</span>
+<span class="sd">        cmap_name: The name of the matplotlib colormap.</span>
+<span class="sd">        n_class: The number of colors.</span>
+<span class="sd">        hashtag: Whether to return a list of hex colors.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">cmap_name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;ndvi&quot;</span><span class="p">,</span> <span class="s2">&quot;ndwi&quot;</span><span class="p">,</span> <span class="s2">&quot;dem&quot;</span><span class="p">,</span> <span class="s2">&quot;dw&quot;</span><span class="p">,</span> <span class="s2">&quot;esri_lulc&quot;</span><span class="p">]:</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="n">_palette_dict</span><span class="p">[</span><span class="n">cmap_name</span><span class="p">]</span>
@@ -7341,13 +7363,60 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">add_hashtag</span><span class="p">(</span><span class="n">color</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">color</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;#&quot;</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">color</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">&quot;</span>
+
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;#</span><span class="si">{</span><span class="n">color</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">if</span> <span class="n">hashtag</span><span class="p">:</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="n">add_hashtag</span><span class="p">(</span><span class="n">color</span><span class="p">)</span> <span class="k">for</span> <span class="n">color</span> <span class="ow">in</span> <span class="n">colors</span><span class="p">]</span>
 
     <span class="k">return</span> <span class="n">colors</span>
+</code></pre></div></td></tr></table></div>
+            </details>
+    </div>
+
+</div>
+
+<div class="doc doc-object doc-function">
+
+
+<h2 id="geemap.colormaps.get_palettes" class="doc doc-heading">
+            <code class="highlight language-python"><span class="n">get_palettes</span><span class="p">()</span></code>
+
+<a href="#geemap.colormaps.get_palettes" class="headerlink" title="Permanent link">&para;</a></h2>
+
+
+    <div class="doc doc-contents ">
+
+        <p>Returns a dictionary of colormaps and their associated palettes.</p>
+
+
+            <details class="mkdocstrings-source">
+              <summary>Source code in <code>geemap/colormaps.py</code></summary>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">244</span>
+<span class="normal">245</span>
+<span class="normal">246</span>
+<span class="normal">247</span>
+<span class="normal">248</span>
+<span class="normal">249</span>
+<span class="normal">250</span>
+<span class="normal">251</span>
+<span class="normal">252</span>
+<span class="normal">253</span>
+<span class="normal">254</span>
+<span class="normal">255</span>
+<span class="normal">256</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_palettes</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of colormaps and their associated palettes.&quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">cmap_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">list_colormaps</span><span class="p">()):</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">list_colormaps</span><span class="p">()):</span>
+            <span class="n">color_dict</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">color_dict</span><span class="p">[</span><span class="s2">&quot;default&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">get_palette</span><span class="p">(</span><span class="n">cmap_name</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">13</span><span class="p">):</span>
+                <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;n&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+                <span class="n">colors</span> <span class="o">=</span> <span class="n">get_palette</span><span class="p">(</span><span class="n">cmap_name</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+                <span class="n">color_dict</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">colors</span>
+            <span class="n">_palette_dict</span><span class="p">[</span><span class="n">cmap_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">color_dict</span>
+
+    <span class="k">return</span> <span class="n">box</span><span class="o">.</span><span class="n">Box</span><span class="p">(</span><span class="n">_palette_dict</span><span class="p">,</span> <span class="n">frozen_box</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -7456,7 +7525,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The width of the colormap. Defaults to 8.0.</p>
+                <p>The width of the colormap.</p>
               </div>
             </td>
             <td>
@@ -7472,7 +7541,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The height of the colormap. Defaults to 0.4.</p>
+                <p>The height of the colormap.</p>
               </div>
             </td>
             <td>
@@ -7488,7 +7557,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The orientation of the colormap. Defaults to "horizontal".</p>
+                <p>The orientation of the colormap.</p>
               </div>
             </td>
             <td>
@@ -7504,7 +7573,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The minimum value range. Defaults to 0.</p>
+                <p>The minimum value range.</p>
               </div>
             </td>
             <td>
@@ -7520,7 +7589,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The maximum value range. Defaults to 1.0.</p>
+                <p>The maximum value range.</p>
               </div>
             </td>
             <td>
@@ -7536,7 +7605,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to turn axis off. Defaults to True.</p>
+                <p>Whether to turn axis off.</p>
               </div>
             </td>
             <td>
@@ -7552,7 +7621,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to show the colormap name. Defaults to False.</p>
+                <p>Whether to show the colormap name.</p>
               </div>
             </td>
             <td>
@@ -7568,7 +7637,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Font size of the text. Defaults to 12.</p>
+                <p>Font size of the text.</p>
               </div>
             </td>
             <td>
@@ -7584,7 +7653,7 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>Whether to return the figure. Defaults to False.</p>
+                <p>Whether to return the figure.</p>
               </div>
             </td>
             <td>
@@ -7657,15 +7726,15 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 
 <span class="sd">    Args:</span>
 <span class="sd">        cmap: The name of the colormap.</span>
-<span class="sd">        width: The width of the colormap. Defaults to 8.0.</span>
-<span class="sd">        height: The height of the colormap. Defaults to 0.4.</span>
-<span class="sd">        orientation: The orientation of the colormap. Defaults to &quot;horizontal&quot;.</span>
-<span class="sd">        vmin: The minimum value range. Defaults to 0.</span>
-<span class="sd">        vmax: The maximum value range. Defaults to 1.0.</span>
-<span class="sd">        axis_off: Whether to turn axis off. Defaults to True.</span>
-<span class="sd">        show_name: Whether to show the colormap name. Defaults to False.</span>
-<span class="sd">        font_size: Font size of the text. Defaults to 12.</span>
-<span class="sd">        return_fig: Whether to return the figure. Defaults to False.</span>
+<span class="sd">        width: The width of the colormap.</span>
+<span class="sd">        height: The height of the colormap.</span>
+<span class="sd">        orientation: The orientation of the colormap.</span>
+<span class="sd">        vmin: The minimum value range.</span>
+<span class="sd">        vmax: The maximum value range.</span>
+<span class="sd">        axis_off: Whether to turn axis off.</span>
+<span class="sd">        show_name: Whether to show the colormap name.</span>
+<span class="sd">        font_size: Font size of the text.</span>
+<span class="sd">        return_fig: Whether to return the figure.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">))</span>
     <span class="n">col_map</span> <span class="o">=</span> <span class="n">mpl</span><span class="o">.</span><span class="n">colormaps</span><span class="p">[</span><span class="n">cmap</span><span class="p">]</span>
@@ -7684,8 +7753,8 @@ https://matplotlib.org/stable/tutorials/colors/colormaps.html.</p>
 
     <span class="k">if</span> <span class="n">return_fig</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">fig</span>
-    <span class="k">else</span><span class="p">:</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
