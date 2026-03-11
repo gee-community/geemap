@@ -55,7 +55,6 @@ import plotly.express as px
 import requests
 
 from . import colormaps
-from .coreutils import *
 from . import coreutils
 
 
@@ -595,9 +594,6 @@ def ee_export_image_collection_to_drive(
 
         images = ee_object.toList(count)
 
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
-
         for i in range(0, count):
             image = ee.Image(images.get(i))
             description = descriptions[i]
@@ -685,9 +681,6 @@ def ee_export_image_collection_to_asset(
             assetIds = descriptions
 
         images = ee_object.toList(count)
-
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
 
         for i in range(0, count):
             image = ee.Image(images.get(i))
@@ -790,9 +783,6 @@ def ee_export_image_collection_to_cloud_storage(
 
         images = ee_object.toList(count)
 
-        if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-            return
-
         for i in range(0, count):
             image = ee.Image(images.get(i))
             description = descriptions[i]
@@ -849,7 +839,7 @@ def ee_export_geojson(
     name = os.path.splitext(basename)[0]
     filetype = os.path.splitext(basename)[1][1:].lower()
 
-    if not (filetype.lower() in allowed_formats):
+    if filetype.lower() not in allowed_formats:
         print("The output file type must be geojson.")
         return
 
@@ -863,7 +853,7 @@ def ee_export_geojson(
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
-            if not (attribute in allowed_attributes):
+            if attribute not in allowed_attributes:
                 print(
                     "Attributes must be one chosen from: {} ".format(
                         ", ".join(allowed_attributes)
@@ -943,7 +933,7 @@ def ee_export_vector(
     if filetype == "shp":
         filename = filename.replace(".shp", ".zip")
 
-    if not (filetype.lower() in allowed_formats):
+    if filetype.lower() not in allowed_formats:
         raise ValueError(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -966,7 +956,7 @@ def ee_export_vector(
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
-            if not (attribute in allowed_attributes):
+            if attribute not in allowed_attributes:
                 raise ValueError(
                     "Attributes must be one chosen from: {} ".format(
                         ", ".join(allowed_attributes)
@@ -1052,7 +1042,7 @@ def ee_export_vector_to_drive(
         raise ValueError("The collection must be an ee.FeatureCollection.")
 
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp", "tfrecord"]
-    if not (fileFormat.lower() in allowed_formats):
+    if fileFormat.lower() not in allowed_formats:
         raise ValueError(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -1096,9 +1086,6 @@ def ee_export_vector_to_asset(
     """
     if not isinstance(collection, ee.FeatureCollection):
         raise ValueError("The collection must be an ee.FeatureCollection.")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     if isinstance(assetId, str):
         if assetId.startswith("users/") or assetId.startswith("projects/"):
@@ -1155,15 +1142,12 @@ def ee_export_vector_to_cloud_storage(
         raise ValueError("The collection must be an ee.FeatureCollection.")
 
     allowed_formats = ["csv", "geojson", "kml", "kmz", "shp", "tfrecord"]
-    if not (fileFormat.lower() in allowed_formats):
+    if fileFormat.lower() not in allowed_formats:
         raise ValueError(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
             )
         )
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1201,9 +1185,6 @@ def ee_export_vector_to_feature_view(
     """
     if not isinstance(collection, ee.FeatureCollection):
         raise ValueError("The collection must be an ee.FeatureCollection.")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1273,9 +1254,6 @@ def ee_export_video_to_drive(
     """
     if not isinstance(collection, ee.ImageCollection):
         raise TypeError("collection must be an ee.ImageCollection")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1352,9 +1330,6 @@ def ee_export_video_to_cloud_storage(
     """
     if not isinstance(collection, ee.ImageCollection):
         raise TypeError("collection must be an ee.ImageCollection")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1433,9 +1408,6 @@ def ee_export_map_to_cloud_storage(
     """
     if not isinstance(image, ee.Image):
         raise TypeError("image must be an ee.Image")
-
-    if os.environ.get("USE_MKDOCS") is not None:  # skip if running GitHub CI.
-        return
 
     print(
         f"Exporting {description}... "
@@ -1944,8 +1916,8 @@ def show_html(html: str) -> widgets.HTML:
             content = f.read()
 
         return widgets.HTML(value=content)
-    else:
-        return widgets.HTML(value=html)
+
+    return widgets.HTML(value=html)
 
 
 def has_transparency(img) -> bool:
@@ -2024,8 +1996,8 @@ def system_fonts(show_full_path: bool = False) -> list[str]:
 
     if show_full_path:
         return font_list
-    else:
-        return font_names
+
+    return font_names
 
 
 ########################################
@@ -3577,7 +3549,7 @@ def save_colorbar(
         norm = mpl.colors.Normalize(vmin=vmin, vmax=vmax)
 
     if "palette" in vis_params:
-        hexcodes = to_hex_colors(vis_params["palette"])
+        hexcodes = coreutils.to_hex_colors(vis_params["palette"])
         if discrete:
             cmap = mpl.colors.ListedColormap(hexcodes)
             vals = np.linspace(vmin, vmax, cmap.N + 1)
@@ -3677,8 +3649,8 @@ def geocode(location: str, max_rows: int = 10, reverse: bool = False):
 
         if len(locations) > 0:
             return locations
-        else:
-            return None
+
+        return None
 
     else:
         try:
@@ -3729,10 +3701,7 @@ def is_latlon_valid(location: str) -> bool:
 
     try:
         lat, lon = float(latlon[0]), float(latlon[1])
-        if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
-            return True
-        else:
-            return False
+        return lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180
     except Exception as e:
         print(e)
         return False
@@ -3761,8 +3730,8 @@ def latlon_from_text(location: str) -> tuple[float, float] | None:
         lat, lon = latlon[0], latlon[1]
         if lat >= -90 and lat <= 90 and lon >= -180 and lon <= 180:
             return lat, lon
-        else:
-            return None
+
+        return None
 
     except Exception as e:
         print(e)
@@ -3998,10 +3967,10 @@ def ee_api_to_csv(
         if not outfile.endswith(".csv"):
             print("The output file must end with .csv")
             return
-        else:
-            out_dir = os.path.dirname(outfile)
-            if not os.path.exists(out_dir):
-                os.makedirs(out_dir)
+
+        out_dir = os.path.dirname(outfile)
+        if not os.path.exists(out_dir):
+            os.makedirs(out_dir)
 
     url = "https://developers.google.com/earth-engine/api_docs"
 
@@ -4452,10 +4421,10 @@ def ee_user_id() -> str | None:
     roots = ee.data.getAssetRoots()
     if len(roots) == 0:
         return None
-    else:
-        root = ee.data.getAssetRoots()[0]
-        user_id = root["id"].replace("projects/earthengine-legacy/assets/", "")
-        return user_id
+
+    root = ee.data.getAssetRoots()[0]
+    user_id = root["id"].replace("projects/earthengine-legacy/assets/", "")
+    return user_id
 
 
 def build_asset_tree(limit: int = 100):
@@ -4721,7 +4690,8 @@ def file_browser(
     if not os.path.exists(in_dir):
         print("The provided directory does not exist.")
         return
-    elif not os.path.isdir(in_dir):
+
+    if not os.path.isdir(in_dir):
         print("The provided path is not a valid directory.")
         return
 
@@ -4914,8 +4884,8 @@ def file_browser(
 
     if return_sep_widgets:
         return left_widget, right_widget, tree_dict
-    else:
-        return full_widget
+
+    return full_widget
 
 
 ########################################
@@ -5523,9 +5493,9 @@ def cog_pixel_value(
     if "detail" in r:
         print(r["detail"])
         return None
-    else:
-        values = r["values"]
-        return dict(zip(bands, values))
+
+    values = r["values"]
+    return dict(zip(bands, values))
 
 
 def stac_tile(
@@ -6109,10 +6079,10 @@ def stac_pixel_value(
         if verbose:
             print(r["detail"])
         return None
-    else:
-        values = [v[0] for v in r["values"]]
-        assert isinstance(assets, str)  # For pytype.
-        return dict(zip(assets.split(","), values))
+
+    values = [v[0] for v in r["values"]]
+    assert isinstance(assets, str)  # For pytype.
+    return dict(zip(assets.split(","), values))
 
 
 def local_tile_pixel_value(
@@ -6316,10 +6286,10 @@ def get_bounds(
             ymaxs.append(ymax)
         if north_up:
             return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
-        else:
-            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
 
-    elif "geometries" in geometry:
+        return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    if "geometries" in geometry:
         # Input is a geometry collection.
         xmins = []
         ymins = []
@@ -6333,22 +6303,22 @@ def get_bounds(
             ymaxs.append(ymax)
         if north_up:
             return min(xmins), min(ymins), max(xmaxs), max(ymaxs)
-        else:
-            return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
 
-    elif "coordinates" in geometry:
+        return min(xmins), max(ymaxs), max(xmaxs), min(ymins)
+
+    if "coordinates" in geometry:
         # Input is a singular geometry object
         if transform is not None:
             xyz = list(explode(geometry["coordinates"]))
             xyz_px = [transform * point for point in xyz]
             xyz = tuple(zip(*xyz_px))
             return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
-        else:
-            xyz = tuple(zip(*list(explode(geometry["coordinates"]))))
-            if north_up:
-                return min(xyz[0]), min(xyz[1]), max(xyz[0]), max(xyz[1])
-            else:
-                return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
+
+        xyz = tuple(zip(*list(explode(geometry["coordinates"]))))
+        if north_up:
+            return min(xyz[0]), min(xyz[1]), max(xyz[0]), max(xyz[1])
+
+        return min(xyz[0]), max(xyz[1]), max(xyz[0]), min(xyz[1])
 
     # all valid inputs returned above, so whatever falls through is an error
     raise ValueError(
@@ -6601,7 +6571,7 @@ def zonal_stats(
     basename = os.path.basename(filename)
     filetype = os.path.splitext(basename)[1][1:].lower()
 
-    if not (filetype in allowed_formats):
+    if filetype not in allowed_formats:
         print(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -6668,7 +6638,7 @@ def zonal_stats(
     }
 
     if isinstance(stat_type, str):
-        if not (stat_type.upper() in allowed_statistics.keys()):
+        if stat_type.upper() not in allowed_statistics.keys():
             print(
                 "The statistics type must be one of the following: {}".format(
                     ", ".join(list(allowed_statistics.keys()))
@@ -6695,8 +6665,8 @@ def zonal_stats(
     )
     if return_fc:
         return result
-    else:
-        ee_export_vector(result, filename, timeout=timeout, proxies=proxies)
+
+    ee_export_vector(result, filename, timeout=timeout, proxies=proxies)
 
 
 zonal_statistics = zonal_stats
@@ -6792,7 +6762,7 @@ def zonal_stats_by_group(
     basename = os.path.basename(filename)
     filetype = os.path.splitext(basename)[1][1:]
 
-    if not (filetype.lower() in allowed_formats):
+    if filetype.lower() not in allowed_formats:
         print(
             "The file type must be one of the following: {}".format(
                 ", ".join(allowed_formats)
@@ -6805,7 +6775,7 @@ def zonal_stats_by_group(
         os.makedirs(out_dir)
 
     allowed_statistics = ["SUM", "PERCENTAGE"]
-    if not (stat_type.upper() in allowed_statistics):
+    if stat_type.upper() not in allowed_statistics:
         print(
             "The statistics type can only be one of {}".format(
                 ", ".join(allowed_statistics)
@@ -6896,8 +6866,8 @@ def zonal_stats_by_group(
     final_result = init_result.map(set_attribute)
     if return_fc:
         return final_result
-    else:
-        ee_export_vector(final_result, filename, timeout=timeout, proxies=proxies)
+
+    ee_export_vector(final_result, filename, timeout=timeout, proxies=proxies)
 
 
 zonal_statistics_by_group = zonal_stats_by_group
@@ -7301,8 +7271,8 @@ def image_value_list(img, region=None, scale=None, return_hist=False, **kwargs):
     hist = ee.Dictionary(result.first().get("histogram"))
     if return_hist:
         return hist
-    else:
-        return hist.keys()
+
+    return hist.keys()
 
 
 def image_histogram(
@@ -7465,8 +7435,8 @@ def image_stats_by_zone(
         check_file_path(out_csv)
         df.to_csv(out_csv, index=False)
         return out_csv
-    else:
-        return df
+
+    return df
 
 
 def latitude_grid(
@@ -8603,15 +8573,15 @@ def is_GCS(in_shp):
             f"The projection file {in_prj} could not be found. Assuming the dataset is in a geographic coordinate system (GCS)."
         )
         return True
-    else:
-        with open(in_prj) as f:
-            esri_wkt = f.read()
-        epsg4326 = pycrs.parse.from_epsg_code(4326).to_proj4()
-        try:
-            crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
-            return crs == epsg4326
-        except Exception:
-            return False
+
+    with open(in_prj) as f:
+        esri_wkt = f.read()
+    epsg4326 = pycrs.parse.from_epsg_code(4326).to_proj4()
+    try:
+        crs = pycrs.parse.from_esri_wkt(esri_wkt).to_proj4()
+        return crs == epsg4326
+    except Exception:
+        return False
 
 
 def kml_to_shp(in_kml, out_shp, **kwargs):
@@ -9073,8 +9043,8 @@ def extract_pixel_values(
         values_tmp = dict_values.getInfo()
         values = [values_tmp[i] for i in band_names]
         return dict(zip(band_names, values))
-    else:
-        return dict_values
+
+    return dict_values
 
 
 def list_vars(var_type=None):
@@ -9241,8 +9211,8 @@ def random_sampling(
 
     if to_pandas:
         return ee_to_df(points)
-    else:
-        return points
+
+    return points
 
 
 def osm_to_gdf(
@@ -10024,10 +9994,10 @@ def search_xyz_services(keyword, name=None, list_only=True, add_prefix=True):
     if list_only:
         if add_prefix:
             return ["xyz." + provider for provider in providers]
-        else:
-            return [provider for provider in providers]
-    else:
-        return providers
+
+        return [provider for provider in providers]
+
+    return providers
 
 
 def search_qms(keyword, limit=10, list_only=True, add_prefix=True, timeout=300):
@@ -10075,10 +10045,11 @@ def get_wms_layers(url: str, return_titles: bool = False):
     wms = WebMapService(url)
     layers = list(wms.contents)
     layers.sort()
+
     if return_titles:
         return layers, [wms[layer].title for layer in layers]
-    else:
-        return layers
+
+    return layers
 
 
 def read_file_from_url(
@@ -10099,10 +10070,11 @@ def read_file_from_url(
             line.decode(encoding).rstrip()
             for line in urllib.request.urlopen(url).readlines()
         ]
-    elif return_type == "string":
-        return urllib.request.urlopen(url).read().decode(encoding)
-    else:
+
+    if return_type != "string":
         raise ValueError("The return type must be either list or string.")
+
+    return urllib.request.urlopen(url).read().decode(encoding)
 
 
 def create_download_button(
@@ -10143,7 +10115,8 @@ def create_download_button(
             return st.download_button(
                 label, data, file_name, mime, key, help, on_click, args, **kwargs
             )
-        elif data.endswith(".gif") or data.endswith(".png") or data.endswith(".jpg"):
+
+        if data.endswith(".gif") or data.endswith(".png") or data.endswith(".jpg"):
             if mime is None:
                 mime = f"image/{os.path.splitext(data)[1][1:]}"
 
@@ -10160,19 +10133,18 @@ def create_download_button(
                     **kwargs,
                 )
 
-        else:
-            return st.download_button(
-                label,
-                label,
-                data,
-                file_name,
-                mime,
-                key,
-                help,
-                on_click,
-                args,
-                **kwargs,
-            )
+        return st.download_button(
+            label,
+            label,
+            data,
+            file_name,
+            mime,
+            key,
+            help,
+            on_click,
+            args,
+            **kwargs,
+        )
 
 
 def gdf_to_geojson(gdf, out_geojson=None, epsg=None):
@@ -10196,17 +10168,16 @@ def gdf_to_geojson(gdf, out_geojson=None, epsg=None):
 
     if out_geojson is None:
         return geojson
-    else:
-        ext = os.path.splitext(out_geojson)[1]
-        if ext.lower() not in [".json", ".geojson"]:
-            raise TypeError(
-                "The output file extension must be either .json or .geojson"
-            )
-        out_dir = os.path.dirname(out_geojson)
-        if not os.path.exists(out_dir):
-            os.makedirs(out_dir)
 
-        gdf.to_file(out_geojson, driver="GeoJSON")
+    ext = os.path.splitext(out_geojson)[1]
+    if ext.lower() not in [".json", ".geojson"]:
+        raise TypeError("The output file extension must be either .json or .geojson")
+
+    out_dir = os.path.dirname(out_geojson)
+    if not os.path.exists(out_dir):
+        os.makedirs(out_dir)
+
+    gdf.to_file(out_geojson, driver="GeoJSON")
 
 
 def get_temp_dir() -> str:
@@ -10215,65 +10186,68 @@ def get_temp_dir() -> str:
 
 
 def create_contours(
-    image, min_value, max_value, interval, kernel=None, region=None, values=None
-):
-    """Creates contours from an image. Code adapted from https://mygeoblog.com/2017/01/28/contour-lines-in-gee. Credits to MyGeoBlog.
+    image: ee.Image,
+    min_value: float,
+    max_value: float,
+    interval: float,
+    kernel: ee.Kernel | None = None,
+    region: ee.Geometry | ee.FeatureCollection | None = None,
+    values: list[float] | ee.List | None = None,
+) -> ee.Image:
+    """Creates contours from an image.
+
+    Code adapted from https://mygeoblog.com/2017/01/28/contour-lines-in-gee.
 
     Args:
-        image (ee.Image): An image to create contours.
-        min_value (float): The minimum value of contours.
-        max_value (float): The maximum value of contours.
-        interval (float):  The interval between contours.
-        kernel (ee.Kernel, optional): The kernel to use for smoothing image. Defaults to None.
-        region (ee.Geometry | ee.FeatureCollection, optional): The region of interest. Defaults to None.
-        values (list, optional): A list of values to create contours for. Defaults to None.
-
-    Raises:
-        TypeError: The image must be an ee.Image.
-        TypeError: The region must be an ee.Geometry or ee.FeatureCollection.
+        image: An image to create contours.
+        min_value: The minimum value of contours.
+        max_value: The maximum value of contours.
+        interval: The interval between contours.
+        kernel: The kernel to use for smoothing image.
+        region: The region of interest.
+        values: Values to create contours for.
 
     Returns:
-        ee.Image: The image containing contours.
+        The image containing contours.
     """
     if not isinstance(image, ee.Image):
         raise TypeError("The image must be an ee.Image.")
-    if region is not None:
-        if isinstance(region, (ee.FeatureCollection, ee.Geometry)):
-            pass
-        else:
-            raise TypeError(
-                "The region must be an ee.Geometry or ee.FeatureCollection."
-            )
 
-    if kernel is None:
-        kernel = ee.Kernel.gaussian(5, 3)
+    if region is not None and not isinstance(
+        region, (ee.FeatureCollection, ee.Geometry)
+    ):
+        raise TypeError("The region must be an ee.Geometry or ee.FeatureCollection.")
+
+    kernel = kernel or ee.Kernel.gaussian(5, 3)
 
     if isinstance(values, list):
         values = ee.List(values)
     elif isinstance(values, ee.List):
         pass
-
-    if values is None:
+    elif values is None:
         values = ee.List.sequence(min_value, max_value, interval)
+    else:
+        raise TypeError("The values must be a list or ee.List.")
 
-    def contouring(value):
-        mycountour = (
+    def contouring(value: ee.Number) -> ee.Image:
+        contour = (
             image.convolve(kernel)
             .subtract(ee.Image.constant(value))
             .zeroCrossing()
             .multiply(ee.Image.constant(value).toFloat())
         )
-        return mycountour.mask(mycountour)
+        return contour.mask(contour)
 
     contours = values.map(contouring)
 
     if region is not None:
         if isinstance(region, ee.FeatureCollection):
             return ee.ImageCollection(contours).mosaic().clipToCollection(region)
-        elif isinstance(region, ee.Geometry):
+        if isinstance(region, ee.Geometry):
             return ee.ImageCollection(contours).mosaic().clip(region)
-    else:
-        return ee.ImageCollection(contours).mosaic()
+        # Should never reach here.
+
+    return ee.ImageCollection(contours).mosaic()
 
 
 def get_local_tile_layer(
@@ -10466,8 +10440,8 @@ def get_local_tile_layer(
 
     if return_client:
         return tile_layer, tile_client
-    else:
-        return tile_layer
+
+    return tile_layer
 
 
 def get_palettable(types=None):
@@ -10914,8 +10888,8 @@ def cog_validate(source, verbose=False):
 
     if verbose:
         return cog_info(source)
-    else:
-        return cog_validate(source)
+
+    return cog_validate(source)
 
 
 def gdf_to_df(gdf, drop_geom=True) -> pd.DataFrame:
@@ -10930,8 +10904,8 @@ def gdf_to_df(gdf, drop_geom=True) -> pd.DataFrame:
     """
     if drop_geom:
         return pd.DataFrame(gdf.drop(columns=["geometry"]))
-    else:
-        return pd.DataFrame(gdf)
+
+    return pd.DataFrame(gdf)
 
 
 def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
@@ -11034,8 +11008,8 @@ def gdf_bounds(gdf, return_geom=False):
     bounds = gdf.total_bounds
     if return_geom:
         return bbox_to_gdf(bbox=bounds)
-    else:
-        return bounds
+
+    return bounds
 
 
 def gdf_centroid(gdf, return_geom=False):
@@ -11048,14 +11022,13 @@ def gdf_centroid(gdf, return_geom=False):
     Returns:
         list | gpd.GeoDataFrame: A bounding box in the form of a list (lon, lat) or GeoDataFrame.
     """
-
     warnings.filterwarnings("ignore")
 
     centroid = gdf_bounds(gdf, return_geom=True).centroid
     if return_geom:
         return centroid
-    else:
-        return centroid.x[0], centroid.y[0]
+
+    return centroid.x[0], centroid.y[0]
 
 
 def gdf_geom_type(gdf, first_only=True):
@@ -11068,11 +11041,10 @@ def gdf_geom_type(gdf, first_only=True):
     Returns:
         str: The geometry type of the GeoDataFrame.
     """
-
     if first_only:
         return gdf.geometry.type[0]
-    else:
-        return gdf.geometry.type
+
+    return gdf.geometry.type
 
 
 def image_to_numpy(image):
@@ -11317,10 +11289,10 @@ def convert_lidar(
 
     if destination is None:
         return las
-    else:
-        destination = check_file_path(destination)
-        write_lidar(las, destination, **kwargs)
-        return destination
+
+    destination = check_file_path(destination)
+    write_lidar(las, destination, **kwargs)
+    return destination
 
 
 def write_lidar(
@@ -11595,8 +11567,8 @@ def netcdf_to_tif(
 
     if return_vars:
         return output, allowed_vars
-    else:
-        return output
+
+    return output
 
 
 def read_netcdf(filename, **kwargs):
@@ -12200,9 +12172,6 @@ def download_ee_image(
             zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
 
     """
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
-
     import geedim as gd
 
     if not isinstance(image, ee.Image):
@@ -12304,9 +12273,6 @@ def download_ee_image_tiles(
 
     """
     start = time.time()
-
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
 
     if not isinstance(features, ee.FeatureCollection):
         raise ValueError("features must be an ee.FeatureCollection.")
@@ -12418,9 +12384,6 @@ def download_ee_image_tiles_parallel(
     import joblib
 
     start = time.time()
-
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
 
     if not isinstance(features, ee.FeatureCollection):
         raise ValueError("features must be an ee.FeatureCollection.")
@@ -12627,9 +12590,6 @@ def plot_raster(
     """
     open_kwargs = open_kwargs or {}
 
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
-
     if coreutils.in_colab_shell():
         print("The plot_raster() function is not supported in Colab.")
         return
@@ -12690,9 +12650,6 @@ def plot_raster_3d(
         mesh_kwargs (dict, optional): The keyword arguments to pass to pyvista.mesh.warp_by_scalar(). Defaults to {}.
         **kwargs: Additional keyword arguments to pass to xarray.DataArray.plot().
     """
-    if os.environ.get("USE_MKDOCS") is not None:
-        return
-
     if coreutils.in_colab_shell():
         print("The plot_raster_3d() function is not supported in Colab.")
         return
@@ -13002,8 +12959,8 @@ def ee_vector_style(
 
     if return_fc:
         return result
-    else:
-        return result.style(**{"styleProperty": "style", "neighborhood": neighborhood})
+
+    return result.style(**{"styleProperty": "style", "neighborhood": neighborhood})
 
 
 def get_direct_url(url: str) -> str:
@@ -13311,10 +13268,10 @@ def download_ned(
 
     if return_url:
         return links
-    else:
-        for index, link in enumerate(links):
-            print(f"Downloading {index + 1} of {len(links)}: {os.path.basename(link)}")
-            coreutils.download_file(link, filepaths[index], **download_args)
+
+    for index, link in enumerate(links):
+        print(f"Downloading {index + 1} of {len(links)}: {os.path.basename(link)}")
+        coreutils.download_file(link, filepaths[index], **download_args)
 
 
 def mosaic(
@@ -13445,18 +13402,6 @@ def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
     download_ee_image(image, filename, region=region.geometry(), scale=scale, crs=crs)
 
 
-def use_mkdocs():
-    """Test if the current notebook is running in mkdocs.
-
-    Returns:
-        bool: True if the notebook is running in mkdocs.
-    """
-    if os.environ.get("USE_MKDOCS") is not None:
-        return True
-    else:
-        return False
-
-
 def create_legend(
     title: str = "Legend",
     labels: list[str] | None = None,
@@ -13527,7 +13472,8 @@ def create_legend(
         if not isinstance(colors, list):
             print("The legend colors must be a list.")
             return
-        elif all(isinstance(item, tuple) for item in colors):
+
+        if all(isinstance(item, tuple) for item in colors):
             try:
                 colors = [coreutils.rgb_to_hex(x) for x in colors]
             except Exception as e:
@@ -13699,11 +13645,11 @@ def create_legend(
 
     legend_text = "".join(content)
 
-    if output is not None:
-        with open(output, "w") as f:
-            f.write(legend_text)
-    else:
+    if output is None:
         return legend_text
+
+    with open(output, "w") as f:
+        f.write(legend_text)
 
 
 def is_arcpy():
@@ -14224,7 +14170,7 @@ def get_geometry_coords(
                 coords = [lnglat_to_meters(x, 0)[0] for x in coords]
             return coords
 
-        elif coord_type == "y":
+        if coord_type == "y":
             # Get the y coordinates of the exterior
             coords = list(exterior.coords.xy[1])
             if mercator:
@@ -14237,7 +14183,8 @@ def get_geometry_coords(
             if mercator:
                 coords = [lnglat_to_meters(x, 0)[0] for x in coords]
             return coords
-        elif coord_type == "y":
+
+        if coord_type == "y":
             coords = list(row[geom].coords.xy[1])
             if mercator:
                 coords = [lnglat_to_meters(0, y)[1] for y in coords]
@@ -14253,7 +14200,7 @@ def get_geometry_coords(
                 coords = lnglat_to_meters(coords, 0)[0]
             return coords
 
-        elif coord_type == "y":
+        if coord_type == "y":
             # Get the y coordinates of the exterior
             coords = exterior.coords.xy[1][0]
             if mercator:
@@ -14417,8 +14364,8 @@ def tms_to_geotiff(
                 if ext != (0, 0):
                     return False
             return True
-        else:
-            return extrema[0] == (0, 0)
+
+        return extrema[0] == (0, 0)
 
     def paste_tile(bigim, base_size, tile, corner_xy, bbox):
         if tile is None:
@@ -14473,10 +14420,13 @@ def tms_to_geotiff(
                 retry -= 1
                 if not retry:
                     raise
+
         if r.status_code == 404:
             return None
-        elif not r.content:
+
+        if not r.content:
             return None
+
         r.raise_for_status()
         return r.content
 
@@ -14563,16 +14513,18 @@ def tms_to_geotiff(
         print(e)
 
 
-def tif_to_jp2(filename, output, creationOptions=None):
+def tif_to_jp2(
+    filename: str, output: str, creationOptions: list[str] | None = None
+) -> None:
     """Converts a GeoTIFF to JPEG2000.
 
     Args:
-        filename (str): The path to the GeoTIFF file.
-        output (str): The path to the output JPEG2000 file.
-        creationOptions (list): A list of creation options for the JPEG2000 file. See
-            https://gdal.org/drivers/raster/jp2openjpeg.html. For example, to specify the compression
-            ratio, use `["QUALITY=20"]`. A value of 20 means the file will be 20% of the size in comparison
-            to uncompressed data.
+        filename: The path to the GeoTIFF file.
+        output: The path to the output JPEG2000 file.
+        creationOptions: A list of creation options for the JPEG2000 file. See
+            https://gdal.org/drivers/raster/jp2openjpeg.html. For example, to specify
+            the compression ratio, use `["QUALITY=20"]`. A value of 20 means the file
+            will be 20% of the size in comparison to uncompressed data.
     """
     from osgeo import gdal
 
@@ -14584,9 +14536,10 @@ def tif_to_jp2(filename, output, creationOptions=None):
     if not output.endswith(".jp2"):
         output += ".jp2"
 
-    in_ds = gdal.Open(filename)
-    gdal.Translate(output, in_ds, format="JP2OpenJPEG", creationOptions=creationOptions)
-    in_ds = None
+    with gdal.Open(filename) as in_ds:
+        gdal.Translate(
+            output, in_ds, format="JP2OpenJPEG", creationOptions=creationOptions
+        )
 
 
 def ee_to_geotiff(
@@ -14605,43 +14558,36 @@ def ee_to_geotiff(
 
     Args:
         ee_object (ee.Image | ee.FeatureCollection): The Earth Engine object to download.
-        output (str): The output path for the GeoTIFF.
+        output: The output path for the GeoTIFF.
         # TODO: What is the proper type for bbox?
-        bbox (str, optional): The bounding box in the format [xmin, ymin, xmax, ymax]. Defaults to None,
+        bbox: The bounding box in the format [xmin, ymin, xmax, ymax]. Defaults to None,
             which is the bounding box of the Earth Engine object.
-        vis_params (dict, optional): Visualization parameters. Defaults to {}.
-        zoom (int, optional): The zoom level to download the image at. Defaults to None.
-        resolution (float, optional): The resolution in meters to download the image at. Defaults to None.
-        crs (str, optional): The CRS of the output image. Defaults to "EPSG:3857".
-        to_cog (bool, optional): Whether to convert the image to Cloud Optimized GeoTIFF. Defaults to False.
-        quiet (bool, optional): Whether to hide the download progress bar. Defaults to False.
+        vis_params: Visualization parameters. Defaults to {}.
+        zoom: The zoom level to download the image at.
+        resolution: The resolution in meters to download the image at.
+        crs: The CRS of the output image.
+        to_cog: Whether to convert the image to Cloud Optimized GeoTIFF.
+        quiet: Whether to hide the download progress bar.
     """
     vis_params = vis_params or {}
 
-    image = None
-
-    if (
-        not isinstance(ee_object, ee.Image)
-        and not isinstance(ee_object, ee.ImageCollection)
-        and not isinstance(ee_object, ee.FeatureCollection)
-        and not isinstance(ee_object, ee.Feature)
-        and not isinstance(ee_object, ee.Geometry)
+    if not isinstance(
+        ee_object,
+        (ee.Image, ee.ImageCollection, ee.FeatureCollection, ee.Feature, ee.Geometry),
     ):
-        err_str = "\n\nThe image argument in 'addLayer' function must be an instance of one of ee.Image, ee.Geometry, ee.Feature or ee.FeatureCollection."
-        raise AttributeError(err_str)
+        raise AttributeError(
+            "The image argument in 'addLayer' function must be an instance of one of "
+            "ee.Image, ee.ImageCollection, ee.Geometry, ee.Feature, or "
+            "ee.FeatureCollection."
+        )
+
+    image = None
 
     if isinstance(ee_object, (ee.Geometry, ee.Feature, ee.FeatureCollection)):
         features = ee.FeatureCollection(ee_object)
 
-        width = 2
-
-        if "width" in vis_params:
-            width = vis_params["width"]
-
-        color = "000000"
-
-        if "color" in vis_params:
-            color = vis_params["color"]
+        width = vis_params.get("width", 2)
+        color = vis_params.get("color", "000000")
 
         image_fill = features.style(**{"fillColor": color}).updateMask(
             ee.Image.constant(0.5)
@@ -14725,28 +14671,24 @@ def jslink_slider_label(
 
 
 def check_basemap(basemap: str) -> str:
-    """Check Google basemaps
+    """Returns the normalized Google basemap name.
 
     Args:
         basemap: The basemap name.
-
-    Returns:
-        The basemap name.
     """
-    if isinstance(basemap, str):
-        map_dict = {
-            "ROADMAP": "Google Maps",
-            "SATELLITE": "Google Satellite",
-            "TERRAIN": "Google Terrain",
-            "HYBRID": "Google Hybrid",
-        }
-
-        if basemap.upper() in map_dict.keys():
-            return map_dict[basemap.upper()]
-        else:
-            return basemap
-    else:
+    if not isinstance(basemap, str):
         return basemap
+
+    map_dict = {
+        "ROADMAP": "Google Maps",
+        "SATELLITE": "Google Satellite",
+        "TERRAIN": "Google Terrain",
+        "HYBRID": "Google Hybrid",
+    }
+    if basemap.upper() in map_dict.keys():
+        return map_dict[basemap.upper()]
+
+    return basemap
 
 
 def get_ee_token():
@@ -14772,9 +14714,6 @@ def geotiff_to_image(image: str, output: str) -> None:
     Args:
         image: The path to the input GeoTIFF file.
         output: The path to save the output JPEG/PNG file.
-
-    Returns:
-        None
     """
     import rasterio
     from PIL import Image
@@ -14812,20 +14751,19 @@ def xee_to_image(
 
     Args:
         xds (xr.Dataset): The xarray Dataset to convert to images.
-        filenames (str | list[str]] | None): Output filenames for the images.
-            If a single string is provided, it will be used as the filename for all images.
-            If a list of strings is provided, the filenames will be used in order. Defaults to None.
-        out_dir (str, optional): Output directory for the images. Defaults to current working directory.
-        crs (str, optional): Coordinate reference system (CRS) of the output images.
-            If not provided, the CRS is inferred from the Dataset's attributes ('crs' attribute) or set to 'EPSG:4326'.
-        nodata (float, optional): The nodata value used for the output images. Defaults to None.
-        driver (str, optional): Driver used for writing the output images, such as 'GTiff'. Defaults to "COG".
-        time_unit (str, optional): Time unit used for generating default filenames. Defaults to 'D'.
-        quiet (bool, optional): If True, suppresses progress messages. Defaults to False.
-        **kwargs: Additional keyword arguments passed to rioxarray's `rio.to_raster()` function.
-
-    Returns:
-        None
+        filenames: Output filenames for the images. If a single string is provided, it
+            will be used as the filename for all images. If a list of strings is
+            provided, the filenames will be used in order.
+        out_dir: Output directory for the images. Defaults to current working directory.
+        crs: Coordinate reference system (CRS) of the output images.  If not provided,
+            the CRS is inferred from the Dataset's attributes ('crs' attribute) or set
+            to 'EPSG:4326'.
+        nodata: The nodata value used for the output images.
+        driver: Driver used for writing the output images, such as 'GTiff'.
+        time_unit: Time unit used for generating default filenames.
+        quiet: If True, suppresses progress messages.
+        **kwargs: Additional keyword arguments passed to rioxarray's `rio.to_raster()`
+            function.
 
     Raises:
         ValueError: If the number of filenames doesn't match the number of time steps in the Dataset.
@@ -14857,15 +14795,15 @@ def xee_to_image(
 
     for index, time in enumerate(xds.time.values):
         if nodata is not None:
-            # Create a Boolean mask where all three variables are zero (nodata)
+            # Create a Boolean mask where all three variables are zero (nodata).
             mask = (xds == nodata).all(dim="time")
-            # Set nodata values based on the mask for all variables
+            # Set nodata values based on the mask for all variables.
             xds = xds.where(~mask, other=np.nan)
 
         if not quiet:
             print(f"Processing {index + 1}/{len(xds.time.values)}: {time}")
         image = xds.sel(time=time)
-        # transform the image to suit rioxarray format
+        # Transform the image to suit rioxarray format.
         image = (
             image.rename({y_dim: "y", x_dim: "x"})
             .transpose("y", "x")
@@ -15199,16 +15137,14 @@ def xarray_to_raster(dataset, filename: str, **kwargs) -> None:
         dataset (xr.Dataset): The input xarray Dataset to be converted.
         filename: The output filename for the raster file.
         **kwargs: Additional keyword arguments passed to the `rio.to_raster()` method.
-            See https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html for more info.
-
-    Returns:
-        None
+            https://corteva.github.io/rioxarray/stable/examples/convert_to_raster.html
+            for more info.
     """
     import rioxarray
 
     dims = list(dataset.dims)
 
-    new_names = {}
+    new_names: dict[str:str] = {}
 
     if "lat" in dims:
         new_names["lat"] = "y"
@@ -15278,10 +15214,11 @@ def replace_hyphens_in_keys(d: dict | list | Any) -> dict | list | Any:
     """
     if isinstance(d, dict):
         return {k.replace("-", "_"): replace_hyphens_in_keys(v) for k, v in d.items()}
-    elif isinstance(d, list):
+
+    if isinstance(d, list):
         return [replace_hyphens_in_keys(i) for i in d]
-    else:
-        return d
+
+    return d
 
 
 def remove_port_from_string(data: str) -> str:

@@ -7,7 +7,7 @@
 
 from functools import partial
 import multiprocessing as mp
-import os
+import pathlib
 
 import ee
 import numpy as np
@@ -25,19 +25,17 @@ def tree_to_string(
         feature_names (Iterable[str]): List of strings that define the name of features
             (i.e., bands) used to create the model
         labels (Iterable[numeric]): List of class labels to map outputs to, must be
-            numeric values. If None, then raw outputs will be used. default = None
+            numeric values. If None, then raw outputs will be used.
         output_mode: the output mode of the estimator. Options are "INFER",
-            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default =
-            "INFER"
+            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter).
 
     Returns:
-        tree_str (str): string representation of decision tree estimator
+        String representation of decision tree estimator.
 
     Raises:
         RuntimeError: raises run time error when function cannot determine if the
             estimator is for regression or classification problem.
     """
-
     # Extract out the information need to build the tree string.
     n_nodes = estimator.tree_.node_count
     children_left = estimator.tree_.children_left
@@ -175,8 +173,9 @@ def tree_to_string(
     max_depth = np.max(ordered_df.node_depth.astype(int))
     tree_str = f"1) root {n_samples[0]} 9999 9999 ({impurities.sum()})\n"
     previous_depth = -1
-    cnts = []
+    cnts: list[int] = []
     # Loop through the nodes and calculate the node number and values per node.
+    cnt = 0
     for row in ordered_df.itertuples():
         node_depth = int(row.node_depth)
         left = int(row.children_left)
@@ -261,10 +260,9 @@ def rf_to_strings(estimator, feature_names, processes=2, output_mode="INFER"):
         feature_names (list[str]): List of strings that define the name of features
             (i.e., bands) used to create the model.
         processes (int): Number of cpu processes to spawn. Increasing processes will
-            improve speed for large models. default = 2
+            improve speed for large models.
         output_mode (str): Output mode of the estimator. Options are "INFER",
-            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter). default =
-            "INFER"
+            "CLASSIFIATION", or "REGRESSION" (capitalization does not matter).
 
     Returns:
         trees (list[str]): list of strings where each string represents a decision tree
@@ -372,10 +370,7 @@ def export_trees_to_fc(trees, asset_id, description="geemap_rf_export"):
     Args:
         trees (list[str]): List of string representation of the decision trees.
         asset_id (str): ee asset id path to export the feature collection to.
-
-    kwargs:
-        description (str): optional description to provide export information. default =
-            "geemap_rf_export"
+        description (str): optional description to provide export information.
     """
     # Create a null geometry point.
     # This is needed to properly export the feature collection.
@@ -404,9 +399,9 @@ def trees_to_csv(trees: list[str], out_csv: str) -> None:
         trees: A list of strings (an ensemble of decision trees).
         out_csv: File path to the output csv.
     """
-    out_csv = os.path.abspath(out_csv)
-    with open(out_csv, "w") as f:
-        f.writelines([tree.replace("\n", "#") + "\n" for tree in trees])
+    out_path = pathlib.Path(out_csv).resolve()
+    content = "".join([tree.replace("\n", "#") + "\n" for tree in trees])
+    out_path.write_text(content, encoding="utf-8")
 
 
 def csv_to_classifier(in_csv: str) -> ee.Classifier | None:
@@ -420,11 +415,10 @@ def csv_to_classifier(in_csv: str) -> ee.Classifier | None:
     Returns:
         object: ee.Classifier.
     """
-    in_csv = os.path.join(in_csv)
+    in_path = pathlib.Path(in_csv)
 
     try:
-        with open(in_csv) as f:
-            lines = f.readlines()
+        lines = in_path.read_text(encoding="utf-8").splitlines()
     except FileNotFoundError:
         print(f"{in_csv} could not be found.")
         return None

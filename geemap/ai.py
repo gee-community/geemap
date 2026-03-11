@@ -555,6 +555,8 @@ class Genie(widgets.VBox):
                 )
 
             def ask(self, question, temperature=0):
+                del temperature  # Unused.
+
                 while True:
                     condition = ""
                     try:
@@ -1488,6 +1490,8 @@ class EarthEngineDatasetIndex:
         Returns:
             A list of collections that match the query.
         """
+        del threshold, bounding_box, temporal_interval  # Unused.
+
         similar_docs = self.index.vectorstore.similarity_search_with_score(
             query, llm=self.llm, k=results
         )
@@ -1525,6 +1529,8 @@ class EarthEngineDatasetIndex:
         Returns:
             A DataFrame containing the dataset IDs and their match scores.
         """
+        del threshold  # Unused.
+
         scores_df = self.ids_to_match_scores_df(
             query, results, bounding_box, temporal_interval
         )
@@ -1554,6 +1560,8 @@ class EarthEngineDatasetIndex:
         Returns:
             A DataFrame containing the dataset IDs and their match scores.
         """
+        del bounding_box, temporal_interval  # Unused.
+
         similar_docs = self.index.vectorstore.similarity_search_with_score(
             query, llm=self.llm, k=results
         )

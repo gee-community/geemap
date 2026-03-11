@@ -38,7 +38,7 @@ def update_data_list(out_dir: str = ".") -> None:
     """Updates the Earth Engine Data Catalog dataset list.
 
     Args:
-        out_dir: The output directory to save the GitHub repository. Defaults to ".".
+        out_dir: The output directory to save the GitHub repository.
 
     Raises:
         Exception: If the CSV file fails to save.

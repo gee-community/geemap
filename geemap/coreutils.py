@@ -59,15 +59,15 @@ def ee_initialize(
             named "EE_PROJECT_ID" to initialize Earth Engine.
         auth_mode: The authentication mode, can be one of colab, notebook, localhost, or
             gcloud. See https://developers.google.com/earth-engine/guides/auth for more
-            details. Defaults to None.
+            details.
         auth_args: Additional authentication parameters for aa.Authenticate().
             Defaults to {}.
         user_agent_prefix: If set, the prefix (version-less) value used for setting the
-            user-agent string. Defaults to "geemap".
-        project: The Google cloud project ID for Earth Engine. Defaults to None.
+            user-agent string.
+        project: The Google cloud project ID for Earth Engine.
         kwargs: Additional parameters for ee.Initialize(). For example,
             opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth
-            Engine High-Volume platform. Defaults to {}.
+            Engine High-Volume platform.
     """
     import google.oauth2.credentials
     from .__init__ import __version__
@@ -203,8 +203,8 @@ def build_computed_object_tree(
 
     Args:
         ee_object: The Earth Engine object.
-        layer_name: The name of the layer. Defaults to "".
-        opened: Whether to expand the tree. Defaults to False.
+        layer_name: The name of the layer.
+        opened: Whether to expand the tree.
 
     Returns:
         The node representing the Earth Engine object information.
@@ -255,10 +255,10 @@ def get_info(
 
     Args:
         ee_object: The Earth Engine object.
-        layer_name: The name of the layer. Defaults to "".
-        opened: Whether to expand the tree. Defaults to False.
+        layer_name: The name of the layer.
+        opened: Whether to expand the tree.
         return_node: Whether to return the widget as ipytree.Node.
-            If False, returns the widget as ipytree.Tree. Defaults to False.
+            If False, returns the widget as ipytree.Tree.
 
     Returns:
         The tree or node representing the Earth Engine object information.
@@ -293,9 +293,9 @@ def create_code_cell(code: str = "", where: str = "below") -> None:
     """Creates a code cell in the IPython Notebook.
 
     Args:
-        code: Code to fill the new code cell with. Defaults to ''.
+        code: Code to fill the new code cell with.
         where: Where to add the new code cell. It can be one of the following: above,
-            below, at_bottom. Defaults to 'below'.
+            below, at_bottom.
     """
     import pyperclip
 
@@ -346,7 +346,7 @@ def get_google_maps_api_key(key: str = "GOOGLE_MAPS_API_KEY") -> str | None:
 
     Args:
         key: The name of the environment variable or Colab user data key where the API
-            key is stored. Defaults to 'GOOGLE_MAPS_API_KEY'.
+            key is stored.
     """
     if api_key := get_env_var(key):
         return api_key
@@ -458,7 +458,6 @@ def rgb_to_hex(rgb: tuple[int, int, int] = (255, 255, 255)) -> str:
     Args:
 
         rgb: RGB color code as a tuple of (red, green, blue).
-            Defaults to (255, 255, 255).
 
     Returns:
         Hex color code.
@@ -484,7 +483,7 @@ def random_string(string_length: int = 3) -> str:
     """Returns a random string of fixed length.
 
     Args:
-        string_length: Fixed length. Defaults to 3.
+        string_length: Fixed length.
     """
     letters = string.ascii_lowercase
     return "".join(random.choice(letters) for i in range(string_length))
@@ -505,19 +504,16 @@ def widget_template(
     """Create a widget template.
 
     Args:
-        widget: The widget to be displayed. Defaults to None.
-        opened: Whether to open the toolbar. Defaults to True.
-        show_close_button: Whether to show the close button. Defaults to True.
-        widget_icon: The icon name for the toolbar button. Defaults to 'gear'.
-        close_button_icon: The icon name for the close button. Defaults to "times".
+        widget: The widget to be displayed.
+        opened: Whether to open the toolbar.
+        show_close_button: Whether to show the close button.
+        widget_icon: The icon name for the toolbar button.
+        close_button_icon: The icon name for the close button.
         widget_args: Additional arguments to pass to the toolbar button.
-            Defaults to None.
         close_button_args: Additional arguments to pass to the close button.
-            Defaults to None.
         display_widget: The widget to be displayed when the toolbar is clicked.
-            Defaults to None.
-        m: The ipyleaflet.Map instance. Defaults to None.
-        position: The position of the toolbar. Defaults to "topright".
+        m: The ipyleaflet.Map instance.
+        position: The position of the toolbar.
 
     Returns:
         The created widget template.
@@ -683,25 +679,19 @@ def download_file(
 
     Args:
         url: Google Drive URL is also supported.
-            Defaults to None.
         output: Output filename. Default is basename of URL.
-        quiet: Suppress terminal output. Default is False.
-        proxy: Proxy. Defaults to None.
+        quiet: Suppress terminal output.
+        proxy: Proxy.
         speed: Download byte size per second (e.g., 256KB/s = 256 * 1024).
-            Defaults to None.
-        use_cookies: Flag to use cookies. Defaults to True.
+        use_cookies: Flag to use cookies.
         verify: Either a bool, in which case it controls whether the server's TLS
             certificate is verified, or a string, in which case it must be a path to a
             CA bundle to use.
-            Default is True.
-        id: Google Drive's file ID. Defaults to None.
+        id: Google Drive's file ID.
         fuzzy: Fuzzy extraction of Google Drive's file Id.
-            Defaults to False.
         resume: Resume the download from existing tmp file if possible.
-            Defaults to False.
-        unzip: Unzip the file. Defaults to True.
+        unzip: Unzip the file.
         overwrite: Overwrite the file if it already exists.
-            Defaults to False.
 
     Returns:
         The output file path.
@@ -751,8 +741,7 @@ def geojson_to_ee(
             the specified CRS. If absent, defaults to true if the CRS is geographic
             (including the default EPSG:4326), or to false if the CRS is
             projected.
-            Defaults to False.
-        encoding: The encoding of characters. Defaults to "utf-8".
+        encoding: The encoding of characters.
 
     Returns:
         Earth Engine Geometry or FeatureCollection.

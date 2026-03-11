@@ -5,7 +5,6 @@ import unittest
 from unittest import mock
 
 import folium
-import ipyleaflet
 import requests
 import xyzservices
 
@@ -14,7 +13,6 @@ from geemap.basemaps import (
     custom_tiles,
     get_qms,
     get_xyz_dict,
-    qms_to_geemap,
     search_qms,
     xyz_to_folium,
     xyz_to_leaflet,
@@ -29,7 +27,7 @@ class TestCustomTiles(unittest.TestCase):
         """Tests that custom_tiles is a dict and contains expected keys."""
         self.assertIsInstance(custom_tiles, dict)
         expected_keys = ["xyz", "wms"]
-        for key in custom_tiles.keys():
+        for key in custom_tiles:
             self.assertIn(key, expected_keys)
 
     def test_custom_tiles_xyz(self):

@@ -132,12 +132,10 @@ class EEFoliumTileLayer(folium.raster_layers.TileLayer):
 
         Args:
             ee_object: The object to add to the map.
-            vis_params: The visualization parameters. Defaults to None.
-            name: The name of the layer. Defaults to 'Layer untitled'.
+            vis_params: The visualization parameters.
+            name: The name of the layer.
             shown: A flag indicating whether the layer should be on by default.
-                Defaults to True.
             opacity: Layer's opacity represented as a number between 0 and 1.
-                Defaults to 1.
         """
         self.url_format = _get_tile_url_format(
             ee_object, _validate_vis_params(vis_params)
@@ -185,12 +183,10 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
 
         Args:
             ee_object: The object to add to the map.
-            vis_params: The visualization parameters. Defaults to None.
-            name: The name of the layer. Defaults to 'Layer untitled'.
+            vis_params: The visualization parameters.
+            name: The name of the layer.
             shown: A flag indicating whether the layer should be on by default.
-                Defaults to True.
             opacity: Layer's opacity represented as a number between 0 and 1.
-                Defaults to 1.
         """
         self._ee_object = ee_object
         self.url_format = _get_tile_url_format(

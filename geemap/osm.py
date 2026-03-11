@@ -37,7 +37,7 @@ def osm_gdf_from_address(address: str, tags: dict[str, Any], dist: int = 1000):
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        dist: Distance in meters. Defaults to 1000.
+        dist: Distance in meters.
 
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
@@ -64,7 +64,7 @@ def osm_shp_from_address(
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
         filepath: File path to the output shapefile.
-        dist: Distance in meters. Defaults to 1000.
+        dist: Distance in meters.
     """
     gdf = osm_gdf_from_address(address, tags, dist)
     gdf.to_file(filepath)
@@ -88,8 +88,8 @@ def osm_geojson_from_address(
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        filepath: File path to the output GeoJSON. Defaults to None.
-        dist: Distance in meters. Defaults to 1000.
+        filepath: File path to the output GeoJSON.
+        dist: Distance in meters.
 
     Returns:
        A GeoJSON dictionary of OSM entities.
@@ -118,7 +118,7 @@ def osm_gdf_from_place(query, tags: dict[str, Any], which_result: int | None = N
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
         which_result: Which geocoding result to use. if None, auto-select the first
             (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
-            match regardless of geometry type, set which_result=1. Defaults to None.
+            match regardless of geometry type, set which_result=1.
 
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
@@ -135,7 +135,6 @@ def osm_shp_from_place(
 
     Args:
         query (str | dict | list): Query string(s) or structured dict(s) to geocode.
-
         tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
@@ -146,12 +145,10 @@ def osm_shp_from_place(
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-
         filepath: File path to the output shapefile.
-
         which_result: Which geocoding result to use. if None, auto-select the first
             (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
-            match regardless of geometry type, set which_result=1. Defaults to None.
+            match regardless of geometry type, set which_result=1.
     """
     gdf = osm_gdf_from_place(query, tags, which_result)
     gdf.to_file(filepath)
@@ -181,7 +178,7 @@ def osm_geojson_from_place(
         which_result: Which geocoding result to use. if None,
             auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
             one. to get the top match regardless of geometry type, set
-            which_result=1. Defaults to None.
+            which_result=1.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
@@ -210,7 +207,7 @@ def osm_gdf_from_point(
             footprints in the area. tags = {‘amenity’:True,
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
-        dist: Distance in meters. Defaults to 1000.
+        dist: Distance in meters.
 
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
@@ -239,7 +236,7 @@ def osm_shp_from_point(
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
         filepath: File path to the output shapefile.
-        dist: Distance in meters. Defaults to 1000.
+        dist: Distance in meters.
     """
     gdf = osm_gdf_from_point(center_point, tags, dist)
     gdf.to_file(filepath)
@@ -266,7 +263,7 @@ def osm_geojson_from_point(
             ‘landuse’:[‘retail’,’commercial’], ‘highway’:’bus_stop’} would return all
             amenities, landuse=retail, landuse=commercial, and highway=bus_stop.
         filepath: File path to the output shapefile.
-        dist: Distance in meters. Defaults to 1000.
+        dist: Distance in meters.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.
@@ -455,7 +452,7 @@ def osm_gdf_from_xml(filepath: str, polygon=None, tags: dict[str, Any] | None = 
     Args:
         filepath: File path to file containing OSM XML data
         polygon (shapely.geometry.Polygon, optional): Optional geographic boundary to
-            filter objects. Defaults to None.
+            filter objects.
         tags: Dict of tags used for finding objects in the selected area. Results
             returned are the union, not intersection of each individual tag. Each result
             matches at least one given tag. The dict keys should be OSM tags, (e.g.,
@@ -485,9 +482,9 @@ def osm_gdf_from_geocode(
         which_result: Which geocoding result to use. if None,
             auto-select the first (Multi)Polygon or raise an error if OSM doesn't return
             one. to get the top match regardless of geometry type, set
-            which_result=1. Defaults to None.
+            which_result=1.
         by_osmid: If True, handle query as an OSM ID for lookup rather
-            than text search. Defaults to False.
+            than text search.
 
     Returns:
         GeoDataFrame: A GeoPandas GeoDataFrame.
@@ -510,9 +507,9 @@ def osm_shp_from_geocode(
         filepath: File path to the output shapefile.
         which_result: Which geocoding result to use. if None, auto-select the first
             (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
-            match regardless of geometry type, set which_result=1. Defaults to None.
+            match regardless of geometry type, set which_result=1.
         by_osmid: If True, handle query as an OSM ID for lookup rather than text
-            search. Defaults to False.
+            search.
     """
     gdf = osm_gdf_from_geocode(query, which_result, by_osmid)
     gdf.to_file(filepath)
@@ -531,9 +528,9 @@ def osm_geojson_from_geocode(
         filepath: File path to the output GeoJSON.
         which_result: Which geocoding result to use. if None, auto-select the first
             (Multi)Polygon or raise an error if OSM doesn't return one. to get the top
-            match regardless of geometry type, set which_result=1. Defaults to None.
+            match regardless of geometry type, set which_result=1.
         by_osmid: If True, handle query as an OSM ID for lookup rather than text
-            search. Defaults to False.
+            search.
 
     Returns:
         dict: A GeoJSON dictionary of OSM entities.

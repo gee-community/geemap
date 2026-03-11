@@ -1,3 +1,9 @@
+# pylint: disable=too-many-arguments
+# pylint: disable=too-many-statements
+# pylint: disable=too-many-positional-arguments
+# pylint: disable=line-too-long
+# pylint: disable=too-many-locals
+
 """Module for converting Google Earth Engine (GEE) JavaScripts to Python scripts and Jupyter notebooks.
 - To convert a GEE JavaScript to Python script:                                       js_to_python(in_file out_file)
 - To convert all GEE JavaScripts in a folder recursively to Python scripts:           js_to_python_dir(in_dir, out_dir)
@@ -37,7 +43,7 @@ def find_matching_bracket(
         lines: The input list of lines.
         start_line_index: The line index where the starting bracket is located.
         start_char_index: The position index of the starting bracket.
-        matching_char: The starting bracket to search for. Defaults to '{'.
+        matching_char: The starting bracket to search for.
 
     Returns:
         matching_line_index: Line index where the matching closing bracket is located.
@@ -47,12 +53,9 @@ def find_matching_bracket(
     matching_char_index = -1
 
     matching_chars = {"{": "}", "(": ")", "[": "]"}
-    if matching_char not in matching_chars.keys():
-        print(
-            "The matching character must be one of the following: {}".format(
-                ", ".join(matching_chars.keys())
-            )
-        )
+    if matching_char not in matching_chars:
+        characters = ", ".join(matching_chars)
+        print(f"The matching character must be one of the following: {characters}")
         return matching_line_index, matching_char_index
 
     # Create a deque to use it as a stack.
@@ -92,7 +95,7 @@ def format_params(line: str, sep: str = ":") -> str:
 
     Args:
         line: A string.
-        sep: Separator. Defaults to ':'.
+        sep: Separator.
 
     Returns:
         A string with keys quoted.
@@ -243,7 +246,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
         Output JavaScript with map function.
     """
     output_lines = []
-    currentNumOfNestedFuncs = 0
+    current_num_of_nested_funcs = 0
     for index, line in enumerate(input_lines):
         if (
             line.strip().endswith(".map(")
@@ -277,23 +280,25 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                 output_lines.append("\n")
                 output_lines.append(func_header)
 
-                currentNumOfNestedFuncs += 1
+                current_num_of_nested_funcs += 1
 
                 new_lines = input_lines[index + 1 : matching_line_index]
 
                 new_lines = check_map_functions(new_lines)
 
                 for sub_index, tmp_line in enumerate(new_lines):
-                    output_lines.append(("    " * currentNumOfNestedFuncs) + tmp_line)
+                    output_lines.append(
+                        ("    " * current_num_of_nested_funcs) + tmp_line
+                    )
                     if "{" in tmp_line:
-                        currentNumOfNestedFuncs += 1
+                        current_num_of_nested_funcs += 1
                     if "}" in tmp_line:
-                        currentNumOfNestedFuncs -= 1
+                        current_num_of_nested_funcs -= 1
                     input_lines[index + 1 + sub_index] = (
                         ""  # pytype: disable=unsupported-operands
                     )
 
-                currentNumOfNestedFuncs -= 1
+                current_num_of_nested_funcs -= 1
 
                 header_line = line[:func_start_index] + func_name
                 header_line = header_line.rstrip()
@@ -342,14 +347,12 @@ def js_to_python(
 
     Args:
         in_file: File path of the input JavaScript.
-        out_file: File path of the output Python script. Defaults to None.
+        out_file: File path of the output Python script.
         use_qgis: Whether to add "from ee_plugin import Map" to the output script.
-            Defaults to True.
-        github_repo: GitHub repo url. Defaults to None.
-        show_map: Whether to add "Map" to the output script. Defaults to True.
+        github_repo: GitHub repo url.
+        show_map: Whether to add "Map" to the output script.
         import_geemap: Whether to add "import geemap" to the output script.
-            Defaults to False.
-        Map: The name of the map variable. Defaults to "m".
+        Map: The name of the map variable.
 
     Returns:
         Python script.
@@ -411,11 +414,11 @@ def js_to_python(
         with open(in_file, encoding="utf-8") as f:
             lines = f.readlines()
 
-            numIncorrectParameters = 0
-            checkNextLineForPrint = False
-            shouldCheckForEmptyLines = False
-            currentDictionaryScopeDepth = 0
-            currentNumOfNestedFuncs = 0
+            num_incorrect_parameters = 0
+            check_next_line_for_print = False
+            should_check_for_empty_lines = False
+            current_dictionary_scope_depth = 0
+            current_num_of_nested_funcs = 0
 
             # We need to remove all spaces from the beginning of each line to accurately
             # format the indentation.
@@ -450,20 +453,20 @@ def js_to_python(
                         ) = find_matching_bracket(lines, index, bracket_index)
 
                         if "func_" not in line:
-                            currentNumOfNestedFuncs += 1
+                            current_num_of_nested_funcs += 1
 
                             for sub_index, tmp_line in enumerate(
                                 lines[index + 1 : matching_line_index]
                             ):
                                 if "{" in tmp_line and "function" not in line:
-                                    currentNumOfNestedFuncs += 1
+                                    current_num_of_nested_funcs += 1
                                 if "}" in tmp_line and "function" not in line:
-                                    currentNumOfNestedFuncs -= 1
+                                    current_num_of_nested_funcs -= 1
                                 lines[index + 1 + sub_index] = (
-                                    "    " * currentNumOfNestedFuncs
+                                    "    " * current_num_of_nested_funcs
                                 ) + lines[index + 1 + sub_index]
 
-                            currentNumOfNestedFuncs -= 1
+                            current_num_of_nested_funcs -= 1
 
                         line = line[:bracket_index] + line[bracket_index + 1 :]
                         if matching_line_index == index:
@@ -487,6 +490,7 @@ def js_to_python(
                             "closing curly brackets appear on the same line as the "
                             "function keyword."
                         )
+                        print(e)
                         return
 
                     line = (
@@ -516,20 +520,20 @@ def js_to_python(
                         matching_char_index,
                     ) = find_matching_bracket(lines, index, bracket_index)
 
-                    currentNumOfNestedFuncs += 1
+                    current_num_of_nested_funcs += 1
 
                     for sub_index, tmp_line in enumerate(
                         lines[index + 1 : matching_line_index]
                     ):
                         lines[index + 1 + sub_index] = (
-                            "    " * currentNumOfNestedFuncs
+                            "    " * current_num_of_nested_funcs
                         ) + lines[index + 1 + sub_index]
                         if "{" in tmp_line and "if" not in line and "for" not in line:
-                            currentNumOfNestedFuncs += 1
+                            current_num_of_nested_funcs += 1
                         if "}" in tmp_line and "if" not in line and "for" not in line:
-                            currentNumOfNestedFuncs -= 1
+                            current_num_of_nested_funcs -= 1
 
-                    currentNumOfNestedFuncs -= 1
+                    current_num_of_nested_funcs -= 1
 
                     if (matching_line_index == index) and (":" in line):
                         pass
@@ -617,34 +621,34 @@ def js_to_python(
 
                 # Checks if an equal sign is at the end of a line. If so, add
                 # backslashes.
-                if shouldCheckForEmptyLines:
+                if should_check_for_empty_lines:
                     if line.strip() == "" or "#" in line:
                         if line.strip().endswith("["):
                             line = "["
-                            shouldCheckForEmptyLines = False
+                            should_check_for_empty_lines = False
                         else:
                             line = "\\"
                     else:
-                        shouldCheckForEmptyLines = False
+                        should_check_for_empty_lines = False
 
                 if line.strip().endswith("="):
                     line = line + " \\"
-                    shouldCheckForEmptyLines = True
+                    should_check_for_empty_lines = True
 
                 # Adds getInfo at the end of print statements involving maps
-                endOfPrintReplaced = False
+                end_of_print_replaced = False
 
-                if ("print(" in line and "=" not in line) or checkNextLineForPrint:
+                if ("print(" in line and "=" not in line) or check_next_line_for_print:
                     for i in range(len(line) - 1):
                         if line[len(line) - i - 1] == ")":
                             line = line[: len(line) - i - 1] + ".getInfo())"
                             # print(line)
-                            endOfPrintReplaced = True
+                            end_of_print_replaced = True
                             break
-                    if endOfPrintReplaced:
-                        checkNextLineForPrint = False
+                    if end_of_print_replaced:
+                        check_next_line_for_print = False
                     else:
-                        checkNextLineForPrint = True
+                        check_next_line_for_print = True
 
                 # Removes potential commas after imports. Causes tuple type errors.
                 if line.endswith(","):
@@ -662,22 +666,22 @@ def js_to_python(
                     and "cast" not in line
                 ):
                     line = line.rstrip()[:-1]
-                    numIncorrectParameters = numIncorrectParameters + 1
+                    num_incorrect_parameters = num_incorrect_parameters + 1
 
-                if numIncorrectParameters > 0:
+                if num_incorrect_parameters > 0:
                     if line.strip().startswith("})"):
                         line = line.replace("})", ")")
-                        numIncorrectParameters = numIncorrectParameters - 1
+                        num_incorrect_parameters = num_incorrect_parameters - 1
                     else:
-                        if currentDictionaryScopeDepth < 1:
+                        if current_dictionary_scope_depth < 1:
                             line = line.replace(": ", "=")
                             line = line.replace(":", " =")
 
                 if "= {" in line and "({" not in line:
-                    currentDictionaryScopeDepth += 1
+                    current_dictionary_scope_depth += 1
 
-                if "}" in line and currentDictionaryScopeDepth > 0:
-                    currentDictionaryScopeDepth -= 1
+                if "}" in line and current_dictionary_scope_depth > 0:
+                    current_dictionary_scope_depth -= 1
 
                 if line.endswith("+"):
                     line = line + " \\"
@@ -757,10 +761,10 @@ def js_snippet_to_py(
     Args:
         in_js_snippet: Earth Engine JavaScript within triple quotes.
         add_new_cell: Whether add the converted Python to a new cell.
-        import_ee: Whether to import ee. Defaults to True.
-        import_geemap: Whether to import geemap. Defaults to False.
-        show_map: Whether to show the map. Defaults to True.
-        Map: The name of the map variable. Defaults to "m".
+        import_ee: Whether to import ee.
+        import_geemap: Whether to import geemap.
+        show_map: Whether to show the map.
+        Map: The name of the map variable.
 
     Returns:
         A list of lines of Python script.
@@ -772,7 +776,7 @@ def js_snippet_to_py(
     # Add quotes around keys.
     in_js_snippet = re.sub(r"([a-zA-Z0-9_]+)\s*:", r'"\1":', in_js_snippet)
 
-    with open(in_js, "w") as f:
+    with open(in_js, "w", encoding="utf-8") as f:
         f.write(in_js_snippet)
     js_to_python(
         in_js,
@@ -797,7 +801,8 @@ def js_snippet_to_py(
                 next_line = lines[index + 1]
                 if line.strip() == "" and next_line.strip() == "":
                     continue
-                elif ".style(" in line and (".style(**" not in line):
+
+                if ".style(" in line and (".style(**" not in line):
                     line = line.replace(".style(", ".style(**")
                     out_lines.append(line)
                 elif "({" in line:
@@ -831,13 +836,10 @@ def js_to_python_dir(
     Args:
         in_dir: The input folder containing Earth Engine JavaScript files.
         out_dir: The output folder containing Earth Engine Python files.
-            Defaults to None.
         use_qgis: Whether to add "from ee_plugin import Map" to the output file.
-            Defaults to True.
-        github_repo: GitHub repo url. Defaults to None.
+        github_repo: GitHub repo url.
         import_geemap: Whether to add "import geemap" to the output file.
-            Defaults to False.
-        Map: The name of the map variable. Defaults to "m".
+        Map: The name of the map variable.
     """
     print("Converting Earth Engine JavaScripts to Python scripts...")
     in_dir = os.path.abspath(in_dir)
@@ -870,7 +872,7 @@ def remove_qgis_import(in_file: str, Map: str = "m") -> list[str] | None:
 
     Args:
         in_file: Input file path of the Python script.
-        Map: The name of the map variable. Defaults to "m".
+        Map: The name of the map variable.
 
     Returns:
         Lines 'from ee_plugin import Map' removed or None.
@@ -888,8 +890,8 @@ def remove_qgis_import(in_file: str, Map: str = "m") -> list[str] | None:
                     line_tmp = lines[start_index + i].strip()
                     if line_tmp != "":
                         return lines[start_index + i :]
-                    else:
-                        i = i + 1
+
+                    i = i + 1
             elif f"{Map} = geemap.Map()" in line:
                 return lines[index + 1 :]
 
@@ -898,7 +900,7 @@ def get_js_examples(out_dir: str | None = None) -> str:
     """Gets Earth Engine JavaScript examples from the geemap package.
 
     Args:
-        out_dir: The folder to copy the JavaScript examples to. Defaults to None.
+        out_dir: The folder to copy the JavaScript examples to.
 
     Returns:
         The folder containing the JavaScript examples.
@@ -928,8 +930,7 @@ def get_nb_template(
 
     Args:
         download_latest: If True, downloads the latest notebook template from GitHub.
-            Defaults to False.
-        out_file: Set the output file path of the notebook template. Defaults to None.
+        out_file: Set the output file path of the notebook template.
 
     Returns:
         File path of the template.
@@ -1017,9 +1018,9 @@ def py_to_ipynb(
         in_file: Input Earth Engine Python script.
         template_file: Input Jupyter notebook template.
         out_file: Output Jupyter notebook.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
-        Map: The name of the map variable. Defaults to "m".
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
+        Map: The name of the map variable.
     """
     in_file = os.path.abspath(in_file)
 
@@ -1097,17 +1098,16 @@ def py_to_ipynb_dir(
     Args:
         in_dir: Input folder containing Earth Engine Python scripts.
         template_file: Input jupyter notebook template file.
-        out_dir: Output folder. Defaults to None.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
-        Map: The name of the map variable. Defaults to "m".
+        out_dir: Output folder.
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
+        Map: The name of the map variable.
     """
     print("Converting Earth Engine Python scripts to Jupyter notebooks ...")
 
     in_dir = os.path.abspath(in_dir)
     files = []
     qgis_files = list(pathlib.Path(in_dir).rglob("*_geemap.py"))
-    py_files = list(pathlib.Path(in_dir).rglob("*.py"))
 
     files = qgis_files
 
@@ -1165,8 +1165,8 @@ def update_nb_header(
 
     Args:
         in_file: The input Jupyter notebook.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
     """
     if github_username is None:
         github_username = "giswqs"
@@ -1210,7 +1210,7 @@ def update_nb_header(
 
         output_lines = new_header + content
 
-        with open(in_file, "w") as f:
+        with open(in_file, "w", encoding="utf-8") as f:
             f.writelines(output_lines)
 
 
@@ -1221,8 +1221,8 @@ def update_nb_header_dir(
 
     Args:
         in_dir: The input directory containing Jupyter notebooks.
-        github_username: GitHub username. Defaults to None.
-        github_repo: GitHub repo name. Defaults to None.
+        github_username: GitHub username.
+        github_repo: GitHub repo name.
     """
     files = list(pathlib.Path(in_dir).rglob("*.ipynb"))
     for index, file in enumerate(files):
@@ -1242,7 +1242,7 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
 
     Args:
         url: The URL of the GEE App.
-        out_file: The output file path for the downloaded JavaScript. Defaults to None.
+        out_file: The output file path for the downloaded JavaScript.
     """
     cwd = os.getcwd()
     out_file_name = os.path.basename(url) + ".js"
@@ -1266,13 +1266,13 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
 
     urllib.request.urlretrieve(json_url, json_path)
 
-    with open(out_file_path, "w") as f1:
+    with open(out_file_path, "w", encoding="utf-8") as f1:
         with open(json_path, encoding="utf-8") as f2:
             lines = f2.readlines()
             for line in lines:
                 items = line.split("\\n")
                 for index, item in enumerate(items):
-                    if (index > 0) and (index < (len(items) - 1)):
+                    if 0 < index < (len(items) - 1):
                         item = item.replace('\\"', '"')
                         item = item.replace(r"\\", "\n")
                         item = item.replace("\\r", "")
@@ -1281,7 +1281,7 @@ def download_gee_app(url: str, out_file: str | None = None) -> None:
     print(f"The JavaScript is saved at: {out_file_path}")
 
 
-if __name__ == "__main__":
+def main():
     # Create a temporary working directory
     work_dir = os.path.join(os.path.expanduser("~"), "geemap")
 
@@ -1318,3 +1318,7 @@ if __name__ == "__main__":
     #                     help="Path to the output Python file")
     # args = parser.parse_args()
     # js_to_python(args.input, args.output)
+
+
+if __name__ == "__main__":
+    main()
