@@ -1,14 +1,11 @@
 import multiprocessing
-import unittest
-import os
 import pathlib
-import shutil
 import tempfile
+import unittest
 from unittest import mock
 
 try:
     import numpy as np
-    import pandas as pd
     import sklearn.ensemble
     import sklearn.tree
 
