@@ -14,7 +14,7 @@ from typing import Any
 import urllib.request
 
 import box
-import ipywidgets as widgets
+import ipywidgets
 from IPython.display import display
 
 from . import common
@@ -157,7 +157,7 @@ def get_metadata(asset_id: str, source: str = "ee") -> None:
     """
     ee_assets = common.search_ee_data(asset_id, source=source)
     html = common.ee_data_html(ee_assets[0])
-    html_widget = widgets.HTML()
+    html_widget = ipywidgets.HTML()
     html_widget.value = html
     display(html_widget)
 

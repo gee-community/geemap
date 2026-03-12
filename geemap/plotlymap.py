@@ -10,7 +10,7 @@ import os
 import shutil
 
 import box
-import ipywidgets as widgets
+import ipywidgets
 import numpy as np
 import pandas as pd
 import plotly.express as px
@@ -25,7 +25,7 @@ basemaps = xyz_to_plotly()
 
 
 class Canvas:
-    """The widgets.HBox containing the map and a toolbar."""
+    """The ipywidgets.HBox containing the map and a toolbar."""
 
     def __init__(
         self,
@@ -47,7 +47,7 @@ class Canvas:
 
         del kwargs  # Unused.
 
-        map_widget = widgets.Output(layout=widgets.Layout(width=map_max_width))
+        map_widget = ipywidgets.Output(layout=ipywidgets.Layout(width=map_max_width))
         with map_widget:
             display(map)
 
@@ -57,12 +57,12 @@ class Canvas:
         self.map_refresh = map_refresh
         self.map_widget = map_widget
 
-        container_widget = widgets.VBox()
+        container_widget = ipywidgets.VBox()
         self.container_widget = container_widget
 
         toolbar_widget = plotly_toolbar(self)
-        sidebar_widget = widgets.VBox([toolbar_widget, container_widget])
-        canvas = widgets.HBox([map_widget, sidebar_widget])
+        sidebar_widget = ipywidgets.VBox([toolbar_widget, container_widget])
+        canvas = ipywidgets.HBox([map_widget, sidebar_widget])
 
         self.canvas = canvas
         self.toolbar_widget = toolbar_widget

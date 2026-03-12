@@ -26,8 +26,7 @@ import warnings
 import ee
 import ipyleaflet
 
-# TODO: Drop the rename of ipywidgets to widgets.
-import ipywidgets as widgets
+import ipywidgets
 import numpy as np
 import pandas as pd
 import requests
@@ -732,7 +731,7 @@ class Map(core.Map):
         if hasattr(self, "_plot_widget") and self._plot_widget is not None:
             plot_widget = self._plot_widget
         else:
-            plot_widget = widgets.Output(
+            plot_widget = ipywidgets.Output(
                 layout={"border": "1px solid black", "max_width": "500px"}
             )
             plot_control = ipyleaflet.WidgetControl(
@@ -1526,7 +1525,7 @@ class Map(core.Map):
         if hasattr(self, "random_marker") and self.random_marker is not None:
             self.remove_layer(self.random_marker)
 
-        plot_widget = widgets.Output(layout={"border": "1px solid black"})
+        plot_widget = ipywidgets.Output(layout={"border": "1px solid black"})
         plot_control = ipyleaflet.WidgetControl(
             widget=plot_widget,
             position=position,
@@ -1788,8 +1787,8 @@ class Map(core.Map):
 
             if left_label is not None:
                 if widget_layout is None:
-                    widget_layout = widgets.Layout(padding="0px 4px 0px 4px")
-                left_widget = widgets.HTML(value=left_label, layout=widget_layout)
+                    widget_layout = ipywidgets.Layout(padding="0px 4px 0px 4px")
+                left_widget = ipywidgets.HTML(value=left_label, layout=widget_layout)
 
                 left_control = ipyleaflet.WidgetControl(
                     widget=left_widget, position=left_position
@@ -1798,18 +1797,18 @@ class Map(core.Map):
 
             if right_label is not None:
                 if widget_layout is None:
-                    widget_layout = widgets.Layout(padding="0px 4px 0px 4px")
-                right_widget = widgets.HTML(value=right_label, layout=widget_layout)
+                    widget_layout = ipywidgets.Layout(padding="0px 4px 0px 4px")
+                right_widget = ipywidgets.HTML(value=right_label, layout=widget_layout)
                 right_control = ipyleaflet.WidgetControl(
                     widget=right_widget, position=right_position
                 )
                 self.add(right_control)
 
-            close_button = widgets.ToggleButton(
+            close_button = ipywidgets.ToggleButton(
                 value=False,
                 tooltip="Close split-panel map",
                 icon="times",
-                layout=widgets.Layout(
+                layout=ipywidgets.Layout(
                     height="28px", width="28px", padding="0px 0px 0px 4px"
                 ),
             )
@@ -1919,8 +1918,8 @@ class Map(core.Map):
         )
 
         self.clear_controls()
-        left_dropdown = widgets.Dropdown(options=left_names, value=None)
-        right_dropdown = widgets.Dropdown(options=right_names, value=None)
+        left_dropdown = ipywidgets.Dropdown(options=left_names, value=None)
+        right_dropdown = ipywidgets.Dropdown(options=right_names, value=None)
         left_dropdown.layout.max_width = width
         right_dropdown.layout.max_width = width
 
@@ -2009,11 +2008,11 @@ class Map(core.Map):
         if right_index is not None:
             right_dropdown.value = right_names[right_index]
 
-        close_button = widgets.ToggleButton(
+        close_button = ipywidgets.ToggleButton(
             value=False,
             tooltip="Close the tool",
             icon="times",
-            layout=widgets.Layout(
+            layout=ipywidgets.Layout(
                 height="28px", width="28px", padding="0px 0px 0px 4px"
             ),
         )
@@ -2073,7 +2072,7 @@ class Map(core.Map):
         """
         from branca.colormap import LinearColormap
 
-        output = widgets.Output()
+        output = ipywidgets.Output()
         output.layout.height = height
 
         if "width" in kwargs:
@@ -2792,32 +2791,32 @@ class Map(core.Map):
                 "fillColor": random.choice(fill_colors),
             }
 
-        toolbar_button = widgets.ToggleButton(
+        toolbar_button = ipywidgets.ToggleButton(
             value=True,
             tooltip="Toolbar",
             icon="info",
-            layout=widgets.Layout(
+            layout=ipywidgets.Layout(
                 width="28px", height="28px", padding="0px 0px 0px 4px"
             ),
         )
 
-        close_button = widgets.ToggleButton(
+        close_button = ipywidgets.ToggleButton(
             value=False,
             tooltip="Close the tool",
             icon="times",
             # button_style="primary",
-            layout=widgets.Layout(
+            layout=ipywidgets.Layout(
                 height="28px", width="28px", padding="0px 0px 0px 4px"
             ),
         )
 
-        html = widgets.HTML()
+        html = ipywidgets.HTML()
         html.layout.margin = "0px 10px 0px 10px"
         html.layout.max_height = "250px"
         html.layout.max_width = "250px"
 
-        output_widget = widgets.VBox(
-            [widgets.HBox([toolbar_button, close_button]), html]
+        output_widget = ipywidgets.VBox(
+            [ipywidgets.HBox([toolbar_button, close_button]), html]
         )
         info_control = ipyleaflet.WidgetControl(
             widget=output_widget, position="bottomright"
@@ -2830,10 +2829,14 @@ class Map(core.Map):
             if change["new"]:
                 close_button.value = False
                 output_widget.children = [
-                    widgets.VBox([widgets.HBox([toolbar_button, close_button]), html])
+                    ipywidgets.VBox(
+                        [ipywidgets.HBox([toolbar_button, close_button]), html]
+                    )
                 ]
             else:
-                output_widget.children = [widgets.HBox([toolbar_button, close_button])]
+                output_widget.children = [
+                    ipywidgets.HBox([toolbar_button, close_button])
+                ]
 
         toolbar_button.observe(toolbar_btn_click, "value")
 
@@ -3589,41 +3592,41 @@ class Map(core.Map):
             self.addLayer(ee_object.toBands(), {}, layer_name, False, opacity)
         self.addLayer(first, vis_params, "Image X", True, opacity)
 
-        slider = widgets.IntSlider(
+        slider = ipywidgets.IntSlider(
             min=1,
             max=len(labels),
             readout=False,
             continuous_update=False,
-            layout=widgets.Layout(width=slider_length),
+            layout=ipywidgets.Layout(width=slider_length),
         )
-        label = widgets.Label(
-            value=labels[0], layout=widgets.Layout(padding="0px 5px 0px 5px")
+        label = ipywidgets.Label(
+            value=labels[0], layout=ipywidgets.Layout(padding="0px 5px 0px 5px")
         )
 
-        play_btn = widgets.Button(
+        play_btn = ipywidgets.Button(
             icon="play",
             tooltip="Play the time slider",
             button_style="primary",
-            layout=widgets.Layout(width="32px"),
+            layout=ipywidgets.Layout(width="32px"),
         )
 
-        pause_btn = widgets.Button(
+        pause_btn = ipywidgets.Button(
             icon="pause",
             tooltip="Pause the time slider",
             button_style="primary",
-            layout=widgets.Layout(width="32px"),
+            layout=ipywidgets.Layout(width="32px"),
         )
 
-        close_btn = widgets.Button(
+        close_btn = ipywidgets.Button(
             icon="times",
             tooltip="Close the time slider",
             button_style="primary",
-            layout=widgets.Layout(width="32px"),
+            layout=ipywidgets.Layout(width="32px"),
         )
 
-        play_chk = widgets.Checkbox(value=False)
+        play_chk = ipywidgets.Checkbox(value=False)
 
-        slider_widget = widgets.HBox([slider, label, play_btn, pause_btn, close_btn])
+        slider_widget = ipywidgets.HBox([slider, label, play_btn, pause_btn, close_btn])
 
         def play_click(b):
             del b  # Unused.
@@ -3737,7 +3740,7 @@ class Map(core.Map):
                     ipyleaflet.Marker(
                         location=point,
                         draggable=False,
-                        popup=widgets.HTML(str(labels[index])),
+                        popup=ipywidgets.HTML(str(labels[index])),
                     )
                     for index, point in enumerate(points)
                 ]
@@ -3909,7 +3912,7 @@ class Map(core.Map):
                     marker = ipyleaflet.Marker(
                         location=point,
                         draggable=False,
-                        popup=widgets.HTML(str(labels[index])),
+                        popup=ipywidgets.HTML(str(labels[index])),
                         icon=marker_icon,
                     )
                     markers.append(marker)
@@ -3951,7 +3954,7 @@ class Map(core.Map):
                     marker = ipyleaflet.Marker(
                         location=point,
                         draggable=False,
-                        popup=widgets.HTML(labels[index]),
+                        popup=ipywidgets.HTML(labels[index]),
                         icon=marker_icon,
                     )
                     markers.append(marker)
@@ -4039,7 +4042,7 @@ class Map(core.Map):
             html = ""
             for p in popup:
                 html = html + "<b>" + p + "</b>" + ": " + str(getattr(row, p)) + "<br>"
-            popup_html = widgets.HTML(html)
+            popup_html = ipywidgets.HTML(html)
 
             marker = ipyleaflet.CircleMarker(
                 location=[getattr(row, y), getattr(row, x)],
@@ -4170,7 +4173,7 @@ class Map(core.Map):
                     ipyleaflet.Marker(
                         location=point,
                         draggable=False,
-                        popup=widgets.HTML(str(labels[index])),
+                        popup=ipywidgets.HTML(str(labels[index])),
                     )
                     for index, point in enumerate(points)
                 ]
@@ -4187,7 +4190,7 @@ class Map(core.Map):
                     ipyleaflet.Marker(
                         location=point,
                         draggable=False,
-                        popup=widgets.HTML(labels[index]),
+                        popup=ipywidgets.HTML(labels[index]),
                     )
                     for index, point in enumerate(points)
                 ]
@@ -4700,7 +4703,7 @@ class Map(core.Map):
         close_button_icon: str = "times",
         widget_args: dict | None = None,
         close_button_args: dict | None = None,
-        display_widget: widgets.Widget | None = None,
+        display_widget: ipywidgets.Widget | None = None,
         **kwargs,
     ):
         """Add a widget (e.g., text, HTML, figure) to the map.
@@ -4729,11 +4732,11 @@ class Map(core.Map):
             raise Exception(f"position must be one of {allowed_positions}")
 
         if "layout" not in kwargs:
-            kwargs["layout"] = widgets.Layout(padding="0px 4px 0px 4px")
+            kwargs["layout"] = ipywidgets.Layout(padding="0px 4px 0px 4px")
         try:
             if add_header:
                 if isinstance(content, str):
-                    widget = widgets.HTML(value=content, **kwargs)
+                    widget = ipywidgets.HTML(value=content, **kwargs)
                 else:
                     widget = content
 
@@ -4751,9 +4754,9 @@ class Map(core.Map):
                 )
             else:
                 if isinstance(content, str):
-                    widget = widgets.HTML(value=content, **kwargs)
+                    widget = ipywidgets.HTML(value=content, **kwargs)
                 else:
-                    widget = widgets.Output(**kwargs)
+                    widget = ipywidgets.Output(**kwargs)
                     with widget:
                         display(content)
                 control = ipyleaflet.WidgetControl(widget=widget, position=position)
@@ -4772,11 +4775,11 @@ class Map(core.Map):
         """
         if isinstance(image, str):
             if image.startswith(("http://", "https://")):
-                image = widgets.Image(value=requests.get(image).content, **kwargs)
+                image = ipywidgets.Image(value=requests.get(image).content, **kwargs)
             elif os.path.exists(image):
                 with open(image, "rb") as f:
-                    image = widgets.Image(value=f.read(), **kwargs)
-        elif isinstance(image, widgets.Image):
+                    image = ipywidgets.Image(value=f.read(), **kwargs)
+        elif isinstance(image, ipywidgets.Image):
             pass
         else:
             raise Exception("Invalid image")
@@ -5041,7 +5044,7 @@ def linked_maps(
     Returns:
         ipywidget: A GridspecLayout widget.
     """
-    grid = widgets.GridspecLayout(rows, cols, grid_gap="0px")
+    grid = ipywidgets.GridspecLayout(rows, cols, grid_gap="0px")
     count = rows * cols
 
     maps = []
@@ -5071,7 +5074,7 @@ def linked_maps(
                 height=height,
                 lite_mode=True,
                 add_google_map=False,
-                layout=widgets.Layout(margin="0px", padding="0px"),
+                layout=ipywidgets.Layout(margin="0px", padding="0px"),
                 **kwargs,
             )
 
@@ -5079,8 +5082,8 @@ def linked_maps(
                 m.addLayer(ee_objects[index], vis_params[index], labels[index])
 
             if len(labels) > 0:
-                label = widgets.Label(
-                    labels[index], layout=widgets.Layout(padding="0px 5px 0px 5px")
+                label = ipywidgets.Label(
+                    labels[index], layout=ipywidgets.Layout(padding="0px 5px 0px 5px")
                 )
                 control = ipyleaflet.WidgetControl(
                     widget=label, position=label_position
@@ -5088,10 +5091,10 @@ def linked_maps(
                 m.add(control)
 
             maps.append(m)
-            widgets.jslink((maps[0], "center"), (m, "center"))
-            widgets.jslink((maps[0], "zoom"), (m, "zoom"))
+            ipywidgets.jslink((maps[0], "center"), (m, "center"))
+            ipywidgets.jslink((maps[0], "zoom"), (m, "zoom"))
 
-            output = widgets.Output()
+            output = ipywidgets.Output()
             with output:
                 display(m)
             grid[i, j] = output
@@ -5162,15 +5165,15 @@ def ts_inspector(
     control = ipyleaflet.SplitMapControl(left_layer=left_layer, right_layer=right_layer)
     m.add(control)
 
-    left_dropdown = widgets.Dropdown(
-        options=keys, value=left_name, layout=widgets.Layout(width=width)
+    left_dropdown = ipywidgets.Dropdown(
+        options=keys, value=left_name, layout=ipywidgets.Layout(width=width)
     )
 
     left_control = ipyleaflet.WidgetControl(widget=left_dropdown, position="topleft")
     m.add(left_control)
 
-    right_dropdown = widgets.Dropdown(
-        options=keys, value=right_name, layout=widgets.Layout(width=width)
+    right_dropdown = ipywidgets.Dropdown(
+        options=keys, value=right_name, layout=ipywidgets.Layout(width=width)
     )
 
     right_control = ipyleaflet.WidgetControl(widget=right_dropdown, position="topright")

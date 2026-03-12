@@ -13,7 +13,7 @@ import zipfile
 import box
 import ee
 import ipyleaflet
-import ipywidgets as widgets
+import ipywidgets
 from matplotlib import colors
 
 from . import colormaps
@@ -490,17 +490,17 @@ def random_string(string_length: int = 3) -> str:
 
 
 def widget_template(
-    widget: widgets.Widget | None = None,
+    widget: ipywidgets.Widget | None = None,
     opened: bool = True,
     show_close_button: bool = True,
     widget_icon: str = "gear",
     close_button_icon: str = "times",
     widget_args: dict[str, Any] | None = None,
     close_button_args: dict[str, Any] | None = None,
-    display_widget: widgets.Widget | None = None,
+    display_widget: ipywidgets.Widget | None = None,
     m: ipyleaflet.Map | None = None,
     position: str = "topright",
-) -> widgets.Widget | None:
+) -> ipywidgets.Widget | None:
     """Create a widget template.
 
     Args:
@@ -531,7 +531,7 @@ def widget_template(
     if "tooltip" not in widget_args:
         widget_args["tooltip"] = "Toolbar"
     if "layout" not in widget_args:
-        widget_args["layout"] = widgets.Layout(
+        widget_args["layout"] = ipywidgets.Layout(
             width="28px", height="28px", padding="0px 0px 0px 4px"
         )
     widget_args["icon"] = widget_icon
@@ -543,37 +543,37 @@ def widget_template(
     if "button_style" not in close_button_args:
         close_button_args["button_style"] = "primary"
     if "layout" not in close_button_args:
-        close_button_args["layout"] = widgets.Layout(
+        close_button_args["layout"] = ipywidgets.Layout(
             height="28px", width="28px", padding="0px 0px 0px 4px"
         )
     close_button_args["icon"] = close_button_icon
 
     try:
-        toolbar_button = widgets.ToggleButton(**widget_args)
+        toolbar_button = ipywidgets.ToggleButton(**widget_args)
     except:
         widget_args.pop("layout")
-        toolbar_button = widgets.ToggleButton(**widget_args)
+        toolbar_button = ipywidgets.ToggleButton(**widget_args)
         toolbar_button.layout.width = "28px"
         toolbar_button.layout.height = "28px"
         toolbar_button.layout.padding = "0px 0px 0px 4px"
 
     try:
-        close_button = widgets.ToggleButton(**close_button_args)
+        close_button = ipywidgets.ToggleButton(**close_button_args)
     except:
         close_button_args.pop("layout")
-        close_button = widgets.ToggleButton(**close_button_args)
+        close_button = ipywidgets.ToggleButton(**close_button_args)
         close_button.layout.width = "28px"
         close_button.layout.height = "28px"
         close_button.layout.padding = "0px 0px 0px 4px"
 
-    toolbar_widget = widgets.VBox()
+    toolbar_widget = ipywidgets.VBox()
     toolbar_widget.children = [toolbar_button]
-    toolbar_header = widgets.HBox()
+    toolbar_header = ipywidgets.HBox()
     if show_close_button:
         toolbar_header.children = [close_button, toolbar_button]
     else:
         toolbar_header.children = [toolbar_button]
-    toolbar_footer = widgets.VBox()
+    toolbar_footer = ipywidgets.VBox()
 
     if widget is not None:
         toolbar_footer.children = [
