@@ -11,7 +11,7 @@ from typing import Any
 import ee
 import bqplot as bq
 from bqplot import pyplot as plt
-import ipywidgets as widgets
+import ipywidgets
 import numpy as np
 import pandas as pd
 from IPython.display import display
@@ -425,10 +425,10 @@ class Chart:
                         **kwargs,
                     )
                 elif chart_type == "Table":
-                    output = widgets.Output(**kwargs)
+                    output = ipywidgets.Output(**kwargs)
                     with output:
                         display(self.data_table)
-                    output.layout = widgets.Layout(width="50%")
+                    output.layout = ipywidgets.Layout(width="50%")
                     display(output)
                 else:
                     self.chart = plt.plot(

@@ -44,7 +44,7 @@ import ee
 from IPython.display import display, HTML, IFrame, Javascript
 from IPython.display import YouTubeVideo
 import ipyleaflet
-import ipywidgets as widgets
+import ipywidgets
 import matplotlib as mpl
 import matplotlib.font_manager
 import matplotlib.pyplot as plt
@@ -1876,7 +1876,7 @@ def show_image(img_path: str, width: int | None = None, height: int | None = Non
         height: Height of the image in pixels. Defaults to None.
     """
     try:
-        out = widgets.Output()
+        out = ipywidgets.Output()
         out.outputs = ()
         display(out)
         with out:
@@ -1889,9 +1889,9 @@ def show_image(img_path: str, width: int | None = None, height: int | None = Non
             file = open(file_path, "rb")
             image = file.read()
             if (width is None) and (height is None):
-                display(widgets.Image(value=image))
+                display(ipywidgets.Image(value=image))
             elif (width is not None) and (height is not None):
-                display(widgets.Image(value=image, width=width, height=height))
+                display(ipywidgets.Image(value=image, width=width, height=height))
             else:
                 print("You need set both width and height.")
                 return
@@ -1899,7 +1899,7 @@ def show_image(img_path: str, width: int | None = None, height: int | None = Non
         print(e)
 
 
-def show_html(html: str) -> widgets.HTML:
+def show_html(html: str) -> ipywidgets.HTML:
     """Shows HTML within Jupyter notebook.
 
     Args:
@@ -1915,9 +1915,9 @@ def show_html(html: str) -> widgets.HTML:
         with open(html) as f:
             content = f.read()
 
-        return widgets.HTML(value=content)
+        return ipywidgets.HTML(value=content)
 
-    return widgets.HTML(value=html)
+    return ipywidgets.HTML(value=html)
 
 
 def has_transparency(img) -> bool:
@@ -3232,7 +3232,7 @@ def show_youtube(id="h0pz3S6Tvx0"):
         id = id.split("/")[-1]
 
     try:
-        out = widgets.Output(layout={"width": "815px"})
+        out = ipywidgets.Output(layout={"width": "815px"})
         out.outputs = ()
         display(out)
         with out:
@@ -4214,7 +4214,7 @@ def build_api_tree(api_dict: dict, output_widget, layout_width: str = "100%"):
 
             with output_widget:
                 output_widget.outputs = ()
-                html_widget = widgets.HTML(value=values["html"])
+                html_widget = ipywidgets.HTML(value=values["html"])
                 display(html_widget)
 
     for name in names:
@@ -4302,7 +4302,7 @@ def ee_search(asset_limit: int = 100):
 
     flags = Flags()
 
-    search_type = widgets.ToggleButtons(
+    search_type = ipywidgets.ToggleButtons(
         options=["Scripts", "Docs", "Assets"],
         tooltips=[
             "Search Earth Engine Scripts",
@@ -4313,17 +4313,17 @@ def ee_search(asset_limit: int = 100):
     )
     search_type.style.button_width = "100px"
 
-    search_box = widgets.Text(placeholder="Filter scripts...", value="Loading...")
+    search_box = ipywidgets.Text(placeholder="Filter scripts...", value="Loading...")
     search_box.layout.width = "310px"
 
-    tree_widget = widgets.Output()
+    tree_widget = ipywidgets.Output()
 
-    left_widget = widgets.VBox()
-    right_widget = widgets.VBox()
-    output_widget = widgets.Output()
+    left_widget = ipywidgets.VBox()
+    right_widget = ipywidgets.VBox()
+    output_widget = ipywidgets.Output()
     output_widget.layout.max_width = "650px"
 
-    search_widget = widgets.HBox()
+    search_widget = ipywidgets.HBox()
     search_widget.children = [left_widget, right_widget]
     display(search_widget)
 
@@ -4444,9 +4444,9 @@ def build_asset_tree(limit: int = 100):
         "IMAGE_COLLECTION": "file",
     }
 
-    info_widget = widgets.HBox()
+    info_widget = ipywidgets.HBox()
 
-    import_btn = widgets.Button(
+    import_btn = ipywidgets.Button(
         description="import",
         button_style="primary",
         tooltip="Click to import the selected asset",
@@ -4455,7 +4455,7 @@ def build_asset_tree(limit: int = 100):
     import_btn.layout.min_width = "57px"
     import_btn.layout.max_width = "57px"
 
-    path_widget = widgets.Text()
+    path_widget = ipywidgets.Text()
     path_widget.layout.min_width = "500px"
     # path_widget.disabled = True
 
@@ -4577,14 +4577,16 @@ def build_repo_tree(out_dir: str | None = None, name: str = "gee_repos"):
     if user_id is not None:
         URLs["Owner"] = f"https://earthengine.googlesource.com/{ee_user_id()}/default"
 
-    path_widget = widgets.Text(placeholder="Enter the link to a Git repository here...")
+    path_widget = ipywidgets.Text(
+        placeholder="Enter the link to a Git repository here..."
+    )
     path_widget.layout.width = "475px"
-    clone_widget = widgets.Button(
+    clone_widget = ipywidgets.Button(
         description="Clone",
         button_style="primary",
         tooltip="Clone the repository to folder.",
     )
-    info_widget = widgets.HBox()
+    info_widget = ipywidgets.HBox()
 
     groups = ["Owner", "Writer", "Reader", "Examples", "Archive"]
     for group in groups:
@@ -4702,33 +4704,33 @@ def file_browser(
     if in_dir.endswith(sep):
         in_dir = in_dir[:-1]
 
-    full_widget = widgets.HBox()
-    left_widget = widgets.VBox()
+    full_widget = ipywidgets.HBox()
+    left_widget = ipywidgets.VBox()
 
-    right_widget = widgets.VBox()
+    right_widget = ipywidgets.VBox()
 
-    import_btn = widgets.Button(
+    import_btn = ipywidgets.Button(
         description="import",
         button_style="primary",
         tooltip="import the content to a new cell",
         disabled=True,
     )
     import_btn.layout.width = "70px"
-    path_widget = widgets.Text()
+    path_widget = ipywidgets.Text()
     path_widget.layout.min_width = "400px"
     # path_widget.layout.max_width = '400px'
-    save_widget = widgets.Button(
+    save_widget = ipywidgets.Button(
         description="Save",
         button_style="primary",
         tooltip="Save edits to file.",
         disabled=True,
     )
-    info_widget = widgets.HBox()
+    info_widget = ipywidgets.HBox()
     info_widget.children = [path_widget, save_widget]
     if use_import:
         info_widget.children = [import_btn, path_widget, save_widget]
 
-    text_widget = widgets.Textarea()
+    text_widget = ipywidgets.Textarea()
     text_widget.layout.width = "630px"
     text_widget.layout.height = "600px"
 
@@ -4737,9 +4739,9 @@ def file_browser(
 
     if search_description is None:
         search_description = "Search files/folders..."
-    search_box = widgets.Text(placeholder=search_description)
+    search_box = ipywidgets.Text(placeholder=search_description)
     search_box.layout.width = "310px"
-    tree_widget = widgets.Output()
+    tree_widget = ipywidgets.Output()
     tree_widget.layout.max_width = "310px"
     tree_widget.overflow = "auto"
 
@@ -10376,7 +10378,7 @@ def get_local_tile_layer(
         tile_client = source
 
     if quiet:
-        output = widgets.Output()
+        output = ipywidgets.Output()
         with output:
             if tile_format == "ipyleaflet":
                 tile_layer = get_leaflet_tile_layer(
@@ -14659,7 +14661,7 @@ def create_grid(
 
 
 def jslink_slider_label(
-    slider: widgets.IntSlider | widgets.FloatSlider, label: widgets.Label
+    slider: ipywidgets.IntSlider | ipywidgets.FloatSlider, label: ipywidgets.Label
 ) -> None:
     """Link a slider and a label."""
 
