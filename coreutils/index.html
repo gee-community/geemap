@@ -10386,17 +10386,17 @@ for Blue, and it ranges from the decimal value of 0 – 255.</p>
 <span class="normal">620</span>
 <span class="normal">621</span>
 <span class="normal">622</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">widget_template</span><span class="p">(</span>
-    <span class="n">widget</span><span class="p">:</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">widget</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">opened</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">show_close_button</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
     <span class="n">widget_icon</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;gear&quot;</span><span class="p">,</span>
     <span class="n">close_button_icon</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;times&quot;</span><span class="p">,</span>
     <span class="n">widget_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">close_button_args</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
-    <span class="n">display_widget</span><span class="p">:</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="n">display_widget</span><span class="p">:</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">m</span><span class="p">:</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Map</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;topright&quot;</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a widget template.</span>
 
 <span class="sd">    Args:</span>
@@ -10427,7 +10427,7 @@ for Blue, and it ranges from the decimal value of 0 – 255.</p>
     <span class="k">if</span> <span class="s2">&quot;tooltip&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">widget_args</span><span class="p">:</span>
         <span class="n">widget_args</span><span class="p">[</span><span class="s2">&quot;tooltip&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;Toolbar&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;layout&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">widget_args</span><span class="p">:</span>
-        <span class="n">widget_args</span><span class="p">[</span><span class="s2">&quot;layout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">widget_args</span><span class="p">[</span><span class="s2">&quot;layout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
             <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
         <span class="p">)</span>
     <span class="n">widget_args</span><span class="p">[</span><span class="s2">&quot;icon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">widget_icon</span>
@@ -10439,37 +10439,37 @@ for Blue, and it ranges from the decimal value of 0 – 255.</p>
     <span class="k">if</span> <span class="s2">&quot;button_style&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">close_button_args</span><span class="p">:</span>
         <span class="n">close_button_args</span><span class="p">[</span><span class="s2">&quot;button_style&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;primary&quot;</span>
     <span class="k">if</span> <span class="s2">&quot;layout&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">close_button_args</span><span class="p">:</span>
-        <span class="n">close_button_args</span><span class="p">[</span><span class="s2">&quot;layout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
+        <span class="n">close_button_args</span><span class="p">[</span><span class="s2">&quot;layout&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span>
             <span class="n">height</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;28px&quot;</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="s2">&quot;0px 0px 0px 4px&quot;</span>
         <span class="p">)</span>
     <span class="n">close_button_args</span><span class="p">[</span><span class="s2">&quot;icon&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">close_button_icon</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">widget_args</span><span class="p">)</span>
+        <span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">widget_args</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">widget_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;layout&quot;</span><span class="p">)</span>
-        <span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">widget_args</span><span class="p">)</span>
+        <span class="n">toolbar_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">widget_args</span><span class="p">)</span>
         <span class="n">toolbar_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;28px&quot;</span>
         <span class="n">toolbar_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="s2">&quot;28px&quot;</span>
         <span class="n">toolbar_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;0px 0px 0px 4px&quot;</span>
 
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">close_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">close_button_args</span><span class="p">)</span>
+        <span class="n">close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">close_button_args</span><span class="p">)</span>
     <span class="k">except</span><span class="p">:</span>
         <span class="n">close_button_args</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;layout&quot;</span><span class="p">)</span>
-        <span class="n">close_button</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">close_button_args</span><span class="p">)</span>
+        <span class="n">close_button</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">ToggleButton</span><span class="p">(</span><span class="o">**</span><span class="n">close_button_args</span><span class="p">)</span>
         <span class="n">close_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">width</span> <span class="o">=</span> <span class="s2">&quot;28px&quot;</span>
         <span class="n">close_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">height</span> <span class="o">=</span> <span class="s2">&quot;28px&quot;</span>
         <span class="n">close_button</span><span class="o">.</span><span class="n">layout</span><span class="o">.</span><span class="n">padding</span> <span class="o">=</span> <span class="s2">&quot;0px 0px 0px 4px&quot;</span>
 
-    <span class="n">toolbar_widget</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
+    <span class="n">toolbar_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
     <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_button</span><span class="p">]</span>
-    <span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
+    <span class="n">toolbar_header</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">show_close_button</span><span class="p">:</span>
         <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">close_button</span><span class="p">,</span> <span class="n">toolbar_button</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">toolbar_button</span><span class="p">]</span>
-    <span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
+    <span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">widget</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>

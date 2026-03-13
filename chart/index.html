@@ -9777,10 +9777,10 @@
                         <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                     <span class="p">)</span>
                 <span class="k">elif</span> <span class="n">chart_type</span> <span class="o">==</span> <span class="s2">&quot;Table&quot;</span><span class="p">:</span>
-                    <span class="n">output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                     <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                         <span class="n">display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="p">)</span>
-                    <span class="n">output</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;50%&quot;</span><span class="p">)</span>
+                    <span class="n">output</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;50%&quot;</span><span class="p">)</span>
                     <span class="n">display</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="bp">self</span><span class="o">.</span><span class="n">chart</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
@@ -10731,10 +10731,10 @@ or mark objects.</p>
                     <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="k">elif</span> <span class="n">chart_type</span> <span class="o">==</span> <span class="s2">&quot;Table&quot;</span><span class="p">:</span>
-                <span class="n">output</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
                 <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                     <span class="n">display</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data_table</span><span class="p">)</span>
-                <span class="n">output</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;50%&quot;</span><span class="p">)</span>
+                <span class="n">output</span><span class="o">.</span><span class="n">layout</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;50%&quot;</span><span class="p">)</span>
                 <span class="n">display</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">chart</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
