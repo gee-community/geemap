@@ -15146,7 +15146,7 @@ def xarray_to_raster(dataset, filename: str, **kwargs) -> None:
 
     dims = list(dataset.dims)
 
-    new_names: dict[str:str] = {}
+    new_names: dict[str, str] = {}
 
     if "lat" in dims:
         new_names["lat"] = "y"
