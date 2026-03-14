@@ -17,6 +17,7 @@ import ipywidgets as widgets
 import numpy as np
 import pandas as pd
 import requests
+import xarray as xr
 import xyzservices
 
 from maplibre.basemaps import background
@@ -1102,8 +1103,6 @@ class Map(MapWidget):
             client_args (dict, optional): Additional arguments to pass to
                 localtileserver.TileClient. Defaults to { "cors_all": False }.
         """
-        import xarray as xr
-
         if isinstance(source, (np.ndarray, xr.DataArray)):
             source = array_to_image(source, **array_args)
 

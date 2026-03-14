@@ -53,6 +53,7 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import requests
+import xarray as xr
 
 from . import colormaps
 from . import coreutils
@@ -2784,7 +2785,6 @@ def netcdf_to_ee(nc_file, var_names, band_names=None, lon="lon", lat="lat", deci
     Returns:
         image: An ee.Image
     """
-    import xarray as xr
 
     def most_common_value(lst):
         counter = collections.Counter(lst)
@@ -3042,7 +3042,6 @@ def ee_to_xarray(
     Returns:
       An xarray.Dataset that streams in remote data from Earth Engine.
     """
-    import xarray as xr
     import xee
 
     kwargs["drop_variables"] = drop_variables
@@ -11534,8 +11533,6 @@ def netcdf_to_tif(
         FileNotFoundError: If the netcdf file is not found.
         ValueError: If the variable is not found in the netcdf file.
     """
-    import xarray as xr
-
     if filename.startswith(("http://", "https://")):
         filename = coreutils.download_file(filename)
 
@@ -11586,8 +11583,6 @@ def read_netcdf(filename, **kwargs):
     Returns:
         xarray.Dataset: The netcdf file as an xarray dataset.
     """
-    import xarray as xr
-
     if filename.startswith(("http://", "https://")):
         filename = coreutils.download_file(filename)
 
@@ -11643,8 +11638,6 @@ def netcdf_tile_layer(
     Returns:
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
-    import xarray as xr
-
     if filename.startswith(("http://", "https://")):
         filename = coreutils.download_file(filename)
 
@@ -12598,11 +12591,10 @@ def plot_raster(
 
     import pvxarray
     import rioxarray
-    import xarray
 
     if isinstance(image, str):
         da = rioxarray.open_rasterio(image, **open_kwargs)
-    elif isinstance(image, xarray.DataArray):
+    elif isinstance(image, xr.DataArray):
         da = image
     else:
         raise ValueError("image must be a string or xarray.Dataset.")
@@ -12659,7 +12651,6 @@ def plot_raster_3d(
     import pvxarray
     import pyvista
     import rioxarray
-    import xarray
 
     open_kwargs = open_kwargs or {}
     mesh_kwargs = mesh_kwargs or {}
@@ -12669,7 +12660,7 @@ def plot_raster_3d(
 
     if isinstance(image, str):
         da = rioxarray.open_rasterio(image, **open_kwargs)
-    elif isinstance(image, xarray.DataArray):
+    elif isinstance(image, xr.DataArray):
         da = image
     else:
         raise ValueError("image must be a string or xarray.Dataset.")
@@ -14991,7 +14982,6 @@ def array_to_image(
         **kwargs: Additional keyword arguments to be passed to the rasterio.open() function.
     """
     import rasterio
-    import xarray as xr
 
     if output is None:
         return array_to_memory_file(

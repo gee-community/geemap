@@ -42,6 +42,7 @@ dependencies = [
     "python-box",
     "requests",
     "scooby",
+    "xarray",
 ]
 
 [project.scripts]
@@ -139,7 +140,6 @@ maplibre = [
     "maplibre",
     "pmtiles",
     "rioxarray",
-    "xarray",
 ]
 
 [tool]

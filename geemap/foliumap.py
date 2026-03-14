@@ -27,6 +27,7 @@ from matplotlib import figure
 import numpy as np
 import pandas as pd
 import requests
+import xarray as xr
 
 from . import basemaps
 from . import common
@@ -707,8 +708,6 @@ class Map(folium.Map):
             array_args: Additional arguments to pass to `array_to_image`.
                 Defaults to {}.
         """
-        import xarray as xr
-
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):

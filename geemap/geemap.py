@@ -23,16 +23,15 @@ import time
 from typing import Any
 import warnings
 
+import box
+from bqplot import pyplot as plt
 import ee
 import ipyleaflet
-
 import ipywidgets
 import numpy as np
 import pandas as pd
 import requests
-
-import box
-from bqplot import pyplot as plt
+import xarray as xr
 
 from IPython.display import display
 from .basemaps import get_xyz_dict, xyz_to_leaflet
@@ -2475,8 +2474,6 @@ class Map(core.Map):
             visible: Whether the layer is visible. Defaults to True.
             array_args: Additional arguments to pass to `array_to_memory_file` when reading the raster. Defaults to {}.
         """
-        import xarray as xr
-
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
@@ -4517,8 +4514,6 @@ class Map(core.Map):
             ImportError: If the xarray package is not installed.
             ValueError: If the data is not a NetCDF file or an xarray Dataset.
         """
-        import xarray as xr
-
         display_options = display_options or {}
 
         # Velocity depends on traittypes Dataset that needs xarray.
