@@ -24,3 +24,4 @@ dependencies:
     - requests
     - rio-cogeo
     - tifffile
+    - xarray
