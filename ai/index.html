@@ -11918,7 +11918,13 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/ai.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2093</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2087</span>
+<span class="normal">2088</span>
+<span class="normal">2089</span>
+<span class="normal">2090</span>
+<span class="normal">2091</span>
+<span class="normal">2092</span>
+<span class="normal">2093</span>
 <span class="normal">2094</span>
 <span class="normal">2095</span>
 <span class="normal">2096</span>
@@ -12053,13 +12059,7 @@ Credit to the original author Renee Johnston (<a href="https://github.com/raj020
 <span class="normal">2225</span>
 <span class="normal">2226</span>
 <span class="normal">2227</span>
-<span class="normal">2228</span>
-<span class="normal">2229</span>
-<span class="normal">2230</span>
-<span class="normal">2231</span>
-<span class="normal">2232</span>
-<span class="normal">2233</span>
-<span class="normal">2234</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetExplorer</span><span class="p">:</span>
+<span class="normal">2228</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetExplorer</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A widget for exploring Earth Engine datasets.</span>
 
 <span class="sd">    The DataExplorer class source code is adapted from &lt;https://bit.ly/48cE24D&gt;.</span>
@@ -12329,7 +12329,13 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2100</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2094</span>
+<span class="normal">2095</span>
+<span class="normal">2096</span>
+<span class="normal">2097</span>
+<span class="normal">2098</span>
+<span class="normal">2099</span>
+<span class="normal">2100</span>
 <span class="normal">2101</span>
 <span class="normal">2102</span>
 <span class="normal">2103</span>
@@ -12392,13 +12398,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2160</span>
 <span class="normal">2161</span>
 <span class="normal">2162</span>
-<span class="normal">2163</span>
-<span class="normal">2164</span>
-<span class="normal">2165</span>
-<span class="normal">2166</span>
-<span class="normal">2167</span>
-<span class="normal">2168</span>
-<span class="normal">2169</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">2163</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">project_id</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GOOGLE_PROJECT_ID&quot;</span><span class="p">,</span>
     <span class="n">google_api_key</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;GOOGLE_API_KEY&quot;</span><span class="p">,</span>
@@ -12559,7 +12559,13 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2171</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2165</span>
+<span class="normal">2166</span>
+<span class="normal">2167</span>
+<span class="normal">2168</span>
+<span class="normal">2169</span>
+<span class="normal">2170</span>
+<span class="normal">2171</span>
 <span class="normal">2172</span>
 <span class="normal">2173</span>
 <span class="normal">2174</span>
@@ -12616,13 +12622,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2225</span>
 <span class="normal">2226</span>
 <span class="normal">2227</span>
-<span class="normal">2228</span>
-<span class="normal">2229</span>
-<span class="normal">2230</span>
-<span class="normal">2231</span>
-<span class="normal">2232</span>
-<span class="normal">2233</span>
-<span class="normal">2234</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">:</span>
+<span class="normal">2228</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">show</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">query</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Displays a query interface for searching datasets.</span>
 
 <span class="sd">    Args:</span>
@@ -13039,13 +13039,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2081</span>
 <span class="normal">2082</span>
 <span class="normal">2083</span>
-<span class="normal">2084</span>
-<span class="normal">2085</span>
-<span class="normal">2086</span>
-<span class="normal">2087</span>
-<span class="normal">2088</span>
-<span class="normal">2089</span>
-<span class="normal">2090</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetSearchInterface</span><span class="p">:</span>
+<span class="normal">2084</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">DatasetSearchInterface</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Interface for searching and displaying Earth Engine datasets.&quot;&quot;&quot;</span>
 
     <span class="n">collections</span><span class="p">:</span> <span class="n">CollectionList</span>
@@ -13151,80 +13145,78 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
         <span class="c1"># @title CSS</span>
         <span class="c1"># Custom CSS for Material Design styling with enhanced table styling, chat panel, and debug panel</span>
-        <span class="n">CSS</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">css</span><span class="p">(</span>
-<span class="w">            </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">        @import url(&#39;https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap&#39;);</span>
+        <span class="n">CSS</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">        @import url(&#39;https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap&#39;);</span>
 
-<span class="sd">        body {</span>
-<span class="sd">            font-family: &#39;Roboto&#39;, sans-serif;</span>
-<span class="sd">            margin: 0;</span>
-<span class="sd">            padding: 0;</span>
-<span class="sd">        }</span>
+<span class="s2">        body {</span>
+<span class="s2">            font-family: &#39;Roboto&#39;, sans-serif;</span>
+<span class="s2">            margin: 0;</span>
+<span class="s2">            padding: 0;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        .main-title {</span>
-<span class="sd">            font-size: 24px;</span>
-<span class="sd">            font-weight: 500;</span>
-<span class="sd">            color: #212121;</span>
-<span class="sd">            margin-bottom: 16px;</span>
-<span class="sd">        }</span>
+<span class="s2">        .main-title {</span>
+<span class="s2">            font-size: 24px;</span>
+<span class="s2">            font-weight: 500;</span>
+<span class="s2">            color: #212121;</span>
+<span class="s2">            margin-bottom: 16px;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        .custom-title {</span>
-<span class="sd">            font-size: 18px;</span>
-<span class="sd">            font-weight: 500;</span>
-<span class="sd">            color: #212121;</span>
-<span class="sd">            margin-bottom: 12px;</span>
-<span class="sd">        }</span>
+<span class="s2">        .custom-title {</span>
+<span class="s2">            font-size: 18px;</span>
+<span class="s2">            font-weight: 500;</span>
+<span class="s2">            color: #212121;</span>
+<span class="s2">            margin-bottom: 12px;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        .details-text {</span>
-<span class="sd">            font-size: 14px;</span>
-<span class="sd">            color: #616161;</span>
-<span class="sd">            line-height: 1.5;</span>
-<span class="sd">        }</span>
+<span class="s2">        .details-text {</span>
+<span class="s2">            font-size: 14px;</span>
+<span class="s2">            color: #616161;</span>
+<span class="s2">            line-height: 1.5;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        .custom-table {</span>
-<span class="sd">            width: 100%;</span>
-<span class="sd">            border-collapse: collapse;</span>
-<span class="sd">            margin-bottom: 24px;</span>
-<span class="sd">            font-family: &#39;Roboto&#39;, sans-serif;</span>
-<span class="sd">        }</span>
-<span class="sd">        .custom-table th, .custom-table td {</span>
-<span class="sd">            text-align: left;</span>
-<span class="sd">            padding: 12px;</span>
-<span class="sd">            border-bottom: 1px solid #E0E0E0;</span>
-<span class="sd">        }</span>
-<span class="sd">        .custom-table th {</span>
-<span class="sd">            background-color: #F5F5F5;</span>
-<span class="sd">            font-weight: 500;</span>
-<span class="sd">            color: #212121;</span>
-<span class="sd">        }</span>
-<span class="sd">        .custom-table tr:hover {</span>
-<span class="sd">            background-color: #E3F2FD;</span>
-<span class="sd">        }</span>
-<span class="sd">        .custom-table tr.selected {</span>
-<span class="sd">            background-color: #BBDEFB;</span>
-<span class="sd">        }</span>
+<span class="s2">        .custom-table {</span>
+<span class="s2">            width: 100%;</span>
+<span class="s2">            border-collapse: collapse;</span>
+<span class="s2">            margin-bottom: 24px;</span>
+<span class="s2">            font-family: &#39;Roboto&#39;, sans-serif;</span>
+<span class="s2">        }</span>
+<span class="s2">        .custom-table th, .custom-table td {</span>
+<span class="s2">            text-align: left;</span>
+<span class="s2">            padding: 12px;</span>
+<span class="s2">            border-bottom: 1px solid #E0E0E0;</span>
+<span class="s2">        }</span>
+<span class="s2">        .custom-table th {</span>
+<span class="s2">            background-color: #F5F5F5;</span>
+<span class="s2">            font-weight: 500;</span>
+<span class="s2">            color: #212121;</span>
+<span class="s2">        }</span>
+<span class="s2">        .custom-table tr:hover {</span>
+<span class="s2">            background-color: #E3F2FD;</span>
+<span class="s2">        }</span>
+<span class="s2">        .custom-table tr.selected {</span>
+<span class="s2">            background-color: #BBDEFB;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        /* Ensure borders are visible */</span>
-<span class="sd">        .jupyter-widgets.widget-box {</span>
-<span class="sd">            border: 1px solid #E0E0E0 !important;</span>
-<span class="sd">            overflow: auto;</span>
-<span class="sd">        }</span>
+<span class="s2">        /* Ensure borders are visible */</span>
+<span class="s2">        .jupyter-widgets.widget-box {</span>
+<span class="s2">            border: 1px solid #E0E0E0 !important;</span>
+<span class="s2">            overflow: auto;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        /* Make the map span full width */</span>
-<span class="sd">        .geemap-container {</span>
-<span class="sd">            width: 100% !important;</span>
-<span class="sd">            height: 600px !important;</span>
-<span class="sd">        }</span>
+<span class="s2">        /* Make the map span full width */</span>
+<span class="s2">        .geemap-container {</span>
+<span class="s2">            width: 100% !important;</span>
+<span class="s2">            height: 600px !important;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        # Disable table clicks while things are loading</span>
-<span class="sd">        .disabled {</span>
-<span class="sd">        pointer-events: none;</span>
-<span class="sd">        /* You might also want to visually indicate the disabled state */</span>
-<span class="sd">        opacity: 0.5;</span>
-<span class="sd">        cursor: default;</span>
-<span class="sd">        }</span>
-<span class="sd">        &quot;&quot;&quot;</span>
-        <span class="p">)</span>
+<span class="s2">        # Disable table clicks while things are loading</span>
+<span class="s2">        .disabled {</span>
+<span class="s2">        pointer-events: none;</span>
+<span class="s2">        /* You might also want to visually indicate the disabled state */</span>
+<span class="s2">        opacity: 0.5;</span>
+<span class="s2">        cursor: default;</span>
+<span class="s2">        }</span>
+<span class="s2">        &quot;&quot;&quot;</span><span class="p">)</span>
 
         <span class="c1"># Display the widget</span>
         <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;&quot;</span><span class="p">))</span>
@@ -13324,47 +13316,43 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="sd">        Returns:</span>
 <span class="sd">            The JavaScript code as a string.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span>
-            <span class="n">syntax</span><span class="o">.</span><span class="n">javascript</span><span class="p">(</span>
-<span class="w">                </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    function initializeTableInteraction() {</span>
-<span class="sd">        const table = document.querySelector(&#39;.custom-table&#39;);</span>
-<span class="sd">        if (!table) {</span>
-<span class="sd">            console.error(&#39;Table not found&#39;);</span>
-<span class="sd">            return;</span>
-<span class="sd">        }</span>
+        <span class="k">return</span> <span class="n">Template</span><span class="p">(</span><span class="n">syntax</span><span class="o">.</span><span class="n">javascript</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    function initializeTableInteraction() {</span>
+<span class="s2">        const table = document.querySelector(&#39;.custom-table&#39;);</span>
+<span class="s2">        if (!table) {</span>
+<span class="s2">            console.error(&#39;Table not found&#39;);</span>
+<span class="s2">            return;</span>
+<span class="s2">        }</span>
 
-<span class="sd">        function selectRow(row) {</span>
-<span class="sd">            // Remove selection from previously selected row</span>
-<span class="sd">            const prevSelected = table.querySelector(&#39;tr.selected&#39;);</span>
-<span class="sd">            if (prevSelected) prevSelected.classList.remove(&#39;selected&#39;);</span>
+<span class="s2">        function selectRow(row) {</span>
+<span class="s2">            // Remove selection from previously selected row</span>
+<span class="s2">            const prevSelected = table.querySelector(&#39;tr.selected&#39;);</span>
+<span class="s2">            if (prevSelected) prevSelected.classList.remove(&#39;selected&#39;);</span>
 
-<span class="sd">            // Add selection to the new row</span>
-<span class="sd">            row.classList.add(&#39;selected&#39;);</span>
-<span class="sd">            const selectedDataset = row.dataset.dataset;</span>
-<span class="sd">            console.log(&#39;Selected dataset:&#39;, selectedDataset);</span>
-<span class="sd">            google.colab.kernel.invokeFunction(&#39;{{callback_id}}&#39;, [selectedDataset], {});</span>
+<span class="s2">            // Add selection to the new row</span>
+<span class="s2">            row.classList.add(&#39;selected&#39;);</span>
+<span class="s2">            const selectedDataset = row.dataset.dataset;</span>
+<span class="s2">            console.log(&#39;Selected dataset:&#39;, selectedDataset);</span>
+<span class="s2">            google.colab.kernel.invokeFunction(&#39;{{callback_id}}&#39;, [selectedDataset], </span><span class="si">{}</span><span class="s2">);</span>
 
-<span class="sd">        }</span>
+<span class="s2">        }</span>
 
-<span class="sd">        table.addEventListener(&#39;click&#39;, (event) =&gt; {</span>
-<span class="sd">            const row = event.target.closest(&#39;tr&#39;);</span>
-<span class="sd">            if (!row || !row.dataset.dataset) return;</span>
-<span class="sd">            selectRow(row);</span>
-<span class="sd">        });</span>
+<span class="s2">        table.addEventListener(&#39;click&#39;, (event) =&gt; {</span>
+<span class="s2">            const row = event.target.closest(&#39;tr&#39;);</span>
+<span class="s2">            if (!row || !row.dataset.dataset) return;</span>
+<span class="s2">            selectRow(row);</span>
+<span class="s2">        });</span>
 
-<span class="sd">        // Select the first row by default</span>
-<span class="sd">        const firstRow = table.querySelector(&#39;tr[data-dataset]&#39;);</span>
-<span class="sd">        if (firstRow) {</span>
-<span class="sd">            selectRow(firstRow);</span>
-<span class="sd">        }</span>
-<span class="sd">    }</span>
+<span class="s2">        // Select the first row by default</span>
+<span class="s2">        const firstRow = table.querySelector(&#39;tr[data-dataset]&#39;);</span>
+<span class="s2">        if (firstRow) {</span>
+<span class="s2">            selectRow(firstRow);</span>
+<span class="s2">        }</span>
+<span class="s2">    }</span>
 
-<span class="sd">    // Run the initialization function after a short delay to ensure the DOM is ready</span>
-<span class="sd">    setTimeout(initializeTableInteraction, 1000);</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-            <span class="p">)</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">callback_id</span><span class="o">=</span><span class="n">callback_id</span><span class="p">)</span>
+<span class="s2">    // Run the initialization function after a short delay to ensure the DOM is ready</span>
+<span class="s2">    setTimeout(initializeTableInteraction, 1000);</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">))</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">callback_id</span><span class="o">=</span><span class="n">callback_id</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
 
@@ -13659,9 +13647,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">1950</span>
 <span class="normal">1951</span>
 <span class="normal">1952</span>
-<span class="normal">1953</span>
-<span class="normal">1954</span>
-<span class="normal">1955</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="normal">1953</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">display</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Display the UI in the cell.&quot;&quot;&quot;</span>
     <span class="c1"># Create title and description with Material Design styling</span>
     <span class="c1"># title = ipywidgets.HTML(value=&#39;&lt;h2 class=&quot;main-title&quot;&gt;Earth Engine Dataset Explorer&lt;/h2&gt;&#39;)</span>
@@ -13723,80 +13709,78 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
     <span class="c1"># @title CSS</span>
     <span class="c1"># Custom CSS for Material Design styling with enhanced table styling, chat panel, and debug panel</span>
-    <span class="n">CSS</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">css</span><span class="p">(</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    @import url(&#39;https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap&#39;);</span>
+    <span class="n">CSS</span> <span class="o">=</span> <span class="n">syntax</span><span class="o">.</span><span class="n">css</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">    @import url(&#39;https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&amp;display=swap&#39;);</span>
 
-<span class="sd">    body {</span>
-<span class="sd">        font-family: &#39;Roboto&#39;, sans-serif;</span>
-<span class="sd">        margin: 0;</span>
-<span class="sd">        padding: 0;</span>
-<span class="sd">    }</span>
+<span class="s2">    body {</span>
+<span class="s2">        font-family: &#39;Roboto&#39;, sans-serif;</span>
+<span class="s2">        margin: 0;</span>
+<span class="s2">        padding: 0;</span>
+<span class="s2">    }</span>
 
-<span class="sd">    .main-title {</span>
-<span class="sd">        font-size: 24px;</span>
-<span class="sd">        font-weight: 500;</span>
-<span class="sd">        color: #212121;</span>
-<span class="sd">        margin-bottom: 16px;</span>
-<span class="sd">    }</span>
+<span class="s2">    .main-title {</span>
+<span class="s2">        font-size: 24px;</span>
+<span class="s2">        font-weight: 500;</span>
+<span class="s2">        color: #212121;</span>
+<span class="s2">        margin-bottom: 16px;</span>
+<span class="s2">    }</span>
 
-<span class="sd">    .custom-title {</span>
-<span class="sd">        font-size: 18px;</span>
-<span class="sd">        font-weight: 500;</span>
-<span class="sd">        color: #212121;</span>
-<span class="sd">        margin-bottom: 12px;</span>
-<span class="sd">    }</span>
+<span class="s2">    .custom-title {</span>
+<span class="s2">        font-size: 18px;</span>
+<span class="s2">        font-weight: 500;</span>
+<span class="s2">        color: #212121;</span>
+<span class="s2">        margin-bottom: 12px;</span>
+<span class="s2">    }</span>
 
-<span class="sd">    .details-text {</span>
-<span class="sd">        font-size: 14px;</span>
-<span class="sd">        color: #616161;</span>
-<span class="sd">        line-height: 1.5;</span>
-<span class="sd">    }</span>
+<span class="s2">    .details-text {</span>
+<span class="s2">        font-size: 14px;</span>
+<span class="s2">        color: #616161;</span>
+<span class="s2">        line-height: 1.5;</span>
+<span class="s2">    }</span>
 
-<span class="sd">    .custom-table {</span>
-<span class="sd">        width: 100%;</span>
-<span class="sd">        border-collapse: collapse;</span>
-<span class="sd">        margin-bottom: 24px;</span>
-<span class="sd">        font-family: &#39;Roboto&#39;, sans-serif;</span>
-<span class="sd">    }</span>
-<span class="sd">    .custom-table th, .custom-table td {</span>
-<span class="sd">        text-align: left;</span>
-<span class="sd">        padding: 12px;</span>
-<span class="sd">        border-bottom: 1px solid #E0E0E0;</span>
-<span class="sd">    }</span>
-<span class="sd">    .custom-table th {</span>
-<span class="sd">        background-color: #F5F5F5;</span>
-<span class="sd">        font-weight: 500;</span>
-<span class="sd">        color: #212121;</span>
-<span class="sd">    }</span>
-<span class="sd">    .custom-table tr:hover {</span>
-<span class="sd">        background-color: #E3F2FD;</span>
-<span class="sd">    }</span>
-<span class="sd">    .custom-table tr.selected {</span>
-<span class="sd">        background-color: #BBDEFB;</span>
-<span class="sd">    }</span>
+<span class="s2">    .custom-table {</span>
+<span class="s2">        width: 100%;</span>
+<span class="s2">        border-collapse: collapse;</span>
+<span class="s2">        margin-bottom: 24px;</span>
+<span class="s2">        font-family: &#39;Roboto&#39;, sans-serif;</span>
+<span class="s2">    }</span>
+<span class="s2">    .custom-table th, .custom-table td {</span>
+<span class="s2">        text-align: left;</span>
+<span class="s2">        padding: 12px;</span>
+<span class="s2">        border-bottom: 1px solid #E0E0E0;</span>
+<span class="s2">    }</span>
+<span class="s2">    .custom-table th {</span>
+<span class="s2">        background-color: #F5F5F5;</span>
+<span class="s2">        font-weight: 500;</span>
+<span class="s2">        color: #212121;</span>
+<span class="s2">    }</span>
+<span class="s2">    .custom-table tr:hover {</span>
+<span class="s2">        background-color: #E3F2FD;</span>
+<span class="s2">    }</span>
+<span class="s2">    .custom-table tr.selected {</span>
+<span class="s2">        background-color: #BBDEFB;</span>
+<span class="s2">    }</span>
 
-<span class="sd">    /* Ensure borders are visible */</span>
-<span class="sd">    .jupyter-widgets.widget-box {</span>
-<span class="sd">        border: 1px solid #E0E0E0 !important;</span>
-<span class="sd">        overflow: auto;</span>
-<span class="sd">    }</span>
+<span class="s2">    /* Ensure borders are visible */</span>
+<span class="s2">    .jupyter-widgets.widget-box {</span>
+<span class="s2">        border: 1px solid #E0E0E0 !important;</span>
+<span class="s2">        overflow: auto;</span>
+<span class="s2">    }</span>
 
-<span class="sd">    /* Make the map span full width */</span>
-<span class="sd">    .geemap-container {</span>
-<span class="sd">        width: 100% !important;</span>
-<span class="sd">        height: 600px !important;</span>
-<span class="sd">    }</span>
+<span class="s2">    /* Make the map span full width */</span>
+<span class="s2">    .geemap-container {</span>
+<span class="s2">        width: 100% !important;</span>
+<span class="s2">        height: 600px !important;</span>
+<span class="s2">    }</span>
 
-<span class="sd">    # Disable table clicks while things are loading</span>
-<span class="sd">    .disabled {</span>
-<span class="sd">    pointer-events: none;</span>
-<span class="sd">    /* You might also want to visually indicate the disabled state */</span>
-<span class="sd">    opacity: 0.5;</span>
-<span class="sd">    cursor: default;</span>
-<span class="sd">    }</span>
-<span class="sd">    &quot;&quot;&quot;</span>
-    <span class="p">)</span>
+<span class="s2">    # Disable table clicks while things are loading</span>
+<span class="s2">    .disabled {</span>
+<span class="s2">    pointer-events: none;</span>
+<span class="s2">    /* You might also want to visually indicate the disabled state */</span>
+<span class="s2">    opacity: 0.5;</span>
+<span class="s2">    cursor: default;</span>
+<span class="s2">    }</span>
+<span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
 
     <span class="c1"># Display the widget</span>
     <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;&lt;style&gt;</span><span class="si">{</span><span class="n">CSS</span><span class="si">}</span><span class="s2">&lt;/style&gt;&quot;</span><span class="p">))</span>
@@ -13855,7 +13839,9 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/ai.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1992</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1990</span>
+<span class="normal">1991</span>
+<span class="normal">1992</span>
 <span class="normal">1993</span>
 <span class="normal">1994</span>
 <span class="normal">1995</span>
@@ -13900,9 +13886,7 @@ Defaults to "gs://earthengine-catalog/embeddings/catalog_embeddings.jsonl".</p>
 <span class="normal">2034</span>
 <span class="normal">2035</span>
 <span class="normal">2036</span>
-<span class="normal">2037</span>
-<span class="normal">2038</span>
-<span class="normal">2039</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">2037</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">update_outputs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">selected_dataset</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Updates the output widgets based on the selected dataset.</span>
 
 <span class="sd">    Args:</span>
