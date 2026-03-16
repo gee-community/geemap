@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Tests for `map_widgets` module."""
+
 import unittest
 from unittest import mock
 
