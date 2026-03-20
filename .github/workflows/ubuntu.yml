@@ -36,6 +36,12 @@ jobs:
             - name: Install dependencies
               run: uv sync --python ${{ matrix.python-version }}
 
+            - name: Install system GDAL (provides gdal-config)
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y gdal-bin libgdal-dev
+                  gdal-config --version
+
             - name: Install optional dependencies
               run: |
                   uv pip install --find-links https://girder.github.io/large_image_wheels gdal pyproj
