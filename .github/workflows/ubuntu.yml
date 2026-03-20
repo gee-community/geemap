@@ -14,7 +14,6 @@ jobs:
             fail-fast: false
             matrix:
                 python-version: [
-                    "3.11",
                     "3.12",
                     "3.13"
                 ]
@@ -37,9 +36,18 @@ jobs:
             - name: Install dependencies
               run: uv sync --python ${{ matrix.python-version }}
 
+            - name: Install system GDAL (provides gdal-config)
+              run: |
+                  sudo add-apt-repository ppa:ubuntugis/ubuntugis-unstable -y
+                  sudo apt-get update
+                  sudo apt-get install -y gdal-bin libgdal-dev
+                  gdal-config --version
+
             - name: Install optional dependencies
               run: |
-                  uv pip install --find-links https://girder.github.io/large_image_wheels gdal pyproj
+                  GDAL_VER="$(gdal-config --version)"
+                  GDAL_PY_VER="${GDAL_VER%.*}.*"
+                  uv pip install --find-links https://girder.github.io/large_image_wheels "gdal==${GDAL_PY_VER}" pyproj
                   uv pip install -r pyproject.toml --extra tests
             - name: Test import
               run: |
