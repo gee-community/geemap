@@ -25,7 +25,7 @@
       
       
       <link rel="icon" href="../assets/favicon.png">
-      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.5">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
@@ -8272,9 +8272,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1729</span>
-<span class="normal">1730</span>
-<span class="normal">1731</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1731</span>
 <span class="normal">1732</span>
 <span class="normal">1733</span>
 <span class="normal">1734</span>
@@ -8378,7 +8376,9 @@ when toggled off.</p>
 <span class="normal">1832</span>
 <span class="normal">1833</span>
 <span class="normal">1834</span>
-<span class="normal">1835</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_toolbox</span><span class="p">(</span><span class="n">tools_dict</span><span class="p">,</span> <span class="n">max_width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;1080px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;600px&quot;</span><span class="p">):</span>
+<span class="normal">1835</span>
+<span class="normal">1836</span>
+<span class="normal">1837</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">build_toolbox</span><span class="p">(</span><span class="n">tools_dict</span><span class="p">,</span> <span class="n">max_width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;1080px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;600px&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Build the GEE toolbox.</span>
 
 <span class="sd">    Args:</span>
@@ -8538,9 +8538,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1456</span>
-<span class="normal">1457</span>
-<span class="normal">1458</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1458</span>
 <span class="normal">1459</span>
 <span class="normal">1460</span>
 <span class="normal">1461</span>
@@ -8660,7 +8658,9 @@ when toggled off.</p>
 <span class="normal">1575</span>
 <span class="normal">1576</span>
 <span class="normal">1577</span>
-<span class="normal">1578</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">collect_samples</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+<span class="normal">1578</span>
+<span class="normal">1579</span>
+<span class="normal">1580</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">collect_samples</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A widget for collecting training samples.</span>
 
 <span class="sd">    Args:</span>
@@ -8899,14 +8899,18 @@ when toggled off.</p>
 <span class="normal">1450</span>
 <span class="normal">1451</span>
 <span class="normal">1452</span>
-<span class="normal">1453</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_js2py</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+<span class="normal">1453</span>
+<span class="normal">1454</span>
+<span class="normal">1455</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">convert_js2py</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A widget for converting Earth Engine JavaScript to Python.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        m (object): geemap.Map</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="n">full_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span><span class="n">layout</span><span class="o">=</span><span class="n">widgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;465px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;350px&quot;</span><span class="p">))</span>
+    <span class="n">full_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">(</span>
+        <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="s2">&quot;465px&quot;</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;350px&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
     <span class="n">text_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Textarea</span><span class="p">(</span>
         <span class="n">placeholder</span><span class="o">=</span><span class="p">(</span>
             <span class="s2">&quot;Paste your Earth Engine JavaScript into this textbox and click the &quot;</span>
@@ -9451,9 +9455,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4237</span>
-<span class="normal">4238</span>
-<span class="normal">4239</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4239</span>
 <span class="normal">4240</span>
 <span class="normal">4241</span>
 <span class="normal">4242</span>
@@ -9516,7 +9518,9 @@ when toggled off.</p>
 <span class="normal">4299</span>
 <span class="normal">4300</span>
 <span class="normal">4301</span>
-<span class="normal">4302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_extra_tools</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">]:</span>
+<span class="normal">4302</span>
+<span class="normal">4303</span>
+<span class="normal">4304</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_extra_tools</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Lazily create and return the extra_tools list.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_extra_tools_cache</span>  <span class="c1"># pylint: disable=global-statement</span>
     <span class="k">if</span> <span class="n">_extra_tools_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -9604,9 +9608,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4203</span>
-<span class="normal">4204</span>
-<span class="normal">4205</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4205</span>
 <span class="normal">4206</span>
 <span class="normal">4207</span>
 <span class="normal">4208</span>
@@ -9635,7 +9637,9 @@ when toggled off.</p>
 <span class="normal">4231</span>
 <span class="normal">4232</span>
 <span class="normal">4233</span>
-<span class="normal">4234</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_main_tools</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">]:</span>
+<span class="normal">4234</span>
+<span class="normal">4235</span>
+<span class="normal">4236</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_main_tools</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">ToolbarItem</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Lazily create and return the main_tools list.&quot;&quot;&quot;</span>
     <span class="k">global</span> <span class="n">_main_tools_cache</span>  <span class="c1"># pylint: disable=global-statement</span>
     <span class="k">if</span> <span class="n">_main_tools_cache</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
@@ -9689,9 +9693,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1581</span>
-<span class="normal">1582</span>
-<span class="normal">1583</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1583</span>
 <span class="normal">1584</span>
 <span class="normal">1585</span>
 <span class="normal">1586</span>
@@ -9699,7 +9701,9 @@ when toggled off.</p>
 <span class="normal">1588</span>
 <span class="normal">1589</span>
 <span class="normal">1590</span>
-<span class="normal">1591</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_tools_dict</span><span class="p">():</span>
+<span class="normal">1591</span>
+<span class="normal">1592</span>
+<span class="normal">1593</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_tools_dict</span><span class="p">():</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns a dictionary of tools.&quot;&quot;&quot;</span>
     <span class="c1"># pytype: disable=attribute-error</span>
     <span class="n">pkg_dir</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">importlib</span><span class="o">.</span><span class="n">resources</span><span class="o">.</span><span class="n">files</span><span class="p">(</span><span class="s2">&quot;geemap&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">joinpath</span><span class="p">(</span><span class="s2">&quot;geemap.py&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">parent</span><span class="p">)</span>
@@ -11347,9 +11351,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3202</span>
-<span class="normal">3203</span>
-<span class="normal">3204</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3204</span>
 <span class="normal">3205</span>
 <span class="normal">3206</span>
 <span class="normal">3207</span>
@@ -11597,7 +11599,9 @@ when toggled off.</p>
 <span class="normal">3449</span>
 <span class="normal">3450</span>
 <span class="normal">3451</span>
-<span class="normal">3452</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_transect</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">3452</span>
+<span class="normal">3453</span>
+<span class="normal">3454</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_transect</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a widget for plotting transects.</span>
 
 <span class="sd">    Args:</span>
@@ -11931,9 +11935,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4667</span>
-<span class="normal">4668</span>
-<span class="normal">4669</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4669</span>
 <span class="normal">4670</span>
 <span class="normal">4671</span>
 <span class="normal">4672</span>
@@ -11982,7 +11984,9 @@ when toggled off.</p>
 <span class="normal">4715</span>
 <span class="normal">4716</span>
 <span class="normal">4717</span>
-<span class="normal">4718</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_basemap_gui</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">map_min_width</span><span class="o">=</span><span class="s2">&quot;78%&quot;</span><span class="p">,</span> <span class="n">map_max_width</span><span class="o">=</span><span class="s2">&quot;98%&quot;</span><span class="p">):</span>
+<span class="normal">4718</span>
+<span class="normal">4719</span>
+<span class="normal">4720</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_basemap_gui</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">map_min_width</span><span class="o">=</span><span class="s2">&quot;78%&quot;</span><span class="p">,</span> <span class="n">map_max_width</span><span class="o">=</span><span class="s2">&quot;98%&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for changing basemaps.</span>
 
 <span class="sd">    Args:</span>
@@ -12109,9 +12113,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4721</span>
-<span class="normal">4722</span>
-<span class="normal">4723</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4723</span>
 <span class="normal">4724</span>
 <span class="normal">4725</span>
 <span class="normal">4726</span>
@@ -12294,7 +12296,9 @@ when toggled off.</p>
 <span class="normal">4903</span>
 <span class="normal">4904</span>
 <span class="normal">4905</span>
-<span class="normal">4906</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_search_basemaps</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
+<span class="normal">4906</span>
+<span class="normal">4907</span>
+<span class="normal">4908</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_search_basemaps</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The widget for search XYZ tile services.</span>
 
 <span class="sd">    Args:</span>
@@ -12532,9 +12536,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4578</span>
-<span class="normal">4579</span>
-<span class="normal">4580</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4580</span>
 <span class="normal">4581</span>
 <span class="normal">4582</span>
 <span class="normal">4583</span>
@@ -12618,7 +12620,9 @@ when toggled off.</p>
 <span class="normal">4661</span>
 <span class="normal">4662</span>
 <span class="normal">4663</span>
-<span class="normal">4664</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_tool_template</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
+<span class="normal">4664</span>
+<span class="normal">4665</span>
+<span class="normal">4666</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_tool_template</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a template for a Plotly-based tool widget.</span>
 
 <span class="sd">    Args:</span>
@@ -12758,9 +12762,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4305</span>
-<span class="normal">4306</span>
-<span class="normal">4307</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4307</span>
 <span class="normal">4308</span>
 <span class="normal">4309</span>
 <span class="normal">4310</span>
@@ -13028,7 +13030,9 @@ when toggled off.</p>
 <span class="normal">4572</span>
 <span class="normal">4573</span>
 <span class="normal">4574</span>
-<span class="normal">4575</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_toolbar</span><span class="p">(</span>
+<span class="normal">4575</span>
+<span class="normal">4576</span>
+<span class="normal">4577</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_toolbar</span><span class="p">(</span>
     <span class="n">canvas</span><span class="p">,</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates the main toolbar and adds it to the map.</span>
@@ -13352,9 +13356,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4909</span>
-<span class="normal">4910</span>
-<span class="normal">4911</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">4911</span>
 <span class="normal">4912</span>
 <span class="normal">4913</span>
 <span class="normal">4914</span>
@@ -13447,7 +13449,9 @@ when toggled off.</p>
 <span class="normal">5001</span>
 <span class="normal">5002</span>
 <span class="normal">5003</span>
-<span class="normal">5004</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_whitebox_gui</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
+<span class="normal">5004</span>
+<span class="normal">5005</span>
+<span class="normal">5006</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plotly_whitebox_gui</span><span class="p">(</span><span class="n">canvas</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Widget for WhiteboxTools.</span>
 
 <span class="sd">    Args:</span>
@@ -13617,9 +13621,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3455</span>
-<span class="normal">3456</span>
-<span class="normal">3457</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3457</span>
 <span class="normal">3458</span>
 <span class="normal">3459</span>
 <span class="normal">3460</span>
@@ -14096,7 +14098,9 @@ when toggled off.</p>
 <span class="normal">3931</span>
 <span class="normal">3932</span>
 <span class="normal">3933</span>
-<span class="normal">3934</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sankee_gui</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="normal">3934</span>
+<span class="normal">3935</span>
+<span class="normal">3936</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">sankee_gui</span><span class="p">(</span><span class="n">m</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a widget for plotting Sankey diagrams.</span>
 
 <span class="sd">    Args:</span>
@@ -14688,9 +14692,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3945</span>
-<span class="normal">3946</span>
-<span class="normal">3947</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">3947</span>
 <span class="normal">3948</span>
 <span class="normal">3949</span>
 <span class="normal">3950</span>
@@ -14795,7 +14797,9 @@ when toggled off.</p>
 <span class="normal">4049</span>
 <span class="normal">4050</span>
 <span class="normal">4051</span>
-<span class="normal">4052</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">split_basemaps</span><span class="p">(</span>
+<span class="normal">4052</span>
+<span class="normal">4053</span>
+<span class="normal">4054</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">split_basemaps</span><span class="p">(</span>
     <span class="n">m</span><span class="p">,</span> <span class="n">layers_dict</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">left_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">right_name</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;120px&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
 <span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Splits the map into two panels with different basemaps.</span>
@@ -14978,9 +14982,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2303</span>
-<span class="normal">2304</span>
-<span class="normal">2305</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">2305</span>
 <span class="normal">2306</span>
 <span class="normal">2307</span>
 <span class="normal">2308</span>
@@ -15874,7 +15876,9 @@ when toggled off.</p>
 <span class="normal">3196</span>
 <span class="normal">3197</span>
 <span class="normal">3198</span>
-<span class="normal">3199</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">time_slider</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
+<span class="normal">3199</span>
+<span class="normal">3200</span>
+<span class="normal">3201</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">time_slider</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates a time slider for visualizing any ee.ImageCollection.</span>
 
 <span class="sd">    Args:</span>
@@ -16862,9 +16866,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1838</span>
-<span class="normal">1839</span>
-<span class="normal">1840</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1840</span>
 <span class="normal">1841</span>
 <span class="normal">1842</span>
 <span class="normal">1843</span>
@@ -17324,7 +17326,9 @@ when toggled off.</p>
 <span class="normal">2297</span>
 <span class="normal">2298</span>
 <span class="normal">2299</span>
-<span class="normal">2300</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">basemap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;HYBRID&quot;</span><span class="p">):</span>
+<span class="normal">2300</span>
+<span class="normal">2301</span>
+<span class="normal">2302</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">timelapse_gui</span><span class="p">(</span><span class="n">m</span><span class="p">:</span> <span class="n">geemap</span><span class="o">.</span><span class="n">Map</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">basemap</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;HYBRID&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Creates timelapse animations.</span>
 
 <span class="sd">    Args:</span>
@@ -17894,9 +17898,7 @@ when toggled off.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/toolbar.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1594</span>
-<span class="normal">1595</span>
-<span class="normal">1596</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1596</span>
 <span class="normal">1597</span>
 <span class="normal">1598</span>
 <span class="normal">1599</span>
@@ -18026,7 +18028,9 @@ when toggled off.</p>
 <span class="normal">1723</span>
 <span class="normal">1724</span>
 <span class="normal">1725</span>
-<span class="normal">1726</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">tool_gui</span><span class="p">(</span><span class="n">tool_dict</span><span class="p">,</span> <span class="n">max_width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;420px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;600px&quot;</span><span class="p">):</span>
+<span class="normal">1726</span>
+<span class="normal">1727</span>
+<span class="normal">1728</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">tool_gui</span><span class="p">(</span><span class="n">tool_dict</span><span class="p">,</span> <span class="n">max_width</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;420px&quot;</span><span class="p">,</span> <span class="n">max_height</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;600px&quot;</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create a GUI for a tool based on the tool dictionary.</span>
 
 <span class="sd">    Args:</span>
