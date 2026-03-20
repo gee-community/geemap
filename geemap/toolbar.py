@@ -1394,7 +1394,9 @@ def convert_js2py(m):
         m (object): geemap.Map
     """
 
-    full_widget = ipywidgets.VBox(layout=widgets.Layout(width="465px", height="350px"))
+    full_widget = ipywidgets.VBox(
+        layout=ipywidgets.Layout(width="465px", height="350px")
+    )
     text_widget = ipywidgets.Textarea(
         placeholder=(
             "Paste your Earth Engine JavaScript into this textbox and click the "
