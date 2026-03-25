@@ -3320,35 +3320,34 @@ def create_colorbar(
     def gaussian(x: float, a: float, b: float, c: float, d: float = 0) -> float:
         return a * math.exp(-((x - b) ** 2) / (2 * c**2)) + d
 
-    # TODO: Rename map to something that doesn't clash with Python's `map`.
     def pixel(
-        x, width: float = 100, map=None, spread: float = 1
+        x, width: float = 100, color_map=None, spread: float = 1
     ) -> tuple[float, float, float]:
-        map = map or []
+        color_map = color_map or []
 
         width = float(width)
         r = sum(
             [
-                gaussian(x, p[1][0], p[0] * width, width / (spread * len(map)))
-                for p in map
+                gaussian(x, p[1][0], p[0] * width, width / (spread * len(color_map)))
+                for p in color_map
             ]
         )
         g = sum(
             [
-                gaussian(x, p[1][1], p[0] * width, width / (spread * len(map)))
-                for p in map
+                gaussian(x, p[1][1], p[0] * width, width / (spread * len(color_map)))
+                for p in color_map
             ]
         )
         b = sum(
             [
-                gaussian(x, p[1][2], p[0] * width, width / (spread * len(map)))
-                for p in map
+                gaussian(x, p[1][2], p[0] * width, width / (spread * len(color_map)))
+                for p in color_map
             ]
         )
         return min(1.0, r), min(1.0, g), min(1.0, b)
 
     for x in range(im.size[0]):
-        r, g, b = pixel(x, width=width, map=heatmap)
+        r, g, b = pixel(x, width=width, color_map=heatmap)
         r, g, b = (int(256 * v) for v in (r, g, b))
         for y in range(im.size[1]):
             ld[x, y] = r, g, b
