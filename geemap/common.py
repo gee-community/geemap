@@ -14529,7 +14529,7 @@ def tif_to_jp2(
 def ee_to_geotiff(
     ee_object,
     output: str,
-    bbox=None,
+    bbox: list[float] | tuple[float, float, float, float] | None = None,
     vis_params: dict[str, Any] | None = None,
     zoom: int | None = None,
     resolution: float | None = None,
@@ -14543,7 +14543,6 @@ def ee_to_geotiff(
     Args:
         ee_object (ee.Image | ee.FeatureCollection): The Earth Engine object to download.
         output: The output path for the GeoTIFF.
-        # TODO: What is the proper type for bbox?
         bbox: The bounding box in the format [xmin, ymin, xmax, ymax]. Defaults to None,
             which is the bounding box of the Earth Engine object.
         vis_params: Visualization parameters. Defaults to {}.
