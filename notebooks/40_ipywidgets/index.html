@@ -9207,7 +9207,7 @@ text</div>
 <span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-27">widgets.HTML(
-    value="Hello <b>World</b>",
+    value="Hello &lt;b&gt;World&lt;/b&gt;",
     placeholder="Some HTML",
     description="Some HTML",
 )</div>
@@ -9240,7 +9240,7 @@ text</div>
 <span class="p">)</span>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-28">widgets.HTML(
-    value='<img alt="No description has been provided for this image" height="100" src="https://earthengine.google.com/static/images/earth-engine-logo.png" width="100"/>'
+    value='&lt;img src="https://earthengine.google.com/static/images/earth-engine-logo.png" width="100" height="100"&gt;'
 )</div>
 </div>
 </div>
@@ -9728,7 +9728,7 @@ Map.add_control(output_control)</div>
 </pre></div>
 <div class="clipboard-copy-txt" id="cell-41">output_widget.clear_output()
 logo = widgets.HTML(
-    value='<img alt="No description has been provided for this image" height="100" src="https://earthengine.google.com/static/images/earth-engine-logo.png" width="100"/>'
+    value='&lt;img src="https://earthengine.google.com/static/images/earth-engine-logo.png" width="100" height="100"&gt;'
 )
 with output_widget:
     display(logo)</div>

@@ -7870,7 +7870,7 @@ Map.add_layer(json_layer)</div>
 from ipyleaflet import WidgetControl, GeoJSON
 
 html1 = HTML("""
-    <h4>Country</h4>
+    &lt;h4&gt;Country&lt;/h4&gt;
     Hover over a country
 """)
 html1.layout.margin = "0px 20px 20px 20px"
@@ -7880,7 +7880,7 @@ Map.add_control(control1)
 
 def update_html(feature, **kwargs):
     html1.value = """
-        <h4>Country code: <b>{}</b></h4>
+        &lt;h4&gt;Country code: &lt;b&gt;{}&lt;/b&gt;&lt;/h4&gt;
         Country name: {}
     """.format(feature["properties"]["ISO_A2"], feature["properties"]["NAME"])
 
