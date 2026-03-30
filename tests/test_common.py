@@ -95,8 +95,149 @@ class CommonTest(unittest.TestCase):
     # TODO: test_ee_export_image_collection_to_drive
     # TODO: test_ee_export_image_collection_to_asset
     # TODO: test_ee_export_image_collection_to_cloud_storage
-    # TODO: test_ee_export_geojson
-    # TODO: test_ee_export_vector
+    @mock.patch.object(requests, "get")
+    def test_ee_export_geojson(self, mock_get):
+        """Tests ee_export_geojson."""
+        # Setup mock response
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.iter_content.return_value = [b"geojson content"]
+        mock_get.return_value = mock_response
+
+        # Mock feature collection
+        collection_mock = mock.MagicMock(spec=ee.FeatureCollection)
+        collection_mock.first().propertyNames().getInfo.return_value = [
+            "prop1",
+            "prop2",
+        ]
+        collection_mock.getDownloadURL.return_value = "http://example.com/data.geojson"
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            filename = str(pathlib.Path(tmpdir) / "test.geojson")
+
+            # Valid export
+            result = common.ee_export_geojson(collection_mock, filename)
+            self.assertEqual(result, "geojson content")
+            mock_get.assert_called_with(
+                "http://example.com/data.geojson",
+                stream=True,
+                timeout=300,
+                proxies=None,
+            )
+
+            # Valid export with explicit selectors
+            result = common.ee_export_geojson(
+                collection_mock, filename, selectors=["prop1"]
+            )
+            self.assertEqual(result, "geojson content")
+            collection_mock.getDownloadURL.assert_called_with(
+                filetype="geojson", selectors=["prop1"], filename="test"
+            )
+
+            # Invalid object
+            self.assertIsNone(common.ee_export_geojson("not a collection", filename))
+
+            # Invalid extension
+            invalid_filename = str(pathlib.Path(tmpdir) / "test.shp")
+            self.assertIsNone(
+                common.ee_export_geojson(collection_mock, invalid_filename)
+            )
+
+            # Invalid selectors type
+            self.assertIsNone(
+                common.ee_export_geojson(collection_mock, filename, selectors="invalid")
+            )
+
+            # Invalid selector attributes
+            self.assertIsNone(
+                common.ee_export_geojson(
+                    collection_mock, filename, selectors=["invalid_prop"]
+                )
+            )
+
+            # Handle status code != 200
+            mock_response_fail = mock.Mock()
+            mock_response_fail.status_code = 404
+            mock_response_fail.json.return_value = {"error": {"message": "Not Found"}}
+            mock_get.return_value = mock_response_fail
+
+            # This should retry with filter_polygons and fail gracefully
+            collection_mock.map.return_value.getDownloadURL.return_value = (
+                "http://example.com/data2.geojson"
+            )
+            self.assertIsNone(common.ee_export_geojson(collection_mock, filename))
+
+    @mock.patch.object(zipfile, "ZipFile")
+    @mock.patch.object(requests, "get")
+    def test_ee_export_vector(self, mock_get, mock_zip):
+        """Tests ee_export_vector."""
+        # Setup mock response
+        mock_response = mock.Mock()
+        mock_response.status_code = 200
+        mock_response.iter_content.return_value = [b"vector content"]
+        mock_get.return_value = mock_response
+
+        # Mock feature collection
+        collection_mock = mock.MagicMock(spec=ee.FeatureCollection)
+        collection_mock.first().propertyNames().getInfo.return_value = [
+            "prop1",
+            "prop2",
+        ]
+        collection_mock.getDownloadURL.return_value = "http://example.com/data.shp"
+
+        # Test valid extensions
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # SHP format
+            filename = str(pathlib.Path(tmpdir) / "test.shp")
+            common.ee_export_vector(collection_mock, filename)
+            mock_get.assert_called_with(
+                "http://example.com/data.shp", stream=True, timeout=300, proxies=None
+            )
+            self.assertTrue(mock_zip.called)
+
+            # CSV format
+            collection_mock.select.return_value = collection_mock
+            filename_csv = str(pathlib.Path(tmpdir) / "test.csv")
+            common.ee_export_vector(collection_mock, filename_csv)
+            collection_mock.select.assert_called_with([".*"], None, False)
+
+            # GeoJSON format
+            filename_geojson = str(pathlib.Path(tmpdir) / "test.geojson")
+            common.ee_export_vector(collection_mock, filename_geojson)
+
+            # Invalid object type
+            with self.assertRaisesRegex(
+                ValueError, "ee_object must be an ee.FeatureCollection"
+            ):
+                common.ee_export_vector("not a collection", filename)
+
+            # Invalid format
+            filename_invalid = str(pathlib.Path(tmpdir) / "test.invalid")
+            with self.assertRaisesRegex(
+                ValueError, "The file type must be one of the following:"
+            ):
+                common.ee_export_vector(collection_mock, filename_invalid)
+
+            # Invalid selectors type
+            with self.assertRaisesRegex(ValueError, "selectors must be a list"):
+                common.ee_export_vector(collection_mock, filename, selectors="invalid")
+
+            # Invalid selector attributes
+            with self.assertRaisesRegex(
+                ValueError, "Attributes must be one chosen from:"
+            ):
+                common.ee_export_vector(
+                    collection_mock, filename, selectors=["invalid_prop"]
+                )
+
+            # Request fails
+            mock_response.status_code = 404
+            mock_response.json.return_value = {"error": {"message": "Not Found"}}
+            collection_mock.map.return_value.getDownloadURL.return_value = (
+                "http://example.com/data2.shp"
+            )
+            with mock.patch("sys.stdout", new_callable=io.StringIO):
+                common.ee_export_vector(collection_mock, filename)
 
     @mock.patch.object(ee.batch.Export.table, "toDrive")
     def test_ee_export_vector_to_drive(self, mock_to_drive):
@@ -131,12 +272,200 @@ class CommonTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "The file type must be one"):
             common.ee_export_vector_to_drive(collection_mock, fileFormat="INVALID")
 
-    # TODO: test_ee_export_vector_to_asset
-    # TODO: test_ee_export_vector_to_cloud_storage
-    # TODO: test_ee_export_vector_to_feature_view
-    # TODO: test_ee_export_video_to_drive
-    # TODO: test_ee_export_video_to_cloud_storage
-    # TODO: test_ee_export_map_to_cloud_storage
+    @mock.patch.object(ee.batch.Export.table, "toAsset")
+    @mock.patch.object(common, "ee_user_id")
+    def test_ee_export_vector_to_asset(self, mock_ee_user_id, mock_to_asset):
+        """Tests ee_export_vector_to_asset."""
+        mock_ee_user_id.return_value = "projects/test-project"
+        mock_task = mock.MagicMock()
+        mock_to_asset.return_value = mock_task
+        collection_mock = mock.MagicMock(spec=ee.FeatureCollection)
+
+        common.ee_export_vector_to_asset(
+            collection_mock,
+            description="test_task",
+            assetId="my_asset",
+        )
+
+        mock_to_asset.assert_called_once_with(
+            collection_mock,
+            "test_task",
+            "projects/test-project/my_asset",
+            None,
+        )
+        mock_task.start.assert_called_once()
+
+        with self.assertRaisesRegex(
+            ValueError, "The collection must be an ee.FeatureCollection"
+        ):
+            common.ee_export_vector_to_asset("not a collection")
+
+    @mock.patch.object(ee.batch.Export.table, "toCloudStorage")
+    def test_ee_export_vector_to_cloud_storage(self, mock_to_cloud_storage):
+        """Tests ee_export_vector_to_cloud_storage."""
+        mock_task = mock.MagicMock()
+        mock_to_cloud_storage.return_value = mock_task
+        collection_mock = mock.MagicMock(spec=ee.FeatureCollection)
+
+        common.ee_export_vector_to_cloud_storage(
+            collection_mock,
+            description="test_task",
+            bucket="test_bucket",
+            fileFormat="CSV",
+        )
+
+        mock_to_cloud_storage.assert_called_once_with(
+            collection_mock,
+            "test_task",
+            "test_bucket",
+            None,
+            "CSV",
+            None,
+            None,
+        )
+        mock_task.start.assert_called_once()
+
+        with self.assertRaisesRegex(
+            ValueError, "The collection must be an ee.FeatureCollection"
+        ):
+            common.ee_export_vector_to_cloud_storage(
+                "not a collection", fileFormat="CSV"
+            )
+
+        with self.assertRaisesRegex(ValueError, "The file type must be one"):
+            common.ee_export_vector_to_cloud_storage(
+                collection_mock, fileFormat="INVALID"
+            )
+
+    @mock.patch.object(ee.batch.Export.table, "toFeatureView")
+    def test_ee_export_vector_to_feature_view(self, mock_to_feature_view):
+        """Tests ee_export_vector_to_feature_view."""
+        mock_task = mock.MagicMock()
+        mock_to_feature_view.return_value = mock_task
+        collection_mock = mock.MagicMock(spec=ee.FeatureCollection)
+
+        common.ee_export_vector_to_feature_view(
+            collection_mock,
+            description="test_task",
+            assetId="test_asset",
+        )
+
+        mock_to_feature_view.assert_called_once_with(
+            collection_mock,
+            "test_task",
+            "test_asset",
+            None,
+        )
+        mock_task.start.assert_called_once()
+
+        with self.assertRaisesRegex(
+            ValueError, "The collection must be an ee.FeatureCollection"
+        ):
+            common.ee_export_vector_to_feature_view("not a collection")
+
+    @mock.patch.object(ee.batch.Export.video, "toDrive")
+    def test_ee_export_video_to_drive(self, mock_to_drive):
+        """Tests ee_export_video_to_drive."""
+        mock_task = mock.MagicMock()
+        mock_to_drive.return_value = mock_task
+        collection_mock = mock.MagicMock(spec=ee.ImageCollection)
+
+        common.ee_export_video_to_drive(
+            collection_mock,
+            description="test_task",
+            folder="test_folder",
+            framesPerSecond=30,
+        )
+
+        mock_to_drive.assert_called_once_with(
+            collection_mock,
+            "test_task",
+            "test_folder",
+            None,
+            30,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        mock_task.start.assert_called_once()
+
+        with self.assertRaisesRegex(
+            TypeError, "collection must be an ee.ImageCollection"
+        ):
+            common.ee_export_video_to_drive("not a collection")
+
+    @mock.patch.object(ee.batch.Export.video, "toCloudStorage")
+    def test_ee_export_video_to_cloud_storage(self, mock_to_cloud_storage):
+        """Tests ee_export_video_to_cloud_storage."""
+        mock_task = mock.MagicMock()
+        mock_to_cloud_storage.return_value = mock_task
+        collection_mock = mock.MagicMock(spec=ee.ImageCollection)
+
+        common.ee_export_video_to_cloud_storage(
+            collection_mock,
+            description="test_task",
+            bucket="test_bucket",
+            framesPerSecond=30,
+        )
+
+        mock_to_cloud_storage.assert_called_once_with(
+            collection_mock,
+            "test_task",
+            "test_bucket",
+            None,
+            30,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        mock_task.start.assert_called_once()
+
+        with self.assertRaisesRegex(
+            TypeError, "collection must be an ee.ImageCollection"
+        ):
+            common.ee_export_video_to_cloud_storage("not a collection")
+
+    @mock.patch.object(ee.batch.Export.map, "toCloudStorage")
+    def test_ee_export_map_to_cloud_storage(self, mock_to_cloud_storage):
+        """Tests ee_export_map_to_cloud_storage."""
+        mock_task = mock.MagicMock()
+        mock_to_cloud_storage.return_value = mock_task
+        image_mock = mock.MagicMock(spec=ee.Image)
+
+        common.ee_export_map_to_cloud_storage(
+            image_mock,
+            description="test_task",
+            bucket="test_bucket",
+            fileFormat="png",
+        )
+
+        mock_to_cloud_storage.assert_called_once_with(
+            image_mock,
+            "test_task",
+            "test_bucket",
+            "png",
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+            None,
+        )
+        mock_task.start.assert_called_once()
+
+        with self.assertRaisesRegex(TypeError, "image must be an ee.Image"):
+            common.ee_export_map_to_cloud_storage("not an image")
+
     # TODO: test_TitilerEndpoint
     # TODO: test_PlanetaryComputerEndpoint
 
