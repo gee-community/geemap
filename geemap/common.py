@@ -1699,34 +1699,6 @@ def clone_repo(out_dir: str = ".", unzip: bool = True) -> None:
     download_from_url(url, out_file_name=filename, out_dir=out_dir, unzip=unzip)
 
 
-def install_from_github(url: str) -> None:
-    """Install a package from a GitHub repository.
-
-    Args:
-        url: The URL of the GitHub repository.
-    """
-    download_dir = os.path.join(os.path.expanduser("~"), "Downloads")
-    if not os.path.exists(download_dir):
-        os.makedirs(download_dir)
-
-    repo_name = os.path.basename(url)
-    zip_url = os.path.join(url, "archive/master.zip")
-    filename = repo_name + "-master.zip"
-    download_from_url(
-        url=zip_url, out_file_name=filename, out_dir=download_dir, unzip=True
-    )
-
-    pkg_dir = os.path.join(download_dir, repo_name + "-master")
-    pkg_name = os.path.basename(url)
-    work_dir = os.getcwd()
-    os.chdir(pkg_dir)
-    print(f"Installing {pkg_name}...")
-    cmd = "pip install ."
-    os.system(cmd)
-    os.chdir(work_dir)
-    print(f"{pkg_name} has been installed successfully.")
-
-
 def check_git_install() -> bool:
     """Checks if Git is installed.
 
