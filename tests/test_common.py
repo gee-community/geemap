@@ -638,7 +638,6 @@ class CommonTest(unittest.TestCase):
     # TODO: test_check_package
     # TODO: test_install_package
     # TODO: test_clone_repo
-    # TODO: test_install_from_github
     # TODO: test_check_git_install
     # TODO: test_clone_github_repo
     # TODO: test_clone_google_repo
