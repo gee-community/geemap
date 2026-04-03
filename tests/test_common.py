@@ -236,7 +236,7 @@ class CommonTest(unittest.TestCase):
             collection_mock.map.return_value.getDownloadURL.return_value = (
                 "http://example.com/data2.shp"
             )
-            with mock.patch("sys.stdout", new_callable=io.StringIO):
+            with mock.patch.object(sys, "stdout", new_callable=io.StringIO):
                 common.ee_export_vector(collection_mock, filename)
 
     @mock.patch.object(ee.batch.Export.table, "toDrive")
@@ -517,7 +517,7 @@ class CommonTest(unittest.TestCase):
         # Test connection failure.
         mock_response.status_code = 404
         mock_get.return_value = mock_response
-        with mock.patch("sys.stdout", new_callable=io.StringIO) as mock_stdout:
+        with mock.patch.object(sys, "stdout", new_callable=io.StringIO) as mock_stdout:
             common.set_proxy()
             self.assertIn("Failed to connect", mock_stdout.getvalue())
 
