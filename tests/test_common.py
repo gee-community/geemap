@@ -46,16 +46,15 @@ class CommonTest(unittest.TestCase):
         image_mock.geometry.return_value = fake_ee.Geometry()
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            filename = str(pathlib.Path(tmpdir) / "test.tif")
+            filename = pathlib.Path(tmpdir) / "test.tif"
             common.ee_export_image(image_mock, filename, unzip=True, verbose=False)
 
             image_mock.getDownloadURL.assert_called_once()
             mock_get.assert_called_once_with(
                 "http://example.com/image.zip", stream=True, timeout=300, proxies=None
             )
-            filename_path = pathlib.Path(filename)
-            self.assertTrue(filename_path.exists())
-            with open(filename_path, "rb") as f:
+            self.assertTrue(filename.exists())
+            with open(filename, "rb") as f:
                 self.assertEqual(f.read(), b"tif content")
             filename_zip_path = pathlib.Path(tmpdir) / "test.zip"
             self.assertFalse(filename_zip_path.exists())
@@ -74,19 +73,18 @@ class CommonTest(unittest.TestCase):
         image_mock.geometry.return_value = fake_ee.Geometry()
 
         with tempfile.TemporaryDirectory() as tmpdir:
-            filename = str(pathlib.Path(tmpdir) / "test.tif")
+            filename = pathlib.Path(tmpdir) / "test.tif"
             common.ee_export_image(image_mock, filename, unzip=False, verbose=False)
 
             image_mock.getDownloadURL.assert_called_once()
             mock_get.assert_called_once_with(
                 "http://example.com/image.zip", stream=True, timeout=300, proxies=None
             )
-            filename_path = pathlib.Path(filename)
             filename_zip_path = pathlib.Path(tmpdir) / "test.zip"
             self.assertTrue(filename_zip_path.exists())
             with open(filename_zip_path, "rb") as f:
                 self.assertEqual(f.read(), zip_content)
-            self.assertFalse(filename_path.exists())
+            self.assertFalse(filename.exists())
 
     # TODO: test_ee_export_image_collection
     # TODO: test_ee_export_image_to_drive
