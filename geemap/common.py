@@ -12289,7 +12289,8 @@ def download_ee_image_tiles(
     if column is not None:
         names = features.aggregate_array(column).getInfo()
     else:
-        names = [str(i + 1).zfill(len(str(count))) for i in range(count)]
+        count_len = len(str(count))
+        names = [str(i + 1).zfill(count_len) for i in range(count)]
 
     for i in range(count):
         region = ee.Feature(collection.get(i)).geometry()
@@ -12398,7 +12399,8 @@ def download_ee_image_tiles_parallel(
     if column is not None:
         names = features.aggregate_array(column).getInfo()
     else:
-        names = [str(i + 1).zfill(len(str(count))) for i in range(count)]
+        count_len = len(str(count))
+        names = [str(i + 1).zfill(count_len) for i in range(count)]
     collection = features.toList(count)
 
     def download_data(index: int) -> None:
