@@ -1190,7 +1190,7 @@ wheels = [
 
 [[package]]
 name = "gdown"
-version = "5.2.0"
+version = "5.2.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "beautifulsoup4" },
@@ -1198,9 +1198,9 @@ dependencies = [
     { name = "requests", extra = ["socks"] },
     { name = "tqdm" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/09/6a/37e6b70c5bda3161e40265861e63b64a86bfc6ca6a8f1c35328a675c84fd/gdown-5.2.0.tar.gz", hash = "sha256:2145165062d85520a3cd98b356c9ed522c5e7984d408535409fd46f94defc787", size = 284647, upload-time = "2024-05-12T06:45:12.725Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/5d/e2/831920e510e3cce91627adab9997944b32842f7cd0dc4c023f24655531e0/gdown-5.2.2.tar.gz", hash = "sha256:a4bafbaa627d67bdaa68d274e9e957127ba810b4bcf4505e2b57ea45aa0aa1e6", size = 360218, upload-time = "2026-04-12T06:00:10.571Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/54/70/e07c381e6488a77094f04c85c9caf1c8008cdc30778f7019bc52e5285ef0/gdown-5.2.0-py3-none-any.whl", hash = "sha256:33083832d82b1101bdd0e9df3edd0fbc0e1c5f14c9d8c38d2a35bf1683b526d6", size = 18235, upload-time = "2024-05-12T06:45:10.017Z" },
+    { url = "https://files.pythonhosted.org/packages/20/ad/0e30d078a2cc84a17a81c0a1f226d617edf12ddd375dafe021fb66a2c8b0/gdown-5.2.2-py3-none-any.whl", hash = "sha256:e1ed2638abb931668725c79298900629b31e20f02b7c55a2685e9249edb51e09", size = 18630, upload-time = "2026-04-12T06:00:08.346Z" },
 ]
 
 [[package]]
