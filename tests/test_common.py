@@ -687,7 +687,96 @@ class CommonTest(unittest.TestCase):
     # TODO: test_search_ee_data
     # TODO: test_ee_data_thumbnail
     # TODO: test_ee_data_html
-    # TODO: test_ee_api_to_csv
+    @mock.patch.object(common.requests, "get")
+    def test_ee_api_to_csv_success(self, mock_get):
+        html_content = """
+        <div>
+          <h2>TestName</h2>
+          <br/>
+          <p>Test description</p>
+          <table class="blue">
+            <tr>
+              <td><code>TestFunction()</code></td>
+              <td>TestReturn</td>
+            </tr>
+          </table><div class="details">
+            <p>Detail 1</p>
+            <table>
+              <tr>
+                <td><code>arg1</code></td>
+                <td>Type1</td>
+                <td>Desc1</td>
+              </tr>
+              <tr>
+                <td><code>arg2</code></td>
+                <td>Type2</td>
+                <td>Desc2</td>
+              </tr>
+            </table>
+          </div>
+          <h2>TestName2</h2>
+          <br/>
+          <p>Test description2</p>
+          <table class="blue">
+            <tr>
+              <td><code>TestFunction2()</code></td>
+              <td>TestReturn2</td>
+            </tr>
+          </table><span>not details</span>
+        </div>
+        """
+        mock_response = mock.MagicMock()
+        mock_response.content = html_content.encode("utf-8")
+        mock_get.return_value = mock_response
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            outfile = os.path.join(temp_dir, "test.csv")
+            common.ee_api_to_csv(outfile)
+
+            self.assertTrue(os.path.exists(outfile))
+            with open(outfile, "r", encoding="utf-8") as f:
+                lines = f.readlines()
+                self.assertEqual(len(lines), 3)
+                self.assertEqual(
+                    lines[0].strip(),
+                    "name\tdescription\tfunction\treturns\targument\ttype\tdetails",
+                )
+                self.assertEqual(
+                    lines[1].strip(),
+                    "TestName\t\tTestFunction()\tTestReturn\targ1|arg2\tType1|Type2\tDetail 1",
+                )
+                self.assertEqual(
+                    lines[2].strip(), "TestName2\t\tTestFunction2()\tTestReturn2"
+                )
+
+    @mock.patch.object(common.requests, "get")
+    def test_ee_api_to_csv_default_outfile(self, mock_get):
+        mock_response = mock.MagicMock()
+        mock_response.content = b"<html></html>"
+        mock_get.return_value = mock_response
+
+        with mock.patch("builtins.open", mock.mock_open()) as mock_file:
+            common.ee_api_to_csv()
+            mock_file.assert_called_once()
+            args, _ = mock_file.call_args
+            self.assertTrue(args[0].endswith("ee_api_docs.csv"))
+
+    @mock.patch("builtins.print")
+    def test_ee_api_to_csv_invalid_ext(self, mock_print):
+        common.ee_api_to_csv("test.txt")
+        mock_print.assert_called_once_with("The output file must end with .csv")
+
+    @mock.patch("builtins.print")
+    @mock.patch.object(common.requests, "get")
+    def test_ee_api_to_csv_exception(self, mock_get, mock_print):
+        err = Exception("Network error")
+        mock_get.side_effect = err
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            outfile = os.path.join(temp_dir, "test.csv")
+            common.ee_api_to_csv(outfile)
+            mock_print.assert_called_once_with(err)
+
     # TODO: test_read_api_csv
     # TODO: test_ee_function_tree
     # TODO: test_build_api_tree

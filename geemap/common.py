@@ -4011,14 +4011,20 @@ def ee_api_to_csv(
                 ]
             )
 
-            for i in range(len(names)):
-                name = names[i]
-                description = descriptions[i]
-                function = functions[i]
-                return_type = returns[i]
-                argument = "|".join(arguments[i])
-                argu_type = "|".join(types[i])
-                detail = "|".join(details[i])
+            for (
+                name,
+                description,
+                function,
+                return_type,
+                args,
+                tps,
+                dtls,
+            ) in zip(
+                names, descriptions, functions, returns, arguments, types, details
+            ):
+                argument = "|".join(args)
+                argu_type = "|".join(tps)
+                detail = "|".join(dtls)
 
                 csv_writer.writerow(
                     [
