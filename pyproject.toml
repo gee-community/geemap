@@ -112,6 +112,7 @@ sql = [
     "sqlalchemy",
 ]
 tests = [
+    "beautifulsoup4",
     "psutil",
 ]
 apps = [
