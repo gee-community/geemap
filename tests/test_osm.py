@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Tests for `osm` module."""
-import os
+
 import unittest
 from unittest import mock
 
