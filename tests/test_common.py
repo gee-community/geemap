@@ -464,7 +464,63 @@ class CommonTest(unittest.TestCase):
         with self.assertRaisesRegex(TypeError, "image must be an ee.Image"):
             common.ee_export_map_to_cloud_storage("not an image")
 
-    # TODO: test_TitilerEndpoint
+    def test_titiler_endpoint_init(self):
+        # Default initialization
+        endpoint = common.TitilerEndpoint()
+        self.assertEqual(endpoint.endpoint, "https://giswqs-titiler-endpoint.hf.space")
+        self.assertEqual(endpoint.name, "stac")
+        self.assertEqual(endpoint.TileMatrixSetId, "WebMercatorQuad")
+
+        # Custom initialization
+        endpoint = common.TitilerEndpoint(
+            endpoint="https://custom.endpoint.com",
+            name="custom",
+            TileMatrixSetId="CustomSet",
+        )
+        self.assertEqual(endpoint.endpoint, "https://custom.endpoint.com")
+        self.assertEqual(endpoint.name, "custom")
+        self.assertEqual(endpoint.TileMatrixSetId, "CustomSet")
+
+    def test_titiler_endpoint_url_for_stac_item(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/WebMercatorQuad/tilejson.json"
+        self.assertEqual(endpoint.url_for_stac_item(), expected)
+
+    def test_titiler_endpoint_url_for_stac_assets(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/assets"
+        self.assertEqual(endpoint.url_for_stac_assets(), expected)
+
+    def test_titiler_endpoint_url_for_stac_bounds(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/bounds"
+        self.assertEqual(endpoint.url_for_stac_bounds(), expected)
+
+    def test_titiler_endpoint_url_for_stac_info(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/info"
+        self.assertEqual(endpoint.url_for_stac_info(), expected)
+
+    def test_titiler_endpoint_url_for_stac_info_geojson(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/info.geojson"
+        self.assertEqual(endpoint.url_for_stac_info_geojson(), expected)
+
+    def test_titiler_endpoint_url_for_stac_statistics(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/statistics"
+        self.assertEqual(endpoint.url_for_stac_statistics(), expected)
+
+    def test_titiler_endpoint_url_for_stac_pixel_value(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/point/10.0,20.0"
+        self.assertEqual(endpoint.url_for_stac_pixel_value(10.0, 20.0), expected)
+
+    def test_titiler_endpoint_url_for_stac_wmts(self):
+        endpoint = common.TitilerEndpoint()
+        expected = "https://giswqs-titiler-endpoint.hf.space/stac/WebMercatorQuad/WMTSCapabilities.xml"
+        self.assertEqual(endpoint.url_for_stac_wmts(), expected)
+
     # TODO: test_PlanetaryComputerEndpoint
 
     def test_check_titiler_endpoint(self):
