@@ -2,6 +2,7 @@
 """Tests for `coreutils` module."""
 
 import json
+import google.oauth2.credentials
 import os
 import string
 import sys
@@ -158,6 +159,171 @@ class TestHelpers(unittest.TestCase):
             uuid.UUID(file_id2, version=4)
         except ValueError:
             self.fail("file id is not a valid UUID4")
+
+
+class TestEeInitialize(unittest.TestCase):
+    @mock.patch.object(coreutils.ee, "Initialize")
+    @mock.patch.object(coreutils.ee, "Authenticate")
+    @mock.patch.object(coreutils.ee.data, "setUserAgent")
+    @mock.patch.object(coreutils.ee.data, "_get_state")
+    def test_ee_initialize_already_authenticated(
+        self, mock_get_state, mock_set_user_agent, mock_authenticate, mock_initialize
+    ):
+        # Setup state to have credentials
+        mock_state = mock.Mock()
+        mock_state.credentials = mock.Mock()
+        mock_get_state.return_value = mock_state
+
+        coreutils.ee_initialize()
+
+        mock_set_user_agent.assert_called_once()
+        mock_initialize.assert_not_called()
+        mock_authenticate.assert_not_called()
+
+    @mock.patch.object(coreutils.ee, "Initialize")
+    @mock.patch.object(coreutils.ee, "Authenticate")
+    @mock.patch.object(coreutils.ee.data, "setUserAgent")
+    @mock.patch.object(coreutils.ee.data, "_get_state")
+    @mock.patch.object(coreutils, "get_env_var")
+    @mock.patch.object(google.oauth2.credentials, "Credentials")
+    def test_ee_initialize_with_ee_token(
+        self,
+        mock_credentials,
+        mock_get_env_var,
+        mock_get_state,
+        mock_set_user_agent,
+        mock_authenticate,
+        mock_initialize,
+    ):
+        # Setup state to not have credentials
+        mock_state = mock.Mock()
+        mock_state.credentials = None
+        mock_get_state.return_value = mock_state
+
+        # Setup env var
+        mock_get_env_var.return_value = '{"client_id": "cid", "client_secret": "csec", "refresh_token": "rt", "project": "proj"}'
+
+        # Setup credentials
+        mock_cred_instance = mock.Mock()
+        mock_credentials.return_value = mock_cred_instance
+
+        coreutils.ee_initialize(project="test_proj", opt_url="http://test")
+
+        mock_set_user_agent.assert_called_once()
+        mock_credentials.assert_called_once_with(
+            None,
+            token_uri="https://oauth2.googleapis.com/token",
+            client_id="cid",
+            client_secret="csec",
+            refresh_token="rt",
+            quota_project_id="proj",
+        )
+        mock_initialize.assert_called_once_with(
+            credentials=mock_cred_instance, opt_url="http://test"
+        )
+        mock_authenticate.assert_not_called()
+
+    @mock.patch.object(coreutils.ee, "Initialize")
+    @mock.patch.object(coreutils.ee, "Authenticate")
+    @mock.patch.object(coreutils.ee.data, "setUserAgent")
+    @mock.patch.object(coreutils.ee.data, "_get_state")
+    @mock.patch.object(coreutils, "get_env_var")
+    @mock.patch.object(coreutils, "in_colab_shell")
+    def test_ee_initialize_in_colab(
+        self,
+        mock_in_colab,
+        mock_get_env_var,
+        mock_get_state,
+        mock_set_user_agent,
+        mock_authenticate,
+        mock_initialize,
+    ):
+        # Setup state to not have credentials
+        mock_state = mock.Mock()
+        mock_state.credentials = None
+        mock_get_state.return_value = mock_state
+
+        # Setup env var (no token)
+        def mock_env_var(key):
+            if key == "EARTHENGINE_TOKEN":
+                return None
+            elif key == "EE_PROJECT_ID":
+                return "env_proj"
+            return None
+
+        mock_get_env_var.side_effect = mock_env_var
+
+        # Setup colab
+        mock_in_colab.return_value = True
+
+        coreutils.ee_initialize()
+
+        mock_set_user_agent.assert_called_once()
+        mock_authenticate.assert_called_once_with()
+        mock_initialize.assert_called_once_with(project="env_proj")
+
+    @mock.patch.object(coreutils.ee, "Initialize")
+    @mock.patch.object(coreutils.ee, "Authenticate")
+    @mock.patch.object(coreutils.ee.data, "setUserAgent")
+    @mock.patch.object(coreutils.ee.data, "_get_state")
+    @mock.patch.object(coreutils, "get_env_var")
+    @mock.patch.object(coreutils, "in_colab_shell")
+    def test_ee_initialize_default(
+        self,
+        mock_in_colab,
+        mock_get_env_var,
+        mock_get_state,
+        mock_set_user_agent,
+        mock_authenticate,
+        mock_initialize,
+    ):
+        # Setup state to not have credentials
+        mock_state = mock.Mock()
+        mock_state.credentials = None
+        mock_get_state.return_value = mock_state
+
+        # Setup env var (no token)
+        mock_get_env_var.return_value = None
+
+        # Setup colab
+        mock_in_colab.return_value = False
+
+        coreutils.ee_initialize()
+
+        mock_set_user_agent.assert_called_once()
+        mock_authenticate.assert_called_once_with(auth_mode="notebook")
+        mock_initialize.assert_called_once_with(project=None)
+
+    @mock.patch.object(coreutils.ee, "Initialize")
+    @mock.patch.object(coreutils.ee, "Authenticate")
+    @mock.patch.object(coreutils.ee.data, "setUserAgent")
+    @mock.patch.object(coreutils.ee.data, "_get_state")
+    @mock.patch.object(coreutils, "get_env_var")
+    @mock.patch.object(coreutils, "in_colab_shell")
+    def test_ee_initialize_with_custom_args(
+        self,
+        mock_in_colab,
+        mock_get_env_var,
+        mock_get_state,
+        mock_set_user_agent,
+        mock_authenticate,
+        mock_initialize,
+    ):
+        # Setup state to not have credentials
+        mock_state = mock.Mock()
+        mock_state.credentials = None
+        mock_get_state.return_value = mock_state
+
+        # Setup env var (no token)
+        mock_get_env_var.return_value = None
+
+        coreutils.ee_initialize(
+            auth_mode="gcloud", project="test_proj", auth_args={"quiet": True}
+        )
+
+        mock_set_user_agent.assert_called_once()
+        mock_authenticate.assert_called_once_with(auth_mode="gcloud", quiet=True)
+        mock_initialize.assert_called_once_with(project="test_proj")
 
 
 if __name__ == "__main__":
