@@ -607,7 +607,7 @@ def js_to_python(
                     try:
                         if (line.replace(" ", ""))[line.find("!") + 1] != "=":
                             line = line.replace("!", "not ")
-                    except:
+                    except Exception:
                         print("continue...")
 
                 line = line.rstrip()
