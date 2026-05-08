@@ -27,7 +27,7 @@ from . import coreutils
 
 try:
     from PIL import Image, ImageDraw, ImageFont, ImageSequence
-except:
+except Exception:
     pass
 
 
