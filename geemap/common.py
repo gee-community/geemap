@@ -3005,8 +3005,12 @@ def ee_to_xarray(
       An xarray.Dataset that streams in remote data from Earth Engine.
     """
     import xee
-    import shapely
     from xee import helpers
+
+    try:
+        import shapely
+    except ImportError:
+        shapely = None
 
     kwargs["drop_variables"] = drop_variables
     kwargs["io_chunks"] = io_chunks
@@ -3097,10 +3101,21 @@ def ee_to_xarray(
             if proj_scale:
                 scale = proj_scale
 
-    # Determine if we need to convert legacy parameters to grid_params
+    has_explicit_grid_params = all(
+        k in kwargs and kwargs[k] is not None for k in ["crs", "crs_transform", "shape_2d"]
+    )
+
+    # Determine if we need to convert legacy parameters to grid_params.
+    # Also handle no-grid input by defaulting to source/native grid.
     if scale is not None or (crs is not None and (scale is not None or geometry is not None)):
         # Legacy API usage detected - convert to new grid system
         try:
+            if shapely is None:
+                raise ImportError(
+                    "shapely is required to convert legacy grid parameters "
+                    "for xee>=0.1.0"
+                )
+
             # Default CRS is EPSG:4326 if not specified
             target_crs = crs or "EPSG:4326"
             
@@ -3119,7 +3134,9 @@ def ee_to_xarray(
                             f"Unsupported geometry type: {geom_dict['type']}. "
                             "Supported types are Polygon and Rectangle."
                         )
-                elif isinstance(geometry, shapely.geometry.base.BaseGeometry):
+                elif shapely is not None and isinstance(
+                    geometry, shapely.geometry.base.BaseGeometry
+                ):
                     geom_shapely = geometry
                 else:
                     raise TypeError(
@@ -3161,12 +3178,47 @@ def ee_to_xarray(
                 "If this fails, consider using the new grid parameter API.",
                 UserWarning
             )
+    elif not has_explicit_grid_params:
+        # No grid args provided. For xee>=0.1.0, infer native grid from source.
+        try:
+            dataset_for_grid = dataset
+            if isinstance(dataset_for_grid, str):
+                asset_id = (
+                    dataset_for_grid[5:]
+                    if dataset_for_grid.startswith("ee://")
+                    else dataset_for_grid
+                )
+                dataset_for_grid = ee.ImageCollection(asset_id)
+            elif isinstance(dataset_for_grid, ee.Image):
+                dataset_for_grid = ee.ImageCollection(dataset_for_grid)
+            elif isinstance(dataset_for_grid, list) and len(dataset_for_grid) > 0:
+                first_item = dataset_for_grid[0]
+                if isinstance(first_item, str):
+                    asset_id = (
+                        first_item[5:] if first_item.startswith("ee://") else first_item
+                    )
+                    dataset_for_grid = ee.ImageCollection(asset_id)
+                elif isinstance(first_item, ee.Image):
+                    dataset_for_grid = ee.ImageCollection(first_item)
+                else:
+                    dataset_for_grid = None
+
+            if dataset_for_grid is not None:
+                grid_params = helpers.extract_grid_params(dataset_for_grid)
+        except Exception as e:
+            import warnings
+
+            warnings.warn(
+                f"Could not infer source grid parameters automatically: {e}. "
+                "If using xee>=0.1.0, pass either legacy (crs/scale[/geometry]) "
+                "or explicit grid params (crs/crs_transform/shape_2d).",
+                UserWarning,
+            )
     
     # If we successfully created grid_params, use them and remove conflicting old params
     if grid_params:
         kwargs.update(grid_params)
         # Remove old parameters that xee v0.1.0 doesn't understand
-        kwargs.pop("crs", None)
         kwargs.pop("scale", None)
         kwargs.pop("projection", None)
         kwargs.pop("geometry", None)

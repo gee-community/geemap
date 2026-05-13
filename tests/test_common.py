@@ -729,7 +729,81 @@ class CommonTest(unittest.TestCase):
     # TODO: test_netcdf_to_ee
     # TODO: test_numpy_to_ee
     # TODO: test_ee_to_numpy
-    # TODO: test_ee_to_xarray
+    @mock.patch("geemap.common.xr.open_dataset")
+    @mock.patch("geemap.common.ee.Initialize")
+    @mock.patch("geemap.common.ee.data.is_initialized", return_value=True)
+    def test_ee_to_xarray_with_scale_parameter(self, mock_is_init, mock_init, mock_open_ds):
+        """Test ee_to_xarray with legacy scale parameter (xee v0.0.x API)."""
+        # Mock xr.open_dataset to return a dummy dataset
+        import xarray as xr
+        mock_ds = xr.Dataset()
+        mock_open_ds.return_value = mock_ds
+        
+        # Call with legacy API parameters
+        result = common.ee_to_xarray(
+            "ECMWF/ERA5_LAND/HOURLY",
+            crs="EPSG:4326",
+            scale=0.25,
+            n_images=10,
+            ee_initialize=False,
+        )
+        
+        # Verify xr.open_dataset was called
+        self.assertTrue(mock_open_ds.called)
+        call_args = mock_open_ds.call_args
+        
+        # Check that grid params were created (crs_transform, shape_2d in kwargs)
+        kwargs = call_args[1]
+        # New xee API requires these grid parameters
+        self.assertIn("crs_transform", kwargs)
+        self.assertIn("shape_2d", kwargs)
+        
+        # Verify old params were removed (not passed to xee)
+        self.assertNotIn("scale", kwargs)
+        
+        # Result should be the mocked dataset (same object)
+        self.assertIs(result, mock_ds)
+
+    @mock.patch("geemap.common.xr.open_dataset")
+    @mock.patch("geemap.common.ee.Initialize")
+    @mock.patch("geemap.common.ee.data.is_initialized", return_value=True)
+    def test_ee_to_xarray_with_geometry(self, mock_is_init, mock_init, mock_open_ds):
+        """Test ee_to_xarray with geometry parameter."""
+        import xarray as xr
+        mock_ds = xr.Dataset()
+        mock_open_ds.return_value = mock_ds
+        
+        # Mock ee.Geometry
+        mock_geometry = mock.MagicMock(spec=ee.Geometry)
+        mock_geometry.getInfo.return_value = {
+            "type": "Polygon",
+            "coordinates": [[[-122.5, 37.0], [-121.5, 37.0], [-121.5, 38.0], [-122.5, 38.0], [-122.5, 37.0]]],
+        }
+        
+        # Call with geometry
+        result = common.ee_to_xarray(
+            "LANDSAT/LC09/C02/T1_L2",
+            crs="EPSG:32610",
+            scale=30,
+            geometry=mock_geometry,
+            ee_initialize=False,
+        )
+        
+        # Verify xr.open_dataset was called with grid parameters
+        self.assertTrue(mock_open_ds.called)
+        call_args = mock_open_ds.call_args
+        kwargs = call_args[1]
+        
+        # Check grid params exist
+        self.assertIn("crs_transform", kwargs)
+        self.assertIn("shape_2d", kwargs)
+        
+        # Verify old geometry param was removed
+        self.assertNotIn("geometry", kwargs)
+        
+        # Result should be the mocked dataset
+        self.assertIs(result, mock_ds)
+
     # TODO: test_download_ee_video
     # TODO: test_screen_capture
     # TODO: test_api_docs
