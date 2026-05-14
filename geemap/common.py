@@ -2987,6 +2987,7 @@ def ee_to_xarray(
             Automatically converted to `crs` and `scale` for the new API.
         geometry (optional): An `ee.Geometry` or shapely geometry to define the
             region of interest. Converted to the new grid system for xee v0.1.0+.
+            Shapely geometries are assumed to be in EPSG:4326 lon/lat coordinates.
         primary_dim_name (optional): Override the name of the primary dimension of
             the output Dataset. By default, the name is 'time'.
         primary_dim_property (optional): Override the `ee.Image` property for
@@ -3004,13 +3005,19 @@ def ee_to_xarray(
     Returns:
       An xarray.Dataset that streams in remote data from Earth Engine.
     """
+    import warnings
+
     import xee
     from xee import helpers
 
     try:
-        import shapely
+        from shapely.geometry import box as shapely_box
+        from shapely.geometry import shape as shapely_shape
+        from shapely.geometry.base import BaseGeometry
     except ImportError:
-        shapely = None
+        shapely_box = None
+        shapely_shape = None
+        BaseGeometry = None
 
     kwargs["drop_variables"] = drop_variables
     kwargs["io_chunks"] = io_chunks
@@ -3101,46 +3108,47 @@ def ee_to_xarray(
             if proj_scale:
                 scale = proj_scale
 
-    has_explicit_grid_params = all(
-        k in kwargs and kwargs[k] is not None
-        for k in ["crs", "crs_transform", "shape_2d"]
+    explicit_grid_crs = kwargs.get("crs", crs)
+    has_explicit_grid_params = (
+        explicit_grid_crs is not None
+        and kwargs.get("crs_transform") is not None
+        and kwargs.get("shape_2d") is not None
+    )
+
+    has_legacy_grid_params = (
+        projection is not None
+        or scale is not None
+        or geometry is not None
+        or (crs is not None and not has_explicit_grid_params)
     )
 
     # Determine if we need to convert legacy parameters to grid_params.
     # Also handle no-grid input by defaulting to source/native grid.
-    if scale is not None or (
-        crs is not None and (scale is not None or geometry is not None)
-    ):
+    if has_legacy_grid_params:
         # Legacy API usage detected - convert to new grid system
         try:
-            if shapely is None:
+            if shapely_box is None or shapely_shape is None or BaseGeometry is None:
                 raise ImportError(
                     "shapely is required to convert legacy grid parameters "
                     "for xee>=0.1.0"
                 )
 
-            # Default CRS is EPSG:4326 if not specified
-            target_crs = crs or "EPSG:4326"
-
+            # Default CRS is EPSG:4326 if not specified.
+            if isinstance(crs, ee.Projection):
+                target_crs = crs.getInfo().get("crs", "EPSG:4326")
+            else:
+                target_crs = crs or "EPSG:4326"
+            
             # Determine the geometry to use
             if geometry is not None:
                 # Convert EE geometry to shapely if needed
                 if isinstance(geometry, ee.Geometry):
-                    geom_dict = geometry.getInfo()
-                    if geom_dict["type"] == "Polygon":
-                        coords = geom_dict["coordinates"][0]
-                        geom_shapely = shapely.geometry.Polygon(coords)
-                    elif geom_dict["type"] == "Rectangle":
-                        geom_shapely = shapely.geometry.box(*geom_dict["coordinates"])
-                    else:
-                        raise ValueError(
-                            f"Unsupported geometry type: {geom_dict['type']}. "
-                            "Supported types are Polygon and Rectangle."
-                        )
-                elif shapely is not None and isinstance(
-                    geometry, shapely.geometry.base.BaseGeometry
-                ):
+                    geom_shapely = shapely_shape(geometry.getInfo())
+                elif isinstance(geometry, BaseGeometry):
                     geom_shapely = geometry
+                elif hasattr(geometry, "getInfo"):
+                    # Allow geometry-like test doubles that implement getInfo().
+                    geom_shapely = shapely_shape(geometry.getInfo())
                 else:
                     raise TypeError(
                         f"geometry must be an ee.Geometry or shapely geometry, "
@@ -3148,24 +3156,18 @@ def ee_to_xarray(
                     )
             else:
                 # No geometry specified - use global extent
-                geom_shapely = shapely.geometry.box(-180, -90, 180, 90)
-
+                geom_shapely = shapely_box(-180, -90, 180, 90)
+            
             # Convert scale to (x_scale, y_scale) tuple
             if scale is not None:
-                # Determine if scale is in degrees (geographic) or meters (projected)
-                if "EPSG:4326" in target_crs or "WGS" in target_crs.upper():
-                    # Geographic CRS - scale is in degrees
-                    grid_scale = (scale, -scale)
-                else:
-                    # Projected CRS - scale is in meters, use negative for north-up
-                    grid_scale = (scale, -scale)
+                grid_scale = (scale, -scale)
             else:
                 # If no scale provided, use default based on CRS
                 if "EPSG:4326" in target_crs or "WGS" in target_crs.upper():
                     grid_scale = (1.0, -1.0)  # 1 degree
                 else:
                     grid_scale = (10000, -10000)  # 10km
-
+            
             # Use fit_geometry to create grid parameters
             grid_params = helpers.fit_geometry(
                 geometry=geom_shapely,
@@ -3174,13 +3176,11 @@ def ee_to_xarray(
                 grid_scale=grid_scale,
             )
         except Exception as e:
-            import warnings
-
             warnings.warn(
                 f"Failed to convert legacy API parameters to new grid format: {e}. "
                 "Attempting to use legacy parameters with xee. "
                 "If this fails, consider using the new grid parameter API.",
-                UserWarning,
+                UserWarning
             )
     elif not has_explicit_grid_params:
         # No grid args provided. For xee>=0.1.0, infer native grid from source.
@@ -3210,15 +3210,13 @@ def ee_to_xarray(
             if dataset_for_grid is not None:
                 grid_params = helpers.extract_grid_params(dataset_for_grid)
         except Exception as e:
-            import warnings
-
             warnings.warn(
                 f"Could not infer source grid parameters automatically: {e}. "
                 "If using xee>=0.1.0, pass either legacy (crs/scale[/geometry]) "
                 "or explicit grid params (crs/crs_transform/shape_2d).",
                 UserWarning,
             )
-
+    
     # If we successfully created grid_params, use them and remove conflicting old params
     if grid_params:
         kwargs.update(grid_params)
