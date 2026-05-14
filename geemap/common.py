@@ -3102,12 +3102,15 @@ def ee_to_xarray(
                 scale = proj_scale
 
     has_explicit_grid_params = all(
-        k in kwargs and kwargs[k] is not None for k in ["crs", "crs_transform", "shape_2d"]
+        k in kwargs and kwargs[k] is not None
+        for k in ["crs", "crs_transform", "shape_2d"]
     )
 
     # Determine if we need to convert legacy parameters to grid_params.
     # Also handle no-grid input by defaulting to source/native grid.
-    if scale is not None or (crs is not None and (scale is not None or geometry is not None)):
+    if scale is not None or (
+        crs is not None and (scale is not None or geometry is not None)
+    ):
         # Legacy API usage detected - convert to new grid system
         try:
             if shapely is None:
@@ -3118,7 +3121,7 @@ def ee_to_xarray(
 
             # Default CRS is EPSG:4326 if not specified
             target_crs = crs or "EPSG:4326"
-            
+
             # Determine the geometry to use
             if geometry is not None:
                 # Convert EE geometry to shapely if needed
@@ -3146,7 +3149,7 @@ def ee_to_xarray(
             else:
                 # No geometry specified - use global extent
                 geom_shapely = shapely.geometry.box(-180, -90, 180, 90)
-            
+
             # Convert scale to (x_scale, y_scale) tuple
             if scale is not None:
                 # Determine if scale is in degrees (geographic) or meters (projected)
@@ -3162,7 +3165,7 @@ def ee_to_xarray(
                     grid_scale = (1.0, -1.0)  # 1 degree
                 else:
                     grid_scale = (10000, -10000)  # 10km
-            
+
             # Use fit_geometry to create grid parameters
             grid_params = helpers.fit_geometry(
                 geometry=geom_shapely,
@@ -3172,11 +3175,12 @@ def ee_to_xarray(
             )
         except Exception as e:
             import warnings
+
             warnings.warn(
                 f"Failed to convert legacy API parameters to new grid format: {e}. "
                 "Attempting to use legacy parameters with xee. "
                 "If this fails, consider using the new grid parameter API.",
-                UserWarning
+                UserWarning,
             )
     elif not has_explicit_grid_params:
         # No grid args provided. For xee>=0.1.0, infer native grid from source.
@@ -3214,7 +3218,7 @@ def ee_to_xarray(
                 "or explicit grid params (crs/crs_transform/shape_2d).",
                 UserWarning,
             )
-    
+
     # If we successfully created grid_params, use them and remove conflicting old params
     if grid_params:
         kwargs.update(grid_params)
