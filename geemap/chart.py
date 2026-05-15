@@ -20,6 +20,7 @@ from . import common
 
 
 class DataTable(pd.DataFrame):
+    """DataFrame that can be initialized from EE objects."""
 
     def __init__(
         self,
@@ -168,7 +169,7 @@ def array_to_df(
     return pd.DataFrame(data, **kwargs)
 
 
-class Chart:
+class Chart:  # pylint: disable=too-many-instance-attributes
     """Create and display various types of charts from a data table.
 
     Attributes:
@@ -466,7 +467,7 @@ class Chart:
             setattr(self.figure, key, value)
 
 
-class BaseChartClass:
+class BaseChartClass:  # pylint: disable=too-many-instance-attributes
     """This should include everything a chart module requires to plot figures."""
 
     def __init__(
@@ -525,15 +526,11 @@ class BaseChartClass:
         for key, value in kwargs.items():
             setattr(self, key, value)
 
-    @classmethod
-    def get_data(cls) -> None:
+    def get_data(self) -> None:
         """Placeholder method to get data for the chart."""
-        pass
 
-    @classmethod
-    def plot_chart(cls) -> None:
+    def plot_chart(self) -> None:
         """Placeholder method to plot the chart."""
-        pass
 
     def __repr__(self) -> str:
         """Returns the string representation of the chart."""
@@ -551,7 +548,7 @@ class BarChart(BaseChartClass):
         features: ee.FeatureCollection | pd.DataFrame,
         default_labels: list[str],
         name: str,
-        type: str = "grouped",
+        type: str = "grouped",  # pylint: disable=redefined-builtin
         **kwargs: Any,
     ):
         """A BarChart with the given features, labels, name, and type.
@@ -565,6 +562,10 @@ class BarChart(BaseChartClass):
         """
         super().__init__(features, default_labels, name, **kwargs)
         self.type: str = type
+        self.x_data = None
+        self.y_data = None
+        self.yProperty = None
+        self.bar_chart = None
 
     def generate_tooltip(self) -> None:
         """Generates a tooltip for the bar chart."""
@@ -651,6 +652,7 @@ class LineChart(BarChart):
             **kwargs: Additional keyword arguments to set as attributes.
         """
         super().__init__(features, labels, name, **kwargs)
+        self.line_chart = None
 
     def plot_chart(self) -> None:
         """Plots the line chart."""
@@ -702,20 +704,14 @@ class Feature_ByFeature(BarChart):
         """
         default_labels = y_properties
         super().__init__(features, default_labels, name, **kwargs)
-        self.x_data, self.y_data = self.get_data(x_property, y_properties)
+        self.x_property = x_property
+        self.y_properties = y_properties
+        self.x_data, self.y_data = self.get_data()
 
-    def get_data(
-        self, x_property: str, y_properties: list[str]
-    ) -> tuple[list[Any], list[Any]]:
-        """Returns the x and y data for the chart.
-
-        Args:
-            x_property: The property to use for the x-axis.
-            y_properties: The properties to use for the y-axis.
-        """
-        x_data = list(self.df[x_property])
-        y_data = list(self.df[y_properties].values.T)
-
+    def get_data(self) -> tuple[list[Any], list[Any]]:
+        """Returns the x and y data for the chart."""
+        x_data = list(self.df[self.x_property])
+        y_data = list(self.df[self.y_properties].values.T)
         return x_data, y_data
 
 
@@ -740,37 +736,33 @@ class Feature_ByProperty(BarChart):
             **kwargs: Additional keyword arguments to set as attributes.
 
         Raises:
-            Exception: If 'labels' is in kwargs.
+            ValueError: If 'labels' is in kwargs.
         """
         default_labels = None
         super().__init__(
             features, default_labels, name, **kwargs
         )  # pytype: disable=wrong-arg-types
         if "labels" in kwargs:
-            raise Exception("Please remove labels in kwargs and try again.")
+            raise ValueError("Please remove labels in kwargs and try again.")
 
         self.labels = list(self.df[series_property])
-        self.x_data, self.y_data = self.get_data(x_properties)
+        self.x_properties = x_properties
+        self.x_data, self.y_data = self.get_data()
 
-    def get_data(
-        self, x_properties: list[str] | dict[str, str]
-    ) -> tuple[list[Any], list[Any]]:
+    def get_data(self) -> tuple[list[Any], list[Any]]:
         """Returns the x and y data for the chart.
 
-        Args:
-            x_properties: The properties to use for the x-axis.
-
         Raises:
-            Exception: If x_properties is not a list or dictionary.
+            TypeError: If x_properties is not a list or dictionary.
         """
-        if isinstance(x_properties, list):
-            x_data = x_properties
-            y_data = self.df[x_properties].values
-        elif isinstance(x_properties, dict):
-            x_data = list(x_properties.values())
-            y_data = self.df[list(x_properties.keys())].values
+        if isinstance(self.x_properties, list):
+            x_data = self.x_properties
+            y_data = self.df[self.x_properties].values
+        elif isinstance(self.x_properties, dict):
+            x_data = list(self.x_properties.values())
+            y_data = self.df[list(self.x_properties.keys())].values
         else:
-            raise Exception("x_properties must be a list or dictionary.")
+            raise TypeError("x_properties must be a list or dictionary.")
 
         return x_data, y_data
 
@@ -785,7 +777,7 @@ class Feature_Groups(BarChart):
         y_property: str,
         series_property: str,
         name: str = "feature.groups",
-        type: str = "stacked",
+        type: str = "stacked",  # pylint: disable=redefined-builtin
         **kwargs: Any,
     ):
         """Initialize a Feature_Groups.
@@ -805,8 +797,9 @@ class Feature_Groups(BarChart):
         self.yProperty = y_property
         super().__init__(features, default_labels, name, type, **kwargs)
 
+        self.x_property = x_property
         self.new_column_names = self.get_column_names(series_property, y_property)
-        self.x_data, self.y_data = self.get_data(x_property, self.new_column_names)
+        self.x_data, self.y_data = self.get_data()
 
     def get_column_names(self, series_property: str, y_property: str) -> list[str]:
         """Returns the new column names for the DataFrame.
@@ -825,17 +818,10 @@ class Feature_Groups(BarChart):
 
         return new_column_names
 
-    def get_data(
-        self, x_property: str, new_column_names: list[str]
-    ) -> tuple[list[Any], list[Any]]:
-        """Returns the x and y data for the chart.
-
-        Args:
-            x_property: The property to use for the x-axis.
-            new_column_names: The new column names for the y-axis.
-        """
-        x_data = list(self.df[x_property])
-        y_data = [self.df[x] for x in new_column_names]
+    def get_data(self) -> tuple[list[Any], list[Any]]:
+        """Returns the x and y data for the chart."""
+        x_data = list(self.df[self.x_property])
+        y_data = [self.df[x] for x in self.new_column_names]
 
         return x_data, y_data
 
@@ -859,11 +845,14 @@ def feature_by_feature(
         y_properties: Values of y_properties.
         **kwargs: Additional keyword arguments to set as attributes.
     """
-    bar = Feature_ByFeature(
-        features=features, x_property=x_property, y_properties=y_properties, **kwargs
+    chart = Feature_ByFeature(
+        features=features,
+        x_property=x_property,
+        y_properties=y_properties,
+        **kwargs,
     )
 
-    bar.plot_chart()
+    chart.plot_chart()
 
 
 def feature_by_property(
@@ -887,14 +876,14 @@ def feature_by_property(
         series_property (str): The name of the property used to label each
             feature in the legend.
     """
-    bar = Feature_ByProperty(
+    chart = Feature_ByProperty(
         features=features,
         x_properties=x_properties,
         series_property=series_property,
         **kwargs,
     )
 
-    bar.plot_chart()
+    chart.plot_chart()
 
 
 def feature_groups(
@@ -919,7 +908,7 @@ def feature_groups(
         **kwargs: Additional keyword arguments to set as attributes.
     """
 
-    bar = Feature_Groups(
+    chart = Feature_Groups(
         features=features,
         x_property=x_property,
         y_property=y_property,
@@ -927,12 +916,12 @@ def feature_groups(
         **kwargs,
     )
 
-    bar.plot_chart()
+    chart.plot_chart()
 
 
 def feature_histogram(
     features: ee.FeatureCollection,
-    property: str,
+    property: str,  # pylint: disable=redefined-builtin
     max_buckets: int | None = None,
     min_bucket_width: float | None = None,
     show: bool = True,
@@ -958,20 +947,21 @@ def feature_histogram(
         **kwargs: Additional keyword arguments to set as attributes.
 
     Raises:
-        Exception: If the provided xProperties is not a list or dict.
-        Exception: If the chart fails to create.
+        TypeError: If features is not an ee.FeatureCollection.
+        ValueError: If property is not found in features.
 
     Returns:
         The bqplot chart object if show is False, otherwise None.
     """
     if not isinstance(features, ee.FeatureCollection):
-        raise Exception("features must be an ee.FeatureCollection")
+        raise TypeError("features must be an ee.FeatureCollection")
 
     first = features.first()
     props = first.propertyNames().getInfo()
     if property not in props:
-        raise Exception(
-            f"property {property} not found. Available properties: {', '.join(props)}"
+        raise ValueError(
+            f"property {property} not found. Available properties:"
+            f" {', '.join(props)}"
         )
 
     def nextPowerOf2(n) -> float:
@@ -1225,9 +1215,9 @@ def image_doy_series(
         )
 
         # Group images by their day of year.
-        filter = ee.Filter(ee.Filter.equals(leftField="doy", rightField="doy"))
+        doy_filter = ee.Filter.equals(leftField="doy", rightField="doy")
         joined = ee.Join.saveAll("matches").apply(
-            primary=doys, secondary=collection, condition=filter
+            primary=doys, secondary=collection, condition=doy_filter
         )
 
         # For each DoY, reduce images across years.
@@ -1360,9 +1350,9 @@ def image_doy_series_by_region(
         )
 
         # Group images by their day of year.
-        filter = ee.Filter(ee.Filter.equals(leftField="doy", rightField="doy"))
+        doy_filter = ee.Filter.equals(leftField="doy", rightField="doy")
         joined = ee.Join.saveAll("matches").apply(
-            primary=doys, secondary=collection, condition=filter
+            primary=doys, secondary=collection, condition=doy_filter
         )
 
         # For each DoY, reduce images across years.
@@ -1510,12 +1500,12 @@ def doy_series_by_year(
     distinct_doy_year = tuples.distinct(["doy", "year"])
 
     # Join the original tuples with the distinct (doy, year) pairs.
-    filter = ee.Filter.And(
+    doy_filter = ee.Filter.And(
         ee.Filter.equals(leftField="doy", rightField="doy"),
         ee.Filter.equals(leftField="year", rightField="year"),
     )
     joined = ee.Join.saveAll("matches").apply(
-        primary=distinct_doy_year, secondary=tuples, condition=filter
+        primary=distinct_doy_year, secondary=tuples, condition=doy_filter
     )
 
     # For each (doy, year), reduce the values of the joined features.
@@ -1552,7 +1542,7 @@ def image_histogram(
     min_bucket_width: float,
     max_raw: int,
     max_pixels: int,
-    reducer_args: dict[str, Any] = {},
+    reducer_args: dict[str, Any] | None = None,
     **kwargs: dict[str, Any],
 ) -> bq.Figure:
     """Creates a histogram for each band of the specified image within the given region.
@@ -1576,6 +1566,8 @@ def image_histogram(
     Returns:
         The bqplot figure containing the histograms.
     """
+    if reducer_args is None:
+        reducer_args = {}
     # Calculate the histogram data.
     histogram = image.reduceRegion(
         reducer=ee.Reducer.histogram(
@@ -1611,7 +1603,7 @@ def image_histogram(
         x_sc = bq.LinearScale()
         y_sc = bq.LinearScale()
 
-        bar = bq.Bars(
+        chart = bq.Bars(
             x=x_data,
             y=y_data,
             scales={"x": x_sc, "y": y_sc},
@@ -1625,7 +1617,7 @@ def image_histogram(
             scale=y_sc, orientation="vertical", label="Count", tick_format="0.0f"
         )
 
-        return bq.Figure(marks=[bar], axes=[ax_x, ax_y])
+        return bq.Figure(marks=[chart], axes=[ax_x, ax_y])
 
     # Define colors and labels for the bands.
     band_colors = kwargs.get("colors", ["#cf513e", "#1d6b99", "#f0af07"])
@@ -1737,7 +1729,7 @@ def image_series(
         for band in band_names:
             results[band] = stats.get(band)
 
-        if x_property == "system:time_start" or x_property == "system:time_end":
+        if x_property in ("system:time_start", "system:time_end"):
             results["date"] = image.date().format("YYYY-MM-dd")
         else:
             results[x_property] = image.get(x_property).getInfo()
@@ -1829,7 +1821,7 @@ def image_series_by_region(
     df = df.drop(columns=[series_property]).T
     df.columns = headers
 
-    if x_property == "system:time_start" or x_property == "system:time_end":
+    if x_property in ("system:time_start", "system:time_end"):
         indexes = common.image_dates(image_collection).getInfo()
         df["index"] = pd.to_datetime(indexes)
 
