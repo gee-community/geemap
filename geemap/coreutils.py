@@ -5,7 +5,7 @@ import random
 import string
 import sys
 import tempfile
-from typing import Any, Union
+from typing import Any
 import uuid
 import webbrowser
 import zipfile
