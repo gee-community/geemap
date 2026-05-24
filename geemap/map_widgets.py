@@ -162,8 +162,11 @@ class Colorbar(ipywidgets.Output):
         if not isinstance(vis_params, dict):
             raise TypeError("The vis_params must be a dictionary.")
 
-        if isinstance(kwargs.get("colors"), (list, tuple)):
-            vis_params["palette"] = list(kwargs["colors"])
+        colors = kwargs.pop("colors", None)
+        if isinstance(colors, (list, tuple)):
+            vis_params["palette"] = list(colors)
+
+        caption = kwargs.pop("caption", None)
 
         width, height = self._get_dimensions(orientation, kwargs)
 
@@ -216,7 +219,7 @@ class Colorbar(ipywidgets.Output):
             **kwargs,
         )
 
-        label = label or vis_params.get("bands") or kwargs.pop("caption", None)
+        label = label or vis_params.get("bands") or caption
         if label:
             cb.set_label(label, fontsize=font_size)
 
@@ -252,8 +255,8 @@ class Colorbar(ipywidgets.Output):
         if orientation in default_dims:
             default = default_dims[orientation]
             return (
-                kwargs.get("width", default[0]),
-                kwargs.get("height", default[1]),
+                kwargs.pop("width", default[0]),
+                kwargs.pop("height", default[1]),
             )
         raise ValueError(
             f"orientation must be one of [{', '.join(default_dims.keys())}]."
