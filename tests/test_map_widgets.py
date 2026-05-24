@@ -202,7 +202,6 @@ class TestColorbar(unittest.TestCase):
             alpha=1,
             cmap=self.listed_colormap,
             orientation="horizontal",
-            colors=self.TEST_COLORS,
         )
 
     def test_colorbar_min_max(self):
@@ -227,7 +226,6 @@ class TestColorbar(unittest.TestCase):
             alpha=0.5,
             cmap=mock.ANY,
             orientation=mock.ANY,
-            colors=mock.ANY,
         )
 
     def test_colorbar_alpha(self):
@@ -238,7 +236,6 @@ class TestColorbar(unittest.TestCase):
             alpha=0.5,
             cmap=mock.ANY,
             orientation=mock.ANY,
-            colors=mock.ANY,
         )
 
     def test_colorbar_invalid_alpha(self):
