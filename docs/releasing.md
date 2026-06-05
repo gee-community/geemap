@@ -19,16 +19,16 @@ The goal here is to release the package that was tested during the previous week
 #### **A. Publish the Stable Release**
 
 1.  **Go to Workflow Dispatch:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab on GitHub, select the **`Release-stable`** workflow.
-3.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
+2.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
     * **Version:** Enter the final stable version number (e.g., **`0.37.0`**).
     * **Publish immediately:** Leave as `false` to review the draft release first.
-4.  **Action:** The workflow automatically creates the stable tag (`v0.37.0`) and creates a **draft GitHub Release**.
+3.  **Action:** The workflow automatically creates the stable tag (`v0.37.0`) and creates a **draft GitHub Release**.
 
 #### **B. Check and Publish the Final Draft Release**
 
 1.  Go to the **[Releases](https://github.com/gee-community/geemap/releases)** page and find the new **Draft Release** (`v0.37.0`).
-3.  **Review the release notes.** They should include the differences from the last stable release tag.
-4.  **Publish the Release.** This single action triggers:
+2.  **Review the release notes.** They should include the differences from the last stable release tag.
+3.  **Publish the Release.** This single action triggers:
     * Final PyPI/Conda-Forge deployment and Docker build.
     * The Post-Release Development Sync workflow.
 
@@ -37,7 +37,7 @@ The goal here is to release the package that was tested during the previous week
 1.  Go to the **[Pull Requests](https://github.com/gee-community/geemap/pulls)** tab.
 2.  Find the automated PR titled: **`chore: Sync master version to X.Y.Z.post0`**.
 3.  **Verify:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab and check that the deployment steps triggered by the final stable release are complete and successful.
-5.  **Merge the Pull Request.** This updates the `master` branch, setting the development version.
+4.  **Merge the Pull Request.** This updates the `master` branch, setting the development version.
 
 #### **D. Synchronize Bug Fixes to Master**
 
