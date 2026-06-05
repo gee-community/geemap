@@ -18,30 +18,30 @@ The goal here is to release the package that was tested during the previous week
 
 #### **A. Publish the Stable Release**
 
-1.  **Go to Workflow Dispatch:** Navigate to the **Actions** tab on GitHub, select the **`Release-stable`** workflow.
-2.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
+1.  **Go to Workflow Dispatch:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab on GitHub, select the **`Release-stable`** workflow.
+3.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
     * **Version:** Enter the final stable version number (e.g., **`0.37.0`**).
     * **Publish immediately:** Leave as `false` to review the draft release first.
-3.  **Action:** The workflow automatically creates the stable tag (`v0.37.0`) and creates a **draft GitHub Release**.
+4.  **Action:** The workflow automatically creates the stable tag (`v0.37.0`) and creates a **draft GitHub Release**.
 
 #### **B. Check and Publish the Final Draft Release**
 
-1.  Go to the **Releases** page and find the new **Draft Release** (`v0.37.0`).
-2.  **Review the release notes.** They should include the differences from the last stable release tag.
-3.  **Publish the Release.** This single action triggers:
+1.  Go to the **[Releases](https://github.com/gee-community/geemap/releases)** page and find the new **Draft Release** (`v0.37.0`).
+3.  **Review the release notes.** They should include the differences from the last stable release tag.
+4.  **Publish the Release.** This single action triggers:
     * Final PyPI/Conda-Forge deployment and Docker build.
     * The Post-Release Development Sync workflow.
 
 #### **C. Finalize the Master Branch Sync**
 
-1.  Go to the **Pull Requests** tab.
+1.  Go to the **[Pull Requests](https://github.com/gee-community/geemap/pulls)** tab.
 2.  Find the automated PR titled: **`chore: Sync master version to X.Y.Z.post0`**.
-3.  **Verify:** Check that the deployment steps triggered by the final stable release are complete and successful.
-4.  **Merge the Pull Request.** This updates the `master` branch, setting the development version.
+3.  **Verify:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab and check that the deployment steps triggered by the final stable release are complete and successful.
+5.  **Merge the Pull Request.** This updates the `master` branch, setting the development version.
 
 #### **D. Synchronize Bug Fixes to Master**
 
-After the post-release PR is merged, ensure any bug fixes made directly to the **previous week's release branch** (e.g., `v0.37.0-release`) are present on `master`.
+After the post-release PR is merged, check the [commit history](https://github.com/gee-community/geemap/commits/master/) and ensure any bug fixes made directly to the **previous week's release branch** (e.g., `v0.37.0-release`) are present on `master`.
 
 <details>
 <summary><b>Advanced: Synchronize Fixes using a GitHub Codespace</b></summary>
@@ -81,7 +81,7 @@ Immediately after deploying the stable release, initiate the testing cycle for t
 #### **A. Initiate the Prerelease Workflow**
 
 1.  **Determine the Next Version:** Choose the next version number (e.g., **`0.37.1`**).
-2.  **Go to Workflow Dispatch:** Navigate to the **Actions** tab on GitHub, select the **`Release-prerelease`** workflow.
+2.  **Go to Workflow Dispatch:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab on GitHub, select the **`Release-prerelease`** workflow.
 3.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
     * **Version:** Enter the base version (e.g., `0.37.1`).
     * **RC Number:** Use `1`.
@@ -90,7 +90,7 @@ Immediately after deploying the stable release, initiate the testing cycle for t
 
 #### **B. Check and Publish the Prerelease**
 
-1.  Go to the **Releases** page and find the new **Draft Prerelease** (`v0.37.1rc1`).
+1.  Go to the **[Releases](https://github.com/gee-community/geemap/releases)** page and find the new **Draft Prerelease** (`v0.37.1rc1`).
 2.  **Review the notes.** They should include the differences from the last stable release tag.
 3.  **Publish the Prerelease.** This action triggers the downstream CI jobs to make the release candidate available for testing.
 
