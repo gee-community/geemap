@@ -65,7 +65,7 @@ jobs:
                   uv run mkdocs build
 
             - name: Deploy to Netlify
-              uses: nwtgck/actions-netlify@v3.0
+              uses: nwtgck/actions-netlify@v4.0
               with:
                   publish-dir: "./site"
                   production-branch: master
