@@ -92,7 +92,7 @@ Immediately after deploying the stable release, initiate the testing cycle for t
     * **Version:** Enter the base version (e.g., `0.37.1`).
     * **RC Number:** Use `1`.
     * **Publish immediately:** Leave as `false`.
-5.  **Action:** The workflow creates the tag (`v0.37.1rc1`) and creates a **draft GitHub Prerelease**.
+4.  **Action:** The workflow creates the tag (`v0.37.1rc1`) and creates a **draft GitHub Prerelease**.
 
 #### **B. Check and Publish the Prerelease**
 
