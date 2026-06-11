@@ -18,26 +18,31 @@ The goal here is to release the package that was tested during the previous week
 
 #### **A. Publish the Stable Release**
 
-1.  **Go to Workflow Dispatch:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab on GitHub, select the **`Release-stable`** workflow.
-2.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
+1. **Get the Release Version:** Find the pre-release version on the **[Releases](https://github.com/gee-community/geemap/releases)** page, e.g., **`0.37.0rc1`**.
+2.  **Go to Workflow Dispatch:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab on GitHub, select the **`Release-stable`** workflow.
+3.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
+    * **Branch:** Run the workflow at `master`.
     * **Version:** Enter the final stable version number (e.g., **`0.37.0`**).
     * **Publish immediately:** Leave as `false` to review the draft release first.
-3.  **Action:** The workflow automatically creates the stable tag (`v0.37.0`) and creates a **draft GitHub Release**.
+4.  **Action:** The workflow automatically creates the stable tag (`v0.37.0`) and creates a **draft GitHub Release**.
 
 #### **B. Check and Publish the Final Draft Release**
 
 1.  Go to the **[Releases](https://github.com/gee-community/geemap/releases)** page and find the new **Draft Release** (`v0.37.0`).
 2.  **Review the release notes.** They should include the differences from the last stable release tag.
-3.  **Publish the Release.** This single action triggers:
+3.  **Publish the Release.** Press the pencil icon to enter edit mode and ensure the `Latest` option is selected. Press "Publish release."
+    This single [action](https://github.com/gee-community/geemap/actions) triggers the follwoing:
     * Final PyPI/Conda-Forge deployment and Docker build.
     * The Post-Release Development Sync workflow.
+    * Creates the master version bump PR.
 
 #### **C. Finalize the Master Branch Sync**
 
-1.  Go to the **[Pull Requests](https://github.com/gee-community/geemap/pulls)** tab.
-2.  Find the automated PR titled: **`chore: Sync master version to X.Y.Z.post0`**.
-3.  **Verify:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab and check that the deployment steps triggered by the final stable release are complete and successful.
+1.  **Verify:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab and check that the deployment steps triggered by the final stable release are complete and successful.
+2.  Go to the **[Pull Requests](https://github.com/gee-community/geemap/pulls)** tab.
+3.  Find the automated PR titled: **`chore: Sync master version to X.Y.Z.post0`**.
 4.  **Merge the Pull Request.** This updates the `master` branch, setting the development version.
+5.  This triggers one additional [graph update action](https://github.com/gee-community/geemap/actions).
 
 #### **D. Synchronize Bug Fixes to Master**
 
@@ -80,19 +85,21 @@ Immediately after deploying the stable release, initiate the testing cycle for t
 
 #### **A. Initiate the Prerelease Workflow**
 
-1.  **Determine the Next Version:** Choose the next version number (e.g., **`0.37.1`**).
+1.  **Determine the Next Version:** Choose the next version number (e.g., **`0.37.1`**) by checking the [commit history](https://github.com/gee-community/geemap/commits/master/). Increment the MINOR version if there are project fixes, otherwise increment the PATCH version.
 2.  **Go to Workflow Dispatch:** Navigate to the **[Actions](https://github.com/gee-community/geemap/actions)** tab on GitHub, select the **`Release-prerelease`** workflow.
 3.  **Run Workflow:** Click **Run workflow** and enter the required inputs:
+    * **Branch:** Run the workflow at `master`.
     * **Version:** Enter the base version (e.g., `0.37.1`).
     * **RC Number:** Use `1`.
     * **Publish immediately:** Leave as `false`.
-4.  **Action:** The workflow creates the tag (`v0.37.1rc1`) and creates a **draft GitHub Prerelease**.
+5.  **Action:** The workflow creates the tag (`v0.37.1rc1`) and creates a **draft GitHub Prerelease**.
 
 #### **B. Check and Publish the Prerelease**
 
 1.  Go to the **[Releases](https://github.com/gee-community/geemap/releases)** page and find the new **Draft Prerelease** (`v0.37.1rc1`).
 2.  **Review the notes.** They should include the differences from the last stable release tag.
-3.  **Publish the Prerelease.** This action triggers the downstream CI jobs to make the release candidate available for testing.
+3.  **Publish the Prerelease.** Press the pencil icon to enter edit mode and ensure the `Pre-release` option is selected. Press "Publish release."
+    * This action triggers the downstream CI jobs to make the release candidate available for testing.
 
 #### **C. Testing for the Week**
 
