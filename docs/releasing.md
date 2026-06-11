@@ -31,7 +31,7 @@ The goal here is to release the package that was tested during the previous week
 1.  Go to the **[Releases](https://github.com/gee-community/geemap/releases)** page and find the new **Draft Release** (`v0.37.0`).
 2.  **Review the release notes.** They should include the differences from the last stable release tag.
 3.  **Publish the Release.** Press the pencil icon to enter edit mode and ensure the `Latest` option is selected. Press "Publish release."
-    This single [action](https://github.com/gee-community/geemap/actions) triggers the follwoing:
+    This single [action](https://github.com/gee-community/geemap/actions) triggers the following:
     * Final PyPI/Conda-Forge deployment and Docker build.
     * The Post-Release Development Sync workflow.
     * Creates the master version bump PR.
