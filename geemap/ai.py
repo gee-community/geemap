@@ -53,6 +53,7 @@ except ImportError:
     print("Please install the required packages.")
     print("pip install 'geemap[ai]'")
 
+import builtins as _builtins
 import iso8601
 import tenacity
 from tenacity import (
@@ -68,6 +69,97 @@ from . import geemap
 # Google Colab-specific imports (only if you're working in Google Colab)
 if "google.colab" in sys.modules:
     from google.colab import output, data_table, syntax
+
+
+# Whitelisted builtins for executing LLM-generated Earth Engine code.
+# Excludes __import__/eval/exec/compile/open/input/getattr/setattr/delattr/vars
+# /globals/locals/dir/breakpoint to block trivial RCE escapes such as
+# `__import__('os').system(...)`. Kept intentionally narrow; callers must also
+# pass `ee` (and any other required modules) explicitly through the exec globals.
+# NOTE: This is a defense-in-depth measure, not a complete sandbox. A determined
+# attacker can still reach loaded classes via dunder traversal
+# (e.g. `obj.__class__.__base__.__subclasses__()`); use RestrictedPython or a
+# subprocess for stronger isolation.
+_SAFE_BUILTIN_NAMES = frozenset(
+    {
+        # Constants
+        "True",
+        "False",
+        "None",
+        "Ellipsis",
+        "NotImplemented",
+        # Constructors / converters
+        "bool",
+        "int",
+        "float",
+        "complex",
+        "str",
+        "bytes",
+        "bytearray",
+        "list",
+        "tuple",
+        "dict",
+        "set",
+        "frozenset",
+        "slice",
+        # Iteration / functional
+        "range",
+        "enumerate",
+        "zip",
+        "reversed",
+        "sorted",
+        "iter",
+        "next",
+        "map",
+        "filter",
+        "any",
+        "all",
+        # Math / numerics
+        "abs",
+        "min",
+        "max",
+        "sum",
+        "round",
+        "pow",
+        "divmod",
+        # Inspection (safe subset)
+        "len",
+        "isinstance",
+        "issubclass",
+        "type",
+        "hash",
+        "id",
+        "repr",
+        "format",
+        "ord",
+        "chr",
+        # Debug
+        "print",
+        # Exceptions (so try/except in generated code works)
+        "Exception",
+        "BaseException",
+        "ValueError",
+        "TypeError",
+        "KeyError",
+        "IndexError",
+        "AttributeError",
+        "RuntimeError",
+        "StopIteration",
+        "ZeroDivisionError",
+        "ArithmeticError",
+        "NameError",
+        "LookupError",
+        "OverflowError",
+        "FloatingPointError",
+        "NotImplementedError",
+        "AssertionError",
+    }
+)
+_SAFE_BUILTINS = {
+    name: getattr(_builtins, name)
+    for name in _SAFE_BUILTIN_NAMES
+    if hasattr(_builtins, name)
+}
 
 
 class Genie(ipywidgets.VBox):
@@ -268,9 +360,13 @@ class Genie(ipywidgets.VBox):
             with debug_output:
                 print(f"IMAGE:\n {python_code}\n")
             try:
-                locals = {}
-                exec(f"import ee; im = {python_code}", {}, locals)
-                m.addLayer(locals["im"])
+                locals_env = {}
+                exec(
+                    f"im = {python_code}",
+                    {"__builtins__": _SAFE_BUILTINS, "ee": ee},
+                    locals_env,
+                )
+                m.addLayer(locals_env["im"])
             except Exception as e:
                 with debug_output:
                     print(f"ERROR: {e}")
@@ -788,7 +884,15 @@ def run_ee_code(code: str, ee: Any, geemap_instance: Map) -> None:
         with redirect_stdout(_):
             # Note that sometimes the geemap code uses both 'Map' and 'm' to refer to
             # a map instance.
-            exec(code, {"ee": ee, "Map": geemap_instance, "m": geemap_instance})
+            exec(
+                code,
+                {
+                    "__builtins__": _SAFE_BUILTINS,
+                    "ee": ee,
+                    "Map": geemap_instance,
+                    "m": geemap_instance,
+                },
+            )
     except Exception:
         # Re-raise the exception with the original traceback.
         exc_type, exc_value, exc_traceback = sys.exc_info()
