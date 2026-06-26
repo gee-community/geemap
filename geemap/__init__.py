@@ -2,7 +2,7 @@
 
 __author__ = """Qiusheng Wu"""
 __email__ = "giswqs@gmail.com"
-__version__ = "0.38.3rc1"
+__version__ = "0.38.3"
 
 import os
 import sys
