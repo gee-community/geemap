@@ -1238,7 +1238,7 @@ wheels = [
 
 [[package]]
 name = "geemap"
-version = "0.38.2.post0"
+version = "0.38.3.post0"
 source = { editable = "." }
 dependencies = [
     { name = "anywidget" },
