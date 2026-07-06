@@ -64,7 +64,9 @@ jobs:
                   uv pip install -r requirements_docs.txt
                   uv run mkdocs build
 
-            - name: Deploy to Netlify
+            - name: Deploy preview to Netlify
+              if: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '' }}
+              continue-on-error: true
               uses: nwtgck/actions-netlify@v4.0
               with:
                   publish-dir: "./site"
