@@ -14,6 +14,8 @@ jobs:
 
         env:
             USE_MKDOCS: ${{ secrets.USE_MKDOCS }}
+            NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+            NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
 
         steps:
             - uses: actions/checkout@v7
@@ -65,7 +67,7 @@ jobs:
                   uv run mkdocs build
 
             - name: Deploy preview to Netlify
-              if: ${{ github.event.pull_request.head.repo.full_name == github.repository && secrets.NETLIFY_AUTH_TOKEN != '' && secrets.NETLIFY_SITE_ID != '' }}
+              if: ${{ github.event.pull_request.head.repo.full_name == github.repository && env.NETLIFY_AUTH_TOKEN != '' && env.NETLIFY_SITE_ID != '' }}
               continue-on-error: true
               uses: nwtgck/actions-netlify@v4.0
               with:
@@ -76,10 +78,6 @@ jobs:
                   enable-pull-request-comment: true
                   enable-commit-comment: false
                   overwrites-pull-request-comment: true
-              env:
-                  NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
-                  NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-
             - name: Cleanup
               if: always()
               run: |
