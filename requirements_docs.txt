@@ -5,6 +5,7 @@ codespell
 coverage
 deadlink
 ipykernel
+jupyter-client<8.9
 livereload
 mkdocs
 mkdocs-git-revision-date-localized-plugin
