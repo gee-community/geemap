@@ -63,7 +63,6 @@ jobs:
                   uv run python -m unittest discover tests/
             - name: Install mkdocs
               run: |
-                  uv pip install "typing_extensions>=4.12.2" "jupyter_client>=8.6.3"
                   uv pip install -r requirements_docs.txt
                   uv run mkdocs build
 
