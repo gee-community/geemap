@@ -5,11 +5,11 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
+from collections.abc import Iterable
 import io
 import os
-import warnings
-from collections.abc import Iterable
 from typing import Any
+import warnings
 
 try:
     import cartopy.crs as ccrs
@@ -23,14 +23,15 @@ import ee
 import matplotlib as mpl
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-import numpy as np
-import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
 from matplotlib.lines import Line2D
+import numpy as np
 from PIL import Image
+import requests
 
-from . import basemaps, common
+from . import basemaps
+from . import common
 
 
 def get_map(
@@ -226,9 +227,14 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
     Returns:
         List of hex color codes from matplotlib colormap for n intervals.
     """
+    # matplotlib >= 3.6 replaced cm.get_cmap() with mpl.colormaps[]. The new
+    # API returns the full continuous colormap instead of one already
+    # resampled to n colors, so resampled(n) is used to match old behavior.
     if hasattr(mpl, "colormaps"):
+        # For newer matplotlib versions (3.6+)
         colormap = mpl.colormaps[cmap].resampled(n)
     else:
+        # For older matplotlib versions
         colormap = cm.get_cmap(cmap, n)
 
     return [colors.rgb2hex(colormap(i / (n - 1) if n > 1 else 0)[:3]) for i in range(n)]
