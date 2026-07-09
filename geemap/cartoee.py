@@ -5,11 +5,11 @@
 # The geemap community will maintain the extra features.                         #
 # *******************************************************************************#
 
-from collections.abc import Iterable
 import io
 import os
-from typing import Any
 import warnings
+from collections.abc import Iterable
+from typing import Any
 
 try:
     import cartopy.crs as ccrs
@@ -23,15 +23,14 @@ import ee
 import matplotlib as mpl
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
+import numpy as np
+import requests
 from matplotlib import cm, colors
 from matplotlib import font_manager as mfonts
 from matplotlib.lines import Line2D
-import numpy as np
 from PIL import Image
-import requests
 
-from . import basemaps
-from . import common
+from . import basemaps, common
 
 
 def get_map(
@@ -227,10 +226,12 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
     Returns:
         List of hex color codes from matplotlib colormap for n intervals.
     """
-    colormap = cm.get_cmap(cmap, n)
-    vals = np.linspace(0, 1, n)
+    if hasattr(mpl, "colormaps"):
+        colormap = mpl.colormaps[cmap].resampled(n)
+    else:
+        colormap = cm.get_cmap(cmap, n)
 
-    return list(map(lambda x: colors.rgb2hex(colormap(x)[:3]), vals))
+    return [colors.rgb2hex(colormap(i / (n - 1) if n > 1 else 0)[:3]) for i in range(n)]
 
 
 def add_colorbar(
@@ -1179,7 +1180,7 @@ def get_image_collection_gif(
         img_list.append(out_img)
 
         if verbose:
-            print(f"Downloading {i+1}/{count}: {name} ...")
+            print(f"Downloading {i + 1}/{count}: {name} ...")
 
         # Size plot.
         fig = plt.figure(figsize=fig_size)
