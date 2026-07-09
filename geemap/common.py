@@ -8947,7 +8947,10 @@ def ee_to_gdf(
 
     kwargs["expression"] = ee_object
     kwargs["fileFormat"] = "GEOPANDAS_GEODATAFRAME"
-
+    # Get the source CRS to ensure we can reproject back to it later
+    # This is important because ee.data.computeFeatures will return a GeoDataFrame
+    # reprojected to EPSG:4326, Docs in
+    # https://developers.google.com/earth-engine/apidocs/ee-data-computefeatures
     crs = ee_object.first().geometry().projection().crs().getInfo()
     gdf = ee.data.computeFeatures(kwargs)
 
@@ -8956,10 +8959,11 @@ def ee_to_gdf(
 
     if sort_columns:
         gdf = gdf.reindex(sorted(gdf.columns), axis=1)
-
+    # Standardize CRS: Set as 4326 initially as a base, then reproject
+    # to the original geometry's CRS if it differs from 4326.
     gdf = gdf.set_crs("EPSG:4326")
 
-    if crs:
+    if crs and crs.upper() != "EPSG:4326":
         gdf = gdf.to_crs(crs)
 
     return gdf
