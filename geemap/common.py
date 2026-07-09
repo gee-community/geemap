@@ -8957,7 +8957,11 @@ def ee_to_gdf(
     if sort_columns:
         gdf = gdf.reindex(sorted(gdf.columns), axis=1)
 
-    gdf.crs = crs
+    gdf = gdf.set_crs("EPSG:4326")
+
+    if crs:
+        gdf = gdf.to_crs(crs)
+
     return gdf
 
 
