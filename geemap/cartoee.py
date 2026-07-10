@@ -227,10 +227,17 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
     Returns:
         List of hex color codes from matplotlib colormap for n intervals.
     """
-    colormap = cm.get_cmap(cmap, n)
-    vals = np.linspace(0, 1, n)
+    # matplotlib >= 3.6 replaced cm.get_cmap() with mpl.colormaps[]. The new
+    # API returns the full continuous colormap instead of one already
+    # resampled to n colors, so resampled(n) is used to match old behavior.
+    if hasattr(mpl, "colormaps"):
+        # For newer matplotlib versions (3.6+)
+        colormap = mpl.colormaps[cmap].resampled(n)
+    else:
+        # For older matplotlib versions
+        colormap = cm.get_cmap(cmap, n)
 
-    return list(map(lambda x: colors.rgb2hex(colormap(x)[:3]), vals))
+    return [colors.rgb2hex(colormap(i / (n - 1) if n > 1 else 0)[:3]) for i in range(n)]
 
 
 def add_colorbar(
@@ -1179,7 +1186,7 @@ def get_image_collection_gif(
         img_list.append(out_img)
 
         if verbose:
-            print(f"Downloading {i+1}/{count}: {name} ...")
+            print(f"Downloading {i + 1}/{count}: {name} ...")
 
         # Size plot.
         fig = plt.figure(figsize=fig_size)
