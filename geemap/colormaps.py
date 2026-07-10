@@ -239,7 +239,8 @@ def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
 
     plt.show()
 
-def get_colormap(cmap_name: str, n_class: int | None = None)-> mpl.colors.Colormap:
+
+def get_colormap(cmap_name: str, n_class: int | None = None) -> mpl.colors.Colormap:
     """Returns a matplotlib colormap object"""
     if hasattr(plt, "colormaps"):
         cmap = plt.colormaps[cmap_name]
@@ -252,6 +253,7 @@ def get_colormap(cmap_name: str, n_class: int | None = None)-> mpl.colors.Colorm
     else:
         cmap = plt.cm.get_cmap(cmap_name, n_class)
     return cmap
+
 
 def get_palettes() -> box.Box:
     """Returns a dictionary of colormaps and their associated palettes."""
