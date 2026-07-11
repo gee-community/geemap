@@ -74,6 +74,8 @@ def get_map(
     if proj is None:
         proj = ccrs.PlateCarree()
 
+    kwargs["proj"] = proj
+
     if "style" in kwargs:
         del kwargs["style"]
 
@@ -149,6 +151,11 @@ def add_layer(
     if not isinstance(ee_object, ee.Image):
         raise ValueError("provided `ee_object` is not of type ee.Image")
 
+    if "proj" in kwargs:
+        proj = kwargs["proj"]
+    else:
+        proj = ccrs.PlateCarree()
+
     if region is not None:
         map_region = ee.Geometry.Rectangle(region).getInfo()["coordinates"]
         view_extent = (region[2], region[0], region[1], region[3])
@@ -211,7 +218,7 @@ def add_layer(
         np.squeeze(image),
         extent=view_extent,
         origin="upper",
-        transform=ccrs.PlateCarree(),
+        transform=proj,
         zorder=1,
     )
 
