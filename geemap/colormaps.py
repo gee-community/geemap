@@ -242,9 +242,12 @@ def plot_colormaps(width: float = 8.0, height: float = 0.4) -> None:
 
 def get_colormap(cmap_name: str, n_class: int | None = None) -> mpl.colors.Colormap:
     """Returns a matplotlib colormap object"""
-    if hasattr(plt, "colormaps"):
-        cmap = plt.colormaps[cmap_name]
-        if n_class:
+    if hasattr(mpl, "colormaps"):
+        try:
+            cmap = mpl.colormaps[cmap_name]
+        except KeyError as e:
+            raise ValueError(f"Colormap '{cmap_name}' not found.") from e
+        if n_class is not None:
             cmap = cmap.resampled(n_class)
         return cmap
     elif hasattr(plt, "get_cmap"):
