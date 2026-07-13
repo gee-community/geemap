@@ -312,8 +312,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
             )
 
         if map_type not in self.MAP_TYPE_CONFIG:
-            raise ValueError(
-                f"map_type must be one of: {self.MAP_TYPE_CONFIG.keys()}")
+            raise ValueError(f"map_type must be one of: {self.MAP_TYPE_CONFIG.keys()}")
 
         request_url = f"https://tile.googleapis.com/v1/createSession?key={key}"
         response = requests.post(
