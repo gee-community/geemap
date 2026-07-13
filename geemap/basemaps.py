@@ -46,19 +46,19 @@ XYZ_TILES = {
         "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         "attribution": "Esri",
         "name": "Esri.WorldImagery",
-        "max_zoom": 30,
+        "max_zoom": 50,
     },
     "TERRAIN": {
         "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}",
         "attribution": "Esri",
         "name": "Esri.WorldTopoMap",
-        "max_zoom": 30,
+        "max_zoom": 50,
     },
     "HYBRID": {
         "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
         "attribution": "Esri",
         "name": "Esri.WorldImagery",
-        "max_zoom": 30,
+        "max_zoom": 50,
     },
 }
 
@@ -160,7 +160,7 @@ WMS_TILES = {
         "attribution": "USGS",
         "format": "image/png",
         "transparent": True,
-        "max_zoom": 30,
+        "max_zoom": 50,
     },
     "USGS NAIP Imagery False Color": {
         "url": "https://imagery.nationalmap.gov/arcgis/services/USGSNAIPImagery/ImageServer/WMSServer?",
@@ -312,7 +312,8 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
             )
 
         if map_type not in self.MAP_TYPE_CONFIG:
-            raise ValueError(f"map_type must be one of: {self.MAP_TYPE_CONFIG.keys()}")
+            raise ValueError(
+                f"map_type must be one of: {self.MAP_TYPE_CONFIG.keys()}")
 
         request_url = f"https://tile.googleapis.com/v1/createSession?key={key}"
         response = requests.post(
