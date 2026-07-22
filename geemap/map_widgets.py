@@ -417,7 +417,7 @@ class Legend(anywidget.AnyWidget):
         if isinstance(color, tuple):
             try:
                 return f"#{coreutils.rgb_to_hex(color)}"
-            except:
+            except Exception:
                 raise ValueError(f"Unable to convert rgb value to hex: {color}")
         elif re.search(r"^(?:[0-9a-fA-F]{3}){1,2}(?:[0-9a-fA-F]{1,2})?$", color):
             # Add a # for hexadecimal strings of length 3 or 6, with optional

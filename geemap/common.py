@@ -5708,7 +5708,7 @@ def stac_tile(
                 try:
                     percentile_2 = min([stats[s]["percentile_2"] for s in stats])
                     percentile_98 = max([stats[s]["percentile_98"] for s in stats])
-                except:
+                except Exception:
                     percentile_2 = min(
                         [
                             stats[s][list(stats[s].keys())[0]]["percentile_2"]
@@ -11921,7 +11921,7 @@ def classify(
         cmap = "Blues"
     try:
         cmap = plt.get_cmap(cmap, k)
-    except:
+    except Exception:
         cmap = plt.cm.get_cmap(cmap, k)
     if colors is None:
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
@@ -12678,7 +12678,7 @@ def get_palette_colors(
     """
     try:
         cmap = plt.get_cmap(cmap_name, n_class)
-    except:
+    except Exception:
         cmap = plt.cm.get_cmap(cmap_name, n_class)
     colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
     if hashtag:
