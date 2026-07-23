@@ -5,6 +5,7 @@ from __future__ import annotations
 import base64
 import glob
 import importlib.resources
+import logging
 import os
 import re
 from typing import Any
@@ -169,9 +170,18 @@ class Map(MapWidget):
         """Convert xyz tile services to a dictionary of basemaps."""
         tile_providers = list(get_xyz_dict().values())
         if coreutils.get_google_maps_api_key():
-            tile_providers = tile_providers + list(
-                get_google_map_tile_providers().values()
-            )
+            try:
+                tile_providers = tile_providers + list(
+                    get_google_map_tile_providers().values()
+                )
+            except Exception as e:
+                logging.warning(
+                    "Unable to load Google Maps basemaps: %s. Continuing without "
+                    "them. Unset the GOOGLE_MAPS_API_KEY environment variable if "
+                    "your account or region does not support the Google Maps "
+                    "Tiles API.",
+                    e,
+                )
 
         ret_dict = {}
         for tile_info in tile_providers:
