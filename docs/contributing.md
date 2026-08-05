@@ -79,7 +79,7 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
 
     Run the linters to check for style and syntax errors:
     ```bash
-    flake8 geemap tests
+    pflake8 geemap tests
     ```
 
     Run the test suite to ensure no existing features are broken:
