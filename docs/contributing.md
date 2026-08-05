@@ -79,21 +79,16 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
 
     Run the linters to check for style and syntax errors:
     ```bash
-    flake8 geemap tests
+    pflake8 geemap tests
     ```
 
     Run the test suite to ensure no existing features are broken:
     ```bash
-    pytest
-    ```
-
-    *(Optional but recommended)* Test across multiple Python versions using tox:
-    ```bash
-    tox
+    python -m unittest discover -s tests
     ```
     
     To get the necessary testing tools, install them into your conda env: 
-    `pip install pyproject-flake8 pytest tox`
+    `pip install pyproject-flake8`
 
 6. Commit your changes and push your branch to GitHub:
 
