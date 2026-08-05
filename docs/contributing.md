@@ -86,8 +86,8 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
     ```bash
     python -m unittest discover -s tests
     ```
-    
-    To get the necessary testing tools, install them into your conda env: 
+
+    To get the necessary testing tools, install them into your conda env:
     `pip install pyproject-flake8`
 
 6. Commit your changes and push your branch to GitHub:
