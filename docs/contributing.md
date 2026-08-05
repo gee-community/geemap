@@ -107,7 +107,7 @@ To ensure a smooth review process and keep the automated pipelines passing, plea
 ### 1. Code Quality & Automated Checks
 * **Pass the CI/CD Pipeline:** Your PR must pass all automated GitHub Actions checks. You can monitor these at <https://github.com/gee-community/geemap/actions>.
 * **Python Compatibility:** The PR must work for Python 3.12-3.13. Ensure tests pass for all currently supported Python versions.
-* **Linting:** Code must be free of `flake8` errors. 
+* **Linting:** Code must be free of `flake8` errors.
 
 ### 2. Testing
 * **Include Tests:** If you are adding a new feature or fixing a bug, include the corresponding `pytest` functions in the `tests/` directory.
