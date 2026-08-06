@@ -35,6 +35,6 @@ repos:
       rev: 1.1.1
       hooks:
           - id: pyrefly-check
-            entry: uv run --all-extras pyrefly check
+            additional_dependencies: [".[all]"]
             pass_filenames: false
             language: python
