@@ -91,7 +91,6 @@ extra = [
 ]
 lidar = [
     "ipygany",
-    "ipyvtklink",
     "laspy[lazrs]",
     "panel",
     "pyntcloud[LAS]",
