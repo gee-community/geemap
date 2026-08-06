@@ -217,7 +217,6 @@ Homepage = "https://github.com/gee-community/geemap"
 [tool.pyrefly]
 preset = "basic"
 project-includes = ["geemap", "tests"]
-python-interpreter-path = ".venv/bin/python"
 ignore-missing-imports = ["arcpy", "datapane", "gdal", "google.colab", "google_drive_downloader", "osgeo", "rasterio.crs"]
 
 
