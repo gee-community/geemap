@@ -70,28 +70,31 @@ dev = [
     "jupyterlab",
 ]
 extra = [
+    "cartopy",
     "ee_extra>=0.0.15",
     "ffmpeg-python",
     "gdown",
     "geeadd>=0.5.1",
     "geojson",
     "geopandas",
+    "googledrivedownloader",
     "ipynb-py-convert",
     "ipytree",
     "jupyterlab>=3",
     "mapclassify>=2.4.0",
     "mss",
     "oeel",
+    "opencv-python",
     "owslib",
     "palettable",
     "pycrs",
+    "rasterio",
     "sankee>=0.1.0",
     "whiteboxgui>=0.6.0",
     "xee",
 ]
 lidar = [
     "ipygany",
-    "ipyvtklink",
     "laspy[lazrs]",
     "panel",
     "pyntcloud[LAS]",
@@ -171,6 +174,11 @@ exclude = [
 ]
 max-line-length = 88
 
+[dependency-groups]
+dev = [
+    "pyrefly>=1.2.0",
+]
+
 [tool.hatch.envs.default]
 features = ["dev"]
 
@@ -205,3 +213,15 @@ build_cmd = "build"
 
 [project.urls]
 Homepage = "https://github.com/gee-community/geemap"
+
+[tool.pyrefly]
+preset = "basic"
+project-includes = ["geemap", "tests"]
+python-interpreter-path = ".venv/bin/python"
+ignore-missing-imports = ["arcpy", "datapane", "gdal", "google.colab", "google_drive_downloader", "osgeo", "rasterio.crs"]
+
+
+
+[tool.uv]
+no-build-isolation-package = ["keplergl"]
+override-dependencies = ["pyarrow>=17.0.0", "lxml>=5.0.0", "pandas>=2.0.0", "langchain<0.3.0"]

@@ -19,8 +19,12 @@ import datetime
 import logging
 import re
 import sys
-from typing import Any
+from typing import Any, TYPE_CHECKING
 import uuid
+
+if TYPE_CHECKING:
+    from geemap.geemap import Map
+
 
 import numpy as np
 import pandas as pd

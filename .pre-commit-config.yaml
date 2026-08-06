@@ -30,3 +30,10 @@ repos:
       rev: 0.9.1
       hooks:
           - id: nbstripout
+
+    - repo: https://github.com/facebook/pyrefly-pre-commit
+      rev: 1.1.1
+      hooks:
+          - id: pyrefly-check
+            pass_filenames: false
+            language: python
