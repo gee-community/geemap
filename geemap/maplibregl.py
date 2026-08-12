@@ -2149,7 +2149,9 @@ class Map(MapWidget):
                 return layer
         return None
 
-    def zoom_to(self, zoom: float, options: dict[str, Any] | None = None, **kwargs: Any) -> None:
+    def zoom_to(
+        self, zoom: float, options: dict[str, Any] | None = None, **kwargs: Any
+    ) -> None:
         """Zooms the map to a specified zoom level.
 
         This function zooms the map to the specified zoom level. Additional options and keyword
