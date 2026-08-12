@@ -2004,7 +2004,7 @@ class Map(MapWidget):
         """
         super().add_call("setPitch", pitch, **kwargs)
 
-    def jump_to(self, options: dict[str, Any] = {}, **kwargs: Any) -> None:
+    def jump_to(self, options: dict[str, Any] | None = None, **kwargs: Any) -> None:
         """Jumps the map to a specified location.
 
         This function jumps the map to the specified location with the specified
@@ -2013,9 +2013,11 @@ class Map(MapWidget):
         https://maplibre.org/maplibre-gl-js/docs/API/classes/Map/#jumpto
 
         Args:
-            options: Additional options to control the jump. Defaults to {}.
+            options: Additional options to control the jump. Defaults to None.
             **kwargs: Additional keyword arguments to control the jump.
         """
+        if options is None:
+            options = {}
         super().add_call("jumpTo", options, **kwargs)
 
     def _get_3d_terrain_style(
@@ -2147,7 +2149,7 @@ class Map(MapWidget):
                 return layer
         return None
 
-    def zoom_to(self, zoom: float, options: dict[str, Any] = {}, **kwargs: Any) -> None:
+    def zoom_to(self, zoom: float, options: dict[str, Any] | None = None, **kwargs: Any) -> None:
         """Zooms the map to a specified zoom level.
 
         This function zooms the map to the specified zoom level. Additional options and keyword
@@ -2156,9 +2158,11 @@ class Map(MapWidget):
 
         Args:
             zoom: The zoom level to zoom to.
-            options: Additional options to control the zoom. Defaults to {}.
+            options: Additional options to control the zoom. Defaults to None.
             **kwargs: Additional keyword arguments to control the zoom.
         """
+        if options is None:
+            options = {}
         super().add_call("zoomTo", zoom, options, **kwargs)
 
     def find_first_symbol_layer(self) -> dict | None:
