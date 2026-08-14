@@ -527,7 +527,7 @@ class Map(MapWidget):
         fit_bounds: bool = True,
         visible: bool = True,
         before_id: str | None = None,
-        source_args: dict = {},
+        source_args: dict | None = None,
         **kwargs: Any,
     ) -> None:
         """Adds a GeoJSON layer to the map.
@@ -554,13 +554,15 @@ class Map(MapWidget):
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are
-                passed to the GeoJSONSource class.
+                passed to the GeoJSONSource class. Defaults to None.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
                 See https://maplibre.org/maplibre-style-spec/layers/ for more info.
 
         Raises:
             ValueError: If the data is not a URL or a GeoJSON dictionary.
         """
+        if source_args is None:
+            source_args = {}
         bounds = None
         geom_type = None
 
@@ -640,7 +642,7 @@ class Map(MapWidget):
         fit_bounds: bool = True,
         visible: bool = True,
         before_id: str | None = None,
-        source_args: dict = {},
+        source_args: dict | None = None,
         **kwargs: Any,
     ) -> None:
         """Adds a vector layer to the map.
@@ -665,17 +667,18 @@ class Map(MapWidget):
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
-                GeoJSONSource class.
+                GeoJSONSource class. Defaults to None.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
 
         Raises:
             ValueError: If the data is not a URL or a GeoJSON dictionary.
         """
+        if source_args is None:
+            source_args = {}
         if not isinstance(data, gpd.GeoDataFrame):
             data = gpd.read_file(data).__geo_interface__
         else:
             data = data.__geo_interface__
-
         self.add_geojson(
             data,
             layer_type=layer_type,
@@ -699,7 +702,7 @@ class Map(MapWidget):
         fit_bounds: bool = True,
         visible: bool = True,
         before_id: str | None = None,
-        source_args: dict = {},
+        source_args: dict | None = None,
         **kwargs: Any,
     ) -> None:
         """Adds a vector layer to the map.
@@ -720,12 +723,14 @@ class Map(MapWidget):
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
-                GeoJSONSource class.
+                GeoJSONSource class. Defaults to None.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
 
         Raises:
             ValueError: If the data is not a URL or a GeoJSON dictionary.
         """
+        if source_args is None:
+            source_args = {}
         if not isinstance(gdf, gpd.GeoDataFrame):
             raise ValueError("The data must be a GeoDataFrame.")
         geojson = gdf.__geo_interface__
@@ -751,7 +756,7 @@ class Map(MapWidget):
         visible: bool = True,
         tile_size: int = 256,
         before_id: str | None = None,
-        source_args: dict = {},
+        source_args: dict | None = None,
         **kwargs: Any,
     ) -> None:
         """Adds a TileLayer to the map.
@@ -769,10 +774,12 @@ class Map(MapWidget):
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
-                RasterTileSource class.
+                RasterTileSource class. Defaults to None.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
                 See https://eodagmbh.github.io/py-maplibregl/api/layer/ for more information.
         """
+        if source_args is None:
+            source_args = {}
         raster_source = RasterTileSource(
             tiles=[url.strip()],
             attribution=attribution,
@@ -795,7 +802,7 @@ class Map(MapWidget):
         visible: bool = True,
         tile_size: int = 256,
         before_id: str | None = None,
-        source_args: dict = {},
+        source_args: dict | None = None,
         **kwargs: Any,
     ) -> None:
         """Adds a WMS layer to the map.
@@ -815,18 +822,19 @@ class Map(MapWidget):
             before_id: The ID of an existing layer before which the new layer should be
                 inserted.
             source_args: Additional keyword arguments that are passed to the
-                RasterTileSource class.
+                RasterTileSource class. Defaults to None.
             **kwargs: Additional keyword arguments that are passed to the Layer class.
                 See https://eodagmbh.github.io/py-maplibregl/api/layer/ for more
                 information.
         """
+        if source_args is None:
+            source_args = {}
         url = (
             f"{url.strip()}?service=WMS&request=GetMap"
             f"&layers={layers}&styles=&format={format.replace('/', '%2F')}"
             "&transparent=true&version=1.1.1&height=256&width=256"
             "&srs=EPSG%3A3857&bbox={{bbox-epsg-3857}}"
         )
-
         self.add_tile_layer(
             url,
             name=name,
