@@ -129,17 +129,17 @@ def ee_export_image(
         print("Generating URL ...")
     params = {"name": name, "filePerBand": file_per_band}
 
-    params["scale"] = scale
+    params["scale"] = scale  # pyrefly: ignore[bad-assignment]
     if region is None:
         region = ee_object.geometry()
     if dimensions is not None:
-        params["dimensions"] = dimensions
+        params["dimensions"] = dimensions  # pyrefly: ignore[bad-assignment]
     if region is not None:
-        params["region"] = region
+        params["region"] = region  # pyrefly: ignore[bad-assignment]
     if crs is not None:
         params["crs"] = crs
     if crs_transform is not None:
-        params["crs_transform"] = crs_transform
+        params["crs_transform"] = crs_transform  # pyrefly: ignore[bad-assignment]
     if format != "ZIPPED_GEO_TIFF":
         params["format"] = format
 
@@ -236,7 +236,7 @@ def ee_export_image_collection(
         os.makedirs(out_dir)
 
     try:
-        count = int(ee_object.size().getInfo())
+        count = int(ee_object.size().getInfo())  # pyrefly: ignore[bad-argument-type]
         if verbose:
             print(f"Total number of images: {count}\n")
 
@@ -245,12 +245,14 @@ def ee_export_image_collection(
         elif isinstance(filenames, int):
             filenames = [str(f + filenames) for f in range(0, count)]
 
-        if len(filenames) != count:
+        if len(filenames) != count:  # pyrefly: ignore[bad-argument-type]
             raise Exception(
                 "The number of filenames must be equal to the number of images."
             )
 
-        filenames = [str(f) + ".tif" for f in filenames if not str(f).endswith(".tif")]
+        filenames = [
+            str(f) + ".tif" for f in filenames if not str(f).endswith(".tif")
+        ]  # pyrefly: ignore[not-iterable]
 
         for i in range(0, count):
             image = ee.Image(ee_object.toList(count).get(i))
@@ -264,7 +266,7 @@ def ee_export_image_collection(
                 crs=crs,
                 crs_transform=crs_transform,
                 region=region,
-                dimensions=dimensions,
+                dimensions=dimensions,  # pyrefly: ignore[bad-argument-type]
                 file_per_band=file_per_band,
                 format=format,
                 unmask_value=unmask_value,
@@ -352,7 +354,7 @@ def ee_export_image_to_drive(
         crsTransform,
         maxPixels,
         shardSize,
-        fileDimensions,
+        fileDimensions,  # pyrefly: ignore[bad-argument-type]
         skipEmptyTiles,
         fileFormat,
         formatOptions,
@@ -582,7 +584,7 @@ def ee_export_image_collection_to_drive(
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
     try:
-        count = int(ee_object.size().getInfo())
+        count = int(ee_object.size().getInfo())  # pyrefly: ignore[bad-argument-type]
         print(f"Total number of images: {count}\n")
 
         if (descriptions is not None) and (len(descriptions) != count):
@@ -597,7 +599,7 @@ def ee_export_image_collection_to_drive(
 
         for i in range(0, count):
             image = ee.Image(images.get(i))
-            description = descriptions[i]
+            description = descriptions[i]  # pyrefly: ignore[unsupported-operation]
             ee_export_image_to_drive(
                 image,
                 description,
@@ -668,7 +670,7 @@ def ee_export_image_collection_to_asset(
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
     try:
-        count = int(ee_object.size().getInfo())
+        count = int(ee_object.size().getInfo())  # pyrefly: ignore[bad-argument-type]
         print(f"Total number of images: {count}\n")
 
         if (descriptions is not None) and (len(descriptions) != count):
@@ -685,8 +687,8 @@ def ee_export_image_collection_to_asset(
 
         for i in range(0, count):
             image = ee.Image(images.get(i))
-            description = descriptions[i]
-            assetId = assetIds[i]
+            description = descriptions[i]  # pyrefly: ignore[unsupported-operation]
+            assetId = assetIds[i]  # pyrefly: ignore[unsupported-operation]
             ee_export_image_to_asset(
                 image,
                 description,
@@ -772,7 +774,7 @@ def ee_export_image_collection_to_cloud_storage(
         raise ValueError("The ee_object must be an ee.ImageCollection.")
 
     try:
-        count = int(ee_object.size().getInfo())
+        count = int(ee_object.size().getInfo())  # pyrefly: ignore[bad-argument-type]
         print(f"Total number of images: {count}\n")
 
         if (descriptions is not None) and (len(descriptions) != count):
@@ -786,7 +788,7 @@ def ee_export_image_collection_to_cloud_storage(
 
         for i in range(0, count):
             image = ee.Image(images.get(i))
-            description = descriptions[i]
+            description = descriptions[i]  # pyrefly: ignore[unsupported-operation]
             ee_export_image_to_cloud_storage(
                 image,
                 description,
@@ -846,7 +848,7 @@ def ee_export_geojson(
 
     if selectors is None:
         selectors = ee_object.first().propertyNames().getInfo()
-        selectors = [".geo"] + selectors
+        selectors = [".geo"] + selectors  # pyrefly: ignore[unsupported-operation]
 
     elif not isinstance(selectors, list):
         print("selectors must be a list, such as ['attribute1', 'attribute2']")
@@ -854,10 +856,12 @@ def ee_export_geojson(
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
-            if attribute not in allowed_attributes:
+            if attribute not in allowed_attributes:  # pyrefly: ignore[not-iterable]
                 print(
                     "Attributes must be one chosen from: {} ".format(
-                        ", ".join(allowed_attributes)
+                        ", ".join(
+                            allowed_attributes
+                        )  # pyrefly: ignore[no-matching-overload]
                     )
                 )
                 return
@@ -889,7 +893,7 @@ def ee_export_geojson(
                 fd.write(chunk)
     except Exception as e:
         print("An error occurred while downloading.")
-        if r is not None:
+        if r is not None:  # pyrefly: ignore[unbound-name]
             print(r.json()["error"]["message"])
 
         return
@@ -948,7 +952,7 @@ def ee_export_vector(
             ee_object = ee_object.select([".*"], None, False)
 
     if filetype == "geojson":
-        selectors = [".geo"] + selectors
+        selectors = [".geo"] + selectors  # pyrefly: ignore[unsupported-operation]
 
     elif not isinstance(selectors, list):
         raise ValueError(
@@ -957,10 +961,12 @@ def ee_export_vector(
     else:
         allowed_attributes = ee_object.first().propertyNames().getInfo()
         for attribute in selectors:
-            if attribute not in allowed_attributes:
+            if attribute not in allowed_attributes:  # pyrefly: ignore[not-iterable]
                 raise ValueError(
                     "Attributes must be one chosen from: {} ".format(
-                        ", ".join(allowed_attributes)
+                        ", ".join(
+                            allowed_attributes
+                        )  # pyrefly: ignore[no-matching-overload]
                     )
                 )
 
@@ -994,7 +1000,7 @@ def ee_export_vector(
                 fd.write(chunk)
     except Exception as e:
         print("An error occurred while downloading.")
-        if r is not None:
+        if r is not None:  # pyrefly: ignore[unbound-name]
             print(r.json()["error"]["message"])
         raise ValueError(e)
 
@@ -1570,13 +1576,17 @@ def check_titiler_endpoint(
             assert titiler_endpoint is not None  # For pytype.
 
             if titiler_endpoint == "planetary-computer":
-                titiler_endpoint = PlanetaryComputerEndpoint()
+                titiler_endpoint = (
+                    PlanetaryComputerEndpoint()
+                )  # pyrefly: ignore[bad-assignment]
         else:
             titiler_endpoint = "https://giswqs-titiler-endpoint.hf.space"
     elif titiler_endpoint in ["planetary-computer", "pc"]:
-        titiler_endpoint = PlanetaryComputerEndpoint()
+        titiler_endpoint = (
+            PlanetaryComputerEndpoint()
+        )  # pyrefly: ignore[bad-assignment]
 
-    return titiler_endpoint
+    return titiler_endpoint  # pyrefly: ignore[bad-return]
 
 
 def set_proxy(
@@ -2078,7 +2088,9 @@ def download_from_gdrive(
         unzip: Whether to unzip the output file if it is a zip file. Defaults to True.
         verbose: Whether to display or not the output of the function.
     """
-    from google_drive_downloader import GoogleDriveDownloader as gdd
+    from google_drive_downloader import (
+        GoogleDriveDownloader as gdd,
+    )  # pytype: disable=import-error
 
     file_id = gfile_url.split("/")[5]
     if verbose:
@@ -2180,7 +2192,7 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
         latitude (str, optional): Column name for the latitude column. Defaults to 'latitude'.
         longitude (str, optional): Column name for the longitude column. Defaults to 'longitude'.
     """
-    import whitebox
+    import whitebox  # pytype: disable=import-error
 
     if in_csv.startswith(("http://", "https://")) and in_csv.endswith(".csv"):
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -2221,7 +2233,7 @@ def csv_to_shp(
         latitude (str, optional): The column name of the latitude column. Defaults to 'latitude'.
         longitude (str, optional): The column name of the longitude column. Defaults to 'longitude'.
     """
-    import shapefile as shp
+    import shapefile as shp  # pytype: disable=import-error
 
     if in_csv.startswith(("http://", "https://")) and in_csv.endswith(".csv"):
         in_csv = coreutils.github_raw_url(in_csv)
@@ -2231,10 +2243,12 @@ def csv_to_shp(
     with open(in_csv, encoding=encoding) as csvfile:
         csvreader = csv.DictReader(csvfile)
         header = csvreader.fieldnames
-        [points.field(field) for field in header]
+        [points.field(field) for field in header]  # pyrefly: ignore[not-iterable]
         for row in csvreader:
             points.point((float(row[longitude])), (float(row[latitude])))
-            points.record(*tuple([row[f] for f in header]))
+            points.record(
+                *tuple([row[f] for f in header])
+            )  # pyrefly: ignore[not-iterable]
 
     out_prj = out_shp.replace(".shp", ".prj")
     with open(out_prj, "w") as f:
@@ -2425,7 +2439,9 @@ def ee_to_bbox(ee_object) -> list[float]:
             "The ee_object must be an ee.Image, ee.Feature, ee.FeatureCollection or ee.Geometry object."
         )
 
-    bounds = geometry.bounds().getInfo()["coordinates"][0]
+    bounds = geometry.bounds().getInfo()["coordinates"][
+        0
+    ]  # pyrefly: ignore[unsupported-operation]
     xmin = bounds[0][0]
     ymin = bounds[0][1]
     xmax = bounds[1][0]
@@ -2443,7 +2459,7 @@ def shp_to_geojson(in_shp, filename=None, **kwargs):
     Returns:
         object: The json object representing the shapefile.
     """
-    import shapefile
+    import shapefile  # pytype: disable=import-error
 
     in_shp = os.path.abspath(in_shp)
 
@@ -2522,7 +2538,7 @@ def filter_polygons(ftr) -> ee.Feature:
         .filter(ee.Filter.eq("geoType", "Polygon"))
         .geometry()
     )
-    return ee.Feature(polygons).copyProperties(ftr)
+    return ee.Feature(polygons).copyProperties(ftr)  # pyrefly: ignore[bad-return]
 
 
 def ee_to_shp(
@@ -2657,7 +2673,7 @@ def get_image_thumbnail(
         print("An error occurred while downloading.")
         print(e)
 
-    if r.status_code != 200:
+    if r.status_code != 200:  # pyrefly: ignore[unbound-name]
         print("An error occurred while downloading.")
         print(r.json()["error"]["message"])
 
@@ -2704,7 +2720,7 @@ def get_image_collection_thumbnails(
         os.makedirs(out_dir)
 
     try:
-        count = int(ee_object.size().getInfo())
+        count = int(ee_object.size().getInfo())  # pyrefly: ignore[bad-argument-type]
         if verbose:
             print(f"Total number of images: {count}\n")
 
@@ -2719,7 +2735,7 @@ def get_image_collection_thumbnails(
 
         for i in range(0, count):
             image = ee.Image(images.get(i))
-            name = str(names[i])
+            name = str(names[i])  # pyrefly: ignore[unsupported-operation]
             ext = os.path.splitext(name)[1][1:]
             if ext != format:
                 name = name + "." + format
@@ -2849,7 +2865,9 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         return
 
     try:
-        projection = ee.Projection(crs, transform, transformWkt)
+        projection = ee.Projection(
+            crs, transform, transformWkt
+        )  # pyrefly: ignore[bad-argument-type]
         coords = ee.Image.pixelCoordinates(projection).floor().int32()
         x = coords.select("x")
         y = coords.select("y")
@@ -2873,7 +2891,7 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
             image = list_to_ee(np_array.tolist())
         else:
             image = list_to_ee(np_array[0].tolist())
-            for z in np.arange(1, dimz):
+            for z in np.arange(1, dimz):  # pyrefly: ignore[unbound-name]
                 image = image.addBands(list_to_ee(np_array[z].tolist()))
 
         if band_names:
@@ -3135,7 +3153,9 @@ def ee_to_xarray(
 
             # Default CRS is EPSG:4326 if not specified.
             if isinstance(crs, ee.Projection):
-                target_crs = crs.getInfo().get("crs", "EPSG:4326")
+                target_crs = crs.getInfo().get(
+                    "crs", "EPSG:4326"
+                )  # pyrefly: ignore[missing-attribute]
             else:
                 target_crs = crs or "EPSG:4326"
 
@@ -3208,7 +3228,9 @@ def ee_to_xarray(
                     dataset_for_grid = None
 
             if dataset_for_grid is not None:
-                grid_params = helpers.extract_grid_params(dataset_for_grid)
+                grid_params = helpers.extract_grid_params(
+                    dataset_for_grid
+                )  # pyrefly: ignore[bad-argument-type]
         except Exception as e:
             warnings.warn(
                 f"Could not infer source grid parameters automatically: {e}. "
@@ -3239,7 +3261,7 @@ def ee_to_xarray(
     if isinstance(dataset, list):
         ds = xr.open_mfdataset(dataset, **kwargs)
     else:
-        ds = xr.open_dataset(dataset, **kwargs)
+        ds = xr.open_dataset(dataset, **kwargs)  # pyrefly: ignore[bad-argument-type]
 
     return ds
 
@@ -3304,7 +3326,7 @@ def screen_capture(filename, monitor=1):
         filename (str): The output file path to the screenshot.
         monitor (int, optional): The monitor to take the screenshot. Defaults to 1.
     """
-    from mss import mss
+    from mss import mss  # pytype: disable=import-error
 
     out_dir = os.path.dirname(filename)
     if not os.path.exists(out_dir):
@@ -3662,9 +3684,15 @@ def save_colorbar(
     if "palette" in vis_params:
         hexcodes = coreutils.to_hex_colors(vis_params["palette"])
         if discrete:
-            cmap = mpl.colors.ListedColormap(hexcodes)
-            vals = np.linspace(vmin, vmax, cmap.N + 1)
-            norm = mpl.colors.BoundaryNorm(vals, cmap.N)
+            cmap = mpl.colors.ListedColormap(
+                hexcodes
+            )  # pyrefly: ignore[bad-assignment]
+            vals = np.linspace(
+                vmin, vmax, cmap.N + 1
+            )  # pyrefly: ignore[missing-attribute]
+            norm = mpl.colors.BoundaryNorm(
+                vals, cmap.N
+            )  # pyrefly: ignore[missing-attribute]
 
         else:
             cmap = mpl.colors.LinearSegmentedColormap.from_list(
@@ -3690,7 +3718,7 @@ def save_colorbar(
     cb.ax.tick_params(labelsize=tick_size)
 
     if transparent:
-        bg_color = None
+        bg_color = None  # pyrefly: ignore[bad-assignment]
 
     if bg_color is not None:
         kwargs["facecolor"] = bg_color
@@ -3741,7 +3769,7 @@ def geocode(location: str, max_rows: int = 10, reverse: bool = False):
     Returns:
         list: Returns a list of locations.
     """
-    import geocoder
+    import geocoder  # pytype: disable=import-error
 
     if not isinstance(location, str):
         print("The location must be a string.")
@@ -3966,8 +3994,8 @@ def ee_data_thumbnail(
         soup = bs4.BeautifulSoup(html_page, features="html.parser")
 
         for img in soup.find_all("img"):
-            if "sample.png" in img.get("src"):
-                return img.get("src")
+            if "sample.png" in img.get("src"):  # pyrefly: ignore[missing-attribute]
+                return img.get("src")  # pyrefly: ignore[missing-attribute]
 
     return thumbnail_url
 
@@ -4097,18 +4125,26 @@ def ee_api_to_csv(
         details = []
 
         names = [h2.text for h2 in soup.find_all("h2")]
-        descriptions = [h2.next_sibling.next_sibling.text for h2 in soup.find_all("h2")]
+        descriptions = [
+            h2.next_sibling.next_sibling.text for h2 in soup.find_all("h2")
+        ]  # pyrefly: ignore[missing-attribute]
         func_tables = soup.find_all("table", class_="blue")
-        functions = [func_table.find("code").text for func_table in func_tables]
-        returns = [func_table.find_all("td")[1].text for func_table in func_tables]
+        functions = [
+            func_table.find("code").text for func_table in func_tables
+        ]  # pyrefly: ignore[missing-attribute]
+        returns = [
+            func_table.find_all("td")[1].text for func_table in func_tables
+        ]  # pyrefly: ignore[missing-attribute]
 
         detail_tables: list[str | bs4.Tag] = []
         tables = soup.find_all("table", class_="blue")
 
         for table in tables:
             item = table.next_sibling
-            if item.attrs == {"class": ["details"]}:
-                detail_tables.append(item)
+            if item.attrs == {
+                "class": ["details"]
+            }:  # pyrefly: ignore[missing-attribute]
+                detail_tables.append(item)  # pyrefly: ignore[bad-argument-type]
             else:
                 detail_tables.append("")
 
@@ -4212,13 +4248,19 @@ def read_api_csv() -> dict[str, Any]:
             out_html_lines[65] = in_html_lines[65].replace(
                 "function_name", line["name"]
             )
-            out_html_lines[66] = in_html_lines[66].replace(
+            out_html_lines[66] = in_html_lines[
+                66
+            ].replace(  # pyrefly: ignore[no-matching-overload]
                 "function_description", line.get("description")
             )
-            out_html_lines[74] = in_html_lines[74].replace(
+            out_html_lines[74] = in_html_lines[
+                74
+            ].replace(  # pyrefly: ignore[no-matching-overload]
                 "function_usage", line.get("function")
             )
-            out_html_lines[75] = in_html_lines[75].replace(
+            out_html_lines[75] = in_html_lines[
+                75
+            ].replace(  # pyrefly: ignore[no-matching-overload]
                 "function_returns", line.get("returns")
             )
 
@@ -4247,13 +4289,19 @@ def read_api_csv() -> dict[str, Any]:
 
             for index in range(len(argument_items)):
                 in_argument_lines = in_html_lines[87:92]
-                in_argument_lines[1] = in_argument_lines[1].replace(
+                in_argument_lines[1] = in_argument_lines[
+                    1
+                ].replace(  # pyrefly: ignore[no-matching-overload]
                     "function_argument", argument_items[index]
                 )
-                in_argument_lines[2] = in_argument_lines[2].replace(
+                in_argument_lines[2] = in_argument_lines[
+                    2
+                ].replace(  # pyrefly: ignore[no-matching-overload]
                     "function_type", types_items[index]
                 )
-                in_argument_lines[3] = in_argument_lines[3].replace(
+                in_argument_lines[3] = in_argument_lines[
+                    3
+                ].replace(  # pyrefly: ignore[no-matching-overload]
                     "function_details", details_items[index]
                 )
                 out_argument_lines.append("".join(in_argument_lines))
@@ -4339,23 +4387,29 @@ def build_api_tree(api_dict: dict, output_widget, layout_width: str = "100%"):
 
     for name in names:
         func_list = ee_function_tree(name)
-        first = func_list[0]
+        first = func_list[0]  # pyrefly: ignore[unsupported-operation]
 
         if first not in tree_dict.keys():
             tree_dict[first] = Node(first)
             tree_dict[first].opened = False
             tree.add_node(tree_dict[first])
 
-        for index, func in enumerate(func_list):
+        for index, func in enumerate(func_list):  # pyrefly: ignore[bad-argument-type]
             if index > 0:
                 if func not in tree_dict.keys():
-                    node = tree_dict[func_list[index - 1]]
+                    node = tree_dict[
+                        func_list[index - 1]
+                    ]  # pyrefly: ignore[unsupported-operation]
                     node.opened = False
                     tree_dict[func] = Node(func)
                     node.add_node(tree_dict[func])
 
-                    if index == len(func_list) - 1:
-                        node = tree_dict[func_list[index]]
+                    if (
+                        index == len(func_list) - 1
+                    ):  # pyrefly: ignore[bad-argument-type]
+                        node = tree_dict[
+                            func_list[index]
+                        ]  # pyrefly: ignore[unsupported-operation]
                         node.icon = "file"
                         node.observe(handle_click, "selected")
 
@@ -4514,7 +4568,9 @@ def ee_search(asset_limit: int = 100):
                     tree_widget.outputs = ()
                     print("Searching...")
                     tree_widget.outputs = ()
-                    sub_tree = search_api_tree(text.value, flags.docs_dict)
+                    sub_tree = search_api_tree(
+                        text.value, flags.docs_dict
+                    )  # pyrefly: ignore[bad-argument-type]
                     display(sub_tree)
         elif search_type.value == "Assets":
             with tree_widget:
@@ -4526,7 +4582,9 @@ def ee_search(asset_limit: int = 100):
                     tree_widget.outputs = ()
                     print("Searching...")
                     tree_widget.outputs = ()
-                    sub_tree = search_api_tree(text.value, flags.asset_dict)
+                    sub_tree = search_api_tree(
+                        text.value, flags.asset_dict
+                    )  # pyrefly: ignore[bad-argument-type]
                     display(sub_tree)
 
     search_box.on_submit(search_box_callback)
@@ -4549,7 +4607,7 @@ def ee_user_id() -> str | None:
 
 def build_asset_tree(limit: int = 100):
     from ipytree import Node, Tree
-    import geeadd.ee_report as geeadd
+    import geeadd.ee_report as geeadd  # pytype: disable=import-error
 
     warnings.filterwarnings("ignore")
 
@@ -5291,7 +5349,9 @@ def cog_tile(
     Returns:
         tuple: Returns the COG Tile layer URL and bounds.
     """
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
 
     kwargs["url"] = url
@@ -5366,7 +5426,9 @@ def cog_mosaic(
     """
     del overwrite  # Unused.
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if layername is None:
         layername = "layer_" + coreutils.random_string(5)
 
@@ -5425,7 +5487,9 @@ def cog_mosaic_from_file(
     Returns:
         The tile URL for the COG mosaic.
     """
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     links = []
     if filepath.startswith(("http://", "https://")):
         with urllib.request.urlopen(filepath) as data:
@@ -5457,7 +5521,9 @@ def cog_bounds(url: str, titiler_endpoint: str | None = None, timeout: int = 300
         list: A list of values representing [left, bottom, right, top]
     """
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
 
     r = requests.get(
@@ -5483,7 +5549,9 @@ def cog_center(url: str, titiler_endpoint: str | None = None):
     Returns:
         tuple: A tuple representing (longitude, latitude)
     """
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
     bounds = cog_bounds(url, titiler_endpoint)
 
@@ -5504,7 +5572,9 @@ def cog_bands(url: str, titiler_endpoint: str | None = None, timeout: int = 300)
     Returns:
         list: A list of band names
     """
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
     r = requests.get(
         f"{titiler_endpoint}/cog/info",
@@ -5530,7 +5600,9 @@ def cog_stats(url: str, titiler_endpoint: str | None = None, timeout: int = 300)
     Returns:
         list: A dictionary of band statistics.
     """
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
     return requests.get(
         f"{titiler_endpoint}/cog/statistics",
@@ -5560,7 +5632,9 @@ def cog_info(
     Returns:
         list: A dictionary of band info.
     """
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
     info = "info"
     if return_geojson:
@@ -5600,9 +5674,13 @@ def cog_pixel_value(
     Returns:
         list: A dictionary of band info.
     """
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     kwargs["url"] = url
     if bidx is not None:
         kwargs["bidx"] = bidx
@@ -5670,12 +5748,14 @@ def stac_tile(
         del kwargs["palette"]
 
     if isinstance(bands, list) and len(set(bands)) == 1:
-        bands = bands[0]
+        bands = bands[0]  # pyrefly: ignore[bad-assignment]
 
     if isinstance(assets, list) and len(set(assets)) == 1:
         assets = assets[0]
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
 
     if "expression" in kwargs and ("asset_as_band" not in kwargs):
         kwargs["asset_as_band"] = True
@@ -5797,7 +5877,9 @@ def stac_bounds(
     if item is not None:
         kwargs["item"] = item
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
         r = requests.get(
             f"{titiler_endpoint}/stac/bounds", params=kwargs, timeout=timeout
@@ -5879,7 +5961,9 @@ def stac_bands(
     if item is not None:
         kwargs["item"] = item
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
         r = requests.get(
             f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
@@ -5938,7 +6022,9 @@ def stac_stats(
     if assets is not None:
         kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
         r = requests.get(
             f"{titiler_endpoint}/stac/statistics", params=kwargs, timeout=timeout
@@ -5997,7 +6083,9 @@ def stac_info(
     if assets is not None:
         kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
         r = requests.get(
             f"{titiler_endpoint}/stac/info", params=kwargs, timeout=timeout
@@ -6056,7 +6144,9 @@ def stac_info_geojson(
     if assets is not None:
         kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
         r = requests.get(
             f"{titiler_endpoint}/stac/info.geojson", params=kwargs, timeout=timeout
@@ -6110,7 +6200,9 @@ def stac_assets(
     if item is not None:
         kwargs["item"] = item
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
         r = requests.get(
             f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
@@ -6183,7 +6275,9 @@ def stac_pixel_value(
         assets = ",".join(assets)
     kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(titiler_endpoint)
+    titiler_endpoint = check_titiler_endpoint(
+        titiler_endpoint
+    )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
         r = requests.get(
             f"{titiler_endpoint}/stac/{lon},{lat}", params=kwargs, timeout=timeout
@@ -6246,7 +6340,7 @@ def local_tile_vmin_vmax(
     Returns:
         A tuple of vmin and vmax.
     """
-    from localtileserver import TileClient
+    from localtileserver import TileClient  # pytype: disable=import-error
 
     del kwargs  # Unused.
 
@@ -6285,7 +6379,7 @@ def local_tile_bands(source):
     Returns:
         list: A list of band names.
     """
-    from localtileserver import TileClient
+    from localtileserver import TileClient  # pytype: disable=import-error
 
     if isinstance(source, str):
         tile_client = TileClient(source)
@@ -6488,13 +6582,15 @@ def image_props(img: ee.Image, date_format: str = "YYYY-MM-dd") -> ee.Dictionary
     scales = bands.map(lambda b: img.select([b]).projection().nominalScale())
     scale = ee.Algorithms.If(
         scales.distinct().size().gt(1),
-        ee.Dictionary.fromLists(bands.getInfo(), scales),
+        ee.Dictionary.fromLists(
+            bands.getInfo(), scales
+        ),  # pyrefly: ignore[bad-argument-type]
         scales.get(0),
     )
 
     props = props.set("NOMINAL_SCALE", scale)
 
-    if "system:time_start" in names:
+    if "system:time_start" in names:  # pyrefly: ignore[not-iterable]
         image_date = ee.Date(img.get("system:time_start")).format(date_format)
         time_start = ee.Date(img.get("system:time_start")).format("YYYY-MM-dd HH:mm:ss")
         time_end = ee.Algorithms.If(
@@ -6506,7 +6602,7 @@ def image_props(img: ee.Image, date_format: str = "YYYY-MM-dd") -> ee.Dictionary
         props = props.set("system:time_end", time_end)
         props = props.set("IMAGE_DATE", image_date)
 
-    if "system:asset_size" in names:
+    if "system:asset_size" in names:  # pyrefly: ignore[not-iterable]
         asset_size = (
             ee.Number(img.get("system:asset_size"))
             .divide(1e6)
@@ -6535,7 +6631,7 @@ def image_stats(
 
     if not isinstance(img, ee.Image):
         print("The input object must be an ee.Image")
-        return
+        return  # pyrefly: ignore[bad-return]
 
     stat_types = ["min", "max", "mean", "std", "sum"]
 
@@ -6774,7 +6870,9 @@ def zonal_stats(
         raise ValueError("statistics_type must be either a string or ee.Reducer.")
 
     if scale is None:
-        scale = in_value_raster.projection().nominalScale().multiply(10)
+        scale = (
+            in_value_raster.projection().nominalScale().multiply(10)
+        )  # pyrefly: ignore[bad-assignment]
 
     if verbose:
         print("Computing statistics ...")
@@ -6870,7 +6968,7 @@ def zonal_stats_by_group(
         return
 
     band_types = in_value_raster.bandTypes().get(band_name).getInfo()
-    band_type = band_types.get("precision")
+    band_type = band_types.get("precision")  # pyrefly: ignore[missing-attribute]
     if band_type != "int":
         print("The input image band must be integer type.")
         return
@@ -6906,7 +7004,9 @@ def zonal_stats_by_group(
         return
 
     if scale is None:
-        scale = in_value_raster.projection().nominalScale().multiply(10)
+        scale = (
+            in_value_raster.projection().nominalScale().multiply(10)
+        )  # pyrefly: ignore[bad-assignment]
 
     if verbose:
         print("Computing ... ")
@@ -6919,7 +7019,7 @@ def zonal_stats_by_group(
         crs=crs,
         crsTransform=crs_transform,
         bestEffort=best_effort,
-        maxPixels=max_pixels,
+        maxPixels=max_pixels,  # pyrefly: ignore[bad-argument-type]
         tileScale=tile_scale,
     )
     class_values = (
@@ -7237,7 +7337,7 @@ def image_max_value(
         scale = image_scale(img)
 
     return img.reduceRegion(
-        **{
+        **{  # pyrefly: ignore[bad-argument-type]
             "reducer": ee.Reducer.max(),
             "geometry": region,
             "scale": scale,
@@ -7545,7 +7645,7 @@ def image_stats_by_zone(
     values = collection.aggregate_array("stat").getInfo()
 
     if labels is not None and isinstance(labels, list):
-        if len(labels) != len(keys):
+        if len(labels) != len(keys):  # pyrefly: ignore[bad-argument-type]
             warnings.warn("labels are not the same length as keys, ignoring labels.")
             df = pd.DataFrame({"zone": keys, "stat": values})
         else:
@@ -7583,7 +7683,7 @@ def latitude_grid(
     values = ee.List.sequence(south, north - step, step)
 
     def create_feature(lat) -> ee.Feature:
-        return ee.Feature(
+        return ee.Feature(  # pyrefly: ignore[bad-return]
             ee.Geometry.BBox(west, lat, east, ee.Number(lat).add(step))
         ).set(
             {
@@ -7620,7 +7720,7 @@ def longitude_grid(
     values = ee.List.sequence(west, east - step, step)
 
     def create_feature(lon) -> ee.Feature:
-        return ee.Feature(
+        return ee.Feature(  # pyrefly: ignore[bad-return]
             ee.Geometry.BBox(lon, south, ee.Number(lon).add(step), north)
         ).set(
             {
@@ -7718,10 +7818,10 @@ def fishnet(
 
     coords = data.bounds().coordinates().getInfo()
 
-    west = coords[0][0][0]
-    east = coords[0][1][0]
-    south = coords[0][0][1]
-    north = coords[0][2][1]
+    west = coords[0][0][0]  # pyrefly: ignore[unsupported-operation]
+    east = coords[0][1][0]  # pyrefly: ignore[unsupported-operation]
+    south = coords[0][0][1]  # pyrefly: ignore[unsupported-operation]
+    north = coords[0][2][1]  # pyrefly: ignore[unsupported-operation]
 
     if rows is not None and cols is not None:
         v_interval = (north - south) / rows
@@ -7855,7 +7955,7 @@ def extract_timeseries_to_point(
         raise ValueError("image_collection must be an instance of ee.ImageCollection.")
 
     property_names = image_collection.first().propertyNames().getInfo()
-    if "system:time_start" not in property_names:
+    if "system:time_start" not in property_names:  # pyrefly: ignore[not-iterable]
         raise ValueError("The image collection lacks the 'system:time_start' property.")
 
     point = ee.Geometry.Point([lon, lat])
@@ -7874,7 +7974,9 @@ def extract_timeseries_to_point(
             geometry=point, scale=scale, crs=crs, crsTransform=crsTransform
         ).getInfo()
 
-        result_df = pd.DataFrame(result[1:], columns=result[0])
+        result_df = pd.DataFrame(
+            result[1:], columns=result[0]
+        )  # pyrefly: ignore[unsupported-operation]
 
         if result_df.empty:
             raise ValueError(
@@ -7966,8 +8068,12 @@ def find_landsat_by_path_row(
     """
     try:
         if isinstance(landsat_col, str):  # TODO: Convert to raise ValueError.
-            landsat_col = ee.ImageCollection(landsat_col)
-            return landsat_col.filter(ee.Filter.eq("WRS_PATH", path_num)).filter(
+            landsat_col = ee.ImageCollection(
+                landsat_col
+            )  # pyrefly: ignore[bad-assignment]
+            return landsat_col.filter(
+                ee.Filter.eq("WRS_PATH", path_num)
+            ).filter(  # pyrefly: ignore[missing-attribute]
                 ee.Filter.eq("WRS_ROW", row_num)
             )
     except Exception as e:
@@ -7980,7 +8086,7 @@ def str_to_num(in_str: str) -> ee.Number:
     Args:
         in_str: The string to convert to a number.
     """
-    return ee.Number.parse(str)
+    return ee.Number.parse(str)  # pyrefly: ignore[bad-argument-type]
 
 
 def array_sum(arr):
@@ -8622,8 +8728,10 @@ def vector_styling(
         prop_names = ee.Feature(ee_object.first()).propertyNames().getInfo()
         arr = ee_object.aggregate_array(column).distinct().sort()
 
-        if column not in prop_names:
-            raise ValueError(f"The column name must of one of {', '.join(prop_names)}")
+        if column not in prop_names:  # pyrefly: ignore[not-iterable]
+            raise ValueError(
+                f"The column name must of one of {', '.join(prop_names)}"
+            )  # pyrefly: ignore[no-matching-overload]
 
         if isinstance(palette, box.Box):
             try:
@@ -8634,7 +8742,7 @@ def vector_styling(
         elif isinstance(palette, tuple):
             palette = list(palette)
         elif isinstance(palette, dict):
-            values = list(arr.getInfo())
+            values = list(arr.getInfo())  # pyrefly: ignore[bad-argument-type]
             labels = list(palette.keys())
             if not all(elem in values for elem in labels):
                 raise ValueError(
@@ -8680,7 +8788,7 @@ def vector_styling(
 
 
 def is_GCS(in_shp):
-    import pycrs
+    import pycrs  # pytype: disable=import-error
 
     if not os.path.exists(in_shp):
         raise FileNotFoundError("The input shapefile could not be found.")
@@ -9163,8 +9271,10 @@ def extract_pixel_values(
     if getInfo:
         band_names = ee_object.bandNames().getInfo()
         values_tmp = dict_values.getInfo()
-        values = [values_tmp[i] for i in band_names]
-        return dict(zip(band_names, values))
+        values = [
+            values_tmp[i] for i in band_names
+        ]  # pyrefly: ignore[not-iterable, unsupported-operation]
+        return dict(zip(band_names, values))  # pyrefly: ignore[bad-argument-type]
 
     return dict_values
 
@@ -10011,7 +10121,7 @@ def planet_tile_by_month(
 
 def get_current_latlon():
     """Get the current latitude and longitude based on the user's location."""
-    import geocoder
+    import geocoder  # pytype: disable=import-error
 
     g = geocoder.ip("me")
     props = g.geojson["features"][0]["properties"]
@@ -10036,7 +10146,7 @@ def get_census_dict(reset=False):
     census_data = os.path.join(pkg_dir, "data/census_data.json")
 
     if reset:
-        from owslib.wms import WebMapService
+        from owslib.wms import WebMapService  # pytype: disable=import-error
 
         census_dict = {}
 
@@ -10109,9 +10219,13 @@ def search_xyz_services(keyword, name=None, list_only=True, add_prefix=True):
     import xyzservices.providers as xyz
 
     if name is None:
-        providers = xyz.filter(keyword=keyword).flatten()
+        providers = xyz.filter(
+            keyword=keyword
+        ).flatten()  # pyrefly: ignore[missing-attribute]
     else:
-        providers = xyz.filter(name=name).flatten()
+        providers = xyz.filter(
+            name=name
+        ).flatten()  # pyrefly: ignore[missing-attribute]
 
     if list_only:
         if add_prefix:
@@ -10162,7 +10276,7 @@ def get_wms_layers(url: str, return_titles: bool = False):
         return_titles: If True, the titles of the layers will be returned. Defaults to
             False.
     """
-    from owslib.wms import WebMapService
+    from owslib.wms import WebMapService  # pytype: disable=import-error
 
     wms = WebMapService(url)
     layers = list(wms.contents)
@@ -10224,7 +10338,7 @@ def create_download_button(
         kwargs (dict, optional): An optional tuple of args to pass to the callback.
 
     """
-    import streamlit as st
+    import streamlit as st  # pytype: disable=import-error
 
     if isinstance(data, str):
         if file_name is None:
@@ -10414,7 +10528,7 @@ def get_local_tile_layer(
         ipyleaflet.TileLayer | folium.TileLayer: An ipyleaflet.TileLayer or folium.TileLayer.
     """
     import rasterio
-    from localtileserver import (
+    from localtileserver import (  # pytype: disable=import-error
         get_leaflet_tile_layer,
         get_folium_tile_layer,
         TileClient,
@@ -10575,7 +10689,7 @@ def get_palettable(types=None):
     Returns:
         list: A list of palettable color palettes.
     """
-    import palettable
+    import palettable  # pytype: disable=import-error
 
     if types is not None and (not isinstance(types, list)):
         raise ValueError("The types must be a list.")
@@ -10839,7 +10953,9 @@ def points_from_xy(
     else:
         raise TypeError("The data must be a pandas DataFrame or a csv file path.")
 
-    return gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs))
+    return gpd.GeoDataFrame(
+        df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs)
+    )  # pyrefly: ignore[bad-index]
 
 
 def vector_centroids(ee_object):
@@ -10965,8 +11081,8 @@ def image_to_cog(source, dst_path=None, profile="deflate", **kwargs):
         ImportError: If rio-cogeo is not installed.
         FileNotFoundError: If the source file could not be found.
     """
-    from rio_cogeo.cogeo import cog_translate
-    from rio_cogeo.profiles import cog_profiles
+    from rio_cogeo.cogeo import cog_translate  # pytype: disable=import-error
+    from rio_cogeo.profiles import cog_profiles  # pytype: disable=import-error
 
     if not source.startswith(("http://", "https://")):
         source = check_file_path(source)
@@ -11000,7 +11116,7 @@ def cog_validate(source, verbose=False):
     Returns:
         tuple: A tuple containing the validation results (True is src_path is a valid COG, List of validation errors, and a list of validation warnings).
     """
-    from rio_cogeo.cogeo import cog_validate, cog_info
+    from rio_cogeo.cogeo import cog_validate, cog_info  # pytype: disable=import-error
 
     if not source.startswith(("http://", "https://")):
         source = check_file_path(source)
@@ -11060,10 +11176,12 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     elif isinstance(in_geojson, dict):
         data = in_geojson
 
-    df = pd.json_normalize(data["features"])
+    df = pd.json_normalize(data["features"])  # pyrefly: ignore[unbound-name]
     df.columns = [col.replace("properties.", "") for col in df.columns]
     if drop_geometry:
-        df = df[df.columns.drop(list(df.filter(regex="geometry")))]
+        df = df[
+            df.columns.drop(list(df.filter(regex="geometry")))
+        ]  # pyrefly: ignore[missing-attribute]
     return df
 
 
@@ -11224,8 +11342,8 @@ def numpy_to_cog(
     from rasterio.io import MemoryFile
     from rasterio.transform import from_bounds
 
-    from rio_cogeo.cogeo import cog_translate
-    from rio_cogeo.profiles import cog_profiles
+    from rio_cogeo.cogeo import cog_translate  # pytype: disable=import-error
+    from rio_cogeo.profiles import cog_profiles  # pytype: disable=import-error
 
     warnings.filterwarnings("ignore")
 
@@ -11324,7 +11442,7 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
 
     backend = backend.lower()
     if backend in ["pyvista", "ipygany", "panel"]:
-        import pyntcloud
+        import pyntcloud  # pytype: disable=import-error
 
         if backend == "pyvista":
             backend = None
@@ -11342,8 +11460,8 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
         )
 
     elif backend == "open3d":
-        import laspy
-        import open3d as o3d
+        import laspy  # pytype: disable=import-error
+        import open3d as o3d  # pytype: disable=import-error
 
         try:
             las = laspy.read(filename)
@@ -11371,7 +11489,7 @@ def read_lidar(filename, **kwargs):
     Returns:
         LasData: The LasData object return by laspy.read.
     """
-    import laspy
+    import laspy  # pytype: disable=import-error
 
     if (
         isinstance(filename, str)
@@ -11400,7 +11518,7 @@ def convert_lidar(
     Returns:
         aspy.lasdatas.base.LasBase: The converted LasData object.
     """
-    import laspy
+    import laspy  # pytype: disable=import-error
 
     if isinstance(source, str):
         source = read_lidar(source)
@@ -11431,7 +11549,7 @@ def write_lidar(
         do_compress: Flags to indicate if you want to compress the data. Defaults to None.
         laz_backend: The laz backend to use. Defaults to None.
     """
-    import laspy
+    import laspy  # pytype: disable=import-error
 
     if isinstance(source, str):
         source = read_lidar(source)
@@ -11466,7 +11584,7 @@ def download_folder(
     Returns:
         list: List of files downloaded, or None if failed.
     """
-    import gdown
+    import gdown  # pytype: disable=import-error
 
     return gdown.download_folder(
         url, id, output, quiet, proxy, speed, use_cookies, remaining_ok
@@ -11580,7 +11698,7 @@ def clip_image(image, mask, output):
     output = check_file_path(output)
 
     if isinstance(mask, ee.Geometry):
-        mask = mask.coordinates().getInfo()[0]
+        mask = mask.coordinates().getInfo()[0]  # pyrefly: ignore[unsupported-operation]
 
     if isinstance(mask, str):
         if mask.startswith(("http://", "https://")):
@@ -11859,7 +11977,7 @@ def classify(
         pd.DataFrame, dict: A pandas dataframe with the classification applied and a legend dictionary.
     """
     import geopandas as gpd
-    import mapclassify
+    import mapclassify  # pytype: disable=import-error
 
     if isinstance(data, (gpd.GeoDataFrame, pd.DataFrame)):
         df = data
@@ -11888,7 +12006,9 @@ def classify(
     # Convert categorical data to numeric
     init_column = None
     value_list = None
-    if np.issubdtype(df[column].dtype, np.object0):
+    if np.issubdtype(
+        df[column].dtype, np.object0
+    ):  # pyrefly: ignore[missing-attribute]
         value_list = df[column].unique().tolist()
         value_list.sort()
         df["category"] = df[column].replace(value_list, range(0, len(value_list)))
@@ -11994,7 +12114,7 @@ def classify(
             if legend_kwds is not None and "fmt" in legend_kwds:
                 fmt = legend_kwds.pop("fmt")
 
-            labels = binning.get_legend_classes(fmt)
+            labels = binning.get_legend_classes(fmt)  # pyrefly: ignore[unbound-name]
             if legend_kwds is not None:
                 show_interval = legend_kwds.pop("interval", False)
             else:
@@ -12010,7 +12130,7 @@ def classify(
     else:
         raise ValueError("labels must be a list or None.")
 
-    legend_dict = dict(zip(labels, colors))
+    legend_dict = dict(zip(labels, colors))  # pyrefly: ignore[bad-argument-type]
     df["category"] = df["category"] + 1
     return df, legend_dict
 
@@ -12288,7 +12408,7 @@ def download_ee_image(
             zero values, you should set the unmask value to a  non-zero value so that the zero values are not treated as missing data. Defaults to None.
 
     """
-    import geedim as gd
+    import geedim as gd  # pytype: disable=import-error
 
     if not isinstance(image, ee.Image):
         raise ValueError("image must be an ee.Image.")
@@ -12403,18 +12523,23 @@ def download_ee_image_tiles(
         prefix = ""
 
     count = features.size().getInfo()
-    collection = features.toList(count)
+    collection = features.toList(count)  # pyrefly: ignore[bad-argument-type]
 
     if column is not None:
         names = features.aggregate_array(column).getInfo()
     else:
         count_len = len(str(count))
-        names = [str(i + 1).zfill(count_len) for i in range(count)]
+        names = [
+            str(i + 1).zfill(count_len) for i in range(count)
+        ]  # pyrefly: ignore[bad-argument-type]
 
-    for i in range(count):
+    for i in range(count):  # pyrefly: ignore[bad-argument-type]
         region = ee.Feature(collection.get(i)).geometry()
         filename = os.path.join(
-            out_dir, "{}{}.tif".format(prefix, names[i].replace("/", "_"))
+            out_dir,
+            "{}{}.tif".format(
+                prefix, names[i].replace("/", "_")
+            ),  # pyrefly: ignore[unsupported-operation]
         )
         print(f"Downloading {i + 1}/{count}: {filename}")
         download_ee_image(
@@ -12519,8 +12644,10 @@ def download_ee_image_tiles_parallel(
         names = features.aggregate_array(column).getInfo()
     else:
         count_len = len(str(count))
-        names = [str(i + 1).zfill(count_len) for i in range(count)]
-    collection = features.toList(count)
+        names = [
+            str(i + 1).zfill(count_len) for i in range(count)
+        ]  # pyrefly: ignore[bad-argument-type]
+    collection = features.toList(count)  # pyrefly: ignore[bad-argument-type]
 
     def download_data(index: int) -> None:
         if ee_init:
@@ -12530,7 +12657,10 @@ def download_ee_image_tiles_parallel(
             )
         region = ee.Feature(collection.get(index)).geometry()
         filename = os.path.join(
-            out_dir, "{}{}.tif".format(prefix, names[index].replace("/", "_"))
+            out_dir,
+            "{}{}.tif".format(
+                prefix, names[index].replace("/", "_")
+            ),  # pyrefly: ignore[unsupported-operation]
         )
         print(f"Downloading {index + 1}/{count}: {filename}")
 
@@ -12554,7 +12684,9 @@ def download_ee_image_tiles_parallel(
         )
 
     with joblib.Parallel(**job_args) as parallel:
-        parallel(joblib.delayed(download_data)(index) for index in range(count))
+        parallel(
+            joblib.delayed(download_data)(index) for index in range(count)
+        )  # pyrefly: ignore[bad-argument-type]
 
     end = time.time()
     print(f"Finished in {end - start} seconds.")
@@ -12622,7 +12754,7 @@ def download_ee_image_collection(
         os.makedirs(out_dir)
 
     try:
-        count = int(collection.size().getInfo())
+        count = int(collection.size().getInfo())  # pyrefly: ignore[bad-argument-type]
         print(f"Total number of images: {count}\n")
 
         if filenames is not None:
@@ -12638,7 +12770,9 @@ def download_ee_image_collection(
                 if not name.endswith(".tif"):
                     name = name + ".tif"
             else:
-                name = image.get("system:index").getInfo() + ".tif"
+                name = (
+                    image.get("system:index").getInfo() + ".tif"
+                )  # pyrefly: ignore[unsupported-operation]
             filename = os.path.join(os.path.abspath(out_dir), name)
             print(f"Downloading {i + 1}/{count}: {name}")
             download_ee_image(
@@ -12712,7 +12846,7 @@ def plot_raster(
         print("The plot_raster() function is not supported in Colab.")
         return
 
-    import pvxarray
+    import pvxarray  # pytype: disable=import-error
     import rioxarray
 
     if isinstance(image, str):
@@ -12771,8 +12905,8 @@ def plot_raster_3d(
         print("The plot_raster_3d() function is not supported in Colab.")
         return
 
-    import pvxarray
-    import pyvista
+    import pvxarray  # pytype: disable=import-error
+    import pyvista  # pytype: disable=import-error
     import rioxarray
 
     open_kwargs = open_kwargs or {}
@@ -12854,7 +12988,9 @@ def bbox_coords(geometry, decimals=4) -> list[float] | None:
         if not isinstance(geometry, ee.Geometry):
             raise ValueError("geometry must be an ee.Geometry.")
 
-        coords = geometry.bounds().coordinates().getInfo()[0]
+        coords = (
+            geometry.bounds().coordinates().getInfo()[0]
+        )  # pyrefly: ignore[unsupported-operation]
         x = [p[0] for p in coords]
         y = [p[1] for p in coords]
         west = round(min(x), decimals)
@@ -12881,7 +13017,7 @@ def requireJS(lib_path=None, Map=None):
     Returns:
         object: oeel object.
     """
-    from oeel import oeel
+    from oeel import oeel  # pytype: disable=import-error
 
     coreutils.ee_initialize()
 
@@ -12956,7 +13092,7 @@ def change_require(lib_path):
                 start_index = line.index("projects/")
                 end_index = line.index("/", start_index + 9)
 
-            header = line[start_index:end_index]
+            header = line[start_index:end_index]  # pyrefly: ignore[unbound-name]
             new_line = line.replace(header, os.getcwd()).replace(":", "/")
             output.append(new_line)
 
@@ -13007,9 +13143,9 @@ def ee_vector_style(
         raise ValueError("column must be a string.")
 
     prop_names = ee.Feature(collection.first()).propertyNames().getInfo()
-    if column not in prop_names:
+    if column not in prop_names:  # pyrefly: ignore[not-iterable]
         raise ValueError(
-            f"{column} is not a property name of the collection. It must be one of {','.join(prop_names)}."
+            f"{column} is not a property name of the collection. It must be one of {','.join(prop_names)}."  # pyrefly: ignore[no-matching-overload]
         )
 
     if labels is None:
@@ -13019,7 +13155,7 @@ def ee_vector_style(
     elif not isinstance(labels, list):
         raise ValueError("labels must be a list.")
 
-    size = len(labels)
+    size = len(labels)  # pyrefly: ignore[bad-argument-type]
     if isinstance(color, str):
         color = [color] * size
     elif size != len(color):
@@ -13059,7 +13195,7 @@ def ee_vector_style(
 
     style_dict = {}
 
-    for i, label in enumerate(labels):
+    for i, label in enumerate(labels):  # pyrefly: ignore[bad-argument-type]
         style_dict[label] = {
             "color": color[i],
             "pointSize": pointSize[i],
@@ -13257,7 +13393,7 @@ def html_to_streamlit(
     Returns:
         streamlit.components: components.html object.
     """
-    import streamlit.components.v1 as components
+    import streamlit.components.v1 as components  # pytype: disable=import-error
 
     replace_dict = replace_dict or {}
 
@@ -13515,7 +13651,9 @@ def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
     if isinstance(region, ee.FeatureCollection):
         image = dataset.filterBounds(region).mosaic().clipToCollection(region)
 
-    download_ee_image(image, filename, region=region.geometry(), scale=scale, crs=crs)
+    download_ee_image(
+        image, filename, region=region.geometry(), scale=scale, crs=crs
+    )  # pyrefly: ignore[unbound-name]
 
 
 def create_legend(
@@ -13624,9 +13762,11 @@ def create_legend(
             )
             return
         else:
-            legend_dict = builtin_legends[builtin_legend]
-            labels = list(legend_dict.keys())
-            colors = list(legend_dict.values())
+            legend_dict = builtin_legends[
+                builtin_legend
+            ]  # pyrefly: ignore[bad-assignment]
+            labels = list(legend_dict.keys())  # pyrefly: ignore[missing-attribute]
+            colors = list(legend_dict.values())  # pyrefly: ignore[missing-attribute]
 
     if legend_dict is not None:
         if not isinstance(legend_dict, dict):
@@ -13787,7 +13927,7 @@ def arc_active_map():
         arcpy.Map: The active map in ArcGIS Pro.
     """
     if is_arcpy():
-        import arcpy
+        import arcpy  # pytype: disable=import-error
 
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         m = aprx.activeMap
@@ -13803,7 +13943,7 @@ def arc_active_view():
         arcpy.MapView: The active view in ArcGIS Pro.
     """
     if is_arcpy():
-        import arcpy
+        import arcpy  # pytype: disable=import-error
 
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         view = aprx.activeView
@@ -13844,7 +13984,7 @@ def arc_zoom_to_extent(xmin: float, ymin: float, xmax: float, ymax: float) -> No
         ymax: The maximum y value of the extent.
     """
     if is_arcpy():
-        import arcpy
+        import arcpy  # pytype: disable=import-error
 
         view = arc_active_view()
         if view is not None:
@@ -13922,7 +14062,7 @@ def html_to_gradio(
 
 
 def image_check(image):
-    from localtileserver import TileClient
+    from localtileserver import TileClient  # pytype: disable=import-error
 
     if isinstance(image, str):
         if image.startswith(("http://", "https://")) or os.path.exists(image):
@@ -14355,7 +14495,9 @@ def landsat_scaling(
         qaMask = image.select("QA_PIXEL").bitwiseAnd(int("11111", 2)).eq(0)
         if thermal_bands:
             return (
-                image.addBands(thermalBands, None, True)
+                image.addBands(
+                    thermalBands, None, True
+                )  # pyrefly: ignore[unbound-name]
                 .addBands(opticalBands, None, True)
                 .updateMask(qaMask)
             )
@@ -14364,7 +14506,9 @@ def landsat_scaling(
 
     else:
         if thermal_bands:
-            return image.addBands(thermalBands, None, True).addBands(
+            return image.addBands(
+                thermalBands, None, True
+            ).addBands(  # pyrefly: ignore[unbound-name]
                 opticalBands, None, True
             )
         else:
@@ -14404,7 +14548,7 @@ def tms_to_geotiff(
     gdal.UseExceptions()
 
     try:
-        import httpx
+        import httpx  # pytype: disable=import-error
 
         SESSION = httpx.Client()
     except ImportError:
@@ -14926,7 +15070,9 @@ def xee_to_image(
         )
 
         if filenames is None:
-            date = np.datetime_as_string(time, unit=time_unit)
+            date = np.datetime_as_string(
+                time, unit=time_unit
+            )  # pyrefly: ignore[no-matching-overload]
             filename = f"{date}.tif"
         else:
             filename = filenames.pop()
@@ -14978,9 +15124,11 @@ def array_to_memory_file(
             x_dim = coords[1]
             y_dim = coords[2]
             if array.dims[0] == "time":
-                array = array.isel(time=0)
+                array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
-            array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
+            array = array.rename({y_dim: "y", x_dim: "x"}).transpose(
+                "y", "x"
+            )  # pyrefly: ignore[missing-attribute]
         array = array.values
 
     if array.ndim == 3 and transpose:
@@ -15021,17 +15169,17 @@ def array_to_memory_file(
         max_value = np.max(array)
         # Determine the best dtype for the array.
         if min_value >= 0 and max_value <= 1:
-            dtype = np.float32
+            dtype = np.float32  # pyrefly: ignore[bad-assignment]
         elif min_value >= 0 and max_value <= 255:
-            dtype = np.uint8
+            dtype = np.uint8  # pyrefly: ignore[bad-assignment]
         elif min_value >= -128 and max_value <= 127:
-            dtype = np.int8
+            dtype = np.int8  # pyrefly: ignore[bad-assignment]
         elif min_value >= 0 and max_value <= 65535:
-            dtype = np.uint16
+            dtype = np.uint16  # pyrefly: ignore[bad-assignment]
         elif min_value >= -32768 and max_value <= 32767:
-            dtype = np.int16
+            dtype = np.int16  # pyrefly: ignore[bad-assignment]
         else:
-            dtype = np.float64
+            dtype = np.float64  # pyrefly: ignore[bad-assignment]
 
     # Convert the array to the best dtype.
     array = array.astype(dtype)
@@ -15124,9 +15272,11 @@ def array_to_image(
             x_dim = coords[1]
             y_dim = coords[2]
             if array.dims[0] == "time":
-                array = array.isel(time=0)
+                array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
-            array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")
+            array = array.rename({y_dim: "y", x_dim: "x"}).transpose(
+                "y", "x"
+            )  # pyrefly: ignore[missing-attribute]
         array = array.values
 
     if array.ndim == 3 and transpose:
@@ -15380,13 +15530,19 @@ def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
         If fetching a remote PMTiles file, this function may perform multiple requests to minimize
         the amount of data downloaded.
     """
-    from pmtiles.reader import Reader, MmapSource, MemorySource
+    from pmtiles.reader import (
+        Reader,
+        MmapSource,
+        MemorySource,
+    )  # pytype: disable=import-error
 
     # Ignore uri parameters when checking file suffix.
     if not urllib.parse.urlparse(input_file).path.endswith(".pmtiles"):
         raise ValueError("Input file must be a .pmtiles file.")
 
-    header = pmtiles_header(input_file)  # pytype: disable=name-error
+    header = pmtiles_header(  # pyrefly: ignore[unknown-name]
+        input_file
+    )  # pytype: disable=name-error
     metadata_offset = header["metadata_offset"]
     metadata_length = header["metadata_length"]
 
@@ -15489,17 +15645,17 @@ def pmtiles_style(
     }
 
     if layers is None:
-        layers = layer_names
+        layers = layer_names  # pyrefly: ignore[bad-assignment]
     elif isinstance(layers, str):
         layers = [layers]
     elif isinstance(layers, list):
         for layer in layers:
-            if layer not in layer_names:
+            if layer not in layer_names:  # pyrefly: ignore[not-iterable]
                 raise ValueError(f"Layer {layer} does not exist in the PMTiles file.")
     else:
         raise ValueError("The layers argument must be a string or a list.")
 
-    for i, layer_name in enumerate(layers):
+    for i, layer_name in enumerate(layers):  # pyrefly: ignore[bad-argument-type]
         layer_point = {
             "id": f"{layer_name}_point",
             "source": "source",

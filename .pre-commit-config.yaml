@@ -30,3 +30,11 @@ repos:
       rev: 0.9.1
       hooks:
           - id: nbstripout
+
+    - repo: local
+      hooks:
+          - id: pyrefly-check
+            name: pyrefly check
+            entry: uv run --all-extras pyrefly check
+            language: system
+            pass_filenames: false

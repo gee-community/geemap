@@ -33,7 +33,7 @@ def get_env_var(key: str) -> str | None:
         return None
 
     if in_colab_shell():
-        from google.colab import userdata
+        from google.colab import userdata  # pytype: disable=import-error
 
         try:
             return userdata.get(key)
@@ -69,8 +69,8 @@ def ee_initialize(
             opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth
             Engine High-Volume platform.
     """
-    import google.oauth2.credentials
-    from .__init__ import __version__
+    import google.oauth2.credentials  # pytype: disable=import-error
+    from .__init__ import __version__  # pyrefly: ignore[missing-import]
 
     user_agent = f"{user_agent_prefix}/{__version__}"
     ee.data.setUserAgent(user_agent)
@@ -326,11 +326,13 @@ def geometry_type(ee_object: Any) -> str:
             ee.FeatureCollection.
     """
     if isinstance(ee_object, ee.Geometry):
-        return ee_object.type().getInfo()
+        return ee_object.type().getInfo()  # pyrefly: ignore[bad-return]
     elif isinstance(ee_object, ee.Feature):
-        return ee_object.geometry().type().getInfo()
+        return ee_object.geometry().type().getInfo()  # pyrefly: ignore[bad-return]
     elif isinstance(ee_object, ee.FeatureCollection):
-        return ee.Feature(ee_object.first()).geometry().type().getInfo()
+        return (
+            ee.Feature(ee_object.first()).geometry().type().getInfo()
+        )  # pyrefly: ignore[bad-return]
     else:
         raise TypeError(
             "ee_object must be one of ee.Geometry, ee.Feature, ee.FeatureCollection."
@@ -472,7 +474,9 @@ def hex_to_rgb(value: str = "FFFFFF") -> tuple[int, int, int]:
     """
     value = value.lstrip("#")
     lv = len(value)
-    return tuple(int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3))
+    return tuple(
+        int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3)
+    )  # pyrefly: ignore[bad-return]
 
 
 def random_string(string_length: int = 3) -> str:
@@ -583,8 +587,8 @@ def widget_template(
             close_button.value = False
             toolbar_widget.children = [toolbar_header, toolbar_footer]
             if display_widget is not None:
-                widget.outputs = ()
-                with widget:
+                widget.outputs = ()  # pyrefly: ignore[missing-attribute]
+                with widget:  # pyrefly: ignore[bad-context-manager]
                     display(display_widget)
         else:
             toolbar_widget.children = [toolbar_button]
@@ -692,22 +696,24 @@ def download_file(
     Returns:
         The output file path.
     """
-    import gdown
+    import gdown  # pytype: disable=import-error
 
     if output is None:
         if isinstance(url, str) and url.startswith(("http://", "https://")):
             output = os.path.basename(url)
 
     if isinstance(url, str):
-        if os.path.exists(os.path.abspath(output)) and (not overwrite):
+        if os.path.exists(os.path.abspath(output)) and (
+            not overwrite
+        ):  # pyrefly: ignore[no-matching-overload]
             print(
                 f"{output} already exists. Skip downloading. Set overwrite=True to overwrite."
             )
-            return os.path.abspath(output)
+            return os.path.abspath(output)  # pyrefly: ignore[no-matching-overload]
         else:
             url = github_raw_url(url)
 
-    if "https://drive.google.com/file/d/" in url:
+    if "https://drive.google.com/file/d/" in url:  # pyrefly: ignore[not-iterable]
         fuzzy = True
 
     output = gdown.download(
@@ -762,28 +768,32 @@ def geojson_to_ee(
                 with open(os.path.abspath(geo_json), encoding=encoding) as f:
                     geo_json = json.load(f)
 
-        if geo_json["type"] == "FeatureCollection":
-            for feature in geo_json["features"]:
+        if geo_json["type"] == "FeatureCollection":  # pyrefly: ignore[bad-index]
+            for feature in geo_json["features"]:  # pyrefly: ignore[bad-index]
                 if feature["geometry"]["type"] != "Point":
                     feature["geometry"]["geodesic"] = geodesic
             features = ee.FeatureCollection(geo_json)
             return features
         elif geo_json["type"] == "Feature":
             geom = None
-            if "style" in geo_json["properties"]:
+            if "style" in geo_json["properties"]:  # pyrefly: ignore[bad-index]
                 keys = geo_json["properties"]["style"].keys()
                 if "radius" in keys:  # Checks whether it is a circle.
                     geom = ee.Geometry(geo_json["geometry"])
                     radius = geo_json["properties"]["style"]["radius"]
                     geom = geom.buffer(radius)
-                elif geo_json["geometry"]["type"] == "Point":
+                elif (
+                    geo_json["geometry"]["type"] == "Point"
+                ):  # pyrefly: ignore[bad-index]
                     geom = ee.Geometry(geo_json["geometry"])
                 else:
                     geom = ee.Geometry(geo_json["geometry"], "", geodesic)
             elif (
-                geo_json["geometry"]["type"] == "Point"
+                geo_json["geometry"]["type"] == "Point"  # pyrefly: ignore[bad-index]
             ):  # Checks whether it is a point.
-                coordinates = geo_json["geometry"]["coordinates"]
+                coordinates = geo_json["geometry"][
+                    "coordinates"
+                ]  # pyrefly: ignore[bad-index]
                 longitude = coordinates[0]
                 latitude = coordinates[1]
                 geom = ee.Geometry.Point(longitude, latitude)
