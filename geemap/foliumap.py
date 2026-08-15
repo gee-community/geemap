@@ -388,9 +388,7 @@ class Map(folium.Map):
 
             centroid = geometry.centroid(  # pyrefly: ignore[unsupported-operation]
                 maxError=max_error
-            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
-                "coordinates"
-            ]  # pyrefly: ignore[unsupported-operation]
+            ).getInfo()["coordinates"]
             lat = centroid[1]
             lon = centroid[0]
             self.set_center(lon, lat, zoom)
@@ -401,11 +399,7 @@ class Map(folium.Map):
         else:
             coordinates = geometry.bounds(  # pyrefly: ignore[unsupported-operation]
                 maxError=max_error
-            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
-                "coordinates"
-            ][  # pyrefly: ignore[unsupported-operation]
-                0
-            ]
+            ).getInfo()["coordinates"][0]
             x = [c[0] for c in coordinates]
             y = [c[1] for c in coordinates]
             xmin = min(x)
