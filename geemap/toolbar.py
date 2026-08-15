@@ -458,11 +458,9 @@ def inspector_gui(m: geemap.Map | None = None):
                     with output:
                         output.outputs = ()
                         print("No pixel value available")
-                        bounds = m.cog_layer_dict[
-                            m.inspector_dropdown.value
-                        ][  # pyrefly: ignore[missing-attribute]
-                            "bounds"
-                        ]  # pyrefly: ignore[missing-attribute]
+                        bounds = m.cog_layer_dict[  # pyrefly: ignore[missing-attribute]
+                            m.inspector_dropdown.value  # pyrefly: ignore[missing-attribute]
+                        ]["bounds"]
                         m.zoom_to_bounds(bounds)  # pyrefly: ignore[missing-attribute]
             elif layer_dict["type"] == "COG":
                 result = common.cog_pixel_value(
@@ -493,11 +491,9 @@ def inspector_gui(m: geemap.Map | None = None):
                     with output:
                         output.outputs = ()
                         print("No pixel value available")
-                        bounds = m.cog_layer_dict[
-                            m.inspector_dropdown.value
-                        ][  # pyrefly: ignore[missing-attribute]
-                            "bounds"
-                        ]  # pyrefly: ignore[missing-attribute]
+                        bounds = m.cog_layer_dict[  # pyrefly: ignore[missing-attribute]
+                            m.inspector_dropdown.value  # pyrefly: ignore[missing-attribute]
+                        ]["bounds"]
                         m.zoom_to_bounds(bounds)  # pyrefly: ignore[missing-attribute]
 
             elif layer_dict["type"] == "LOCAL":
@@ -508,16 +504,12 @@ def inspector_gui(m: geemap.Map | None = None):
                     if (
                         m.inspector_bands_chk.value  # pyrefly: ignore[missing-attribute]
                     ):  # pyrefly: ignore[missing-attribute]
-                        band = m.cog_layer_dict[
-                            m.inspector_dropdown.value
-                        ][  # pyrefly: ignore[missing-attribute]
-                            "band"
-                        ]  # pyrefly: ignore[missing-attribute]
+                        band = m.cog_layer_dict[  # pyrefly: ignore[missing-attribute]
+                            m.inspector_dropdown.value  # pyrefly: ignore[missing-attribute]
+                        ]["band"]
                         band_names = m.cog_layer_dict[  # pyrefly: ignore[missing-attribute]
-                            m.inspector_dropdown.value
-                        ][  # pyrefly: ignore[missing-attribute]
-                            "band_names"
-                        ]
+                            m.inspector_dropdown.value  # pyrefly: ignore[missing-attribute]
+                        ]["band_names"]
                         if band is not None:
                             sel_bands = [band_names[b - 1] for b in band]
                             result = {k: v for k, v in result.items() if k in sel_bands}
@@ -545,11 +537,9 @@ def inspector_gui(m: geemap.Map | None = None):
                     with output:
                         output.outputs = ()
                         print("No pixel value available")
-                        bounds = m.cog_layer_dict[
-                            m.inspector_dropdown.value
-                        ][  # pyrefly: ignore[missing-attribute]
-                            "bounds"
-                        ]  # pyrefly: ignore[missing-attribute]
+                        bounds = m.cog_layer_dict[  # pyrefly: ignore[missing-attribute]
+                            m.inspector_dropdown.value  # pyrefly: ignore[missing-attribute]
+                        ]["bounds"]
                         m.zoom_to_bounds(bounds)  # pyrefly: ignore[missing-attribute]
             m.default_style = {  # pyrefly: ignore[missing-attribute]
                 "cursor": "crosshair"
@@ -1477,10 +1467,10 @@ def convert_js2py(m):
                     Map=m._var_name,
                 )
                 if (
-                    len(out_lines) > 0
-                    and len(out_lines[0].strip())
-                    == 0  # pyrefly: ignore[bad-argument-type, unsupported-operation]
-                ):  # pyrefly: ignore[bad-argument-type, unsupported-operation]
+                    len(out_lines) > 0  # pyrefly: ignore[bad-argument-type]
+                    and len(out_lines[0].strip())  # pyrefly: ignore[unsupported-operation]
+                    == 0
+                ):
                     out_lines = out_lines[1:]  # pyrefly: ignore[unsupported-operation]
 
                 prefix = (
@@ -3067,11 +3057,9 @@ def time_slider(m: geemap.Map | None = None):
                 ee_object = m.ee_layers[selected][  # pyrefly: ignore[missing-attribute]
                     "ee_object"
                 ]  # pyrefly: ignore[missing-attribute]
-                vis_params = m.ee_layers[
+                vis_params = m.ee_layers[  # pyrefly: ignore[missing-attribute]
                     selected
-                ][  # pyrefly: ignore[missing-attribute]
-                    "vis_params"
-                ]  # pyrefly: ignore[missing-attribute]
+                ]["vis_params"]
                 if isinstance(ee_object, ee.Image):
                     palette_vbox.children = [
                         ipywidgets.HBox([classes, colormap]),
