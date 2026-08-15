@@ -12796,11 +12796,11 @@ def download_ee_image_collection(
                     name = name + ".tif"
             else:
                 name = (
-                    image.get(
+                    image.get(  # pyrefly: ignore[unsupported-operation]
                         "system:index"
-                    ).getInfo()  # pyrefly: ignore[unsupported-operation]
-                    + ".tif"  # pyrefly: ignore[unsupported-operation]
-                )  # pyrefly: ignore[unsupported-operation]
+                    ).getInfo()
+                    + ".tif"
+                )
             filename = os.path.join(os.path.abspath(out_dir), name)
             print(f"Downloading {i + 1}/{count}: {name}")
             download_ee_image(
