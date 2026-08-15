@@ -331,7 +331,7 @@ def geometry_type(ee_object: Any) -> str:
         return ee_object.geometry().type().getInfo()  # pyrefly: ignore[bad-return]
     elif isinstance(ee_object, ee.FeatureCollection):
         return (
-            ee.Feature(ee_object.first())
+            ee.Feature(ee_object.first())  # pyrefly: ignore[bad-return]
             .geometry()
             .type()
             .getInfo()  # pyrefly: ignore[bad-return]
@@ -707,7 +707,7 @@ def download_file(
 
     if isinstance(url, str):
         if os.path.exists(
-            os.path.abspath(output)
+            os.path.abspath(output)  # pyrefly: ignore[no-matching-overload]
         ) and (  # pyrefly: ignore[no-matching-overload]
             not overwrite
         ):  # pyrefly: ignore[no-matching-overload]
@@ -788,7 +788,7 @@ def geojson_to_ee(
                     radius = geo_json["properties"]["style"]["radius"]
                     geom = geom.buffer(radius)
                 elif (
-                    geo_json["geometry"]["type"]
+                    geo_json["geometry"]["type"]  # pyrefly: ignore[bad-index]
                     == "Point"  # pyrefly: ignore[bad-index]
                 ):  # pyrefly: ignore[bad-index]
                     geom = ee.Geometry(geo_json["geometry"])

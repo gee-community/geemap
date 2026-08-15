@@ -84,7 +84,7 @@ class AbstractDrawControl:
     def last_feature(self) -> ee.Feature | None:
         """Returns the last feature created."""
         property = self.get_geometry_properties(
-            self.last_geometry
+            self.last_geometry  # pyrefly: ignore[bad-argument-type]
         )  # pyrefly: ignore[bad-argument-type]
         return ee.Feature(self.last_geometry, property) if self.last_geometry else None
 
@@ -304,10 +304,11 @@ class AbstractDrawControl:
             if self.count:
                 self._redraw_layer()
             elif (
-                _DRAWN_FEATURES_LAYER in self.host_map.ee_layers
+                _DRAWN_FEATURES_LAYER
+                in self.host_map.ee_layers  # pyrefly: ignore[missing-attribute]
             ):  # pyrefly: ignore[missing-attribute]
                 # Remove drawn features layer if there are no geometries.
-                self.host_map.remove_layer(
+                self.host_map.remove_layer(  # pyrefly: ignore[missing-attribute]
                     _DRAWN_FEATURES_LAYER
                 )  # pyrefly: ignore[missing-attribute]
             self._geometry_delete_dispatcher(self, geometry=geometry)
@@ -752,7 +753,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         if isinstance(ee_object, ee.Geometry):
             return ee_object
         try:
-            return ee_object.geometry(
+            return ee_object.geometry(  # pyrefly: ignore[missing-attribute]
                 maxError=max_error
             )  # pyrefly: ignore[missing-attribute]
         except Exception as exc:
@@ -778,7 +779,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
             maxError=max_error
         )
         if zoom is None:
-            coordinates = geometry.bounds(maxError=max_error).getInfo()[
+            coordinates = geometry.bounds(
+                maxError=max_error
+            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"
             ][  # pyrefly: ignore[unsupported-operation]
                 0
@@ -789,7 +792,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         else:
             if not isinstance(zoom, int):
                 raise ValueError("Zoom must be an integer.")
-            centroid = geometry.centroid(maxError=max_error).getInfo()[
+            centroid = geometry.centroid(
+                maxError=max_error
+            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"
             ]  # pyrefly: ignore[unsupported-operation]
             self.set_center(centroid[0], centroid[1], zoom)
@@ -1173,7 +1178,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         control = ipyleaflet.WidgetControl(
             widget=legend, position=position, transparent_bg=True
         )
-        if layer := self.ee_layers.get(
+        if layer := self.ee_layers.get(  # pyrefly: ignore[no-matching-overload]
             layer_name, None
         ):  # pyrefly: ignore[no-matching-overload]
             if old_legend := layer.pop("legend", None):
@@ -1240,7 +1245,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
             **kwargs,
         )
         control = ipyleaflet.WidgetControl(widget=colorbar, position=position)
-        if layer := self.ee_layers.get(
+        if layer := self.ee_layers.get(  # pyrefly: ignore[no-matching-overload]
             layer_name, None
         ):  # pyrefly: ignore[no-matching-overload]
             if old_colorbar := layer.pop("colorbar", None):
