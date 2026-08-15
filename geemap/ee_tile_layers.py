@@ -278,7 +278,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             The minimum and maximum values to clip to.
         """
         bands = (
-            self._ee_object.bandNames()  # pyrefly: ignore[missing-attribute]
+            self._ee_object.bandNames()  # pyrefly: ignore[bad-assignment, missing-attribute]
             if bands is None
             else tuple(bands)  # pyrefly: ignore[bad-assignment]
         )
