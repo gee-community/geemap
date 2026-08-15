@@ -371,7 +371,7 @@ class Map(folium.Map):
             geometry = ee_object.transform(maxError=max_error)
         else:
             try:
-                geometry = ee_object.geometry(
+                geometry = ee_object.geometry(  # pyrefly: ignore[missing-attribute]
                     maxError=max_error
                 ).transform(  # pyrefly: ignore[missing-attribute]
                     maxError=max_error
@@ -386,7 +386,9 @@ class Map(folium.Map):
             if not isinstance(zoom, int):
                 raise Exception("Zoom must be an integer.")
 
-            centroid = geometry.centroid(maxError=max_error).getInfo()[
+            centroid = geometry.centroid(
+                maxError=max_error
+            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"
             ]  # pyrefly: ignore[unsupported-operation]
             lat = centroid[1]
@@ -397,7 +399,9 @@ class Map(folium.Map):
                 arc_zoom_to_extent(lon, lat, lon, lat)
 
         else:
-            coordinates = geometry.bounds(maxError=max_error).getInfo()[
+            coordinates = geometry.bounds(
+                maxError=max_error
+            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"
             ][  # pyrefly: ignore[unsupported-operation]
                 0
@@ -715,7 +719,7 @@ class Map(folium.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(
+            source = array_to_image(  # pyrefly: ignore[bad-assignment]
                 source, **array_args
             )  # pyrefly: ignore[bad-assignment]
 
@@ -1809,7 +1813,7 @@ class Map(folium.Map):
                 )
             else:
                 marker_colors = color_options[
-                    : len(items)
+                    : len(items)  # pyrefly: ignore[bad-argument-type]
                 ]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
             if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
@@ -1852,7 +1856,7 @@ class Map(folium.Map):
             if items is not None:
                 index = items.index(row[color_column])
                 marker_icon = folium.Icon(
-                    color=marker_colors[
+                    color=marker_colors[  # pyrefly: ignore[unsupported-operation]
                         index
                     ],  # pyrefly: ignore[unsupported-operation]
                     icon_color=icon_colors[index],
@@ -1871,10 +1875,11 @@ class Map(folium.Map):
 
         if items is not None and add_legend:
             marker_colors = [
-                coreutils.check_color(c) for c in marker_colors
+                coreutils.check_color(c)
+                for c in marker_colors  # pyrefly: ignore[not-iterable]
             ]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(),
+                title=color_column.title(),  # pyrefly: ignore[missing-attribute]
                 colors=marker_colors,
                 labels=items,  # pyrefly: ignore[missing-attribute]
             )
