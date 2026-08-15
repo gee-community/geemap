@@ -331,8 +331,11 @@ def geometry_type(ee_object: Any) -> str:
         return ee_object.geometry().type().getInfo()  # pyrefly: ignore[bad-return]
     elif isinstance(ee_object, ee.FeatureCollection):
         return (
-            ee.Feature(ee_object.first()).geometry().type().getInfo()
-        )  # pyrefly: ignore[bad-return]
+            ee.Feature(ee_object.first())
+            .geometry()
+            .type()
+            .getInfo()  # pyrefly: ignore[bad-return]
+        )
     else:
         raise TypeError(
             "ee_object must be one of ee.Geometry, ee.Feature, ee.FeatureCollection."
@@ -474,9 +477,9 @@ def hex_to_rgb(value: str = "FFFFFF") -> tuple[int, int, int]:
     """
     value = value.lstrip("#")
     lv = len(value)
-    return tuple(
+    return tuple(  # pyrefly: ignore[bad-return]
         int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3)
-    )  # pyrefly: ignore[bad-return]
+    )
 
 
 def random_string(string_length: int = 3) -> str:
@@ -703,13 +706,15 @@ def download_file(
             output = os.path.basename(url)
 
     if isinstance(url, str):
-        if os.path.exists(os.path.abspath(output)) and (
-            not overwrite
-        ):  # pyrefly: ignore[no-matching-overload]
+        if (
+            output is not None
+            and os.path.exists(os.path.abspath(output))
+            and (not overwrite)
+        ):
             print(
                 f"{output} already exists. Skip downloading. Set overwrite=True to overwrite."
             )
-            return os.path.abspath(output)  # pyrefly: ignore[no-matching-overload]
+            return os.path.abspath(output)
         else:
             url = github_raw_url(url)
 
@@ -783,15 +788,16 @@ def geojson_to_ee(
                     radius = geo_json["properties"]["style"]["radius"]
                     geom = geom.buffer(radius)
                 elif (
-                    geo_json["geometry"]["type"] == "Point"
-                ):  # pyrefly: ignore[bad-index]
+                    geo_json["geometry"]["type"]  # pyrefly: ignore[bad-index]
+                    == "Point"
+                ):
                     geom = ee.Geometry(geo_json["geometry"])
                 else:
                     geom = ee.Geometry(geo_json["geometry"], "", geodesic)
             elif (
                 geo_json["geometry"]["type"] == "Point"  # pyrefly: ignore[bad-index]
             ):  # Checks whether it is a point.
-                coordinates = geo_json["geometry"][
+                coordinates = geo_json["geometry"][  # pyrefly: ignore[bad-index]
                     "coordinates"
                 ]  # pyrefly: ignore[bad-index]
                 longitude = coordinates[0]
