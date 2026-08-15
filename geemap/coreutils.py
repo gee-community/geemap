@@ -331,7 +331,10 @@ def geometry_type(ee_object: Any) -> str:
         return ee_object.geometry().type().getInfo()  # pyrefly: ignore[bad-return]
     elif isinstance(ee_object, ee.FeatureCollection):
         return (
-            ee.Feature(ee_object.first()).geometry().type().getInfo()
+            ee.Feature(ee_object.first())
+            .geometry()
+            .type()
+            .getInfo()  # pyrefly: ignore[bad-return]
         )  # pyrefly: ignore[bad-return]
     else:
         raise TypeError(
@@ -474,7 +477,7 @@ def hex_to_rgb(value: str = "FFFFFF") -> tuple[int, int, int]:
     """
     value = value.lstrip("#")
     lv = len(value)
-    return tuple(
+    return tuple(  # pyrefly: ignore[bad-return]
         int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3)
     )  # pyrefly: ignore[bad-return]
 
@@ -703,7 +706,9 @@ def download_file(
             output = os.path.basename(url)
 
     if isinstance(url, str):
-        if os.path.exists(os.path.abspath(output)) and (
+        if os.path.exists(
+            os.path.abspath(output)
+        ) and (  # pyrefly: ignore[no-matching-overload]
             not overwrite
         ):  # pyrefly: ignore[no-matching-overload]
             print(
@@ -783,7 +788,8 @@ def geojson_to_ee(
                     radius = geo_json["properties"]["style"]["radius"]
                     geom = geom.buffer(radius)
                 elif (
-                    geo_json["geometry"]["type"] == "Point"
+                    geo_json["geometry"]["type"]
+                    == "Point"  # pyrefly: ignore[bad-index]
                 ):  # pyrefly: ignore[bad-index]
                     geom = ee.Geometry(geo_json["geometry"])
                 else:
@@ -791,7 +797,7 @@ def geojson_to_ee(
             elif (
                 geo_json["geometry"]["type"] == "Point"  # pyrefly: ignore[bad-index]
             ):  # Checks whether it is a point.
-                coordinates = geo_json["geometry"][
+                coordinates = geo_json["geometry"][  # pyrefly: ignore[bad-index]
                     "coordinates"
                 ]  # pyrefly: ignore[bad-index]
                 longitude = coordinates[0]
