@@ -779,7 +779,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
             maxError=max_error
         )
         if zoom is None:
-            coordinates = geometry.bounds(
+            coordinates = geometry.bounds(  # pyrefly: ignore[unsupported-operation]
                 maxError=max_error
             ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"
@@ -792,7 +792,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         else:
             if not isinstance(zoom, int):
                 raise ValueError("Zoom must be an integer.")
-            centroid = geometry.centroid(
+            centroid = geometry.centroid(  # pyrefly: ignore[unsupported-operation]
                 maxError=max_error
             ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"

@@ -193,14 +193,17 @@ class Colorbar(ipywidgets.Output):
                 coreutils.check_cmap(vis_params["palette"])
             )
             if discrete:
-                cmap = matplotlib.colors.ListedColormap(
-                    hexcodes
+                cmap = (
+                    matplotlib.colors.ListedColormap(  # pyrefly: ignore[bad-assignment]
+                        hexcodes
+                    )
                 )  # pyrefly: ignore[bad-assignment]
                 linspace = numpy.linspace(
-                    vmin, vmax, cmap.N + 1
+                    vmin, vmax, cmap.N + 1  # pyrefly: ignore[missing-attribute]
                 )  # pyrefly: ignore[missing-attribute]
                 norm = matplotlib.colors.BoundaryNorm(
-                    linspace, cmap.N  # pyrefly: ignore[bad-assignment]
+                    linspace,
+                    cmap.N,  # pyrefly: ignore[bad-assignment, missing-attribute]
                 )  # pyrefly: ignore[missing-attribute]
             else:
                 cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
@@ -366,15 +369,16 @@ class Legend(anywidget.AnyWidget):
                 allowed_builtin_legends,  # pyrefly: ignore[bad-argument-type]
             )  # pytype: disable=wrong-arg-types
             if builtin_legend_allowed:
-                legend_dict = builtin_legends[
+                legend_dict = builtin_legends[  # pyrefly: ignore[bad-assignment]
                     builtin_legend
                 ]  # pyrefly: ignore[bad-assignment]
                 self.legend_keys = list(
-                    legend_dict.keys()
+                    legend_dict.keys()  # pyrefly: ignore[missing-attribute]
                 )  # pyrefly: ignore[missing-attribute]
                 self.legend_colors = list(
                     map(  # pyrefly: ignore[bad-assignment]
-                        self._normalize_color_to_hex, legend_dict.values()
+                        self._normalize_color_to_hex,
+                        legend_dict.values(),  # pyrefly: ignore[missing-attribute]
                     )  # pyrefly: ignore[missing-attribute]
                 )
         # pyrefly: ignore[missing-attribute]
@@ -1086,7 +1090,7 @@ class LayerEditor(anywidget.AnyWidget):
     def _calculate_field_values(self, message: dict[str, Any]) -> dict[str, Any]:
         field = message.get("field")
         options = self._ee_object.aggregate_array(
-            field
+            field  # pyrefly: ignore[bad-argument-type]
         ).getInfo()  # pyrefly: ignore[bad-argument-type]
         if options:
             options = list(set(options))
@@ -1150,7 +1154,9 @@ class LayerEditor(anywidget.AnyWidget):
             )
             field = state.get("field")
             arr = (
-                self._ee_object.aggregate_array(field).distinct().sort()
+                self._ee_object.aggregate_array(field)
+                .distinct()
+                .sort()  # pyrefly: ignore[bad-argument-type]
             )  # pyrefly: ignore[bad-argument-type]
             fc = self._ee_object.map(
                 lambda f: f.set({"styleIndex": arr.indexOf(f.get(field))})

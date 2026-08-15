@@ -521,7 +521,9 @@ class Map(core.Map):
                 ("http://", "https://")
             ):
                 self.add_tile_layer(
-                    url=basemap, shown=show, **kwargs
+                    url=basemap,
+                    shown=show,
+                    **kwargs,  # pyrefly: ignore[bad-argument-type]
                 )  # pyrefly: ignore[bad-argument-type]
             else:
                 print(
@@ -1394,7 +1396,7 @@ class Map(core.Map):
             if kwargs.get("type") == "click":
                 coordinates.append(latlon)
                 geom = ee.Geometry.Point(
-                    latlon[1], latlon[0]
+                    latlon[1], latlon[0]  # pyrefly: ignore[unsupported-operation]
                 )  # pyrefly: ignore[unsupported-operation]
                 feature = ee.Feature(geom)
                 self.ee_markers.append(feature)
@@ -1584,7 +1586,7 @@ class Map(core.Map):
                     marker_cluster.markers = markers
                     self.default_style = {"cursor": "wait"}
                     xy = ee.Geometry.Point(
-                        latlon[::-1]
+                        latlon[::-1]  # pyrefly: ignore[unsupported-operation]
                     )  # pyrefly: ignore[unsupported-operation]
                     dict_values = (
                         ee_object.sample(xy, scale=sample_scale)
@@ -1593,7 +1595,7 @@ class Map(core.Map):
                         .getInfo()
                     )
                     band_values = list(
-                        dict_values.values()
+                        dict_values.values()  # pyrefly: ignore[missing-attribute]
                     )  # pyrefly: ignore[missing-attribute]
                     self.plot(
                         band_names,
@@ -2484,7 +2486,7 @@ class Map(core.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(
+            source = array_to_image(  # pyrefly: ignore[bad-assignment]
                 source, **array_args
             )  # pyrefly: ignore[bad-assignment]
 
@@ -3565,7 +3567,7 @@ class Map(core.Map):
 
             if labels is not None:
                 if len(labels) != int(
-                    ee_object.size().getInfo()
+                    ee_object.size().getInfo()  # pyrefly: ignore[bad-argument-type]
                 ):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of bands in the image."
@@ -3582,7 +3584,7 @@ class Map(core.Map):
 
             if labels is not None:
                 if len(labels) != int(
-                    ee_object.size().getInfo()
+                    ee_object.size().getInfo()  # pyrefly: ignore[bad-argument-type]
                 ):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of images in the ImageCollection."
@@ -3610,7 +3612,7 @@ class Map(core.Map):
             layout=ipywidgets.Layout(width=slider_length),
         )
         label = ipywidgets.Label(
-            value=labels[0],
+            value=labels[0],  # pyrefly: ignore[unsupported-operation]
             layout=ipywidgets.Layout(
                 padding="0px 5px 0px 5px"
             ),  # pyrefly: ignore[unsupported-operation]
@@ -3858,7 +3860,7 @@ class Map(core.Map):
                 )
             else:
                 marker_colors = color_options[
-                    : len(items)
+                    : len(items)  # pyrefly: ignore[bad-argument-type]
                 ]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
             if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
@@ -3998,16 +4000,17 @@ class Map(core.Map):
                 markers.append(marker)
 
         marker_cluster = ipyleaflet.MarkerCluster(
-            markers=markers, name=layer_name
+            markers=markers, name=layer_name  # pyrefly: ignore[unbound-name]
         )  # pyrefly: ignore[unbound-name]
         self.add(marker_cluster)
 
         if items is not None and add_legend:
             marker_colors = [
-                coreutils.check_color(c) for c in marker_colors
+                coreutils.check_color(c)
+                for c in marker_colors  # pyrefly: ignore[not-iterable]
             ]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(),
+                title=color_column.title(),  # pyrefly: ignore[missing-attribute]
                 colors=marker_colors,
                 keys=items,  # pyrefly: ignore[missing-attribute]
             )

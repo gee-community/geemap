@@ -147,8 +147,8 @@ def array_to_df(
         y_values = np.transpose(y_values)  # pyrefly: ignore[no-matching-overload]
 
     if x_values is None:
-        x_values = list(
-            range(1, len(y_values[0]) + 1)
+        x_values = list(  # pyrefly: ignore[bad-assignment]
+            range(1, len(y_values[0]) + 1)  # pyrefly: ignore[bad-index]
         )  # pyrefly: ignore[bad-assignment, bad-index]
 
     data = {x_label: x_values}
@@ -158,7 +158,7 @@ def array_to_df(
 
     if y_labels is None:
         y_labels = [
-            f"y{str(i+1).zfill(len(str(len(y_values))))}"
+            f"y{str(i+1).zfill(len(str(len(y_values))))}"  # pyrefly: ignore[bad-argument-type]
             for i in range(len(y_values))  # pyrefly: ignore[bad-argument-type]
         ]
 
@@ -748,7 +748,7 @@ class Feature_ByProperty(BarChart):
         default_labels = None
         super().__init__(
             features,
-            default_labels,
+            default_labels,  # pyrefly: ignore[bad-argument-type]
             name,
             **kwargs,  # pyrefly: ignore[bad-argument-type]
         )  # pytype: disable=wrong-arg-types
@@ -1137,7 +1137,7 @@ def image_by_class(
     fig = Chart(  # pytype: disable=wrong-arg-types
         df_transposed,
         chart_type=chart_type,
-        x_cols="label",
+        x_cols="label",  # pyrefly: ignore[bad-argument-type]
         y_cols=y_cols,
         **kwargs,  # pyrefly: ignore[bad-argument-type]
     )
@@ -1175,7 +1175,7 @@ def image_by_region(
     bands = image.bandNames().getInfo()
     df = common.ee_to_df(fc)[bands + [x_property]]
     feature_by_feature(
-        df, x_property, bands, **kwargs
+        df, x_property, bands, **kwargs  # pyrefly: ignore[bad-argument-type]
     )  # pyrefly: ignore[bad-argument-type]
 
 
@@ -1534,7 +1534,7 @@ def doy_series_by_year(
     def reduce_features(doy_year):
         features = ee.FeatureCollection(ee.List(doy_year.get("matches")))
         value = features.aggregate_array("value").reduce(
-            same_day_reducer
+            same_day_reducer  # pyrefly: ignore[bad-argument-type]
         )  # pyrefly: ignore[bad-argument-type]
         return doy_year.set("value", value)
 
@@ -1649,10 +1649,14 @@ def image_histogram(
     # Create and combine histograms for each band.
     histograms_fig = []
     for band, color, label in zip(
-        histograms.keys(), band_colors, band_labels
+        histograms.keys(),
+        band_colors,
+        band_labels,  # pyrefly: ignore[bad-argument-type]
     ):  # pyrefly: ignore[bad-argument-type]
         histograms_fig.append(
-            create_histogram(histograms[band], color, label)
+            create_histogram(
+                histograms[band], color, label
+            )  # pyrefly: ignore[bad-argument-type]
         )  # pyrefly: ignore[bad-argument-type]
 
     combined_fig = bq.Figure(
@@ -1662,7 +1666,7 @@ def image_histogram(
     )
 
     for fig, label in zip(
-        histograms_fig, band_labels
+        histograms_fig, band_labels  # pyrefly: ignore[bad-argument-type]
     ):  # pyrefly: ignore[bad-argument-type]
         fig.marks[0].labels = [label]
 
