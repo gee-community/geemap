@@ -36,8 +36,7 @@ from . import map_widgets
 from . import timelapse
 from .conversion import js_snippet_to_py
 
-
-def js_path() -> pathlib.Path:
+def pathlib.Path(__file__).parent / "static" -> pathlib.Path:
     """Returns the path to the JavaScript files."""
     base = pathlib.Path(__file__).parent
     return base / "static"
@@ -47,7 +46,7 @@ def js_path() -> pathlib.Path:
 class ToolbarItem(anywidget.AnyWidget):
     """A toolbar item widget for geemap."""
 
-    _esm = js_path() / "toolbar_item.js"
+    _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
     active = traitlets.Bool(False).tag(sync=True)
     primary = traitlets.Bool(True).tag(sync=True)
     icon = traitlets.Unicode("").tag(sync=True)
@@ -102,7 +101,7 @@ class ToolbarItem(anywidget.AnyWidget):
 class Toolbar(anywidget.AnyWidget):
     """A toolbar that can be added to the map."""
 
-    _esm = js_path() / "toolbar.js"
+    _esm = pathlib.Path(__file__).parent / "static" / "toolbar.js"
 
     # The list of main tools.
     main_tools = map_widgets.TypedTuple(
@@ -179,9 +178,9 @@ def inspector_gui(m: geemap.Map | None = None):
     widget_width = "250px"
     padding = "0px 5px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}
-    marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
 
     if m is not None:
+        marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
         setattr(m, "pixel_values", [])
         setattr(m, "marker_cluster", marker_cluster)
 
@@ -399,10 +398,8 @@ def inspector_gui(m: geemap.Map | None = None):
 
     def handle_interaction(**kwargs):
         latlon = kwargs.get("coordinates")
-        if latlon is None or m is None:
-            return
-        lat = round(latlon[0], 4)
-        lon = round(latlon[1], 4)
+        lat = round(latlon[0], 4)  # pyrefly: ignore[unsupported-operation]
+        lon = round(latlon[1], 4)  # pyrefly: ignore[unsupported-operation]
         if (
             kwargs.get("type") == "click"
             and hasattr(m, "inspector_mode")
@@ -414,9 +411,7 @@ def inspector_gui(m: geemap.Map | None = None):
                 output.outputs = ()
                 print("Getting pixel value ...")
 
-                layer_dict = m.cog_layer_dict[
-                    dropdown.value
-                ]  # pyrefly: ignore[missing-attribute]
+                layer_dict = m.cog_layer_dict[dropdown.value]  # pyrefly: ignore[missing-attribute]
 
             if layer_dict["type"] == "STAC":
                 if bands_chk.value:
@@ -444,25 +439,17 @@ def inspector_gui(m: geemap.Map | None = None):
                         result["latitude"] = lat
                         result["longitude"] = lon
                         result["label"] = label.value
-                        m.pixel_values.append(
-                            result
-                        )  # pyrefly: ignore[missing-attribute]
+                        m.pixel_values.append(result)  # pyrefly: ignore[missing-attribute]
                     if add_marker.value:
-                        markers = list(
-                            m.marker_cluster.markers  # pyrefly: ignore[missing-attribute, union-attr]
-                        )
+                        markers = list(m.marker_cluster.markers)  # pyrefly: ignore[missing-attribute]
                         markers.append(ipyleaflet.Marker(location=latlon))
-                        m.marker_cluster.markers = (
-                            markers  # pyrefly: ignore[missing-attribute, union-attr]
-                        )
+                        m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]
 
                 else:
                     with output:
                         output.outputs = ()
                         print("No pixel value available")
-                        bounds = m.cog_layer_dict[m.inspector_dropdown.value][
-                            "bounds"
-                        ]  # pyrefly: ignore[missing-attribute]
+                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]  # pyrefly: ignore[missing-attribute]
                         m.zoom_to_bounds(bounds)  # pyrefly: ignore[missing-attribute]
             elif layer_dict["type"] == "COG":
                 result = common.cog_pixel_value(
@@ -478,24 +465,16 @@ def inspector_gui(m: geemap.Map | None = None):
                         result["latitude"] = lat
                         result["longitude"] = lon
                         result["label"] = label.value
-                        m.pixel_values.append(
-                            result
-                        )  # pyrefly: ignore[missing-attribute]
+                        m.pixel_values.append(result)  # pyrefly: ignore[missing-attribute]
                     if add_marker.value:
-                        markers = list(
-                            m.marker_cluster.markers  # pyrefly: ignore[missing-attribute, union-attr]
-                        )
+                        markers = list(m.marker_cluster.markers)  # pyrefly: ignore[missing-attribute]
                         markers.append(ipyleaflet.Marker(location=latlon))
-                        m.marker_cluster.markers = (
-                            markers  # pyrefly: ignore[missing-attribute, union-attr]
-                        )
+                        m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]
                 else:
                     with output:
                         output.outputs = ()
                         print("No pixel value available")
-                        bounds = m.cog_layer_dict[m.inspector_dropdown.value][
-                            "bounds"
-                        ]  # pyrefly: ignore[missing-attribute]
+                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]  # pyrefly: ignore[missing-attribute]
                         m.zoom_to_bounds(bounds)  # pyrefly: ignore[missing-attribute]
 
             elif layer_dict["type"] == "LOCAL":
@@ -503,17 +482,9 @@ def inspector_gui(m: geemap.Map | None = None):
                     lon, lat, layer_dict["tile_client"], verbose=False
                 )
                 if result is not None:
-                    if (
-                        m.inspector_bands_chk.value
-                    ):  # pyrefly: ignore[missing-attribute]
-                        band = m.cog_layer_dict[  # pyrefly: ignore[missing-attribute]
-                            m.inspector_dropdown.value
-                        ][  # pyrefly: ignore[missing-attribute]
-                            "band"
-                        ]  # pyrefly: ignore[missing-attribute]
-                        band_names = m.cog_layer_dict[
-                            m.inspector_dropdown.value
-                        ][  # pyrefly: ignore[missing-attribute]
+                    if m.inspector_bands_chk.value:  # pyrefly: ignore[missing-attribute]
+                        band = m.cog_layer_dict[m.inspector_dropdown.value]["band"]  # pyrefly: ignore[missing-attribute]
+                        band_names = m.cog_layer_dict[m.inspector_dropdown.value][  # pyrefly: ignore[missing-attribute]
                             "band_names"
                         ]
                         if band is not None:
@@ -528,32 +499,22 @@ def inspector_gui(m: geemap.Map | None = None):
                         result["latitude"] = lat
                         result["longitude"] = lon
                         result["label"] = label.value
-                        m.pixel_values.append(
-                            result
-                        )  # pyrefly: ignore[missing-attribute]
+                        m.pixel_values.append(result)  # pyrefly: ignore[missing-attribute]
                     if add_marker.value:
-                        markers = list(
-                            m.marker_cluster.markers  # pyrefly: ignore[missing-attribute, union-attr]
-                        )
+                        markers = list(m.marker_cluster.markers)  # pyrefly: ignore[missing-attribute]
                         markers.append(ipyleaflet.Marker(location=latlon))
-                        m.marker_cluster.markers = (
-                            markers  # pyrefly: ignore[missing-attribute, union-attr]
-                        )
+                        m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]
                 else:
                     with output:
                         output.outputs = ()
                         print("No pixel value available")
-                        bounds = m.cog_layer_dict[m.inspector_dropdown.value][
-                            "bounds"
-                        ]  # pyrefly: ignore[missing-attribute]
+                        bounds = m.cog_layer_dict[m.inspector_dropdown.value]["bounds"]  # pyrefly: ignore[missing-attribute]
                         m.zoom_to_bounds(bounds)  # pyrefly: ignore[missing-attribute]
-            m.default_style = {
-                "cursor": "crosshair"
-            }  # pyrefly: ignore[missing-attribute]
+            m.default_style = {"cursor": "crosshair"}  # pyrefly: ignore[missing-attribute]
 
     if m is not None:
         if not hasattr(m, "marker_cluster"):
-            setattr(m, "marker_cluster", marker_cluster)
+            setattr(m, "marker_cluster", marker_cluster)  # pyrefly: ignore[unbound-name]
         m.add_layer(marker_cluster)
 
         if not m.interact_mode:
@@ -681,11 +642,9 @@ def ee_plot_gui(m, position: str = "topright", **kwargs):
             return
 
         latlon = kwargs.get("coordinates")
-        if latlon is None or m is None:
-            return
         if kwargs.get("type") == "click":
-            xy = ee.Geometry.Point(latlon[::-1])
-            plot_options = {}  # pyrefly: ignore[unsupported-operation]
+            xy = ee.Geometry.Point(latlon[::-1])  # pyrefly: ignore[unsupported-operation]
+            plot_options = {}
             if hasattr(m, "_plot_options"):
                 plot_options = m._plot_options
             sample_scale = m.getScale()
@@ -1470,16 +1429,16 @@ def convert_js2py(m):
                     show_map=False,
                     Map=m._var_name,
                 )
-                out_lines = out_lines or []
-                if len(out_lines) > 0 and len(out_lines[0].strip()) == 0:
-                    out_lines = out_lines[1:]
+                if len(out_lines) > 0 and len(out_lines[0].strip()) == 0:  # pyrefly: ignore[bad-argument-type, unsupported-operation]
+                    out_lines = out_lines[1:]  # pyrefly: ignore[unsupported-operation]
 
                 prefix = (
                     "# The code has been copied to the clipboard.\n"
                     "# Press Ctrl+V to in a code cell to paste it.\n"
                 )
-                text_widget.value = "".join([prefix] + out_lines)
-                coreutils.create_code_cell("".join(out_lines))
+                text_widget.value = "".join([prefix] + out_lines)  # pyrefly: ignore[unsupported-operation]
+                coreutils.create_code_cell("".join(out_lines))  # pyrefly: ignore[no-matching-overload]
+
         elif change["new"] == "Clear":
             text_widget.value = ""
         elif change["new"] == "Close":
@@ -2452,8 +2411,7 @@ def time_slider(m: geemap.Map | None = None):
     )
 
     region = ipywidgets.Dropdown(
-        options=["User-drawn ROI"]
-        + list(m.ee_vector_layers.keys()),  # pyrefly: ignore[missing-attribute]
+        options=["User-drawn ROI"] + list(m.ee_vector_layers.keys()),  # pyrefly: ignore[missing-attribute]
         value="User-drawn ROI",
         description="Region:",
         layout=ipywidgets.Layout(width=widget_width, padding=padding),
@@ -2582,7 +2540,7 @@ def time_slider(m: geemap.Map | None = None):
     )
 
     def classes_changed(change):
-        if change["new"] and m is not None:
+        if change["new"]:
             selected = change["owner"].value
             if colormap.value is not None:
                 n_class = None
@@ -2619,19 +2577,18 @@ def time_slider(m: geemap.Map | None = None):
 
                 palette.value = ", ".join(cmap_colors)
 
-                if m._colorbar_widget is None:
-                    m._colorbar_widget = ipywidgets.Output(
+                if m._colorbar_widget is None:  # pyrefly: ignore[missing-attribute]
+                    m._colorbar_widget = ipywidgets.Output(  # pyrefly: ignore[missing-attribute]
                         layout=ipywidgets.Layout(height="60px")
                     )
 
                 if (not hasattr(m, "_colorbar_ctrl")) or (m._colorbar_ctrl is None):
-                    m._colorbar_ctrl = ipyleaflet.WidgetControl(
-                        widget=m._colorbar_widget,
-                        position="bottomright",
+                    m._colorbar_ctrl = ipyleaflet.WidgetControl(  # pyrefly: ignore[missing-attribute]
+                        widget=m._colorbar_widget, position="bottomright"  # pyrefly: ignore[missing-attribute]
                     )
-                    m.add_control(m._colorbar_ctrl)
+                    m.add_control(m._colorbar_ctrl)  # pyrefly: ignore[missing-attribute]
 
-                colorbar_output = m._colorbar_widget
+                colorbar_output = m._colorbar_widget  # pyrefly: ignore[missing-attribute]
                 with colorbar_output:
                     colorbar_output.outputs = ()
                     plt.show()
@@ -2672,7 +2629,7 @@ def time_slider(m: geemap.Map | None = None):
     reset_color.on_click(reset_color_clicked)
 
     def colormap_changed(change) -> None:
-        if change["new"] and m is not None:
+        if change["new"]:
             n_class = None
             if classes.value != "Any":
                 n_class = int(classes.value)
@@ -2705,19 +2662,18 @@ def time_slider(m: geemap.Map | None = None):
 
             palette.value = ", ".join(cmap_colors)
 
-            if m._colorbar_widget is None:
-                m._colorbar_widget = ipywidgets.Output(
+            if m._colorbar_widget is None:  # pyrefly: ignore[missing-attribute]
+                m._colorbar_widget = ipywidgets.Output(  # pyrefly: ignore[missing-attribute]
                     layout=ipywidgets.Layout(height="60px")
                 )
 
-            if (not hasattr(m, "_colorbar_ctrl")) or (m._colorbar_ctrl is None):
-                m._colorbar_ctrl = ipyleaflet.WidgetControl(
-                    widget=m._colorbar_widget,
-                    position="bottomright",
+            if hasattr(m, "_colorbar_ctrl") or (m._colorbar_ctrl is None):  # pyrefly: ignore[missing-attribute]
+                m._colorbar_ctrl = ipyleaflet.WidgetControl(  # pyrefly: ignore[missing-attribute]
+                    widget=m._colorbar_widget, position="bottomright"  # pyrefly: ignore[missing-attribute]
                 )
-                m.add_control(m._colorbar_ctrl)
+                m.add_control(m._colorbar_ctrl)  # pyrefly: ignore[missing-attribute]
 
-            colorbar_output = m._colorbar_widget
+            colorbar_output = m._colorbar_widget  # pyrefly: ignore[missing-attribute]
             with colorbar_output:
                 colorbar_output.outputs = ()
                 plt.show()
@@ -3031,15 +2987,15 @@ def time_slider(m: geemap.Map | None = None):
     close_button.observe(close_btn_click, "value")
 
     def collection_changed(change):
-        if change["new"] and m is not None:
+        if change["new"]:
             selected = change["owner"].value
-            if selected in m.ee_layers:
+            if selected in m.ee_layers:  # pyrefly: ignore[missing-attribute]
                 prebuilt_options.children = []
                 labels.value = ""
                 region.value = None
 
-                ee_object = m.ee_layers[selected]["ee_object"]
-                vis_params = m.ee_layers[selected]["vis_params"]
+                ee_object = m.ee_layers[selected]["ee_object"]  # pyrefly: ignore[missing-attribute]
+                vis_params = m.ee_layers[selected]["vis_params"]  # pyrefly: ignore[missing-attribute]
                 if isinstance(ee_object, ee.Image):
                     palette_vbox.children = [
                         ipywidgets.HBox([classes, colormap]),
@@ -3052,15 +3008,16 @@ def time_slider(m: geemap.Map | None = None):
                 elif isinstance(ee_object, ee.ImageCollection):
                     first = ee.Image(ee_object.first())
                     band_names = first.bandNames().getInfo()
+                    band_count = len(band_names)  # pyrefly: ignore[bad-argument-type]
 
-                    if band_names and len(band_names) > 2:
+                    if band_count > 2:
                         band1_dropdown.options = band_names
                         band2_dropdown.options = band_names
                         band3_dropdown.options = band_names
 
-                        band1_dropdown.value = band_names[2]
-                        band2_dropdown.value = band_names[1]
-                        band3_dropdown.value = band_names[0]
+                        band1_dropdown.value = band_names[2]  # pyrefly: ignore[unsupported-operation]
+                        band2_dropdown.value = band_names[1]  # pyrefly: ignore[unsupported-operation]
+                        band3_dropdown.value = band_names[0]  # pyrefly: ignore[unsupported-operation]
 
                         palette_vbox.children = []
                         bands_hbox.children = [
@@ -3090,19 +3047,16 @@ def time_slider(m: geemap.Map | None = None):
                 if "max" in vis_params:
                     vis_max.value = str(vis_params["max"])
                 if "opacity" in vis_params:
-                    opacity.value = float(vis_params["opacity"])
+                    opacity.value = str(vis_params["opacity"])
                 if "gamma" in vis_params:
                     if isinstance(vis_params["gamma"], list):
                         gamma.value = str(vis_params["gamma"][0])
                     else:
                         gamma.value = str(vis_params["gamma"])
                 if "palette" in vis_params:
-                    if isinstance(vis_params["palette"], list):
-                        palette.value = ", ".join(vis_params["palette"])
-                    else:
-                        palette.value = vis_params["palette"]
+                    palette.value = ", ".join(vis_params["palette"])
 
-            elif selected in col_options_dict:
+            else:
                 prebuilt_options.children = [
                     ipywidgets.HBox(
                         [start_year, start_year_label, end_year, end_year_label]
@@ -3112,6 +3066,7 @@ def time_slider(m: geemap.Map | None = None):
                     ),
                     cloud,
                 ]
+
                 if selected == "MOD13A2.006 Terra Vegetation Indices":
                     palette_vbox.children = [
                         ipywidgets.HBox([classes, colormap]),
@@ -3142,27 +3097,24 @@ def time_slider(m: geemap.Map | None = None):
                         band3_dropdown,
                     ]
 
-                    bandnames_val = col_options_dict[selected].get("bandnames", [])
-                    bandnames = bandnames_val if isinstance(bandnames_val, list) else []
+                    bandnames = col_options_dict[selected]["bandnames"]
                     band1_dropdown.options = bandnames
                     band2_dropdown.options = bandnames
                     band3_dropdown.options = bandnames
 
-                    if (
-                        selected == "Landsat TM-ETM-OLI Surface Reflectance"
-                        or selected == "Sentinel-2 Surface Relectance"
-                    ):
-                        if len(bandnames) > 2:
-                            band1_dropdown.value = bandnames[2]
-                            band2_dropdown.value = bandnames[1]
-                            band3_dropdown.value = bandnames[0]
-                        palette_vbox.children = []
-                    elif selected == "USDA NAIP Imagery":
-                        if len(bandnames) > 2:
-                            band1_dropdown.value = bandnames[0]
-                            band2_dropdown.value = bandnames[1]
-                            band3_dropdown.value = bandnames[2]
-                        palette_vbox.children = []
+                if (
+                    selected == "Landsat TM-ETM-OLI Surface Reflectance"
+                    or selected == "Sentinel-2 Surface Relectance"
+                ):
+                    band1_dropdown.value = bandnames[2]  # pyrefly: ignore[bad-index, unbound-name]
+                    band2_dropdown.value = bandnames[1]  # pyrefly: ignore[bad-index]
+                    band3_dropdown.value = bandnames[0]  # pyrefly: ignore[bad-index]
+                    palette_vbox.children = []
+                elif selected == "USDA NAIP Imagery":
+                    band1_dropdown.value = bandnames[0]  # pyrefly: ignore[bad-index, unbound-name]
+                    band2_dropdown.value = bandnames[1]  # pyrefly: ignore[bad-index]
+                    band3_dropdown.value = bandnames[2]  # pyrefly: ignore[bad-index]
+                    palette_vbox.children = []
 
                 labels.value = ", ".join(
                     str(i)
@@ -3510,7 +3462,7 @@ def sankee_gui(m=None):
     Returns:
         ipywidgets: The interactive GUI.
     """
-    import sankee  # pytype: disable=import-error
+    import sankee
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
@@ -4181,7 +4133,7 @@ def _open_data_tool_callback(m, selected, item):
 @_cleanup_toolbar_item
 def _whitebox_tool_callback(m, selected, item):
     del selected, item  # Unused.
-    import whiteboxgui.whiteboxgui as wbt  # pytype: disable=import-error
+    import whiteboxgui.whiteboxgui as wbt
 
     tools_dict = wbt.get_wbt_dict()
     wbt_toolbox = wbt.build_toolbox(
@@ -4870,9 +4822,7 @@ def plotly_search_basemaps(canvas):
                     output.outputs = ()
                 elif provider.startswith("xyz"):
                     name = provider[4:]
-                    xyz_provider = xyz.flatten()[  # pyrefly: ignore[missing-attribute]
-                        name
-                    ]
+                    xyz_provider = xyz.flatten()[name]  # pyrefly: ignore[missing-attribute]
                     url = xyz_provider.build_url()
                     attribution = xyz_provider.attribution
                     if xyz_provider.requires_token():
@@ -4963,7 +4913,7 @@ def plotly_whitebox_gui(canvas):
     Args:
         canvas (object): The plotly Map canvas.
     """
-    import whiteboxgui.whiteboxgui as wbt  # pytype: disable=import-error
+    import whiteboxgui.whiteboxgui as wbt
 
     container_widget = canvas.container_widget
     map_widget = canvas.map_widget
