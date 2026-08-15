@@ -386,7 +386,7 @@ class Map(folium.Map):
             if not isinstance(zoom, int):
                 raise Exception("Zoom must be an integer.")
 
-            centroid = geometry.centroid(
+            centroid = geometry.centroid(  # pyrefly: ignore[unsupported-operation]
                 maxError=max_error
             ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"
@@ -399,7 +399,7 @@ class Map(folium.Map):
                 arc_zoom_to_extent(lon, lat, lon, lat)
 
         else:
-            coordinates = geometry.bounds(
+            coordinates = geometry.bounds(  # pyrefly: ignore[unsupported-operation]
                 maxError=max_error
             ).getInfo()[  # pyrefly: ignore[unsupported-operation]
                 "coordinates"
