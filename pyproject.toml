@@ -177,6 +177,7 @@ max-line-length = 88
 
 [dependency-groups]
 dev = [
+    "beautifulsoup4>=4.12.0",
     "pyrefly>=1.2.0",
     "pytest>=9.1.1",
 ]
@@ -224,3 +225,8 @@ ignore-missing-imports = ["arcpy", "datapane", "gdal", "google.colab", "google_d
 
 [tool.uv]
 no-build-isolation-package = ["keplergl"]
+
+[[tool.uv.index]]
+name = "default"
+url = "https://pypi.org/simple"
+default = true
