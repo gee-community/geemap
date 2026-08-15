@@ -200,14 +200,14 @@ class Colorbar(ipywidgets.Output):
                     vmin, vmax, cmap.N + 1
                 )  # pyrefly: ignore[missing-attribute]
                 norm = matplotlib.colors.BoundaryNorm(
-                    linspace, cmap.N
+                    linspace, cmap.N  # pyrefly: ignore[bad-assignment]
                 )  # pyrefly: ignore[missing-attribute]
             else:
                 cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
-                    "custom", hexcodes, N=256
+                    "custom", hexcodes, N=256  # pyrefly: ignore[missing-attribute]
                 )
                 norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
-        elif cmap:
+        elif cmap:  # pyrefly: ignore[missing-attribute]
             cmap = matplotlib.pyplot.get_cmap(cmap)
             norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
         else:
@@ -373,15 +373,15 @@ class Legend(anywidget.AnyWidget):
                     legend_dict.keys()
                 )  # pyrefly: ignore[missing-attribute]
                 self.legend_colors = list(
-                    map(
+                    map(  # pyrefly: ignore[bad-assignment]
                         self._normalize_color_to_hex, legend_dict.values()
                     )  # pyrefly: ignore[missing-attribute]
                 )
-
+        # pyrefly: ignore[missing-attribute]
         self._check_if_allowed(position, "position", self.ALLOWED_POSITIONS)
 
         self.add_header = add_header
-        if "show_close_button" in widget_args:
+        if "show_close_button" in widget_args:  # pyrefly: ignore[missing-attribute]
             self.show_close_button = widget_args["show_close_button"]
         else:
             self.show_close_button = False
@@ -1093,7 +1093,7 @@ class LayerEditor(anywidget.AnyWidget):
             options.sort()
         return {"field-values": options or []}
 
-    def _get_colormaps(self) -> list[str]:
+    def _get_colormaps(self) -> list[str]:  # pyrefly: ignore[bad-argument-type]
         """Gets the list of available colormaps."""
         colormap_options = pyplot.colormaps()
         colormap_options.sort()
@@ -1157,7 +1157,7 @@ class LayerEditor(anywidget.AnyWidget):
             )
             step = arr.size().divide(colors.size()).ceil()
             fc = fc.map(
-                lambda f: f.set(
+                lambda f: f.set(  # pyrefly: ignore[bad-argument-type]
                     {
                         "style": {
                             **vis_options,

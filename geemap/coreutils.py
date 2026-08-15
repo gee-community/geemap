@@ -330,11 +330,11 @@ def geometry_type(ee_object: Any) -> str:
     elif isinstance(ee_object, ee.Feature):
         return ee_object.geometry().type().getInfo()  # pyrefly: ignore[bad-return]
     elif isinstance(ee_object, ee.FeatureCollection):
-        return (
-            ee.Feature(ee_object.first())
+        return (  # pyrefly: ignore[bad-return]
+            ee.Feature(ee_object.first())  # pyrefly: ignore[bad-return]
             .geometry()
             .type()
-            .getInfo()  # pyrefly: ignore[bad-return]
+            .getInfo()
         )
     else:
         raise TypeError(
