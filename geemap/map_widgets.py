@@ -1089,8 +1089,8 @@ class LayerEditor(anywidget.AnyWidget):
     def _calculate_field_values(self, message: dict[str, Any]) -> dict[str, Any]:
         field = message.get("field")
         options = self._ee_object.aggregate_array(
-            field
-        ).getInfo()  # pyrefly: ignore[bad-argument-type]
+            field  # pyrefly: ignore[bad-argument-type]
+        ).getInfo()
         if options:
             options = list(set(options))
             options.sort()
@@ -1153,10 +1153,16 @@ class LayerEditor(anywidget.AnyWidget):
             )
             field = state.get("field")
             arr = (
-                self._ee_object.aggregate_array(field).distinct().sort()
-            )  # pyrefly: ignore[bad-argument-type]
+                self._ee_object.aggregate_array(
+                    field  # pyrefly: ignore[bad-argument-type]
+                )
+                .distinct()
+                .sort()
+            )
             fc = self._ee_object.map(
-                lambda f: f.set({"styleIndex": arr.indexOf(f.get(field))})
+                lambda f: f.set(
+                    {"styleIndex": arr.indexOf(f.get(field))}
+                )  # pyrefly: ignore[bad-argument-type]
             )
             step = arr.size().divide(colors.size()).ceil()
             fc = fc.map(
