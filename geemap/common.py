@@ -4139,18 +4139,17 @@ def ee_api_to_csv(
             for func_table in func_tables  # pyrefly: ignore[missing-attribute]
         ]  # pyrefly: ignore[missing-attribute]
         returns = [
-            func_table.find_all("td")[1].text for func_table in func_tables
-        ]  # pyrefly: ignore[missing-attribute]
+            func_table.find_all("td")[1].text  # pyrefly: ignore[missing-attribute]
+            for func_table in func_tables
+        ]
 
         detail_tables: list[str | bs4.Tag] = []
         tables = soup.find_all("table", class_="blue")
 
         for table in tables:
             item = table.next_sibling
-            if item.attrs == {
-                "class": ["details"]
-            }:  # pyrefly: ignore[missing-attribute]
-                detail_tables.append(item)  # pyrefly: ignore[bad-argument-type]
+            if isinstance(item, bs4.Tag) and item.attrs == {"class": ["details"]}:
+                detail_tables.append(item)
             else:
                 detail_tables.append("")
 
