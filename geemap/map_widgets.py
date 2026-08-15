@@ -1154,10 +1154,12 @@ class LayerEditor(anywidget.AnyWidget):
             )
             field = state.get("field")
             arr = (
-                self._ee_object.aggregate_array(field)
+                self._ee_object.aggregate_array(
+                    field
+                )  # pyrefly: ignore[bad-argument-type]
                 .distinct()
-                .sort()  # pyrefly: ignore[bad-argument-type]
-            )  # pyrefly: ignore[bad-argument-type]
+                .sort()
+            )
             fc = self._ee_object.map(
                 lambda f: f.set({"styleIndex": arr.indexOf(f.get(field))})
             )
