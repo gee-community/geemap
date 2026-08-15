@@ -5516,11 +5516,12 @@ def sentinel1_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(  # pyrefly: ignore[missing-attribute]
             default_colors[
-                len(marker_colors) : len(
+                len(marker_colors)  # pyrefly: ignore[bad-argument-type]
+                : len(
                     sample_points
                 )  # pyrefly: ignore[bad-argument-type]
-            ]  # pyrefly: ignore[bad-argument-type]
-        )  # pyrefly: ignore[bad-argument-type, missing-attribute]
+            ]
+        )
 
     # Adjust dimensions to avoid Earth Engine limits.
     # Calculate optimal dimensions based on ROI.
@@ -6501,11 +6502,12 @@ def sentinel2_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(  # pyrefly: ignore[missing-attribute]
             default_colors[
-                len(marker_colors) : len(
+                len(marker_colors)  # pyrefly: ignore[bad-argument-type]
+                : len(
                     sample_points
                 )  # pyrefly: ignore[bad-argument-type]
-            ]  # pyrefly: ignore[bad-argument-type]
-        )  # pyrefly: ignore[bad-argument-type, missing-attribute]
+            ]
+        )
 
     # Set default sample bands if not provided.
     if sample_bands is None:
@@ -7690,11 +7692,12 @@ def landsat_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(  # pyrefly: ignore[missing-attribute]
             default_colors[
-                len(marker_colors) : len(
+                len(marker_colors)  # pyrefly: ignore[bad-argument-type]
+                : len(
                     sample_points
                 )  # pyrefly: ignore[bad-argument-type]
-            ]  # pyrefly: ignore[bad-argument-type]
-        )  # pyrefly: ignore[bad-argument-type, missing-attribute]
+            ]
+        )
 
     # Set default sample bands if not provided.
     if sample_bands is None:
