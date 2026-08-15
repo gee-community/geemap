@@ -252,7 +252,7 @@ def ee_export_image_collection(
 
         filenames = [
             str(f) + ".tif"
-            for f in filenames
+            for f in filenames  # pyrefly: ignore[not-iterable]
             if not str(f).endswith(".tif")  # pyrefly: ignore[not-iterable]
         ]  # pyrefly: ignore[not-iterable]
 
@@ -2441,7 +2441,7 @@ def ee_to_bbox(ee_object) -> list[float]:
             "The ee_object must be an ee.Image, ee.Feature, ee.FeatureCollection or ee.Geometry object."
         )
 
-    bounds = geometry.bounds().getInfo()[
+    bounds = geometry.bounds().getInfo()[  # pyrefly: ignore[unsupported-operation]
         "coordinates"
     ][  # pyrefly: ignore[unsupported-operation]
         0
@@ -4130,12 +4130,12 @@ def ee_api_to_csv(
 
         names = [h2.text for h2 in soup.find_all("h2")]
         descriptions = [
-            h2.next_sibling.next_sibling.text
+            h2.next_sibling.next_sibling.text  # pyrefly: ignore[missing-attribute]
             for h2 in soup.find_all("h2")  # pyrefly: ignore[missing-attribute]
         ]  # pyrefly: ignore[missing-attribute]
         func_tables = soup.find_all("table", class_="blue")
         functions = [
-            func_table.find("code").text
+            func_table.find("code").text  # pyrefly: ignore[missing-attribute]
             for func_table in func_tables  # pyrefly: ignore[missing-attribute]
         ]  # pyrefly: ignore[missing-attribute]
         returns = [
@@ -6880,7 +6880,7 @@ def zonal_stats(
 
     if scale is None:
         scale = (
-            in_value_raster.projection()
+            in_value_raster.projection()  # pyrefly: ignore[bad-assignment]
             .nominalScale()
             .multiply(10)  # pyrefly: ignore[bad-assignment]
         )  # pyrefly: ignore[bad-assignment]
@@ -7016,7 +7016,7 @@ def zonal_stats_by_group(
 
     if scale is None:
         scale = (
-            in_value_raster.projection()
+            in_value_raster.projection()  # pyrefly: ignore[bad-assignment]
             .nominalScale()
             .multiply(10)  # pyrefly: ignore[bad-assignment]
         )  # pyrefly: ignore[bad-assignment]
@@ -9285,7 +9285,7 @@ def extract_pixel_values(
         band_names = ee_object.bandNames().getInfo()
         values_tmp = dict_values.getInfo()
         values = [
-            values_tmp[i]
+            values_tmp[i]  # pyrefly: ignore[unsupported-operation]
             for i in band_names  # pyrefly: ignore[not-iterable, unsupported-operation]
         ]  # pyrefly: ignore[not-iterable, unsupported-operation]
         return dict(zip(band_names, values))  # pyrefly: ignore[bad-argument-type]
@@ -10970,7 +10970,7 @@ def points_from_xy(
     return gpd.GeoDataFrame(
         df,
         geometry=gpd.points_from_xy(
-            df[x], df[y], z=z, crs=crs
+            df[x], df[y], z=z, crs=crs  # pyrefly: ignore[bad-index]
         ),  # pyrefly: ignore[bad-index]
     )  # pyrefly: ignore[bad-index]
 
@@ -11197,7 +11197,7 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     df.columns = [col.replace("properties.", "") for col in df.columns]
     if drop_geometry:
         df = df[
-            df.columns.drop(
+            df.columns.drop(  # pyrefly: ignore[missing-attribute]
                 list(df.filter(regex="geometry"))
             )  # pyrefly: ignore[missing-attribute]
         ]  # pyrefly: ignore[missing-attribute]
@@ -12682,7 +12682,7 @@ def download_ee_image_tiles_parallel(
             out_dir,
             "{}{}.tif".format(
                 prefix,
-                names[index].replace(
+                names[index].replace(  # pyrefly: ignore[unsupported-operation]
                     "/", "_"
                 ),  # pyrefly: ignore[unsupported-operation]
             ),  # pyrefly: ignore[unsupported-operation]
@@ -12797,7 +12797,9 @@ def download_ee_image_collection(
                     name = name + ".tif"
             else:
                 name = (
-                    image.get("system:index").getInfo()
+                    image.get(
+                        "system:index"
+                    ).getInfo()  # pyrefly: ignore[unsupported-operation]
                     + ".tif"  # pyrefly: ignore[unsupported-operation]
                 )  # pyrefly: ignore[unsupported-operation]
             filename = os.path.join(os.path.abspath(out_dir), name)
@@ -13016,7 +13018,7 @@ def bbox_coords(geometry, decimals=4) -> list[float] | None:
             raise ValueError("geometry must be an ee.Geometry.")
 
         coords = (
-            geometry.bounds()
+            geometry.bounds()  # pyrefly: ignore[unsupported-operation]
             .coordinates()
             .getInfo()[0]  # pyrefly: ignore[unsupported-operation]
         )  # pyrefly: ignore[unsupported-operation]
@@ -13681,7 +13683,7 @@ def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
         image = dataset.filterBounds(region).mosaic().clipToCollection(region)
 
     download_ee_image(
-        image,
+        image,  # pyrefly: ignore[unbound-name]
         filename,
         region=region.geometry(),
         scale=scale,
@@ -15159,7 +15161,7 @@ def array_to_memory_file(
             if array.dims[0] == "time":
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
-            array = array.rename(
+            array = array.rename(  # pyrefly: ignore[missing-attribute]
                 {y_dim: "y", x_dim: "x"}
             ).transpose(  # pyrefly: ignore[missing-attribute]
                 "y", "x"
@@ -15309,7 +15311,7 @@ def array_to_image(
             if array.dims[0] == "time":
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
-            array = array.rename(
+            array = array.rename(  # pyrefly: ignore[missing-attribute]
                 {y_dim: "y", x_dim: "x"}
             ).transpose(  # pyrefly: ignore[missing-attribute]
                 "y", "x"
