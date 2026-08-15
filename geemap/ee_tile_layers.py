@@ -29,8 +29,8 @@ def _get_tile_url_format(
         vis_params: The visualization parameters.
     """
     image = _ee_object_to_image(
-        ee_object, vis_params
-    )  # pyrefly: ignore[bad-argument-type]
+        ee_object, vis_params  # pyrefly: ignore[bad-argument-type]
+    )
     map_id_dict = ee.Image(image).getMapId(vis_params)
     return map_id_dict["tile_fetcher"].url_format
 
@@ -278,8 +278,10 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
             The minimum and maximum values to clip to.
         """
         bands = (
-            self._ee_object.bandNames() if bands is None else tuple(bands)
-        )  # pyrefly: ignore[bad-assignment, missing-attribute]
+            self._ee_object.bandNames()  # pyrefly: ignore[missing-attribute]
+            if bands is None
+            else tuple(bands)  # pyrefly: ignore[bad-assignment]
+        )
         try:
             min_val, max_val, std, mean = self._calculate_vis_stats(
                 bounds=bounds, bands=bands  # pyrefly: ignore[bad-argument-type]
