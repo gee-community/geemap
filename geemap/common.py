@@ -251,7 +251,9 @@ def ee_export_image_collection(
             )
 
         filenames = [
-            str(f) + ".tif" for f in filenames if not str(f).endswith(".tif")
+            str(f) + ".tif"
+            for f in filenames
+            if not str(f).endswith(".tif")  # pyrefly: ignore[not-iterable]
         ]  # pyrefly: ignore[not-iterable]
 
         for i in range(0, count):
@@ -859,7 +861,7 @@ def ee_export_geojson(
             if attribute not in allowed_attributes:  # pyrefly: ignore[not-iterable]
                 print(
                     "Attributes must be one chosen from: {} ".format(
-                        ", ".join(
+                        ", ".join(  # pyrefly: ignore[no-matching-overload]
                             allowed_attributes
                         )  # pyrefly: ignore[no-matching-overload]
                     )
@@ -964,7 +966,7 @@ def ee_export_vector(
             if attribute not in allowed_attributes:  # pyrefly: ignore[not-iterable]
                 raise ValueError(
                     "Attributes must be one chosen from: {} ".format(
-                        ", ".join(
+                        ", ".join(  # pyrefly: ignore[no-matching-overload]
                             allowed_attributes
                         )  # pyrefly: ignore[no-matching-overload]
                     )
@@ -1577,13 +1579,13 @@ def check_titiler_endpoint(
 
             if titiler_endpoint == "planetary-computer":
                 titiler_endpoint = (
-                    PlanetaryComputerEndpoint()
+                    PlanetaryComputerEndpoint()  # pyrefly: ignore[bad-assignment]
                 )  # pyrefly: ignore[bad-assignment]
         else:
             titiler_endpoint = "https://giswqs-titiler-endpoint.hf.space"
     elif titiler_endpoint in ["planetary-computer", "pc"]:
         titiler_endpoint = (
-            PlanetaryComputerEndpoint()
+            PlanetaryComputerEndpoint()  # pyrefly: ignore[bad-assignment]
         )  # pyrefly: ignore[bad-assignment]
 
     return titiler_endpoint  # pyrefly: ignore[bad-return]
@@ -2247,7 +2249,7 @@ def csv_to_shp(
         for row in csvreader:
             points.point((float(row[longitude])), (float(row[latitude])))
             points.record(
-                *tuple([row[f] for f in header])
+                *tuple([row[f] for f in header])  # pyrefly: ignore[not-iterable]
             )  # pyrefly: ignore[not-iterable]
 
     out_prj = out_shp.replace(".shp", ".prj")
@@ -2439,7 +2441,9 @@ def ee_to_bbox(ee_object) -> list[float]:
             "The ee_object must be an ee.Image, ee.Feature, ee.FeatureCollection or ee.Geometry object."
         )
 
-    bounds = geometry.bounds().getInfo()["coordinates"][
+    bounds = geometry.bounds().getInfo()[
+        "coordinates"
+    ][  # pyrefly: ignore[unsupported-operation]
         0
     ]  # pyrefly: ignore[unsupported-operation]
     xmin = bounds[0][0]
@@ -2866,7 +2870,7 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
 
     try:
         projection = ee.Projection(
-            crs, transform, transformWkt
+            crs, transform, transformWkt  # pyrefly: ignore[bad-argument-type]
         )  # pyrefly: ignore[bad-argument-type]
         coords = ee.Image.pixelCoordinates(projection).floor().int32()
         x = coords.select("x")
@@ -3153,7 +3157,7 @@ def ee_to_xarray(
 
             # Default CRS is EPSG:4326 if not specified.
             if isinstance(crs, ee.Projection):
-                target_crs = crs.getInfo().get(
+                target_crs = crs.getInfo().get(  # pyrefly: ignore[missing-attribute]
                     "crs", "EPSG:4326"
                 )  # pyrefly: ignore[missing-attribute]
             else:
@@ -3229,7 +3233,7 @@ def ee_to_xarray(
 
             if dataset_for_grid is not None:
                 grid_params = helpers.extract_grid_params(
-                    dataset_for_grid
+                    dataset_for_grid  # pyrefly: ignore[bad-argument-type]
                 )  # pyrefly: ignore[bad-argument-type]
         except Exception as e:
             warnings.warn(
@@ -3684,14 +3688,14 @@ def save_colorbar(
     if "palette" in vis_params:
         hexcodes = coreutils.to_hex_colors(vis_params["palette"])
         if discrete:
-            cmap = mpl.colors.ListedColormap(
+            cmap = mpl.colors.ListedColormap(  # pyrefly: ignore[bad-assignment]
                 hexcodes
             )  # pyrefly: ignore[bad-assignment]
             vals = np.linspace(
-                vmin, vmax, cmap.N + 1
+                vmin, vmax, cmap.N + 1  # pyrefly: ignore[missing-attribute]
             )  # pyrefly: ignore[missing-attribute]
             norm = mpl.colors.BoundaryNorm(
-                vals, cmap.N
+                vals, cmap.N  # pyrefly: ignore[missing-attribute]
             )  # pyrefly: ignore[missing-attribute]
 
         else:
@@ -4126,11 +4130,13 @@ def ee_api_to_csv(
 
         names = [h2.text for h2 in soup.find_all("h2")]
         descriptions = [
-            h2.next_sibling.next_sibling.text for h2 in soup.find_all("h2")
+            h2.next_sibling.next_sibling.text
+            for h2 in soup.find_all("h2")  # pyrefly: ignore[missing-attribute]
         ]  # pyrefly: ignore[missing-attribute]
         func_tables = soup.find_all("table", class_="blue")
         functions = [
-            func_table.find("code").text for func_table in func_tables
+            func_table.find("code").text
+            for func_table in func_tables  # pyrefly: ignore[missing-attribute]
         ]  # pyrefly: ignore[missing-attribute]
         returns = [
             func_table.find_all("td")[1].text for func_table in func_tables
@@ -4398,17 +4404,18 @@ def build_api_tree(api_dict: dict, output_widget, layout_width: str = "100%"):
             if index > 0:
                 if func not in tree_dict.keys():
                     node = tree_dict[
-                        func_list[index - 1]
+                        func_list[index - 1]  # pyrefly: ignore[unsupported-operation]
                     ]  # pyrefly: ignore[unsupported-operation]
                     node.opened = False
                     tree_dict[func] = Node(func)
                     node.add_node(tree_dict[func])
 
                     if (
-                        index == len(func_list) - 1
+                        index
+                        == len(func_list) - 1  # pyrefly: ignore[bad-argument-type]
                     ):  # pyrefly: ignore[bad-argument-type]
                         node = tree_dict[
-                            func_list[index]
+                            func_list[index]  # pyrefly: ignore[unsupported-operation]
                         ]  # pyrefly: ignore[unsupported-operation]
                         node.icon = "file"
                         node.observe(handle_click, "selected")
@@ -4569,7 +4576,8 @@ def ee_search(asset_limit: int = 100):
                     print("Searching...")
                     tree_widget.outputs = ()
                     sub_tree = search_api_tree(
-                        text.value, flags.docs_dict
+                        text.value,
+                        flags.docs_dict,  # pyrefly: ignore[bad-argument-type]
                     )  # pyrefly: ignore[bad-argument-type]
                     display(sub_tree)
         elif search_type.value == "Assets":
@@ -4583,7 +4591,8 @@ def ee_search(asset_limit: int = 100):
                     print("Searching...")
                     tree_widget.outputs = ()
                     sub_tree = search_api_tree(
-                        text.value, flags.asset_dict
+                        text.value,
+                        flags.asset_dict,  # pyrefly: ignore[bad-argument-type]
                     )  # pyrefly: ignore[bad-argument-type]
                     display(sub_tree)
 
@@ -5349,7 +5358,7 @@ def cog_tile(
     Returns:
         tuple: Returns the COG Tile layer URL and bounds.
     """
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
@@ -5426,7 +5435,7 @@ def cog_mosaic(
     """
     del overwrite  # Unused.
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if layername is None:
@@ -5487,7 +5496,7 @@ def cog_mosaic_from_file(
     Returns:
         The tile URL for the COG mosaic.
     """
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     links = []
@@ -5521,7 +5530,7 @@ def cog_bounds(url: str, titiler_endpoint: str | None = None, timeout: int = 300
         list: A list of values representing [left, bottom, right, top]
     """
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
@@ -5549,7 +5558,7 @@ def cog_center(url: str, titiler_endpoint: str | None = None):
     Returns:
         tuple: A tuple representing (longitude, latitude)
     """
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
@@ -5572,7 +5581,7 @@ def cog_bands(url: str, titiler_endpoint: str | None = None, timeout: int = 300)
     Returns:
         list: A list of band names
     """
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
@@ -5600,7 +5609,7 @@ def cog_stats(url: str, titiler_endpoint: str | None = None, timeout: int = 300)
     Returns:
         list: A dictionary of band statistics.
     """
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
@@ -5632,7 +5641,7 @@ def cog_info(
     Returns:
         list: A dictionary of band info.
     """
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
@@ -5674,11 +5683,11 @@ def cog_pixel_value(
     Returns:
         list: A dictionary of band info.
     """
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     url = get_direct_url(url)
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     kwargs["url"] = url
@@ -5753,7 +5762,7 @@ def stac_tile(
     if isinstance(assets, list) and len(set(assets)) == 1:
         assets = assets[0]
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
 
@@ -5877,7 +5886,7 @@ def stac_bounds(
     if item is not None:
         kwargs["item"] = item
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
@@ -5961,7 +5970,7 @@ def stac_bands(
     if item is not None:
         kwargs["item"] = item
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
@@ -6022,7 +6031,7 @@ def stac_stats(
     if assets is not None:
         kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
@@ -6083,7 +6092,7 @@ def stac_info(
     if assets is not None:
         kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
@@ -6144,7 +6153,7 @@ def stac_info_geojson(
     if assets is not None:
         kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
@@ -6200,7 +6209,7 @@ def stac_assets(
     if item is not None:
         kwargs["item"] = item
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
@@ -6275,7 +6284,7 @@ def stac_pixel_value(
         assets = ",".join(assets)
     kwargs["assets"] = assets
 
-    titiler_endpoint = check_titiler_endpoint(
+    titiler_endpoint = check_titiler_endpoint(  # pyrefly: ignore[bad-assignment]
         titiler_endpoint
     )  # pyrefly: ignore[bad-assignment]
     if isinstance(titiler_endpoint, str):
@@ -6583,7 +6592,7 @@ def image_props(img: ee.Image, date_format: str = "YYYY-MM-dd") -> ee.Dictionary
     scale = ee.Algorithms.If(
         scales.distinct().size().gt(1),
         ee.Dictionary.fromLists(
-            bands.getInfo(), scales
+            bands.getInfo(), scales  # pyrefly: ignore[bad-argument-type]
         ),  # pyrefly: ignore[bad-argument-type]
         scales.get(0),
     )
@@ -6871,7 +6880,9 @@ def zonal_stats(
 
     if scale is None:
         scale = (
-            in_value_raster.projection().nominalScale().multiply(10)
+            in_value_raster.projection()
+            .nominalScale()
+            .multiply(10)  # pyrefly: ignore[bad-assignment]
         )  # pyrefly: ignore[bad-assignment]
 
     if verbose:
@@ -7005,7 +7016,9 @@ def zonal_stats_by_group(
 
     if scale is None:
         scale = (
-            in_value_raster.projection().nominalScale().multiply(10)
+            in_value_raster.projection()
+            .nominalScale()
+            .multiply(10)  # pyrefly: ignore[bad-assignment]
         )  # pyrefly: ignore[bad-assignment]
 
     if verbose:
@@ -7975,7 +7988,7 @@ def extract_timeseries_to_point(
         ).getInfo()
 
         result_df = pd.DataFrame(
-            result[1:], columns=result[0]
+            result[1:], columns=result[0]  # pyrefly: ignore[unsupported-operation]
         )  # pyrefly: ignore[unsupported-operation]
 
         if result_df.empty:
@@ -8068,10 +8081,10 @@ def find_landsat_by_path_row(
     """
     try:
         if isinstance(landsat_col, str):  # TODO: Convert to raise ValueError.
-            landsat_col = ee.ImageCollection(
+            landsat_col = ee.ImageCollection(  # pyrefly: ignore[bad-assignment]
                 landsat_col
             )  # pyrefly: ignore[bad-assignment]
-            return landsat_col.filter(
+            return landsat_col.filter(  # pyrefly: ignore[missing-attribute]
                 ee.Filter.eq("WRS_PATH", path_num)
             ).filter(  # pyrefly: ignore[missing-attribute]
                 ee.Filter.eq("WRS_ROW", row_num)
@@ -8730,7 +8743,7 @@ def vector_styling(
 
         if column not in prop_names:  # pyrefly: ignore[not-iterable]
             raise ValueError(
-                f"The column name must of one of {', '.join(prop_names)}"
+                f"The column name must of one of {', '.join(prop_names)}"  # pyrefly: ignore[no-matching-overload]
             )  # pyrefly: ignore[no-matching-overload]
 
         if isinstance(palette, box.Box):
@@ -9272,7 +9285,8 @@ def extract_pixel_values(
         band_names = ee_object.bandNames().getInfo()
         values_tmp = dict_values.getInfo()
         values = [
-            values_tmp[i] for i in band_names
+            values_tmp[i]
+            for i in band_names  # pyrefly: ignore[not-iterable, unsupported-operation]
         ]  # pyrefly: ignore[not-iterable, unsupported-operation]
         return dict(zip(band_names, values))  # pyrefly: ignore[bad-argument-type]
 
@@ -10219,11 +10233,11 @@ def search_xyz_services(keyword, name=None, list_only=True, add_prefix=True):
     import xyzservices.providers as xyz
 
     if name is None:
-        providers = xyz.filter(
+        providers = xyz.filter(  # pyrefly: ignore[missing-attribute]
             keyword=keyword
         ).flatten()  # pyrefly: ignore[missing-attribute]
     else:
-        providers = xyz.filter(
+        providers = xyz.filter(  # pyrefly: ignore[missing-attribute]
             name=name
         ).flatten()  # pyrefly: ignore[missing-attribute]
 
@@ -10954,7 +10968,10 @@ def points_from_xy(
         raise TypeError("The data must be a pandas DataFrame or a csv file path.")
 
     return gpd.GeoDataFrame(
-        df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs)
+        df,
+        geometry=gpd.points_from_xy(
+            df[x], df[y], z=z, crs=crs
+        ),  # pyrefly: ignore[bad-index]
     )  # pyrefly: ignore[bad-index]
 
 
@@ -11180,7 +11197,9 @@ def geojson_to_df(in_geojson, encoding="utf-8", drop_geometry=True):
     df.columns = [col.replace("properties.", "") for col in df.columns]
     if drop_geometry:
         df = df[
-            df.columns.drop(list(df.filter(regex="geometry")))
+            df.columns.drop(
+                list(df.filter(regex="geometry"))
+            )  # pyrefly: ignore[missing-attribute]
         ]  # pyrefly: ignore[missing-attribute]
     return df
 
@@ -12007,7 +12026,7 @@ def classify(
     init_column = None
     value_list = None
     if np.issubdtype(
-        df[column].dtype, np.object0
+        df[column].dtype, np.object0  # pyrefly: ignore[missing-attribute]
     ):  # pyrefly: ignore[missing-attribute]
         value_list = df[column].unique().tolist()
         value_list.sort()
@@ -12530,7 +12549,8 @@ def download_ee_image_tiles(
     else:
         count_len = len(str(count))
         names = [
-            str(i + 1).zfill(count_len) for i in range(count)
+            str(i + 1).zfill(count_len)
+            for i in range(count)  # pyrefly: ignore[bad-argument-type]
         ]  # pyrefly: ignore[bad-argument-type]
 
     for i in range(count):  # pyrefly: ignore[bad-argument-type]
@@ -12538,7 +12558,8 @@ def download_ee_image_tiles(
         filename = os.path.join(
             out_dir,
             "{}{}.tif".format(
-                prefix, names[i].replace("/", "_")
+                prefix,
+                names[i].replace("/", "_"),  # pyrefly: ignore[unsupported-operation]
             ),  # pyrefly: ignore[unsupported-operation]
         )
         print(f"Downloading {i + 1}/{count}: {filename}")
@@ -12645,7 +12666,8 @@ def download_ee_image_tiles_parallel(
     else:
         count_len = len(str(count))
         names = [
-            str(i + 1).zfill(count_len) for i in range(count)
+            str(i + 1).zfill(count_len)
+            for i in range(count)  # pyrefly: ignore[bad-argument-type]
         ]  # pyrefly: ignore[bad-argument-type]
     collection = features.toList(count)  # pyrefly: ignore[bad-argument-type]
 
@@ -12659,7 +12681,10 @@ def download_ee_image_tiles_parallel(
         filename = os.path.join(
             out_dir,
             "{}{}.tif".format(
-                prefix, names[index].replace("/", "_")
+                prefix,
+                names[index].replace(
+                    "/", "_"
+                ),  # pyrefly: ignore[unsupported-operation]
             ),  # pyrefly: ignore[unsupported-operation]
         )
         print(f"Downloading {index + 1}/{count}: {filename}")
@@ -12685,7 +12710,8 @@ def download_ee_image_tiles_parallel(
 
     with joblib.Parallel(**job_args) as parallel:
         parallel(
-            joblib.delayed(download_data)(index) for index in range(count)
+            joblib.delayed(download_data)(index)
+            for index in range(count)  # pyrefly: ignore[bad-argument-type]
         )  # pyrefly: ignore[bad-argument-type]
 
     end = time.time()
@@ -12771,7 +12797,8 @@ def download_ee_image_collection(
                     name = name + ".tif"
             else:
                 name = (
-                    image.get("system:index").getInfo() + ".tif"
+                    image.get("system:index").getInfo()
+                    + ".tif"  # pyrefly: ignore[unsupported-operation]
                 )  # pyrefly: ignore[unsupported-operation]
             filename = os.path.join(os.path.abspath(out_dir), name)
             print(f"Downloading {i + 1}/{count}: {name}")
@@ -12989,7 +13016,9 @@ def bbox_coords(geometry, decimals=4) -> list[float] | None:
             raise ValueError("geometry must be an ee.Geometry.")
 
         coords = (
-            geometry.bounds().coordinates().getInfo()[0]
+            geometry.bounds()
+            .coordinates()
+            .getInfo()[0]  # pyrefly: ignore[unsupported-operation]
         )  # pyrefly: ignore[unsupported-operation]
         x = [p[0] for p in coords]
         y = [p[1] for p in coords]
@@ -13652,7 +13681,11 @@ def download_3dep_lidar(region, filename, scale=1.0, crs="EPSG:3857"):
         image = dataset.filterBounds(region).mosaic().clipToCollection(region)
 
     download_ee_image(
-        image, filename, region=region.geometry(), scale=scale, crs=crs
+        image,
+        filename,
+        region=region.geometry(),
+        scale=scale,
+        crs=crs,  # pyrefly: ignore[unbound-name]
     )  # pyrefly: ignore[unbound-name]
 
 
@@ -13762,7 +13795,7 @@ def create_legend(
             )
             return
         else:
-            legend_dict = builtin_legends[
+            legend_dict = builtin_legends[  # pyrefly: ignore[bad-assignment]
                 builtin_legend
             ]  # pyrefly: ignore[bad-assignment]
             labels = list(legend_dict.keys())  # pyrefly: ignore[missing-attribute]
@@ -14496,7 +14529,7 @@ def landsat_scaling(
         if thermal_bands:
             return (
                 image.addBands(
-                    thermalBands, None, True
+                    thermalBands, None, True  # pyrefly: ignore[unbound-name]
                 )  # pyrefly: ignore[unbound-name]
                 .addBands(opticalBands, None, True)
                 .updateMask(qaMask)
@@ -14507,7 +14540,7 @@ def landsat_scaling(
     else:
         if thermal_bands:
             return image.addBands(
-                thermalBands, None, True
+                thermalBands, None, True  # pyrefly: ignore[unbound-name]
             ).addBands(  # pyrefly: ignore[unbound-name]
                 opticalBands, None, True
             )
@@ -15070,7 +15103,7 @@ def xee_to_image(
         )
 
         if filenames is None:
-            date = np.datetime_as_string(
+            date = np.datetime_as_string(  # pyrefly: ignore[no-matching-overload]
                 time, unit=time_unit
             )  # pyrefly: ignore[no-matching-overload]
             filename = f"{date}.tif"
@@ -15126,7 +15159,9 @@ def array_to_memory_file(
             if array.dims[0] == "time":
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
-            array = array.rename({y_dim: "y", x_dim: "x"}).transpose(
+            array = array.rename(
+                {y_dim: "y", x_dim: "x"}
+            ).transpose(  # pyrefly: ignore[missing-attribute]
                 "y", "x"
             )  # pyrefly: ignore[missing-attribute]
         array = array.values
@@ -15274,7 +15309,9 @@ def array_to_image(
             if array.dims[0] == "time":
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
-            array = array.rename({y_dim: "y", x_dim: "x"}).transpose(
+            array = array.rename(
+                {y_dim: "y", x_dim: "x"}
+            ).transpose(  # pyrefly: ignore[missing-attribute]
                 "y", "x"
             )  # pyrefly: ignore[missing-attribute]
         array = array.values
