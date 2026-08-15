@@ -179,9 +179,9 @@ def inspector_gui(m: geemap.Map | None = None):
     widget_width = "250px"
     padding = "0px 5px 0px 5px"  # upper, right, bottom, left
     style = {"description_width": "initial"}
+    marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
 
     if m is not None:
-        marker_cluster = ipyleaflet.MarkerCluster(name="Inspector Markers")
         setattr(m, "pixel_values", [])
         setattr(m, "marker_cluster", marker_cluster)
 
@@ -449,12 +449,12 @@ def inspector_gui(m: geemap.Map | None = None):
                         )  # pyrefly: ignore[missing-attribute]
                     if add_marker.value:
                         markers = list(
-                            m.marker_cluster.markers
-                        )  # pyrefly: ignore[missing-attribute]
-                        markers.append(  # pyrefly: ignore[missing-attribute]
-                            ipyleaflet.Marker(location=latlon)
-                        )  # pyrefly: ignore[missing-attribute]
-                        m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]  # pyrefly: ignore[missing-attribute]
+                            m.marker_cluster.markers  # pyrefly: ignore[missing-attribute, union-attr]
+                        )
+                        markers.append(ipyleaflet.Marker(location=latlon))
+                        m.marker_cluster.markers = (
+                            markers  # pyrefly: ignore[missing-attribute, union-attr]
+                        )
 
                 else:
                     with output:
@@ -483,12 +483,12 @@ def inspector_gui(m: geemap.Map | None = None):
                         )  # pyrefly: ignore[missing-attribute]
                     if add_marker.value:
                         markers = list(
-                            m.marker_cluster.markers
-                        )  # pyrefly: ignore[missing-attribute]
-                        markers.append(  # pyrefly: ignore[missing-attribute]
-                            ipyleaflet.Marker(location=latlon)
-                        )  # pyrefly: ignore[missing-attribute]
-                        m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]  # pyrefly: ignore[missing-attribute]
+                            m.marker_cluster.markers  # pyrefly: ignore[missing-attribute, union-attr]
+                        )
+                        markers.append(ipyleaflet.Marker(location=latlon))
+                        m.marker_cluster.markers = (
+                            markers  # pyrefly: ignore[missing-attribute, union-attr]
+                        )
                 else:
                     with output:
                         output.outputs = ()
@@ -533,12 +533,12 @@ def inspector_gui(m: geemap.Map | None = None):
                         )  # pyrefly: ignore[missing-attribute]
                     if add_marker.value:
                         markers = list(
-                            m.marker_cluster.markers
-                        )  # pyrefly: ignore[missing-attribute]
-                        markers.append(  # pyrefly: ignore[missing-attribute]
-                            ipyleaflet.Marker(location=latlon)
-                        )  # pyrefly: ignore[missing-attribute]
-                        m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]  # pyrefly: ignore[missing-attribute]
+                            m.marker_cluster.markers  # pyrefly: ignore[missing-attribute, union-attr]
+                        )
+                        markers.append(ipyleaflet.Marker(location=latlon))
+                        m.marker_cluster.markers = (
+                            markers  # pyrefly: ignore[missing-attribute, union-attr]
+                        )
                 else:
                     with output:
                         output.outputs = ()
@@ -553,10 +553,8 @@ def inspector_gui(m: geemap.Map | None = None):
 
     if m is not None:
         if not hasattr(m, "marker_cluster"):
-            setattr(
-                m, "marker_cluster", marker_cluster
-            )  # pyrefly: ignore[unbound-name]
-        m.add_layer(marker_cluster)  # pyrefly: ignore[unbound-name]
+            setattr(m, "marker_cluster", marker_cluster)
+        m.add_layer(marker_cluster)
 
         if not m.interact_mode:
             m.on_interaction(handle_interaction)
@@ -3144,7 +3142,9 @@ def time_slider(m: geemap.Map | None = None):
                         band3_dropdown,
                     ]
 
-                    bandnames = col_options_dict[selected].get("bandnames", [])
+                    bandnames: list[str] = list(
+                        col_options_dict[selected].get("bandnames", [])
+                    )
                     band1_dropdown.options = bandnames
                     band2_dropdown.options = bandnames
                     band3_dropdown.options = bandnames
