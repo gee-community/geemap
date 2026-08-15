@@ -88,7 +88,7 @@ class ChartTest(unittest.TestCase):
         y_labels = ["a", "b"]
         df = chart.array_to_df(
             y_values,
-            x_values=x_values,
+            x_values=x_values,  # pyrefly: ignore[bad-argument-type]
             y_labels=y_labels,
             x_label="time",  # pyrefly: ignore[bad-argument-type]
         )
