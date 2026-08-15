@@ -1652,12 +1652,14 @@ def image_histogram(
         histograms.keys(),
         band_colors,
         band_labels,  # pyrefly: ignore[bad-argument-type]
-    ):  # pyrefly: ignore[bad-argument-type]
+    ):
         histograms_fig.append(
             create_histogram(
-                histograms[band], color, label
-            )  # pyrefly: ignore[bad-argument-type]
-        )  # pyrefly: ignore[bad-argument-type]
+                histograms[band],  # pyrefly: ignore[bad-argument-type]
+                color,
+                label,
+            )
+        )
 
     combined_fig = bq.Figure(
         marks=[fig.marks[0] for fig in histograms_fig],
