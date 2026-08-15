@@ -150,13 +150,17 @@ def add_layer(
         raise ValueError("provided `ee_object` is not of type ee.Image")
 
     if region is not None:
-        map_region = ee.Geometry.Rectangle(region).getInfo()[
+        map_region = ee.Geometry.Rectangle(
+            region
+        ).getInfo()[  # pyrefly: ignore[unsupported-operation]
             "coordinates"
         ]  # pyrefly: ignore[unsupported-operation]
         view_extent = (region[2], region[0], region[1], region[3])
     else:
         map_region = (
-            ee_object.geometry(100).bounds(1).getInfo()["coordinates"]
+            ee_object.geometry(100)
+            .bounds(1)
+            .getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
         )  # pyrefly: ignore[unsupported-operation]
         # Get the image bounds.
         x, y = list(zip(*map_region[0]))
@@ -363,14 +367,14 @@ def add_colorbar(
             hexcodes = [i if i[0] == "#" else "#" + i for i in hexcodes]
 
             if discrete:
-                cmap = mpl.colors.ListedColormap(
+                cmap = mpl.colors.ListedColormap(  # pyrefly: ignore[bad-assignment]
                     hexcodes
                 )  # pyrefly: ignore[bad-assignment]
                 vals = np.linspace(
-                    vmin, vmax, cmap.N + 1
+                    vmin, vmax, cmap.N + 1  # pyrefly: ignore[missing-attribute]
                 )  # pyrefly: ignore[missing-attribute]
                 norm = mpl.colors.BoundaryNorm(
-                    vals, cmap.N
+                    vals, cmap.N  # pyrefly: ignore[missing-attribute]
                 )  # pyrefly: ignore[missing-attribute]
 
             else:
@@ -408,7 +412,11 @@ def add_colorbar(
         label_font_size = kwargs.pop("label_font_size")
 
     cb = mpl.colorbar.ColorbarBase(
-        cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs
+        cax,
+        norm=norm,
+        alpha=alpha,
+        cmap=cmap,
+        **kwargs,  # pyrefly: ignore[unbound-name]
     )  # pyrefly: ignore[unbound-name]
 
     if label is not None:

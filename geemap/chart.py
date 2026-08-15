@@ -1649,10 +1649,10 @@ def image_histogram(
     # Create and combine histograms for each band.
     histograms_fig = []
     for band, color, label in zip(
-        histograms.keys(),
+        histograms.keys(),  # pyrefly: ignore[bad-argument-type]
         band_colors,
         band_labels,  # pyrefly: ignore[bad-argument-type]
-    ):
+    ):  # pyrefly: ignore[bad-argument-type]
         histograms_fig.append(
             create_histogram(  # pyrefly: ignore[bad-argument-type]
                 histograms[band], color, label
@@ -1662,7 +1662,7 @@ def image_histogram(
     combined_fig = bq.Figure(
         marks=[fig.marks[0] for fig in histograms_fig],
         axes=histograms_fig[0].axes,
-        **kwargs,
+        **kwargs,  # pyrefly: ignore[bad-argument-type]
     )
     # pyrefly: ignore[bad-argument-type]
     for fig, label in zip(
