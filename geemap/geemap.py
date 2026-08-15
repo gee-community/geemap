@@ -522,9 +522,9 @@ class Map(core.Map):
             ):
                 self.add_tile_layer(
                     url=basemap,
-                    shown=show,
-                    **kwargs,  # pyrefly: ignore[bad-argument-type]
-                )  # pyrefly: ignore[bad-argument-type]
+                    shown=show,  # pyrefly: ignore[bad-argument-type]
+                    **kwargs,
+                )
             else:
                 print(
                     "Basemap can only be one of the following:\n  {}".format(
