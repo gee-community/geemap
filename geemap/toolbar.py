@@ -1468,7 +1468,9 @@ def convert_js2py(m):
                 )
                 if (
                     len(out_lines) > 0  # pyrefly: ignore[bad-argument-type]
-                    and len(out_lines[0].strip())  # pyrefly: ignore[unsupported-operation]
+                    and len(
+                        out_lines[0].strip()
+                    )  # pyrefly: ignore[unsupported-operation]
                     == 0
                 ):
                     out_lines = out_lines[1:]  # pyrefly: ignore[unsupported-operation]
