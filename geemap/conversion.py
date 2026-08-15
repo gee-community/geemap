@@ -298,9 +298,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                         current_num_of_nested_funcs -= 1
                     input_lines[  # pyrefly: ignore[unsupported-operation]
                         index + 1 + sub_index
-                    ] = (
-                        ""  # pytype: disable=unsupported-operands
-                    )
+                    ] = ""  # pytype: disable=unsupported-operands
 
                 current_num_of_nested_funcs -= 1
 
@@ -321,9 +319,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
 
                 input_lines[  # pyrefly: ignore[unsupported-operation]
                     matching_line_index
-                ] = (
-                    footer_line  # pytype: disable=unsupported-operands
-                )
+                ] = footer_line  # pytype: disable=unsupported-operands
 
                 output_lines.append(header_line)
             except Exception as e:
