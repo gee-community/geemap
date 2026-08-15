@@ -5516,7 +5516,7 @@ def sentinel1_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(  # pyrefly: ignore[missing-attribute]
             default_colors[
-                len(marker_colors) : len(
+                len(marker_colors) : len(  # pyrefly: ignore[bad-argument-type]
                     sample_points
                 )  # pyrefly: ignore[bad-argument-type]
             ]  # pyrefly: ignore[bad-argument-type]
@@ -6501,7 +6501,7 @@ def sentinel2_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(  # pyrefly: ignore[missing-attribute]
             default_colors[
-                len(marker_colors) : len(
+                len(marker_colors) : len(  # pyrefly: ignore[bad-argument-type]
                     sample_points
                 )  # pyrefly: ignore[bad-argument-type]
             ]  # pyrefly: ignore[bad-argument-type]
@@ -7690,7 +7690,7 @@ def landsat_timelapse_with_samples(
         default_colors = ["red", "blue", "green", "orange", "purple"]
         marker_colors.extend(  # pyrefly: ignore[missing-attribute]
             default_colors[
-                len(marker_colors) : len(
+                len(marker_colors) : len(  # pyrefly: ignore[bad-argument-type]
                     sample_points
                 )  # pyrefly: ignore[bad-argument-type]
             ]  # pyrefly: ignore[bad-argument-type]
