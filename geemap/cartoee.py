@@ -150,7 +150,7 @@ def add_layer(
         raise ValueError("provided `ee_object` is not of type ee.Image")
 
     if region is not None:
-        map_region = ee.Geometry.Rectangle(
+        map_region = ee.Geometry.Rectangle(  # pyrefly: ignore[unsupported-operation]
             region
         ).getInfo()[  # pyrefly: ignore[unsupported-operation]
             "coordinates"
@@ -158,7 +158,7 @@ def add_layer(
         view_extent = (region[2], region[0], region[1], region[3])
     else:
         map_region = (
-            ee_object.geometry(100)
+            ee_object.geometry(100)  # pyrefly: ignore[unsupported-operation]
             .bounds(1)
             .getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
         )  # pyrefly: ignore[unsupported-operation]
@@ -413,8 +413,8 @@ def add_colorbar(
 
     cb = mpl.colorbar.ColorbarBase(
         cax,
-        norm=norm,
-        alpha=alpha,
+        norm=norm,  # pyrefly: ignore[unbound-name]
+        alpha=alpha,  # pyrefly: ignore[unbound-name]
         cmap=cmap,
         **kwargs,  # pyrefly: ignore[unbound-name]
     )  # pyrefly: ignore[unbound-name]
