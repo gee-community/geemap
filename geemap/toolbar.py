@@ -3142,9 +3142,8 @@ def time_slider(m: geemap.Map | None = None):
                         band3_dropdown,
                     ]
 
-                    bandnames: list[str] = list(
-                        col_options_dict[selected].get("bandnames", [])
-                    )
+                    bandnames_val = col_options_dict[selected].get("bandnames", [])
+                    bandnames = bandnames_val if isinstance(bandnames_val, list) else []
                     band1_dropdown.options = bandnames
                     band2_dropdown.options = bandnames
                     band3_dropdown.options = bandnames
