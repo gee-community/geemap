@@ -1655,7 +1655,7 @@ def image_histogram(
     ):  # pyrefly: ignore[bad-argument-type]
         histograms_fig.append(
             create_histogram(  # pyrefly: ignore[bad-argument-type]
-                histograms[band], color, label
+                histograms[band], color, label  # pyrefly: ignore[bad-argument-type]
             )
         )
 
