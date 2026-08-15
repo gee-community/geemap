@@ -12797,7 +12797,7 @@ def download_ee_image_collection(
                     name = name + ".tif"
             else:
                 name = (
-                    image.get(
+                    image.get(  # pyrefly: ignore[unsupported-operation]
                         "system:index"
                     ).getInfo()  # pyrefly: ignore[unsupported-operation]
                     + ".tif"  # pyrefly: ignore[unsupported-operation]
