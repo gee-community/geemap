@@ -193,15 +193,18 @@ class Colorbar(ipywidgets.Output):
                 coreutils.check_cmap(vis_params["palette"])
             )
             if discrete:
-                cmap = matplotlib.colors.ListedColormap(
-                    hexcodes
-                )  # pyrefly: ignore[bad-assignment]
+                cmap = (
+                    matplotlib.colors.ListedColormap(  # pyrefly: ignore[bad-assignment]
+                        hexcodes
+                    )
+                )
                 linspace = numpy.linspace(
-                    vmin, vmax, cmap.N + 1
-                )  # pyrefly: ignore[missing-attribute]
+                    vmin, vmax, cmap.N + 1  # pyrefly: ignore[missing-attribute]
+                )
                 norm = matplotlib.colors.BoundaryNorm(
-                    linspace, cmap.N  # pyrefly: ignore[bad-assignment]
-                )  # pyrefly: ignore[missing-attribute]
+                    linspace,
+                    cmap.N,  # pyrefly: ignore[bad-assignment, missing-attribute]
+                )
             else:
                 cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
                     "custom", hexcodes, N=256  # pyrefly: ignore[missing-attribute]
@@ -366,22 +369,22 @@ class Legend(anywidget.AnyWidget):
                 allowed_builtin_legends,  # pyrefly: ignore[bad-argument-type]
             )  # pytype: disable=wrong-arg-types
             if builtin_legend_allowed:
-                legend_dict = builtin_legends[
+                legend_dict = builtin_legends[  # pyrefly: ignore[bad-assignment]
                     builtin_legend
-                ]  # pyrefly: ignore[bad-assignment]
+                ]
                 self.legend_keys = list(
-                    legend_dict.keys()
-                )  # pyrefly: ignore[missing-attribute]
-                self.legend_colors = list(
-                    map(  # pyrefly: ignore[bad-assignment]
-                        self._normalize_color_to_hex, legend_dict.values()
-                    )  # pyrefly: ignore[missing-attribute]
+                    legend_dict.keys()  # pyrefly: ignore[missing-attribute]
                 )
-        # pyrefly: ignore[missing-attribute]
+                self.legend_colors = list(
+                    map(
+                        self._normalize_color_to_hex,
+                        legend_dict.values(),  # pyrefly: ignore[missing-attribute]
+                    )
+                )
         self._check_if_allowed(position, "position", self.ALLOWED_POSITIONS)
 
         self.add_header = add_header
-        if "show_close_button" in widget_args:  # pyrefly: ignore[missing-attribute]
+        if "show_close_button" in widget_args:
             self.show_close_button = widget_args["show_close_button"]
         else:
             self.show_close_button = False
