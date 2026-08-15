@@ -83,7 +83,9 @@ class AbstractDrawControl:
     @property
     def last_feature(self) -> ee.Feature | None:
         """Returns the last feature created."""
-        property = self.get_geometry_properties(self.last_geometry)  # pyrefly: ignore[bad-argument-type]
+        property = self.get_geometry_properties(
+            self.last_geometry
+        )  # pyrefly: ignore[bad-argument-type]
         return ee.Feature(self.last_geometry, property) if self.last_geometry else None
 
     @property
@@ -301,9 +303,13 @@ class AbstractDrawControl:
             del self.properties[index]
             if self.count:
                 self._redraw_layer()
-            elif _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:  # pyrefly: ignore[missing-attribute]
+            elif (
+                _DRAWN_FEATURES_LAYER in self.host_map.ee_layers
+            ):  # pyrefly: ignore[missing-attribute]
                 # Remove drawn features layer if there are no geometries.
-                self.host_map.remove_layer(_DRAWN_FEATURES_LAYER)  # pyrefly: ignore[missing-attribute]
+                self.host_map.remove_layer(
+                    _DRAWN_FEATURES_LAYER
+                )  # pyrefly: ignore[missing-attribute]
             self._geometry_delete_dispatcher(self, geometry=geometry)
 
 
@@ -746,7 +752,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         if isinstance(ee_object, ee.Geometry):
             return ee_object
         try:
-            return ee_object.geometry(maxError=max_error)  # pyrefly: ignore[missing-attribute]
+            return ee_object.geometry(
+                maxError=max_error
+            )  # pyrefly: ignore[missing-attribute]
         except Exception as exc:
             raise Exception(
                 "ee_object must be one of ee.Geometry, ee.FeatureCollection, ee.Image, "
@@ -770,7 +778,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
             maxError=max_error
         )
         if zoom is None:
-            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][  # pyrefly: ignore[unsupported-operation]
+            coordinates = geometry.bounds(maxError=max_error).getInfo()[
+                "coordinates"
+            ][  # pyrefly: ignore[unsupported-operation]
                 0
             ]
             x_vals = [c[0] for c in coordinates]
@@ -779,7 +789,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         else:
             if not isinstance(zoom, int):
                 raise ValueError("Zoom must be an integer.")
-            centroid = geometry.centroid(maxError=max_error).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
+            centroid = geometry.centroid(maxError=max_error).getInfo()[
+                "coordinates"
+            ]  # pyrefly: ignore[unsupported-operation]
             self.set_center(centroid[0], centroid[1], zoom)
 
     def _find_widget_of_type(
@@ -1161,7 +1173,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         control = ipyleaflet.WidgetControl(
             widget=legend, position=position, transparent_bg=True
         )
-        if layer := self.ee_layers.get(layer_name, None):  # pyrefly: ignore[no-matching-overload]
+        if layer := self.ee_layers.get(
+            layer_name, None
+        ):  # pyrefly: ignore[no-matching-overload]
             if old_legend := layer.pop("legend", None):
                 self.remove(old_legend)
             layer["legend"] = control
@@ -1226,7 +1240,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
             **kwargs,
         )
         control = ipyleaflet.WidgetControl(widget=colorbar, position=position)
-        if layer := self.ee_layers.get(layer_name, None):  # pyrefly: ignore[no-matching-overload]
+        if layer := self.ee_layers.get(
+            layer_name, None
+        ):  # pyrefly: ignore[no-matching-overload]
             if old_colorbar := layer.pop("colorbar", None):
                 self.remove(old_colorbar)
             layer["colorbar"] = control
