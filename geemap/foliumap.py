@@ -371,9 +371,7 @@ class Map(folium.Map):
             geometry = ee_object.transform(maxError=max_error)
         else:
             try:
-                geometry = ee_object.geometry(  # pyrefly: ignore[missing-attribute]
-                    maxError=max_error
-                ).transform(  # pyrefly: ignore[missing-attribute]
+                geometry = ee_object.geometry(maxError=max_error).transform(  # pyrefly: ignore[missing-attribute]
                     maxError=max_error
                 )
             except Exception:
@@ -386,9 +384,7 @@ class Map(folium.Map):
             if not isinstance(zoom, int):
                 raise Exception("Zoom must be an integer.")
 
-            centroid = geometry.centroid(  # pyrefly: ignore[unsupported-operation]
-                maxError=max_error
-            ).getInfo()["coordinates"]
+            centroid = geometry.centroid(maxError=max_error).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
             lat = centroid[1]
             lon = centroid[0]
             self.set_center(lon, lat, zoom)
@@ -397,9 +393,9 @@ class Map(folium.Map):
                 arc_zoom_to_extent(lon, lat, lon, lat)
 
         else:
-            coordinates = geometry.bounds(  # pyrefly: ignore[unsupported-operation]
-                maxError=max_error
-            ).getInfo()["coordinates"][0]
+            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][  # pyrefly: ignore[unsupported-operation]
+                0
+            ]
             x = [c[0] for c in coordinates]
             y = [c[1] for c in coordinates]
             xmin = min(x)
@@ -713,9 +709,7 @@ class Map(folium.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(  # pyrefly: ignore[bad-assignment]
-                source, **array_args
-            )  # pyrefly: ignore[bad-assignment]
+            source = array_to_image(source, **array_args)  # pyrefly: ignore[bad-assignment]
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -1806,9 +1800,7 @@ class Map(folium.Map):
                     f"The number of unique values in the color column {color_column} is greater than the number of available colors."
                 )
             else:
-                marker_colors = color_options[
-                    : len(items)  # pyrefly: ignore[bad-argument-type]
-                ]  # pyrefly: ignore[bad-argument-type]
+                marker_colors = color_options[: len(items)]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
             if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
                 raise ValueError(
@@ -1850,9 +1842,7 @@ class Map(folium.Map):
             if items is not None:
                 index = items.index(row[color_column])
                 marker_icon = folium.Icon(
-                    color=marker_colors[  # pyrefly: ignore[unsupported-operation]
-                        index
-                    ],  # pyrefly: ignore[unsupported-operation]
+                    color=marker_colors[index],  # pyrefly: ignore[unsupported-operation]
                     icon_color=icon_colors[index],
                     icon=icon_names[index],
                     angle=angle,
@@ -1868,14 +1858,9 @@ class Map(folium.Map):
             ).add_to(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [
-                coreutils.check_color(c)
-                for c in marker_colors  # pyrefly: ignore[not-iterable]
-            ]  # pyrefly: ignore[not-iterable]
+            marker_colors = [coreutils.check_color(c) for c in marker_colors]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(),  # pyrefly: ignore[missing-attribute]
-                colors=marker_colors,
-                labels=items,  # pyrefly: ignore[missing-attribute]
+                title=color_column.title(), colors=marker_colors, labels=items  # pyrefly: ignore[missing-attribute]
             )
 
     def add_circle_markers_from_xy(
@@ -2131,7 +2116,7 @@ class Map(folium.Map):
             token: The token to use to datapane to publish the map. See
                 https://docs.datapane.com/tut-getting-started.
         """
-        import datapane as dp  # pytype: disable=import-error
+        import datapane as dp
 
         warnings.filterwarnings("ignore")
 
@@ -2217,7 +2202,7 @@ class Map(folium.Map):
         Returns:
             streamlit.components: components.html object.
         """
-        import streamlit.components.v1 as components  # pytype: disable=import-error
+        import streamlit.components.v1 as components
 
         del kwargs  # Unused.
 
@@ -2225,7 +2210,7 @@ class Map(folium.Map):
             self.add_layer_control()
 
         if bidirectional:
-            from streamlit_folium import st_folium  # pytype: disable=import-error
+            from streamlit_folium import st_folium
 
             return st_folium(self, width=width, height=height)
         else:
@@ -2262,7 +2247,7 @@ class Map(folium.Map):
 
     def st_fit_bounds(self) -> None:
         """Fit the map to the bounds of the map."""
-        import streamlit as st  # pytype: disable=import-error
+        import streamlit as st
 
         if "map_bounds" in st.session_state:
             bounds = st.session_state["map_bounds"]
@@ -3269,7 +3254,7 @@ def delete_dp_report(name: str) -> None:
     Args:
         name: Name of the report to delete.
     """
-    import datapane as dp  # pytype: disable=import-error
+    import datapane as dp
 
     reports = dp.Report.list()
     items = list(reports)
@@ -3282,7 +3267,7 @@ def delete_dp_report(name: str) -> None:
 
 def delete_dp_reports():
     """Deletes all datapane reports."""
-    import datapane as dp  # pytype: disable=import-error
+    import datapane as dp
 
     reports = dp.Report.list()
     for item in reports:
@@ -3388,7 +3373,7 @@ def st_map_center(lat: float, lon: float):
         lat: Latitude.
         lon: Longitude.
     """
-    import streamlit as st  # pytype: disable=import-error
+    import streamlit as st
 
     if "map_center" in st.session_state:
         return st.session_state["map_center"]
@@ -3402,7 +3387,7 @@ def st_save_bounds(st_component) -> None:
     Args:
         map (folium.folium.Map): The map to save the bounds from.
     """
-    import streamlit as st  # pytype: disable=import-error
+    import streamlit as st
 
     if st_component is not None:
         bounds = st_component["bounds"]

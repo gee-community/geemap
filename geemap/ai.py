@@ -19,12 +19,8 @@ import datetime
 import logging
 import re
 import sys
-from typing import Any, TYPE_CHECKING
+from typing import Any
 import uuid
-
-if TYPE_CHECKING:
-    from geemap.geemap import Map
-
 
 import numpy as np
 import pandas as pd
@@ -38,6 +34,8 @@ from ipyleaflet import LayerException
 from jinja2 import Template
 from IPython.display import HTML, Javascript, display
 
+from .geemap import Map
+
 try:
     import vertexai
     import google.generativeai as genai
@@ -46,16 +44,12 @@ try:
     from google.cloud import storage
     from google.api_core import exceptions as google_exceptions
     from vertexai.preview.language_models import TextEmbeddingModel
-    from langchain.embeddings.base import Embeddings  # pyrefly: ignore[missing-import]
-    from langchain.indexes import (
-        VectorstoreIndexCreator,
-    )  # pyrefly: ignore[missing-import]
-    from langchain.schema import Document  # pyrefly: ignore[missing-import]
+    from langchain.embeddings.base import Embeddings
+    from langchain.indexes import VectorstoreIndexCreator
+    from langchain.schema import Document
     from langchain_google_genai import ChatGoogleGenerativeAI
     from langchain_core.vectorstores.base import VectorStore
-    from langchain.indexes.vectorstore import (
-        VectorStoreIndexWrapper,
-    )  # pyrefly: ignore[missing-import]
+    from langchain.indexes.vectorstore import VectorStoreIndexWrapper
     from langchain_core.language_models.base import BaseLanguageModel
 except ImportError:
     print("Please install the required packages.")

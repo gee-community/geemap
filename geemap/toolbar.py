@@ -36,7 +36,8 @@ from . import map_widgets
 from . import timelapse
 from .conversion import js_snippet_to_py
 
-def pathlib.Path(__file__).parent / "static" -> pathlib.Path:
+
+def js_path() -> pathlib.Path:
     """Returns the path to the JavaScript files."""
     base = pathlib.Path(__file__).parent
     return base / "static"
@@ -46,7 +47,7 @@ def pathlib.Path(__file__).parent / "static" -> pathlib.Path:
 class ToolbarItem(anywidget.AnyWidget):
     """A toolbar item widget for geemap."""
 
-    _esm = pathlib.Path(__file__).parent / "static" / "toolbar_item.js"
+    _esm = js_path() / "toolbar_item.js"
     active = traitlets.Bool(False).tag(sync=True)
     primary = traitlets.Bool(True).tag(sync=True)
     icon = traitlets.Unicode("").tag(sync=True)
@@ -101,7 +102,7 @@ class ToolbarItem(anywidget.AnyWidget):
 class Toolbar(anywidget.AnyWidget):
     """A toolbar that can be added to the map."""
 
-    _esm = pathlib.Path(__file__).parent / "static" / "toolbar.js"
+    _esm = js_path() / "toolbar.js"
 
     # The list of main tools.
     main_tools = map_widgets.TypedTuple(

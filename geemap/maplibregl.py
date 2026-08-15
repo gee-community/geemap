@@ -235,8 +235,8 @@ class Map(MapWidget):
                 layer["min-zoom"] = layer.pop("minzoom")
             if "maxzoom" in layer:
                 layer["max-zoom"] = layer.pop("maxzoom")
-            layer_dict = replace_top_level_hyphens(layer)
-            layer = Layer(**layer_dict)
+            layer = replace_top_level_hyphens(layer)
+            layer = Layer(**layer)  # pyrefly: ignore[bad-unpacking]
 
         if name is None:
             name = layer.id

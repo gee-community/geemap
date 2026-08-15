@@ -327,10 +327,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
             timeout=3,
         )
 
-        if (
-            response.status_code
-            == requests.codes.ok  # pyrefly: ignore[missing-attribute]
-        ):
+        if response.status_code == requests.codes.ok:  # pyrefly: ignore[missing-attribute]
             json = response.json()
             map_name = map_type.capitalize()
             super().__init__(
@@ -514,7 +511,7 @@ def xyz_to_pydeck() -> dict[str, Any]:
     Returns:
         A dictionary of pydeck tile layers.
     """
-    import pydeck as pdk  # pytype: disable=import-error
+    import pydeck as pdk
 
     pydeck_dict = {}
     # Ignore Esri basemaps if they are already in the custom XYZ_TILES.

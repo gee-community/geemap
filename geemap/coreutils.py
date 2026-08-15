@@ -33,7 +33,7 @@ def get_env_var(key: str) -> str | None:
         return None
 
     if in_colab_shell():
-        from google.colab import userdata  # pytype: disable=import-error
+        from google.colab import userdata
 
         try:
             return userdata.get(key)
@@ -69,7 +69,7 @@ def ee_initialize(
             opt_url='https://earthengine-highvolume.googleapis.com' to use the Earth
             Engine High-Volume platform.
     """
-    import google.oauth2.credentials  # pytype: disable=import-error
+    import google.oauth2.credentials
     from .__init__ import __version__  # pyrefly: ignore[missing-import]
 
     user_agent = f"{user_agent_prefix}/{__version__}"
@@ -330,12 +330,7 @@ def geometry_type(ee_object: Any) -> str:
     elif isinstance(ee_object, ee.Feature):
         return ee_object.geometry().type().getInfo()  # pyrefly: ignore[bad-return]
     elif isinstance(ee_object, ee.FeatureCollection):
-        return (  # pyrefly: ignore[bad-return]
-            ee.Feature(ee_object.first())  # pyrefly: ignore[bad-return]
-            .geometry()
-            .type()
-            .getInfo()
-        )
+        return ee.Feature(ee_object.first()).geometry().type().getInfo()  # pyrefly: ignore[bad-return]
     else:
         raise TypeError(
             "ee_object must be one of ee.Geometry, ee.Feature, ee.FeatureCollection."
@@ -477,9 +472,7 @@ def hex_to_rgb(value: str = "FFFFFF") -> tuple[int, int, int]:
     """
     value = value.lstrip("#")
     lv = len(value)
-    return tuple(  # pyrefly: ignore[bad-return]
-        int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3)
-    )
+    return tuple(int(value[i : i + lv // 3], 16) for i in range(0, lv, lv // 3))  # pyrefly: ignore[bad-return]
 
 
 def random_string(string_length: int = 3) -> str:
@@ -699,22 +692,18 @@ def download_file(
     Returns:
         The output file path.
     """
-    import gdown  # pytype: disable=import-error
+    import gdown
 
     if output is None:
         if isinstance(url, str) and url.startswith(("http://", "https://")):
             output = os.path.basename(url)
 
     if isinstance(url, str):
-        if (
-            output is not None
-            and os.path.exists(os.path.abspath(output))
-            and (not overwrite)
-        ):
+        if os.path.exists(os.path.abspath(output)) and (not overwrite):  # pyrefly: ignore[no-matching-overload]
             print(
                 f"{output} already exists. Skip downloading. Set overwrite=True to overwrite."
             )
-            return os.path.abspath(output)
+            return os.path.abspath(output)  # pyrefly: ignore[no-matching-overload]
         else:
             url = github_raw_url(url)
 
@@ -787,19 +776,14 @@ def geojson_to_ee(
                     geom = ee.Geometry(geo_json["geometry"])
                     radius = geo_json["properties"]["style"]["radius"]
                     geom = geom.buffer(radius)
-                elif (
-                    geo_json["geometry"]["type"]  # pyrefly: ignore[bad-index]
-                    == "Point"
-                ):
+                elif geo_json["geometry"]["type"] == "Point":  # pyrefly: ignore[bad-index]
                     geom = ee.Geometry(geo_json["geometry"])
                 else:
                     geom = ee.Geometry(geo_json["geometry"], "", geodesic)
             elif (
                 geo_json["geometry"]["type"] == "Point"  # pyrefly: ignore[bad-index]
             ):  # Checks whether it is a point.
-                coordinates = geo_json["geometry"][  # pyrefly: ignore[bad-index]
-                    "coordinates"
-                ]  # pyrefly: ignore[bad-index]
+                coordinates = geo_json["geometry"]["coordinates"]  # pyrefly: ignore[bad-index]
                 longitude = coordinates[0]
                 latitude = coordinates[1]
                 geom = ee.Geometry.Point(longitude, latitude)

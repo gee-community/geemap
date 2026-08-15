@@ -19,6 +19,7 @@ import plotly.graph_objects as go
 from .basemaps import xyz_to_plotly
 from .common import *
 from . import coreutils
+from . import examples
 
 basemaps = xyz_to_plotly()
 
