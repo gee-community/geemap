@@ -328,8 +328,9 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
         )
 
         if (
-            response.status_code == requests.codes.ok
-        ):  # pyrefly: ignore[missing-attribute]
+            response.status_code
+            == requests.codes.ok  # pyrefly: ignore[missing-attribute]
+        ):
             json = response.json()
             map_name = map_type.capitalize()
             super().__init__(
