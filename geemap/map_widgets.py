@@ -1155,8 +1155,8 @@ class LayerEditor(anywidget.AnyWidget):
             field = state.get("field")
             arr = (
                 self._ee_object.aggregate_array(
-                    field
-                )  # pyrefly: ignore[bad-argument-type]
+                    field  # pyrefly: ignore[bad-argument-type]
+                )
                 .distinct()
                 .sort()
             )
