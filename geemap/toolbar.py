@@ -449,7 +449,7 @@ def inspector_gui(m: geemap.Map | None = None):
                         markers = list(
                             m.marker_cluster.markers
                         )  # pyrefly: ignore[missing-attribute]
-                        markers.append(
+                        markers.append(  # pyrefly: ignore[missing-attribute]
                             ipyleaflet.Marker(location=latlon)
                         )  # pyrefly: ignore[missing-attribute]
                         m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]  # pyrefly: ignore[missing-attribute]
@@ -483,7 +483,7 @@ def inspector_gui(m: geemap.Map | None = None):
                         markers = list(
                             m.marker_cluster.markers
                         )  # pyrefly: ignore[missing-attribute]
-                        markers.append(
+                        markers.append(  # pyrefly: ignore[missing-attribute]
                             ipyleaflet.Marker(location=latlon)
                         )  # pyrefly: ignore[missing-attribute]
                         m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]  # pyrefly: ignore[missing-attribute]
@@ -504,7 +504,7 @@ def inspector_gui(m: geemap.Map | None = None):
                     if (
                         m.inspector_bands_chk.value
                     ):  # pyrefly: ignore[missing-attribute]
-                        band = m.cog_layer_dict[
+                        band = m.cog_layer_dict[  # pyrefly: ignore[missing-attribute]
                             m.inspector_dropdown.value
                         ][  # pyrefly: ignore[missing-attribute]
                             "band"
@@ -533,7 +533,7 @@ def inspector_gui(m: geemap.Map | None = None):
                         markers = list(
                             m.marker_cluster.markers
                         )  # pyrefly: ignore[missing-attribute]
-                        markers.append(
+                        markers.append(  # pyrefly: ignore[missing-attribute]
                             ipyleaflet.Marker(location=latlon)
                         )  # pyrefly: ignore[missing-attribute]
                         m.marker_cluster.markers = markers  # pyrefly: ignore[missing-attribute]  # pyrefly: ignore[missing-attribute]
@@ -1473,7 +1473,7 @@ def convert_js2py(m):
                 if (
                     len(out_lines) > 0 and len(out_lines[0].strip()) == 0
                 ):  # pyrefly: ignore[bad-argument-type, unsupported-operation]
-                    out_lines = out_lines[
+                    out_lines = out_lines[  # pyrefly: ignore[bad-argument-type, unsupported-operation]
                         1:
                     ]  # pyrefly: ignore[bad-argument-type, unsupported-operation]
 
@@ -2628,12 +2628,10 @@ def time_slider(m: geemap.Map | None = None):
                 palette.value = ", ".join(cmap_colors)
 
                 if m._colorbar_widget is None:  # pyrefly: ignore[missing-attribute]
-                    m._colorbar_widget = (
-                        ipywidgets.Output(  # pyrefly: ignore[missing-attribute]
-                            layout=ipywidgets.Layout(
-                                height="60px"
-                            )  # pyrefly: ignore[missing-attribute]
-                        )
+                    m._colorbar_widget = ipywidgets.Output(  # pyrefly: ignore[missing-attribute]
+                        layout=ipywidgets.Layout(  # pyrefly: ignore[missing-attribute]
+                            height="60px"
+                        )  # pyrefly: ignore[missing-attribute]
                     )
 
                 if (not hasattr(m, "_colorbar_ctrl")) or (m._colorbar_ctrl is None):
@@ -2724,7 +2722,7 @@ def time_slider(m: geemap.Map | None = None):
             if m._colorbar_widget is None:  # pyrefly: ignore[missing-attribute]
                 m._colorbar_widget = (
                     ipywidgets.Output(  # pyrefly: ignore[missing-attribute]
-                        layout=ipywidgets.Layout(
+                        layout=ipywidgets.Layout(  # pyrefly: ignore[missing-attribute]
                             height="60px"
                         )  # pyrefly: ignore[missing-attribute]
                     )
