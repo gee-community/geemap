@@ -30,6 +30,7 @@ from . import core
 from . import coreutils
 from . import geemap
 
+
 class TypedTuple(traitlets.Container):
     """A trait for a tuple of any length with type-checked elements."""
 

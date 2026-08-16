@@ -36,6 +36,7 @@ from . import map_widgets
 from . import timelapse
 from .conversion import js_snippet_to_py
 
+
 def js_path() -> pathlib.Path:
     """Returns the path to the JavaScript files."""
     base = pathlib.Path(__file__).parent
