@@ -1,3 +1,8 @@
+ci:
+    autofix_prs: false
+    autoupdate_schedule: monthly
+    skip: [black-jupyter]
+
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
       rev: v6.0.0
@@ -10,11 +15,6 @@ repos:
           - id: requirements-txt-fixer
           - id: check-added-large-files
             args: ["--maxkb=500"]
-
-    - repo: https://github.com/psf/black-pre-commit-mirror
-      rev: 26.5.1
-      hooks:
-          - id: black-jupyter
 
     - repo: https://github.com/codespell-project/codespell
       rev: v2.4.3

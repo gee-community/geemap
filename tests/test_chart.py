@@ -87,10 +87,7 @@ class ChartTest(unittest.TestCase):
         x_values = [10, 20, 30]
         y_labels = ["a", "b"]
         df = chart.array_to_df(
-            y_values,
-            x_values=x_values,  # pyrefly: ignore[bad-argument-type]
-            y_labels=y_labels,
-            x_label="time",  # pyrefly: ignore[bad-argument-type]
+            y_values, x_values=x_values, y_labels=y_labels, x_label="time"  # pyrefly: ignore[bad-argument-type]
         )
         self.assertEqual(df.shape, (3, 3))
         self.assertEqual(list(df.columns), ["time", "a", "b"])

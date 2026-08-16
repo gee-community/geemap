@@ -30,7 +30,6 @@ from . import core
 from . import coreutils
 from . import geemap
 
-
 class TypedTuple(traitlets.Container):
     """A trait for a tuple of any length with type-checked elements."""
 
@@ -193,24 +192,15 @@ class Colorbar(ipywidgets.Output):
                 coreutils.check_cmap(vis_params["palette"])
             )
             if discrete:
-                cmap = (
-                    matplotlib.colors.ListedColormap(  # pyrefly: ignore[bad-assignment]
-                        hexcodes
-                    )
-                )  # pyrefly: ignore[bad-assignment]
-                linspace = numpy.linspace(
-                    vmin, vmax, cmap.N + 1  # pyrefly: ignore[missing-attribute]
-                )  # pyrefly: ignore[missing-attribute]
-                norm = matplotlib.colors.BoundaryNorm(
-                    linspace,
-                    cmap.N,  # pyrefly: ignore[bad-assignment, missing-attribute]
-                )  # pyrefly: ignore[missing-attribute]
+                cmap = matplotlib.colors.ListedColormap(hexcodes)  # pyrefly: ignore[bad-assignment]
+                linspace = numpy.linspace(vmin, vmax, cmap.N + 1)  # pyrefly: ignore[missing-attribute]
+                norm = matplotlib.colors.BoundaryNorm(linspace, cmap.N)  # pyrefly: ignore[missing-attribute]
             else:
                 cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
-                    "custom", hexcodes, N=256  # pyrefly: ignore[missing-attribute]
+                    "custom", hexcodes, N=256
                 )
                 norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
-        elif cmap:  # pyrefly: ignore[missing-attribute]
+        elif cmap:
             cmap = matplotlib.pyplot.get_cmap(cmap)
             norm = matplotlib.colors.Normalize(vmin=vmin, vmax=vmax)
         else:
@@ -364,28 +354,19 @@ class Legend(anywidget.AnyWidget):
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
             builtin_legend_allowed = self._check_if_allowed(
-                builtin_legend,
-                "builtin legend",
-                allowed_builtin_legends,  # pyrefly: ignore[bad-argument-type]
+                builtin_legend, "builtin legend", allowed_builtin_legends  # pyrefly: ignore[bad-argument-type]
             )  # pytype: disable=wrong-arg-types
             if builtin_legend_allowed:
-                legend_dict = builtin_legends[  # pyrefly: ignore[bad-assignment]
-                    builtin_legend
-                ]  # pyrefly: ignore[bad-assignment]
-                self.legend_keys = list(
-                    legend_dict.keys()  # pyrefly: ignore[missing-attribute]
-                )  # pyrefly: ignore[missing-attribute]
+                legend_dict = builtin_legends[builtin_legend]  # pyrefly: ignore[bad-assignment]
+                self.legend_keys = list(legend_dict.keys())  # pyrefly: ignore[missing-attribute]
                 self.legend_colors = list(
-                    map(  # pyrefly: ignore[bad-assignment]
-                        self._normalize_color_to_hex,
-                        legend_dict.values(),  # pyrefly: ignore[missing-attribute]
-                    )  # pyrefly: ignore[missing-attribute]
+                    map(self._normalize_color_to_hex, legend_dict.values())  # pyrefly: ignore[missing-attribute]
                 )
-        # pyrefly: ignore[missing-attribute]
+
         self._check_if_allowed(position, "position", self.ALLOWED_POSITIONS)
 
         self.add_header = add_header
-        if "show_close_button" in widget_args:  # pyrefly: ignore[missing-attribute]
+        if "show_close_button" in widget_args:
             self.show_close_button = widget_args["show_close_button"]
         else:
             self.show_close_button = False
@@ -1089,15 +1070,13 @@ class LayerEditor(anywidget.AnyWidget):
 
     def _calculate_field_values(self, message: dict[str, Any]) -> dict[str, Any]:
         field = message.get("field")
-        options = self._ee_object.aggregate_array(
-            field  # pyrefly: ignore[bad-argument-type]
-        ).getInfo()  # pyrefly: ignore[bad-argument-type]
+        options = self._ee_object.aggregate_array(field).getInfo()  # pyrefly: ignore[bad-argument-type]
         if options:
             options = list(set(options))
             options.sort()
         return {"field-values": options or []}
 
-    def _get_colormaps(self) -> list[str]:  # pyrefly: ignore[bad-argument-type]
+    def _get_colormaps(self) -> list[str]:
         """Gets the list of available colormaps."""
         colormap_options = pyplot.colormaps()
         colormap_options.sort()
@@ -1153,19 +1132,13 @@ class LayerEditor(anywidget.AnyWidget):
                 ]
             )
             field = state.get("field")
-            arr = (
-                self._ee_object.aggregate_array(
-                    field  # pyrefly: ignore[bad-argument-type]
-                )
-                .distinct()
-                .sort()
-            )
+            arr = self._ee_object.aggregate_array(field).distinct().sort()  # pyrefly: ignore[bad-argument-type]
             fc = self._ee_object.map(
                 lambda f: f.set({"styleIndex": arr.indexOf(f.get(field))})
             )
             step = arr.size().divide(colors.size()).ceil()
             fc = fc.map(
-                lambda f: f.set(  # pyrefly: ignore[bad-argument-type]
+                lambda f: f.set(
                     {
                         "style": {
                             **vis_options,

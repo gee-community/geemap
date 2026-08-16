@@ -371,9 +371,7 @@ class Map(folium.Map):
             geometry = ee_object.transform(maxError=max_error)
         else:
             try:
-                geometry = ee_object.geometry(  # pyrefly: ignore[missing-attribute]
-                    maxError=max_error
-                ).transform(  # pyrefly: ignore[missing-attribute]
+                geometry = ee_object.geometry(maxError=max_error).transform(  # pyrefly: ignore[missing-attribute]
                     maxError=max_error
                 )
             except Exception:
@@ -386,11 +384,7 @@ class Map(folium.Map):
             if not isinstance(zoom, int):
                 raise Exception("Zoom must be an integer.")
 
-            centroid = geometry.centroid(  # pyrefly: ignore[unsupported-operation]
-                maxError=max_error
-            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
-                "coordinates"
-            ]  # pyrefly: ignore[unsupported-operation]
+            centroid = geometry.centroid(maxError=max_error).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
             lat = centroid[1]
             lon = centroid[0]
             self.set_center(lon, lat, zoom)
@@ -399,11 +393,7 @@ class Map(folium.Map):
                 arc_zoom_to_extent(lon, lat, lon, lat)
 
         else:
-            coordinates = geometry.bounds(  # pyrefly: ignore[unsupported-operation]
-                maxError=max_error
-            ).getInfo()[  # pyrefly: ignore[unsupported-operation]
-                "coordinates"
-            ][  # pyrefly: ignore[unsupported-operation]
+            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][  # pyrefly: ignore[unsupported-operation]
                 0
             ]
             x = [c[0] for c in coordinates]
@@ -719,9 +709,7 @@ class Map(folium.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(  # pyrefly: ignore[bad-assignment]
-                source, **array_args
-            )  # pyrefly: ignore[bad-assignment]
+            source = array_to_image(source, **array_args)  # pyrefly: ignore[bad-assignment]
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -1812,9 +1800,7 @@ class Map(folium.Map):
                     f"The number of unique values in the color column {color_column} is greater than the number of available colors."
                 )
             else:
-                marker_colors = color_options[
-                    : len(items)  # pyrefly: ignore[bad-argument-type]
-                ]  # pyrefly: ignore[bad-argument-type]
+                marker_colors = color_options[: len(items)]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
             if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
                 raise ValueError(
@@ -1856,9 +1842,7 @@ class Map(folium.Map):
             if items is not None:
                 index = items.index(row[color_column])
                 marker_icon = folium.Icon(
-                    color=marker_colors[  # pyrefly: ignore[unsupported-operation]
-                        index
-                    ],  # pyrefly: ignore[unsupported-operation]
+                    color=marker_colors[index],  # pyrefly: ignore[unsupported-operation]
                     icon_color=icon_colors[index],
                     icon=icon_names[index],
                     angle=angle,
@@ -1874,14 +1858,9 @@ class Map(folium.Map):
             ).add_to(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [
-                coreutils.check_color(c)
-                for c in marker_colors  # pyrefly: ignore[not-iterable]
-            ]  # pyrefly: ignore[not-iterable]
+            marker_colors = [coreutils.check_color(c) for c in marker_colors]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(),  # pyrefly: ignore[missing-attribute]
-                colors=marker_colors,
-                labels=items,  # pyrefly: ignore[missing-attribute]
+                title=color_column.title(), colors=marker_colors, labels=items  # pyrefly: ignore[missing-attribute]
             )
 
     def add_circle_markers_from_xy(
