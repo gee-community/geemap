@@ -8260,7 +8260,7 @@
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">last_feature</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the last feature created.&quot;&quot;&quot;</span>
-        <span class="nb">property</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">)</span>
+        <span class="nb">property</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_geometry_properties</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
         <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Feature</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span><span class="p">,</span> <span class="nb">property</span><span class="p">)</span> <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="k">else</span> <span class="kc">None</span>
 
     <span class="nd">@property</span>
@@ -8275,7 +8275,7 @@
 <span class="sd">            clear_draw_control: Whether to clear the draw control.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
@@ -8478,9 +8478,9 @@
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">properties</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">count</span><span class="p">:</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_redraw_layer</span><span class="p">()</span>
-            <span class="k">elif</span> <span class="n">_DRAWN_FEATURES_LAYER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+            <span class="k">elif</span> <span class="n">_DRAWN_FEATURES_LAYER</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="c1"># Remove drawn features layer if there are no geometries.</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="n">_DRAWN_FEATURES_LAYER</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_geometry_delete_dispatcher</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="n">geometry</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
               </details>
@@ -9209,7 +9209,7 @@ the draw control.</p>
 <span class="sd">        clear_draw_control: Whether to clear the draw control.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">layer</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="o">.</span><span class="n">remove_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layer</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">geometries</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">properties</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">last_geometry</span> <span class="o">=</span> <span class="kc">None</span>
@@ -10411,7 +10411,7 @@ the draw control.</p>
 <span class="normal">1401</span>
 <span class="normal">1402</span>
 <span class="normal">1403</span>
-<span class="normal">1404</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Map</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Map</span><span class="p">,</span> <span class="n">MapInterface</span><span class="p">):</span>
+<span class="normal">1404</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Map</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Map</span><span class="p">,</span> <span class="n">MapInterface</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[inconsistent-inheritance]</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;The Map class inherits the ipyleaflet Map class.</span>
 
 <span class="sd">    Args:</span>
@@ -10585,7 +10585,7 @@ the draw control.</p>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current center of the map (lat, lon).&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
@@ -10606,7 +10606,7 @@ the draw control.</p>
         <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
 
         <span class="k">if</span> <span class="n">as_geojson</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+            <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>  <span class="c1"># pyrefly: ignore[bad-return]</span>
         <span class="k">return</span> <span class="n">coords</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_scale</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
@@ -10645,7 +10645,7 @@ the draw control.</p>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">):</span>
             <span class="k">return</span> <span class="n">ee_object</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">ee_object</span><span class="o">.</span><span class="n">geometry</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
         <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">exc</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span>
                 <span class="s2">&quot;ee_object must be one of ee.Geometry, ee.FeatureCollection, ee.Image, &quot;</span>
@@ -10669,7 +10669,7 @@ the draw control.</p>
             <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+            <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
                 <span class="mi">0</span>
             <span class="p">]</span>
             <span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
@@ -10678,7 +10678,7 @@ the draw control.</p>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zoom</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Zoom must be an integer.&quot;</span><span class="p">)</span>
-            <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+            <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">zoom</span><span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_find_widget_of_type</span><span class="p">(</span>
@@ -10705,7 +10705,7 @@ the draw control.</p>
                     <span class="k">return</span> <span class="n">child</span>
         <span class="k">return</span> <span class="kc">None</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
     <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a widget or control to the map.</span>
@@ -10974,7 +10974,7 @@ the draw control.</p>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">widget</span><span class="p">,</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Widget</span><span class="p">):</span>
             <span class="n">widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">add_layer</span><span class="p">(</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">add_layer</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
         <span class="bp">self</span><span class="p">,</span>
         <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span>
         <span class="n">vis_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -11060,7 +11060,7 @@ the draw control.</p>
         <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
             <span class="n">widget</span><span class="o">=</span><span class="n">legend</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">,</span> <span class="n">transparent_bg</span><span class="o">=</span><span class="kc">True</span>
         <span class="p">)</span>
-        <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
             <span class="k">if</span> <span class="n">old_legend</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;legend&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old_legend</span><span class="p">)</span>
             <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;legend&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span>
@@ -11125,7 +11125,7 @@ the draw control.</p>
             <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="n">control</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span><span class="n">widget</span><span class="o">=</span><span class="n">colorbar</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="n">position</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">layer</span> <span class="o">:=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ee_layers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">layer_name</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
             <span class="k">if</span> <span class="n">old_colorbar</span> <span class="o">:=</span> <span class="n">layer</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;colorbar&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">):</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">old_colorbar</span><span class="p">)</span>
             <span class="n">layer</span><span class="p">[</span><span class="s2">&quot;colorbar&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">control</span>
@@ -11640,7 +11640,7 @@ the draw control.</p>
 <span class="normal">855</span>
 <span class="normal">856</span>
 <span class="normal">857</span>
-<span class="normal">858</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span>
+<span class="normal">858</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a widget or control to the map.</span>
@@ -11848,7 +11848,7 @@ the draw control.</p>
 <span class="normal">1116</span>
 <span class="normal">1117</span>
 <span class="normal">1118</span>
-<span class="normal">1119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_layer</span><span class="p">(</span>
+<span class="normal">1119</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add_layer</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">ee_object</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ComputedObject</span><span class="p">,</span>
     <span class="n">vis_params</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -12019,7 +12019,7 @@ the draw control.</p>
         <span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>
+        <span class="n">coordinates</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">bounds</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">][</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
             <span class="mi">0</span>
         <span class="p">]</span>
         <span class="n">x_vals</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">coordinates</span><span class="p">]</span>
@@ -12028,7 +12028,7 @@ the draw control.</p>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">zoom</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span>
             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Zoom must be an integer.&quot;</span><span class="p">)</span>
-        <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>
+        <span class="n">centroid</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">centroid</span><span class="p">(</span><span class="n">maxError</span><span class="o">=</span><span class="n">max_error</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()[</span><span class="s2">&quot;coordinates&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">set_center</span><span class="p">(</span><span class="n">centroid</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">centroid</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">zoom</span><span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
@@ -12128,7 +12128,7 @@ the draw control.</p>
 <span class="normal">708</span>
 <span class="normal">709</span>
 <span class="normal">710</span>
-<span class="normal">711</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span>
+<span class="normal">711</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
@@ -12149,7 +12149,7 @@ the draw control.</p>
     <span class="n">coords</span> <span class="o">=</span> <span class="p">[</span><span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">bounds</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]]</span>
 
     <span class="k">if</span> <span class="n">as_geojson</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">BBox</span><span class="p">(</span><span class="o">*</span><span class="n">coords</span><span class="p">)</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>  <span class="c1"># pyrefly: ignore[bad-return]</span>
     <span class="k">return</span> <span class="n">coords</span>
 </code></pre></div></td></tr></table></div>
             </details>

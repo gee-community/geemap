@@ -7643,7 +7643,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">main_tools</span> <span class="o">=</span> <span class="n">main_tools</span> <span class="o">+</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="p">]</span> <span class="k">if</span> <span class="n">extra_tools</span> <span class="k">else</span> <span class="p">[])</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">extra_tools</span> <span class="o">=</span> <span class="n">extra_tools</span>
         <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_tools</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_tools</span><span class="p">:</span>
-            <span class="n">widget</span><span class="o">.</span><span class="n">callback_wrapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">callback</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="n">callback</span><span class="p">(</span>
+            <span class="n">widget</span><span class="o">.</span><span class="n">callback_wrapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">callback</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="n">callback</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-assignment]</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span>
             <span class="p">)</span>
 
@@ -7738,7 +7738,7 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">main_tools</span> <span class="o">=</span> <span class="n">main_tools</span> <span class="o">+</span> <span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">toggle_widget</span><span class="p">]</span> <span class="k">if</span> <span class="n">extra_tools</span> <span class="k">else</span> <span class="p">[])</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">extra_tools</span> <span class="o">=</span> <span class="n">extra_tools</span>
     <span class="k">for</span> <span class="n">widget</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">main_tools</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">extra_tools</span><span class="p">:</span>
-        <span class="n">widget</span><span class="o">.</span><span class="n">callback_wrapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">callback</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="n">callback</span><span class="p">(</span>
+        <span class="n">widget</span><span class="o">.</span><span class="n">callback_wrapper</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">callback</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span><span class="p">:</span> <span class="n">callback</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-assignment]</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">host_map</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">tool</span>
         <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
@@ -8944,15 +8944,15 @@ when toggled off.</p>
                     <span class="n">show_map</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                     <span class="n">Map</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_var_name</span><span class="p">,</span>
                 <span class="p">)</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-                    <span class="n">out_lines</span> <span class="o">=</span> <span class="n">out_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_lines</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[bad-argument-type, unsupported-operation]</span>
+                    <span class="n">out_lines</span> <span class="o">=</span> <span class="n">out_lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
 
                 <span class="n">prefix</span> <span class="o">=</span> <span class="p">(</span>
                     <span class="s2">&quot;# The code has been copied to the clipboard.</span><span class="se">\n</span><span class="s2">&quot;</span>
                     <span class="s2">&quot;# Press Ctrl+V to in a code cell to paste it.</span><span class="se">\n</span><span class="s2">&quot;</span>
                 <span class="p">)</span>
-                <span class="n">text_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">prefix</span><span class="p">]</span> <span class="o">+</span> <span class="n">out_lines</span><span class="p">)</span>
-                <span class="n">coreutils</span><span class="o">.</span><span class="n">create_code_cell</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_lines</span><span class="p">))</span>
+                <span class="n">text_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">prefix</span><span class="p">]</span> <span class="o">+</span> <span class="n">out_lines</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
+                <span class="n">coreutils</span><span class="o">.</span><span class="n">create_code_cell</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_lines</span><span class="p">))</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
 
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Clear&quot;</span><span class="p">:</span>
             <span class="n">text_widget</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -9336,7 +9336,7 @@ when toggled off.</p>
 
         <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span><span class="p">:</span>
-            <span class="n">xy</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">xy</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="o">.</span><span class="n">Point</span><span class="p">(</span><span class="n">latlon</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
             <span class="n">plot_options</span> <span class="o">=</span> <span class="p">{}</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_plot_options&quot;</span><span class="p">):</span>
                 <span class="n">plot_options</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_plot_options</span>
@@ -10272,8 +10272,8 @@ when toggled off.</p>
     <span class="p">)</span>
     <span class="n">buttons</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">button_width</span> <span class="o">=</span> <span class="s2">&quot;80px&quot;</span>
 
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">options</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
+        <span class="k">with</span> <span class="n">output</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No COG/STAC layers available&quot;</span><span class="p">)</span>
 
     <span class="n">toolbar_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
@@ -10282,12 +10282,12 @@ when toggled off.</p>
     <span class="n">toolbar_header</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span><span class="n">close_button</span><span class="p">,</span> <span class="n">toolbar_button</span><span class="p">]</span>
     <span class="n">toolbar_footer</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">VBox</span><span class="p">()</span>
     <span class="n">toolbar_footer</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">add_marker</span><span class="p">,</span>
-        <span class="n">label</span><span class="p">,</span>
-        <span class="n">dropdown</span><span class="p">,</span>
-        <span class="n">bands_chk</span><span class="p">,</span>
+        <span class="n">add_marker</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
+        <span class="n">label</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
+        <span class="n">dropdown</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
+        <span class="n">bands_chk</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
         <span class="n">buttons</span><span class="p">,</span>
-        <span class="n">output</span><span class="p">,</span>
+        <span class="n">output</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
     <span class="p">]</span>
 
     <span class="n">toolbar_event</span> <span class="o">=</span> <span class="n">ipyevents</span><span class="o">.</span><span class="n">Event</span><span class="p">(</span>
@@ -10297,7 +10297,7 @@ when toggled off.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">chk_change</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">del</span> <span class="n">change</span>  <span class="c1"># Unused.</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">):</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">):</span>
             <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
@@ -10351,8 +10351,8 @@ when toggled off.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="k">assert</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span>  <span class="c1"># For pytype.</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span>  <span class="c1"># For pytype.  # pyrefly: ignore[missing-attribute]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
     <span class="n">close_button</span><span class="o">.</span><span class="n">observe</span><span class="p">(</span><span class="n">close_btn_click</span><span class="p">,</span> <span class="s2">&quot;value&quot;</span><span class="p">)</span>
 
@@ -10360,7 +10360,7 @@ when toggled off.</p>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Download&quot;</span><span class="p">:</span>
             <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
-                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                     <span class="nb">print</span><span class="p">(</span>
                         <span class="s2">&quot;No pixel values available. &quot;</span>
                         <span class="s2">&quot;Click on the map to start collection data.&quot;</span>
@@ -10378,12 +10378,12 @@ when toggled off.</p>
             <span class="n">label</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
             <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;pixel_values&quot;</span><span class="p">):</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span> <span class="o">=</span> <span class="p">[]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">):</span>
                 <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">elif</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Close&quot;</span><span class="p">:</span>
-            <span class="k">assert</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span>  <span class="c1"># For pytype.</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span>  <span class="c1"># For pytype.  # pyrefly: ignore[missing-attribute]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
         <span class="n">buttons</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -10393,20 +10393,20 @@ when toggled off.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">handle_interaction</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="n">latlon</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;coordinates&quot;</span><span class="p">)</span>
-        <span class="n">lat</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
-        <span class="n">lon</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>
+        <span class="n">lat</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
+        <span class="n">lon</span> <span class="o">=</span> <span class="nb">round</span><span class="p">(</span><span class="n">latlon</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">4</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
         <span class="k">if</span> <span class="p">(</span>
             <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;click&quot;</span>
             <span class="ow">and</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;inspector_mode&quot;</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">m</span><span class="o">.</span><span class="n">inspector_mode</span>
         <span class="p">):</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;wait&quot;</span><span class="p">}</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
             <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                 <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Getting pixel value ...&quot;</span><span class="p">)</span>
 
-                <span class="n">layer_dict</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>
+                <span class="n">layer_dict</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
             <span class="k">if</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;STAC&quot;</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">bands_chk</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
@@ -10434,18 +10434,18 @@ when toggled off.</p>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">value</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                     <span class="k">if</span> <span class="n">add_marker</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                        <span class="n">markers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>
+                        <span class="n">markers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                         <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">latlon</span><span class="p">))</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                         <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No pixel value available&quot;</span><span class="p">)</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="k">elif</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;COG&quot;</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">cog_pixel_value</span><span class="p">(</span>
                     <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;url&quot;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
@@ -10460,26 +10460,26 @@ when toggled off.</p>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">value</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                     <span class="k">if</span> <span class="n">add_marker</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                        <span class="n">markers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>
+                        <span class="n">markers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                         <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">latlon</span><span class="p">))</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                         <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No pixel value available&quot;</span><span class="p">)</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
+                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
             <span class="k">elif</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;LOCAL&quot;</span><span class="p">:</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">local_tile_pixel_value</span><span class="p">(</span>
                     <span class="n">lon</span><span class="p">,</span> <span class="n">lat</span><span class="p">,</span> <span class="n">layer_dict</span><span class="p">[</span><span class="s2">&quot;tile_client&quot;</span><span class="p">],</span> <span class="n">verbose</span><span class="o">=</span><span class="kc">False</span>
                 <span class="p">)</span>
                 <span class="k">if</span> <span class="n">result</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">inspector_bands_chk</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                        <span class="n">band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;band&quot;</span><span class="p">]</span>
-                        <span class="n">band_names</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span>
+                    <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">inspector_bands_chk</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                        <span class="n">band</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;band&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                        <span class="n">band_names</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                             <span class="s2">&quot;band_names&quot;</span>
                         <span class="p">]</span>
                         <span class="k">if</span> <span class="n">band</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -10494,22 +10494,22 @@ when toggled off.</p>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;latitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lat</span>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;longitude&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lon</span>
                         <span class="n">result</span><span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">label</span><span class="o">.</span><span class="n">value</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">pixel_values</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                     <span class="k">if</span> <span class="n">add_marker</span><span class="o">.</span><span class="n">value</span><span class="p">:</span>
-                        <span class="n">markers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>
+                        <span class="n">markers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                         <span class="n">markers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ipyleaflet</span><span class="o">.</span><span class="n">Marker</span><span class="p">(</span><span class="n">location</span><span class="o">=</span><span class="n">latlon</span><span class="p">))</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">marker_cluster</span><span class="o">.</span><span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">with</span> <span class="n">output</span><span class="p">:</span>
                         <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                         <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No pixel value available&quot;</span><span class="p">)</span>
-                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
-                        <span class="n">m</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>
+                        <span class="n">bounds</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">cog_layer_dict</span><span class="p">[</span><span class="n">m</span><span class="o">.</span><span class="n">inspector_dropdown</span><span class="o">.</span><span class="n">value</span><span class="p">][</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                        <span class="n">m</span><span class="o">.</span><span class="n">zoom_to_bounds</span><span class="p">(</span><span class="n">bounds</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">default_style</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;cursor&quot;</span><span class="p">:</span> <span class="s2">&quot;crosshair&quot;</span><span class="p">}</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
     <span class="k">if</span> <span class="n">m</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">):</span>
-            <span class="nb">setattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">,</span> <span class="n">marker_cluster</span><span class="p">)</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;marker_cluster&quot;</span><span class="p">,</span> <span class="n">marker_cluster</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
         <span class="n">m</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">marker_cluster</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">m</span><span class="o">.</span><span class="n">interact_mode</span><span class="p">:</span>
@@ -11118,7 +11118,7 @@ when toggled off.</p>
         <span class="n">filepath</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">file_chooser</span><span class="o">.</span><span class="n">selected</span>
 
         <span class="k">if</span> <span class="n">file_type</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="s2">&quot;CSV&quot;</span><span class="p">:</span>
-            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
+            <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filepath</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
             <span class="n">col_names</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">values</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
             <span class="n">longitude</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">col_names</span>
             <span class="n">latitude</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">col_names</span>
@@ -12401,7 +12401,7 @@ when toggled off.</p>
                     <span class="n">output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                 <span class="k">elif</span> <span class="n">provider</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;xyz&quot;</span><span class="p">):</span>
                     <span class="n">name</span> <span class="o">=</span> <span class="n">provider</span><span class="p">[</span><span class="mi">4</span><span class="p">:]</span>
-                    <span class="n">xyz_provider</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="n">name</span><span class="p">]</span>
+                    <span class="n">xyz_provider</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">flatten</span><span class="p">()[</span><span class="n">name</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                     <span class="n">url</span> <span class="o">=</span> <span class="n">xyz_provider</span><span class="o">.</span><span class="n">build_url</span><span class="p">()</span>
                     <span class="n">attribution</span> <span class="o">=</span> <span class="n">xyz_provider</span><span class="o">.</span><span class="n">attribution</span>
                     <span class="k">if</span> <span class="n">xyz_provider</span><span class="o">.</span><span class="n">requires_token</span><span class="p">():</span>
@@ -15988,7 +15988,7 @@ when toggled off.</p>
     <span class="p">)</span>
 
     <span class="n">region</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Dropdown</span><span class="p">(</span>
-        <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_vector_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
+        <span class="n">options</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">ee_vector_layers</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
         <span class="n">value</span><span class="o">=</span><span class="s2">&quot;User-drawn ROI&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Region:&quot;</span><span class="p">,</span>
         <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="n">widget_width</span><span class="p">,</span> <span class="n">padding</span><span class="o">=</span><span class="n">padding</span><span class="p">),</span>
@@ -16154,18 +16154,18 @@ when toggled off.</p>
 
                 <span class="n">palette</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmap_colors</span><span class="p">)</span>
 
-                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
+                <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                         <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;60px&quot;</span><span class="p">)</span>
                     <span class="p">)</span>
 
                 <span class="k">if</span> <span class="p">(</span><span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">))</span> <span class="ow">or</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                        <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                        <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                     <span class="p">)</span>
-                    <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+                    <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
-                <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span>
+                <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="k">with</span> <span class="n">colorbar_output</span><span class="p">:</span>
                     <span class="n">colorbar_output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                     <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -16239,18 +16239,18 @@ when toggled off.</p>
 
             <span class="n">palette</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">cmap_colors</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>
+            <span class="k">if</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span> <span class="o">=</span> <span class="n">ipywidgets</span><span class="o">.</span><span class="n">Output</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                     <span class="n">layout</span><span class="o">=</span><span class="n">ipywidgets</span><span class="o">.</span><span class="n">Layout</span><span class="p">(</span><span class="n">height</span><span class="o">=</span><span class="s2">&quot;60px&quot;</span><span class="p">)</span>
                 <span class="p">)</span>
 
-            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>
-                    <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>
+            <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="n">ipyleaflet</span><span class="o">.</span><span class="n">WidgetControl</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                    <span class="n">widget</span><span class="o">=</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span><span class="p">,</span> <span class="n">position</span><span class="o">=</span><span class="s2">&quot;bottomright&quot;</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="p">)</span>
-                <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
+                <span class="n">m</span><span class="o">.</span><span class="n">add_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
-            <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span>
+            <span class="n">colorbar_output</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_widget</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="k">with</span> <span class="n">colorbar_output</span><span class="p">:</span>
                 <span class="n">colorbar_output</span><span class="o">.</span><span class="n">outputs</span> <span class="o">=</span> <span class="p">()</span>
                 <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
@@ -16533,8 +16533,8 @@ when toggled off.</p>
         <span class="n">speed</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="mi">1</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
     <span class="n">reset_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span><span class="n">reset_btn_click</span><span class="p">)</span>
 
@@ -16554,8 +16554,8 @@ when toggled off.</p>
         <span class="n">toolbar_widget</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="s2">&quot;_colorbar_ctrl&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">remove_control</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">_colorbar_ctrl</span> <span class="o">=</span> <span class="kc">None</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
@@ -16566,13 +16566,13 @@ when toggled off.</p>
     <span class="k">def</span><span class="w"> </span><span class="nf">collection_changed</span><span class="p">(</span><span class="n">change</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
             <span class="n">selected</span> <span class="o">=</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;owner&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value</span>
-            <span class="k">if</span> <span class="n">selected</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">selected</span> <span class="ow">in</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="n">prebuilt_options</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="n">labels</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
                 <span class="n">region</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="kc">None</span>
 
-                <span class="n">ee_object</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>
-                <span class="n">vis_params</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;vis_params&quot;</span><span class="p">]</span>
+                <span class="n">ee_object</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;ee_object&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                <span class="n">vis_params</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">ee_layers</span><span class="p">[</span><span class="n">selected</span><span class="p">][</span><span class="s2">&quot;vis_params&quot;</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">):</span>
                     <span class="n">palette_vbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
                         <span class="n">ipywidgets</span><span class="o">.</span><span class="n">HBox</span><span class="p">([</span><span class="n">classes</span><span class="p">,</span> <span class="n">colormap</span><span class="p">]),</span>
@@ -16585,16 +16585,16 @@ when toggled off.</p>
                 <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ee_object</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">):</span>
                     <span class="n">first</span> <span class="o">=</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">(</span><span class="n">ee_object</span><span class="o">.</span><span class="n">first</span><span class="p">())</span>
                     <span class="n">band_names</span> <span class="o">=</span> <span class="n">first</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
-                    <span class="n">band_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">band_names</span><span class="p">)</span>
+                    <span class="n">band_count</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">band_names</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
 
                     <span class="k">if</span> <span class="n">band_count</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
                         <span class="n">band1_dropdown</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">band_names</span>
                         <span class="n">band2_dropdown</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">band_names</span>
                         <span class="n">band3_dropdown</span><span class="o">.</span><span class="n">options</span> <span class="o">=</span> <span class="n">band_names</span>
 
-                        <span class="n">band1_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">band_names</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                        <span class="n">band2_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">band_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                        <span class="n">band3_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">band_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                        <span class="n">band1_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">band_names</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
+                        <span class="n">band2_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">band_names</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
+                        <span class="n">band3_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">band_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
 
                         <span class="n">palette_vbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
                         <span class="n">bands_hbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[</span>
@@ -16683,14 +16683,14 @@ when toggled off.</p>
                     <span class="n">selected</span> <span class="o">==</span> <span class="s2">&quot;Landsat TM-ETM-OLI Surface Reflectance&quot;</span>
                     <span class="ow">or</span> <span class="n">selected</span> <span class="o">==</span> <span class="s2">&quot;Sentinel-2 Surface Relectance&quot;</span>
                 <span class="p">):</span>
-                    <span class="n">band1_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-                    <span class="n">band2_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">band3_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">band1_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[bad-index, unbound-name]</span>
+                    <span class="n">band2_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[bad-index]</span>
+                    <span class="n">band3_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[bad-index]</span>
                     <span class="n">palette_vbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
                 <span class="k">elif</span> <span class="n">selected</span> <span class="o">==</span> <span class="s2">&quot;USDA NAIP Imagery&quot;</span><span class="p">:</span>
-                    <span class="n">band1_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
-                    <span class="n">band2_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-                    <span class="n">band3_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+                    <span class="n">band1_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[bad-index, unbound-name]</span>
+                    <span class="n">band2_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[bad-index]</span>
+                    <span class="n">band3_dropdown</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="n">bandnames</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[bad-index]</span>
                     <span class="n">palette_vbox</span><span class="o">.</span><span class="n">children</span> <span class="o">=</span> <span class="p">[]</span>
 
                 <span class="n">labels</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="s2">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
@@ -17770,8 +17770,8 @@ when toggled off.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">close_btn_click</span><span class="p">(</span><span class="n">change</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">change</span><span class="p">[</span><span class="s2">&quot;new&quot;</span><span class="p">]:</span>
-            <span class="k">assert</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span>  <span class="c1"># For pytype.</span>
-            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+            <span class="k">assert</span> <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span>  <span class="c1"># For pytype.  # pyrefly: ignore[missing-attribute]</span>
+            <span class="n">m</span><span class="o">.</span><span class="n">tool_control</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
 
     <span class="n">close_btn</span><span class="o">.</span><span class="n">on_click</span><span class="p">(</span>
         <span class="c1"># pytype: disable=attribute-error</span>

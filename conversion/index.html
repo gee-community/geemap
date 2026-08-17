@@ -7518,7 +7518,7 @@
             <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.map(function(&quot;</span><span class="p">)</span>
             <span class="ow">and</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
         <span class="p">):</span>
-            <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
                 <span class="n">line</span> <span class="o">+</span> <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
             <span class="p">)</span>  <span class="c1"># pytype: disable=unsupported-operands</span>
 
@@ -7532,7 +7532,7 @@
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">bracket_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;{&quot;</span><span class="p">)</span>
                 <span class="n">matching_line_index</span><span class="p">,</span> <span class="n">matching_char_index</span> <span class="o">=</span> <span class="n">find_matching_bracket</span><span class="p">(</span>
-                    <span class="n">input_lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span>
+                    <span class="n">input_lines</span><span class="p">,</span> <span class="n">index</span><span class="p">,</span> <span class="n">bracket_index</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
                 <span class="p">)</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
 
                 <span class="n">func_start_index</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;function&quot;</span><span class="p">)</span>
@@ -7557,7 +7557,7 @@
                         <span class="n">current_num_of_nested_funcs</span> <span class="o">+=</span> <span class="mi">1</span>
                     <span class="k">if</span> <span class="s2">&quot;}&quot;</span> <span class="ow">in</span> <span class="n">tmp_line</span><span class="p">:</span>
                         <span class="n">current_num_of_nested_funcs</span> <span class="o">-=</span> <span class="mi">1</span>
-                    <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">input_lines</span><span class="p">[</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="n">sub_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
                         <span class="s2">&quot;&quot;</span>  <span class="c1"># pytype: disable=unsupported-operands</span>
                     <span class="p">)</span>
 
@@ -7578,7 +7578,7 @@
                     <span class="n">header_line</span> <span class="o">=</span> <span class="n">header_line</span> <span class="o">+</span> <span class="n">footer_line</span>
                     <span class="n">footer_line</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
 
-                <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">input_lines</span><span class="p">[</span><span class="n">matching_line_index</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
                     <span class="n">footer_line</span>  <span class="c1"># pytype: disable=unsupported-operands</span>
                 <span class="p">)</span>
 
@@ -8716,7 +8716,7 @@
 
     <span class="n">files</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">js_dir</span><span class="o">.</span><span class="n">rglob</span><span class="p">(</span><span class="s2">&quot;*.js&quot;</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">out_dir</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">js_dir</span>
+        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">js_dir</span>  <span class="c1"># pyrefly: ignore[bad-assignment]</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">pathlib</span><span class="o">.</span><span class="n">Path</span><span class="p">)</span>
         <span class="n">out_dir</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">parent</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">exist_ok</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
@@ -10372,7 +10372,7 @@
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">in_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_geemap.py&quot;</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">out_file</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">in_dir</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
         <span class="n">js_to_python</span><span class="p">(</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
-            <span class="n">in_file</span><span class="p">,</span>
+            <span class="n">in_file</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
             <span class="n">out_file</span><span class="p">,</span>
             <span class="n">use_qgis</span><span class="p">,</span>
             <span class="n">github_repo</span><span class="p">,</span>
@@ -10611,7 +10611,7 @@
     <span class="n">in_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">in_file</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">template_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">template_file</span> <span class="o">=</span> <span class="n">get_nb_template</span><span class="p">()</span>
+        <span class="n">template_file</span> <span class="o">=</span> <span class="n">get_nb_template</span><span class="p">()</span>  <span class="c1"># pyrefly: ignore[bad-assignment]</span>
 
     <span class="k">if</span> <span class="n">out_file</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">out_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">in_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;.ipynb&quot;</span>
@@ -10625,10 +10625,10 @@
         <span class="n">out_py_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">out_file</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;_tmp.py&quot;</span>
 
     <span class="n">content</span> <span class="o">=</span> <span class="n">remove_qgis_import</span><span class="p">(</span><span class="n">in_file</span><span class="p">,</span> <span class="n">Map</span><span class="o">=</span><span class="n">Map</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Map&quot;</span><span class="p">:</span>
-        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="n">template_header</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
-    <span class="n">footer</span> <span class="o">=</span> <span class="n">template_footer</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">content</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Map&quot;</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
+        <span class="n">content</span> <span class="o">=</span> <span class="n">content</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">template_header</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
+    <span class="n">footer</span> <span class="o">=</span> <span class="n">template_footer</span><span class="p">(</span><span class="n">template_file</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
 
     <span class="k">if</span> <span class="p">(</span><span class="n">github_username</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">github_repo</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
         <span class="n">out_py_path</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">out_file</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>

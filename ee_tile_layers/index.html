@@ -7548,7 +7548,7 @@
         <span class="p">)</span>
 
         <span class="n">stats</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">select</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="o">.</span><span class="n">reduceRegion</span><span class="p">(</span>
                 <span class="n">reducer</span><span class="o">=</span><span class="n">stat_reducer</span><span class="p">,</span>
                 <span class="n">geometry</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span>
@@ -7593,10 +7593,10 @@
 <span class="sd">        Returns:</span>
 <span class="sd">            The minimum and maximum values to clip to.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+        <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-assignment, missing-attribute]</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_vis_stats</span><span class="p">(</span>
-                <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span>
+                <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
             <span class="p">)</span>
         <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
@@ -7994,10 +7994,10 @@
 <span class="sd">    Returns:</span>
 <span class="sd">        The minimum and maximum values to clip to.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>
+    <span class="n">bands</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ee_object</span><span class="o">.</span><span class="n">bandNames</span><span class="p">()</span> <span class="k">if</span> <span class="n">bands</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">bands</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-assignment, missing-attribute]</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">min_val</span><span class="p">,</span> <span class="n">max_val</span><span class="p">,</span> <span class="n">std</span><span class="p">,</span> <span class="n">mean</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calculate_vis_stats</span><span class="p">(</span>
-            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span>
+            <span class="n">bounds</span><span class="o">=</span><span class="n">bounds</span><span class="p">,</span> <span class="n">bands</span><span class="o">=</span><span class="n">bands</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
         <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
