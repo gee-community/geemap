@@ -95,8 +95,11 @@ def get_community_data_list() -> list[str]:
 
     From https://github.com/samapriya/awesome-gee-community-datasets/blob/master/community_datasets.json
     """
-    collections = common.search_ee_data(".*", regex=True, source="community")
-    return [collection.get("id", None) for collection in collections]
+    try:
+        collections = common.search_ee_data(".*", regex=True, source="community")
+        return [collection.get("id", None) for collection in collections]
+    except Exception:
+        return []
 
 
 def get_ee_stac_list() -> list[str]:
@@ -108,9 +111,12 @@ def get_ee_stac_list() -> list[str]:
     stac_url = "https://raw.githubusercontent.com/samapriya/Earth-Engine-Datasets-List/master/gee_catalog.json"
 
     datasets = []
-    with urllib.request.urlopen(stac_url) as url:
-        data = json.loads(url.read().decode())
-        datasets = [item["id"] for item in data]
+    try:
+        with urllib.request.urlopen(stac_url) as url:
+            data = json.loads(url.read().decode())
+            datasets = [item["id"] for item in data]
+    except Exception:
+        pass
 
     return datasets
 
