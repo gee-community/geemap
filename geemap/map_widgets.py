@@ -172,19 +172,19 @@ class Colorbar(ipywidgets.Output):
 
         vmin = vis_params.get("min", kwargs.pop("vmin", 0))
         try:
-            vmin = float(vmin)
+            vmin = float(vmin)  # pyrefly: ignore[bad-argument-type]
         except ValueError as err:
             raise ValueError("The provided min value must be scalar type.")
 
         vmax = vis_params.get("max", kwargs.pop("vmax", 1))
         try:
-            vmax = float(vmax)
+            vmax = float(vmax)  # pyrefly: ignore[bad-argument-type]
         except ValueError as err:
             raise ValueError("The provided max value must be scalar type.")
 
         alpha = vis_params.get("opacity", kwargs.pop("alpha", 1))
         try:
-            alpha = float(alpha)
+            alpha = float(alpha)  # pyrefly: ignore[bad-argument-type]
         except ValueError as err:
             raise ValueError("opacity or alpha value must be scalar type.")
 
@@ -193,9 +193,9 @@ class Colorbar(ipywidgets.Output):
                 coreutils.check_cmap(vis_params["palette"])
             )
             if discrete:
-                cmap = matplotlib.colors.ListedColormap(hexcodes)
-                linspace = numpy.linspace(vmin, vmax, cmap.N + 1)
-                norm = matplotlib.colors.BoundaryNorm(linspace, cmap.N)
+                cmap = matplotlib.colors.ListedColormap(hexcodes)  # pyrefly: ignore[bad-assignment]
+                linspace = numpy.linspace(vmin, vmax, cmap.N + 1)  # pyrefly: ignore[missing-attribute]
+                norm = matplotlib.colors.BoundaryNorm(linspace, cmap.N)  # pyrefly: ignore[missing-attribute]
             else:
                 cmap = matplotlib.colors.LinearSegmentedColormap.from_list(
                     "custom", hexcodes, N=256
@@ -355,13 +355,13 @@ class Legend(anywidget.AnyWidget):
         allowed_builtin_legends = builtin_legends.keys()
         if builtin_legend is not None:
             builtin_legend_allowed = self._check_if_allowed(
-                builtin_legend, "builtin legend", allowed_builtin_legends
+                builtin_legend, "builtin legend", allowed_builtin_legends  # pyrefly: ignore[bad-argument-type]
             )  # pytype: disable=wrong-arg-types
             if builtin_legend_allowed:
-                legend_dict = builtin_legends[builtin_legend]
-                self.legend_keys = list(legend_dict.keys())
+                legend_dict = builtin_legends[builtin_legend]  # pyrefly: ignore[bad-assignment]
+                self.legend_keys = list(legend_dict.keys())  # pyrefly: ignore[missing-attribute]
                 self.legend_colors = list(
-                    map(self._normalize_color_to_hex, legend_dict.values())
+                    map(self._normalize_color_to_hex, legend_dict.values())  # pyrefly: ignore[missing-attribute]
                 )
 
         self._check_if_allowed(position, "position", self.ALLOWED_POSITIONS)
@@ -1071,7 +1071,7 @@ class LayerEditor(anywidget.AnyWidget):
 
     def _calculate_field_values(self, message: dict[str, Any]) -> dict[str, Any]:
         field = message.get("field")
-        options = self._ee_object.aggregate_array(field).getInfo()
+        options = self._ee_object.aggregate_array(field).getInfo()  # pyrefly: ignore[bad-argument-type]
         if options:
             options = list(set(options))
             options.sort()
@@ -1133,7 +1133,7 @@ class LayerEditor(anywidget.AnyWidget):
                 ]
             )
             field = state.get("field")
-            arr = self._ee_object.aggregate_array(field).distinct().sort()
+            arr = self._ee_object.aggregate_array(field).distinct().sort()  # pyrefly: ignore[bad-argument-type]
             fc = self._ee_object.map(
                 lambda f: f.set({"styleIndex": arr.indexOf(f.get(field))})
             )
@@ -1271,8 +1271,8 @@ class SearchBar(anywidget.AnyWidget):
 
     @traitlets.observe("location_model")
     def _observe_location_model(self, change: dict[str, Any]) -> None:
-        old = json.loads(change.get("old"))
-        new = json.loads(change.get("new"))
+        old = json.loads(change.get("old"))  # pyrefly: ignore[bad-argument-type]
+        new = json.loads(change.get("new"))  # pyrefly: ignore[bad-argument-type]
         if new["search"] != old["search"]:
             if new["search"]:
                 if common.latlon_from_text(new["search"]):
@@ -1297,8 +1297,8 @@ class SearchBar(anywidget.AnyWidget):
 
     @traitlets.observe("dataset_model")
     def _observe_dataset_model(self, change: dict[str, Any]) -> None:
-        old = json.loads(change.get("old"))
-        new = json.loads(change.get("new"))
+        old = json.loads(change.get("old"))  # pyrefly: ignore[bad-argument-type]
+        new = json.loads(change.get("new"))  # pyrefly: ignore[bad-argument-type]
         if new["search"] != old["search"]:
             if new["search"]:
                 self._search_dataset(new["search"])

@@ -255,7 +255,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
             line.strip().endswith(".map(function(")
             and input_lines[index + 1].strip().replace(" ", "").endswith("{")
         ):
-            input_lines[index + 1] = (
+            input_lines[index + 1] = (  # pyrefly: ignore[unsupported-operation]
                 line + input_lines[index + 1]
             )  # pytype: disable=unsupported-operands
 
@@ -269,7 +269,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
             try:
                 bracket_index = line.index("{")
                 matching_line_index, matching_char_index = find_matching_bracket(
-                    input_lines, index, bracket_index
+                    input_lines, index, bracket_index  # pyrefly: ignore[bad-argument-type]
                 )  # pytype: disable=wrong-arg-types
 
                 func_start_index = line.index("function")
@@ -294,7 +294,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                         current_num_of_nested_funcs += 1
                     if "}" in tmp_line:
                         current_num_of_nested_funcs -= 1
-                    input_lines[index + 1 + sub_index] = (
+                    input_lines[index + 1 + sub_index] = (  # pyrefly: ignore[unsupported-operation]
                         ""  # pytype: disable=unsupported-operands
                     )
 
@@ -315,7 +315,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                     header_line = header_line + footer_line
                     footer_line = ""
 
-                input_lines[matching_line_index] = (
+                input_lines[matching_line_index] = (  # pyrefly: ignore[unsupported-operation]
                     footer_line  # pytype: disable=unsupported-operands
                 )
 
@@ -858,7 +858,7 @@ def js_to_python_dir(
         out_file = os.path.splitext(in_file)[0] + "_geemap.py"
         out_file = out_file.replace(in_dir, out_dir)
         js_to_python(  # pytype: disable=wrong-arg-types
-            in_file,
+            in_file,  # pyrefly: ignore[bad-argument-type]
             out_file,
             use_qgis,
             github_repo,
@@ -911,7 +911,7 @@ def get_js_examples(out_dir: str | None = None) -> str:
 
     files = list(js_dir.rglob("*.js"))
     if out_dir is None:
-        out_dir = js_dir
+        out_dir = js_dir  # pyrefly: ignore[bad-assignment]
     else:
         assert isinstance(out_dir, pathlib.Path)
         out_dir.mkdir(parent=True, exist_ok=True)
@@ -1025,7 +1025,7 @@ def py_to_ipynb(
     in_file = os.path.abspath(in_file)
 
     if template_file is None:
-        template_file = get_nb_template()
+        template_file = get_nb_template()  # pyrefly: ignore[bad-assignment]
 
     if out_file is None:
         out_file = os.path.splitext(in_file)[0] + ".ipynb"
@@ -1039,10 +1039,10 @@ def py_to_ipynb(
         out_py_file = os.path.splitext(out_file)[0] + "_tmp.py"
 
     content = remove_qgis_import(in_file, Map=Map)
-    if content[-1].strip() == "Map":
-        content = content[:-1]
-    header = template_header(template_file)
-    footer = template_footer(template_file)
+    if content[-1].strip() == "Map":  # pyrefly: ignore[unsupported-operation]
+        content = content[:-1]  # pyrefly: ignore[unsupported-operation]
+    header = template_header(template_file)  # pyrefly: ignore[bad-argument-type]
+    footer = template_footer(template_file)  # pyrefly: ignore[bad-argument-type]
 
     if (github_username is not None) and (github_repo is not None):
         out_py_path = str(out_file).split("/")

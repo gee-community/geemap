@@ -327,7 +327,7 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
             timeout=3,
         )
 
-        if response.status_code == requests.codes.ok:
+        if response.status_code == requests.codes.ok:  # pyrefly: ignore[missing-attribute]
             json = response.json()
             map_name = map_type.capitalize()
             super().__init__(
@@ -427,7 +427,7 @@ def xyz_to_leaflet() -> dict[str, Any]:
         for tile_provider, tile_info in tile_dict.items():
             del tile_provider  # Unused.
             tile_info["type"] = tile_type
-            tile_info["max_zoom"] = 30
+            tile_info["max_zoom"] = 30  # pyrefly: ignore[unsupported-operation]
             leaflet_dict[tile_info["name"]] = tile_info
 
     # Add xyzservices.provider tiles.
@@ -464,12 +464,12 @@ def xyz_to_folium() -> dict[str, Any]:
 
     for key, tile in custom_tiles["wms"].items():
         folium_dict[key] = folium.WmsTileLayer(
-            url=tile["url"],
-            layers=tile["layers"],
-            name=tile["name"],
-            attr=tile["attribution"],
-            fmt=tile["format"],
-            transparent=tile["transparent"],
+            url=tile["url"],  # pyrefly: ignore[bad-argument-type]
+            layers=tile["layers"],  # pyrefly: ignore[bad-argument-type]
+            name=tile["name"],  # pyrefly: ignore[bad-argument-type]
+            attr=tile["attribution"],  # pyrefly: ignore[bad-argument-type]
+            fmt=tile["format"],  # pyrefly: ignore[bad-argument-type]
+            transparent=tile["transparent"],  # pyrefly: ignore[bad-argument-type]
             overlay=True,
             control=True,
             max_zoom=30,

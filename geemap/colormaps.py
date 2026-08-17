@@ -249,7 +249,7 @@ def get_palettes() -> box.Box:
             name = "n" + str(i).zfill(2)
             colors = get_palette(cmap_name, i)
             color_dict[name] = colors
-        _palette_dict[cmap_name] = color_dict
+        _palette_dict[cmap_name] = color_dict  # pyrefly: ignore[bad-assignment]
 
     return box.Box(_palette_dict, frozen_box=True)
 
