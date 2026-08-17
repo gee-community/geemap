@@ -15386,7 +15386,7 @@ def pmtiles_metadata(input_file: str) -> dict[str, str | int | list[str]]:
     if not urllib.parse.urlparse(input_file).path.endswith(".pmtiles"):
         raise ValueError("Input file must be a .pmtiles file.")
 
-    header = pmtiles_header(input_file)  # pytype: disable=name-error  # pyrefly: ignore[unknown-name]
+    header = pmtiles_header(input_file)  # pyrefly: ignore[unknown-name]
     metadata_offset = header["metadata_offset"]
     metadata_length = header["metadata_length"]
 
