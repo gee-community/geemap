@@ -10,7 +10,6 @@ dependencies:
     - geemap>=0.20.0
     - geopandas
     - imageio
-    - ipyvtklink
     - keplergl
     - laspy
     - leafmap>=0.18.0

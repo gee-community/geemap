@@ -30,9 +30,9 @@ class Report(scooby.Report):
 
         scooby.Report.__init__(
             self,
-            additional=additional,
-            core=core,
-            optional=optional,
+            additional=additional,  # pyrefly: ignore[bad-argument-type]
+            core=core,  # pyrefly: ignore[bad-argument-type]
+            optional=optional,  # pyrefly: ignore[bad-argument-type]
             ncol=ncol,
             text_width=text_width,
             sort=sort,

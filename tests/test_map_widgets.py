@@ -383,7 +383,7 @@ class TestInspector(unittest.TestCase):
     def setUp(self):
         super().setUp()
         # ee.Reducer is dynamically initialized (can't use @patch.object).
-        ee.Reducer = fake_ee.Reducer
+        ee.Reducer = fake_ee.Reducer  # pyrefly: ignore[bad-assignment]
 
         self.map_fake = fake_map.FakeMap()
         self.inspector = map_widgets.Inspector(self.map_fake)

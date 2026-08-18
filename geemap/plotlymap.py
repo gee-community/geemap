@@ -362,7 +362,7 @@ class Map(go.FigureWidget):
             self.layout.mapbox.layers[index].visible = show
         elif name in self.get_data_layers():
             index = self.find_layer_index(name)
-            self.data[index].visible = show
+            self.data[index].visible = show  # pyrefly: ignore[bad-index]
         else:
             print(f"Layer {name} not found.")
 
@@ -379,7 +379,7 @@ class Map(go.FigureWidget):
             self.layout.mapbox.layers[index].opacity = opacity
         elif name in self.get_data_layers():
             index = self.find_layer_index(name)
-            layer = self.data[index]
+            layer = self.data[index]  # pyrefly: ignore[bad-index]
             if hasattr(layer, "opacity"):
                 layer.opacity = opacity
             elif hasattr(layer, "marker"):
