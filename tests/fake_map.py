@@ -128,7 +128,7 @@ class FakeMap:
         widget_args=None,
         **kwargs,
     ):
-        del (
+        del (  # pyrefly: ignore[unsupported-delete]
             title,
             keys,
             colors,
@@ -156,7 +156,7 @@ class FakeMap:
         max_width=None,
         **kwargs,
     ):
-        del (
+        del (  # pyrefly: ignore[unsupported-delete]
             vis_params,
             cmap,
             discrete,

@@ -34,6 +34,8 @@ from ipyleaflet import LayerException
 from jinja2 import Template
 from IPython.display import HTML, Javascript, display
 
+from .geemap import Map
+
 try:
     import vertexai
     import google.generativeai as genai

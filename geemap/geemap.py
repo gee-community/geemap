@@ -520,7 +520,7 @@ class Map(core.Map):
             elif isinstance(basemap, str) and basemap.startswith(
                 ("http://", "https://")
             ):
-                self.add_tile_layer(url=basemap, shown=show, **kwargs)
+                self.add_tile_layer(url=basemap, shown=show, **kwargs)  # pyrefly: ignore[bad-argument-type]
             else:
                 print(
                     "Basemap can only be one of the following:\n  {}".format(
@@ -603,7 +603,7 @@ class Map(core.Map):
             opacity: The opacity value to set. Defaults to 1.0.
         """
         layer = self.find_layer(name)
-        layer.opacity = opacity
+        layer.opacity = opacity  # pyrefly: ignore[missing-attribute]
 
     def add_tile_layer(
         self,
@@ -1391,7 +1391,7 @@ class Map(core.Map):
             latlon = kwargs.get("coordinates")
             if kwargs.get("type") == "click":
                 coordinates.append(latlon)
-                geom = ee.Geometry.Point(latlon[1], latlon[0])
+                geom = ee.Geometry.Point(latlon[1], latlon[0])  # pyrefly: ignore[unsupported-operation]
                 feature = ee.Feature(geom)
                 self.ee_markers.append(feature)
                 self.last_click = latlon
@@ -1579,14 +1579,14 @@ class Map(core.Map):
                     markers.append(ipyleaflet.Marker(location=latlon))
                     marker_cluster.markers = markers
                     self.default_style = {"cursor": "wait"}
-                    xy = ee.Geometry.Point(latlon[::-1])
+                    xy = ee.Geometry.Point(latlon[::-1])  # pyrefly: ignore[unsupported-operation]
                     dict_values = (
                         ee_object.sample(xy, scale=sample_scale)
                         .first()
                         .toDictionary()
                         .getInfo()
                     )
-                    band_values = list(dict_values.values())
+                    band_values = list(dict_values.values())  # pyrefly: ignore[missing-attribute]
                     self.plot(
                         band_names,
                         band_values,
@@ -2476,7 +2476,7 @@ class Map(core.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(source, **array_args)
+            source = array_to_image(source, **array_args)  # pyrefly: ignore[bad-assignment]
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -2552,7 +2552,7 @@ class Map(core.Map):
                 vmax=vmax,
                 nodata=nodata,
                 attribution=attribution,
-                layer_name=layer_name,
+                layer_name=layer_name,  # pyrefly: ignore[bad-argument-type]
                 **kwargs,
             )
         else:
@@ -3554,7 +3554,7 @@ class Map(core.Map):
             )
 
             if labels is not None:
-                if len(labels) != int(ee_object.size().getInfo()):
+                if len(labels) != int(ee_object.size().getInfo()):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of bands in the image."
                     )
@@ -3569,7 +3569,7 @@ class Map(core.Map):
                     ee_object = ee_object.map(lambda img: img.clipToCollection(region))
 
             if labels is not None:
-                if len(labels) != int(ee_object.size().getInfo()):
+                if len(labels) != int(ee_object.size().getInfo()):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of images in the ImageCollection."
                     )
@@ -3590,13 +3590,13 @@ class Map(core.Map):
 
         slider = ipywidgets.IntSlider(
             min=1,
-            max=len(labels),
+            max=len(labels),  # pyrefly: ignore[bad-argument-type]
             readout=False,
             continuous_update=False,
             layout=ipywidgets.Layout(width=slider_length),
         )
         label = ipywidgets.Label(
-            value=labels[0], layout=ipywidgets.Layout(padding="0px 5px 0px 5px")
+            value=labels[0], layout=ipywidgets.Layout(padding="0px 5px 0px 5px")  # pyrefly: ignore[unsupported-operation]
         )
 
         play_btn = ipywidgets.Button(
@@ -3631,7 +3631,7 @@ class Map(core.Map):
 
             def work(slider):
                 while play_chk.value:
-                    if slider.value < len(labels):
+                    if slider.value < len(labels):  # pyrefly: ignore[bad-argument-type]
                         slider.value += 1
                     else:
                         slider.value = 1
@@ -3651,7 +3651,7 @@ class Map(core.Map):
             del change  # Unused.
             self.default_style = {"cursor": "wait"}
             index = slider.value - 1
-            label.value = labels[index]
+            label.value = labels[index]  # pyrefly: ignore[unsupported-operation]
             image = ee.Image(ee_object.toList(ee_object.size()).get(index))
             if layer_name not in self.ee_layers:
                 self.addLayer(ee_object.toBands(), {}, layer_name, False, opacity)
@@ -3835,14 +3835,14 @@ class Map(core.Map):
             items = None
 
         if color_column is not None and marker_colors is None:
-            if len(items) > len(color_options):
+            if len(items) > len(color_options):  # pyrefly: ignore[bad-argument-type]
                 raise ValueError(
                     f"The number of unique values in the color column {color_column} is greater than the number of available colors."
                 )
             else:
-                marker_colors = color_options[: len(items)]
+                marker_colors = color_options[: len(items)]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
-            if len(items) != len(marker_colors):
+            if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
                 raise ValueError(
                     f"The number of unique values in the color column {color_column} is not equal to the number of available colors."
                 )
@@ -3891,7 +3891,7 @@ class Map(core.Map):
                 markers = []
                 for index, point in enumerate(points):
                     if items is not None:
-                        marker_color = marker_colors[
+                        marker_color = marker_colors[  # pyrefly: ignore[unsupported-operation]
                             items.index(df[color_column][index])
                         ]
                         icon_name = icon_names[items.index(df[color_column][index])]
@@ -3933,7 +3933,7 @@ class Map(core.Map):
                 markers = []
                 for index, point in enumerate(points):
                     if items is not None:
-                        marker_color = marker_colors[
+                        marker_color = marker_colors[  # pyrefly: ignore[unsupported-operation]
                             items.index(df[color_column][index])
                         ]
                         icon_name = icon_names[items.index(df[color_column][index])]
@@ -3978,13 +3978,13 @@ class Map(core.Map):
                 )
                 markers.append(marker)
 
-        marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)
+        marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)  # pyrefly: ignore[unbound-name]
         self.add(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [coreutils.check_color(c) for c in marker_colors]
+            marker_colors = [coreutils.check_color(c) for c in marker_colors]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(), colors=marker_colors, keys=items
+                title=color_column.title(), colors=marker_colors, keys=items  # pyrefly: ignore[missing-attribute]
             )
 
         self.default_style = {"cursor": "default"}
@@ -4255,7 +4255,7 @@ class Map(core.Map):
 
         if provider.startswith("xyz"):
             name = provider[4:]
-            xyz_provider = xyz.flatten()[name]
+            xyz_provider = xyz.flatten()[name]  # pyrefly: ignore[missing-attribute]
             url = xyz_provider.build_url()
             attribution = xyz_provider.attribution
             if attribution.strip() == "":
@@ -4363,7 +4363,7 @@ class Map(core.Map):
         else:
             raise ValueError("data must be a DataFrame or an ee.FeatureCollection.")
 
-        if column not in df.columns:
+        if column not in df.columns:  # pyrefly: ignore[unbound-name]
             raise ValueError(f"column must be one of {', '.join(df.columns)}.")
         if x not in df.columns:
             raise ValueError(f"column must be one of {', '.join(df.columns)}.")
@@ -4536,7 +4536,7 @@ class Map(core.Map):
 
         params = {level_dimension: level_index}
         if level_dimension in coords:
-            ds = ds.isel(drop=True, **params)
+            ds = ds.isel(drop=True, **params)  # pyrefly: ignore[bad-argument-type]
 
         wind = Velocity(
             data=ds,
@@ -5228,7 +5228,7 @@ def get_basemap(name: str) -> ipyleaflet.TileLayer | ipyleaflet.WMSLayer:
                     format=basemap["format"],
                     transparent=basemap["transparent"],
                 )
-            return layer
+            return layer  # pyrefly: ignore[unbound-name]
 
         raise ValueError(
             "Basemap must be a string. Please choose from: "

@@ -144,26 +144,26 @@ def array_to_df(
         x_values = x_values.getInfo()  # pytype: disable=attribute-error
 
     if axis == 0:
-        y_values = np.transpose(y_values)
+        y_values = np.transpose(y_values)  # pyrefly: ignore[no-matching-overload]
 
     if x_values is None:
-        x_values = list(range(1, len(y_values[0]) + 1))
+        x_values = list(range(1, len(y_values[0]) + 1))  # pyrefly: ignore[bad-assignment, bad-index]
 
     data = {x_label: x_values}
 
-    if not isinstance(y_values[0], list):
-        y_values = [y_values]
+    if not isinstance(y_values[0], list):  # pyrefly: ignore[bad-index]
+        y_values = [y_values]  # pyrefly: ignore[bad-assignment]
 
     if y_labels is None:
         y_labels = [
-            f"y{str(i+1).zfill(len(str(len(y_values))))}" for i in range(len(y_values))
+            f"y{str(i+1).zfill(len(str(len(y_values))))}" for i in range(len(y_values))  # pyrefly: ignore[bad-argument-type]
         ]
 
-    if len(y_labels) != len(y_values):
+    if len(y_labels) != len(y_values):  # pyrefly: ignore[bad-argument-type]
         raise ValueError("The length of y_labels must match the length of y_values.")
 
     for i, series in enumerate(y_labels):
-        data[series] = y_values[i]
+        data[series] = y_values[i]  # pyrefly: ignore[bad-index]
 
     return pd.DataFrame(data, **kwargs)
 
@@ -598,7 +598,7 @@ class BarChart(BaseChartClass):
                 ylim_max = ylim_max + 0.2 * (ylim_max - ylim_min)
             # pytype: enable=attribute-error
 
-        return ylim_min, ylim_max
+        return ylim_min, ylim_max  # pyrefly: ignore[unbound-name]
 
     def plot_chart(self) -> None:
         """Plots the bar chart."""
@@ -704,7 +704,7 @@ class Feature_ByFeature(BarChart):
         super().__init__(features, default_labels, name, **kwargs)
         self.x_data, self.y_data = self.get_data(x_property, y_properties)
 
-    def get_data(
+    def get_data(  # pyrefly: ignore[bad-override]
         self, x_property: str, y_properties: list[str]
     ) -> tuple[list[Any], list[Any]]:
         """Returns the x and y data for the chart.
@@ -744,7 +744,7 @@ class Feature_ByProperty(BarChart):
         """
         default_labels = None
         super().__init__(
-            features, default_labels, name, **kwargs
+            features, default_labels, name, **kwargs  # pyrefly: ignore[bad-argument-type]
         )  # pytype: disable=wrong-arg-types
         if "labels" in kwargs:
             raise Exception("Please remove labels in kwargs and try again.")
@@ -752,7 +752,7 @@ class Feature_ByProperty(BarChart):
         self.labels = list(self.df[series_property])
         self.x_data, self.y_data = self.get_data(x_properties)
 
-    def get_data(
+    def get_data(  # pyrefly: ignore[bad-override]
         self, x_properties: list[str] | dict[str, str]
     ) -> tuple[list[Any], list[Any]]:
         """Returns the x and y data for the chart.
@@ -825,7 +825,7 @@ class Feature_Groups(BarChart):
 
         return new_column_names
 
-    def get_data(
+    def get_data(  # pyrefly: ignore[bad-override]
         self, x_property: str, new_column_names: list[str]
     ) -> tuple[list[Any], list[Any]]:
         """Returns the x and y data for the chart.
@@ -969,9 +969,9 @@ def feature_histogram(
 
     first = features.first()
     props = first.propertyNames().getInfo()
-    if property not in props:
+    if property not in props:  # pyrefly: ignore[not-iterable]
         raise Exception(
-            f"property {property} not found. Available properties: {', '.join(props)}"
+            f"property {property} not found. Available properties: {', '.join(props)}"  # pyrefly: ignore[no-matching-overload]
         )
 
     def nextPowerOf2(n) -> float:
@@ -1129,7 +1129,7 @@ def image_by_class(
         y_cols = class_labels
 
     fig = Chart(  # pytype: disable=wrong-arg-types
-        df_transposed, chart_type=chart_type, x_cols="label", y_cols=y_cols, **kwargs
+        df_transposed, chart_type=chart_type, x_cols="label", y_cols=y_cols, **kwargs  # pyrefly: ignore[bad-argument-type]
     )
     return fig
 
@@ -1164,7 +1164,7 @@ def image_by_region(
     )
     bands = image.bandNames().getInfo()
     df = common.ee_to_df(fc)[bands + [x_property]]
-    feature_by_feature(df, x_property, bands, **kwargs)
+    feature_by_feature(df, x_property, bands, **kwargs)  # pyrefly: ignore[bad-argument-type]
 
 
 def image_doy_series(
@@ -1276,7 +1276,7 @@ def image_doy_series(
     fig = Chart(  # pytype: disable=wrong-arg-types
         df,
         chart_type,
-        x_cols,
+        x_cols,  # pyrefly: ignore[bad-argument-type]
         y_cols,
         colors,
         title,
@@ -1406,7 +1406,7 @@ def image_doy_series_by_region(
     fig = Chart(  # pytype: disable=wrong-arg-types
         df,
         chart_type,
-        "doy",
+        "doy",  # pyrefly: ignore[bad-argument-type]
         y_cols,
         colors,
         title,
@@ -1521,7 +1521,7 @@ def doy_series_by_year(
     # For each (doy, year), reduce the values of the joined features.
     def reduce_features(doy_year):
         features = ee.FeatureCollection(ee.List(doy_year.get("matches")))
-        value = features.aggregate_array("value").reduce(same_day_reducer)
+        value = features.aggregate_array("value").reduce(same_day_reducer)  # pyrefly: ignore[bad-argument-type]
         return doy_year.set("value", value)
 
     reduced = joined.map(reduce_features)
@@ -1534,7 +1534,7 @@ def doy_series_by_year(
     return Chart(  # pytype: disable=wrong-arg-types
         df,
         chart_type,
-        x_cols,
+        x_cols,  # pyrefly: ignore[bad-argument-type]
         y_cols,
         colors,
         title,
@@ -1588,7 +1588,7 @@ def image_histogram(
     )
 
     histograms = {
-        band: histogram.get(band).getInfo() for band in image.bandNames().getInfo()
+        band: histogram.get(band).getInfo() for band in image.bandNames().getInfo()  # pyrefly: ignore[not-iterable]
     }
 
     # Create bqplot histograms for each band.
@@ -1633,8 +1633,8 @@ def image_histogram(
 
     # Create and combine histograms for each band.
     histograms_fig = []
-    for band, color, label in zip(histograms.keys(), band_colors, band_labels):
-        histograms_fig.append(create_histogram(histograms[band], color, label))
+    for band, color, label in zip(histograms.keys(), band_colors, band_labels):  # pyrefly: ignore[bad-argument-type]
+        histograms_fig.append(create_histogram(histograms[band], color, label))  # pyrefly: ignore[bad-argument-type]
 
     combined_fig = bq.Figure(
         marks=[fig.marks[0] for fig in histograms_fig],
@@ -1642,7 +1642,7 @@ def image_histogram(
         **kwargs,
     )
 
-    for fig, label in zip(histograms_fig, band_labels):
+    for fig, label in zip(histograms_fig, band_labels):  # pyrefly: ignore[bad-argument-type]
         fig.marks[0].labels = [label]
 
     combined_fig.legend_location = kwargs.get("legend_location", "top-right")
@@ -1677,7 +1677,7 @@ def image_regions(
         image, regions, stat_type=reducer, scale=scale, verbose=False, return_fc=True
     )
     bands = image.bandNames().getInfo()
-    fc = fc.select(bands + [series_property])
+    fc = fc.select(bands + [series_property])  # pyrefly: ignore[unsupported-operation]
     feature_by_property(fc, x_labels, series_property, **kwargs)
 
 
@@ -1734,7 +1734,7 @@ def image_series(
         stats = image.reduceRegion(reducer=reducer, geometry=region, scale=scale)
 
         results = {}
-        for band in band_names:
+        for band in band_names:  # pyrefly: ignore[not-iterable]
             results[band] = stats.get(band)
 
         if x_property == "system:time_start" or x_property == "system:time_end":

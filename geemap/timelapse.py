@@ -465,8 +465,8 @@ def add_text_to_gif(
     elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
         print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
         return
-    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
-        x, y = xy
+    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):  # pyrefly: ignore[bad-argument-type, not-iterable]
+        x, y = xy  # pyrefly: ignore[not-iterable]
         if (x > 0) and (x < W) and (y > 0) and (y < H):
             pass
         else:
@@ -475,8 +475,8 @@ def add_text_to_gif(
                 f"and y must be within [0, {H}]"
             )
             return
-    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
-        x, y = xy
+    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):  # pyrefly: ignore[bad-argument-type, not-iterable]
+        x, y = xy  # pyrefly: ignore[not-iterable]
         if ("%" in x) and ("%" in y):
             try:
                 x = int(float(x.replace("%", "")) / 100.0 * W)
@@ -519,7 +519,7 @@ def add_text_to_gif(
         for index, frame in enumerate(ImageSequence.Iterator(image)):
             frame = frame.convert("RGB")
             draw = ImageDraw.Draw(frame)
-            draw.text(xy, text[index], font=font, fill=color)
+            draw.text(xy, text[index], font=font, fill=color)  # pyrefly: ignore[bad-argument-type]
             if add_progress_bar:
                 draw.rectangle(progress_bar_shapes[index], fill=progress_bar_color)
             del draw
@@ -601,7 +601,7 @@ def add_image_to_gif(
     except Exception as e:
         print(e)
 
-    logo_raw_size = logo_raw_image.size
+    logo_raw_size = logo_raw_image.size  # pyrefly: ignore[missing-attribute]
 
     ratio = max(
         logo_raw_size[0] / image_size[0],
@@ -612,7 +612,7 @@ def add_image_to_gif(
         logo_raw_size[1], image_size[1]
     )
 
-    logo_image = logo_raw_image.convert("RGBA")
+    logo_image = logo_raw_image.convert("RGBA")  # pyrefly: ignore[missing-attribute]
     logo_image.thumbnail(image_size, Image.LANCZOS)
 
     gif_width, gif_height = gif.size
@@ -633,8 +633,8 @@ def add_image_to_gif(
     elif (xy is not None) and (not isinstance(xy, tuple)) and (len(xy) == 2):
         print("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
         return
-    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):
-        x, y = xy
+    elif all(isinstance(item, int) for item in xy) and (len(xy) == 2):  # pyrefly: ignore[bad-argument-type, not-iterable]
+        x, y = xy  # pyrefly: ignore[not-iterable]
         if (x > 0) and (x < gif_width) and (y > 0) and (y < gif_height):
             pass
         else:
@@ -643,8 +643,8 @@ def add_image_to_gif(
                 f"y must be within [0, {gif_height}]"
             )
             return
-    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):
-        x, y = xy
+    elif all(isinstance(item, str) for item in xy) and (len(xy) == 2):  # pyrefly: ignore[bad-argument-type, not-iterable]
+        x, y = xy  # pyrefly: ignore[not-iterable]
         if ("%" in x) and ("%" in y):
             try:
                 x = int(float(x.replace("%", "")) / 100.0 * gif_width)
@@ -815,7 +815,7 @@ def create_timeseries(
                     sub_col.reduce(reducer, parallel_scale).clip(region),
                 )
             )
-        return image.set(
+        return image.set(  # pyrefly: ignore[missing-attribute]
             {
                 "system:time_start": ee.Date(date).millis(),
                 "system:date": ee.Date(date).format(date_format),
@@ -1025,7 +1025,7 @@ def create_timelapse(
             image_min_value(img, region=region, scale=scale).getInfo().values()
         )
         max_value = max(
-            image_max_value(img, region=region, scale=scale).getInfo().values()
+            image_max_value(img, region=region, scale=scale).getInfo().values()  # pyrefly: ignore[missing-attribute]
         )
         vis_params = {"bands": bands, "min": min_value, "max": max_value}
 
@@ -1051,7 +1051,7 @@ def create_timelapse(
                 collection.first().select(0).projection().nominalScale().multiply(10)
             )
             vis_params["max"] = max(
-                image_max_value(img, region=region, scale=scale).getInfo().values()
+                image_max_value(img, region=region, scale=scale).getInfo().values()  # pyrefly: ignore[missing-attribute]
             )
         if palette is None and (len(bands) == 1) and ("palette" not in vis_params):
             vis_params["palette"] = colormaps.palettes.ndvi
@@ -1162,14 +1162,14 @@ def create_timelapse(
             None,
             colorbar_width,
             colorbar_height,
-            vis_params["min"],
-            vis_params["max"],
+            vis_params["min"],  # pyrefly: ignore[bad-argument-type]
+            vis_params["max"],  # pyrefly: ignore[bad-argument-type]
             vis_params["palette"],
             label=colorbar_label,
             label_size=colorbar_label_size,
             label_weight=colorbar_label_weight,
             tick_size=colorbar_tick_size,
-            bg_color=colorbar_bg_color,
+            bg_color=colorbar_bg_color,  # pyrefly: ignore[bad-argument-type]
             orientation=colorbar_orientation,
             dpi=colorbar_dpi,
             show_colorbar=False,
@@ -1180,7 +1180,7 @@ def create_timelapse(
         reduce_gif_size(out_gif)
 
     if isinstance(fading, bool):
-        fading = int(fading)
+        fading = int(fading)  # pyrefly: ignore[bad-assignment]
     if fading > 0:
         gif_fading(out_gif, out_gif, duration=fading, verbose=False)
 
@@ -1231,7 +1231,7 @@ def naip_timeseries(
                 )
         else:
             image = ee.Image(ee.ImageCollection(naip).mosaic())
-        return image.set(
+        return image.set(  # pyrefly: ignore[bad-return, unbound-name]
             {
                 "system:time_start": ee.Date(start_date).millis(),
                 "system:time_end": ee.Date(end_date).millis(),
@@ -1373,9 +1373,9 @@ def naip_timelapse(
         add_progress_bar,
         progress_bar_color,
         progress_bar_height,
-        loop=loop,
+        loop=loop,  # pyrefly: ignore[bad-argument-type]
         mp4=mp4,
-        fading=fading,
+        fading=fading,  # pyrefly: ignore[bad-argument-type]
         step=step,
     )
 
@@ -1526,7 +1526,7 @@ def sentinel1_timeseries(
     dates = date_sequence(start, end, frequency)
 
     # Load and filter Sentinel-1 collection.
-    col = ee.ImageCollection("COPERNICUS/S1_GRD").filterBounds(roi)
+    col = ee.ImageCollection("COPERNICUS/S1_GRD").filterBounds(roi)  # pyrefly: ignore[bad-argument-type]
 
     if orbit:
         orbit_upper = [o.upper() for o in orbit]
@@ -2587,7 +2587,7 @@ def modis_timeseries(
 
     collection = ee.ImageCollection(asset_id)
     if band_name is None:
-        band_name = collection.first().bandNames().getInfo()[0]
+        band_name = collection.first().bandNames().getInfo()[0]  # pyrefly: ignore[unsupported-operation]
     collection = collection.select(band_name)
     if roi is not None:
         if isinstance(roi, ee.Geometry):
@@ -2795,7 +2795,7 @@ def landsat_timelapse(
             os.path.join(
                 out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
             )
-            for i in range(count)
+            for i in range(count)  # pyrefly: ignore[bad-argument-type]
         ]
         get_image_collection_thumbnails(
             col,
@@ -3075,7 +3075,7 @@ def landsat_timelapse_legacy(
             os.path.join(
                 out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
             )
-            for i in range(count)
+            for i in range(count)  # pyrefly: ignore[bad-argument-type]
         ]
         get_image_collection_thumbnails(
             col,
@@ -3292,7 +3292,7 @@ def sentinel1_timelapse_legacy(
             os.path.join(
                 out_dir, f"{basename}_{str(i+1).zfill(int(len(str(count))))}.jpg"
             )
-            for i in range(count)
+            for i in range(count)  # pyrefly: ignore[bad-argument-type]
         ]
         get_image_collection_thumbnails(
             col,
@@ -5247,20 +5247,20 @@ def vector_to_gif(
     if vmax is None:
         vmax = values[-1]
 
-    options = range(vmin, vmax + step, step)
+    options = range(vmin, vmax + step, step)  # pyrefly: ignore[bad-argument-type]
 
     W = bbox[2] - bbox[0]
     H = bbox[3] - bbox[1]
 
     if xy is None:
         # Default text location is 5% width and 5% height of the image.
-        xy = int(0.05 * W), int(0.05 * H)
+        xy = int(0.05 * W), int(0.05 * H)  # pyrefly: ignore[bad-assignment]
     elif xy is not None and (not isinstance(xy, tuple)) and len(xy) == 2:
         raise Exception("xy must be a tuple, e.g., (10, 10), ('10%', '10%')")
 
     elif all(isinstance(item, int) for item in xy) and len(xy) == 2:
         x, y = xy
-        if x > 0 and x < W and y > 0 and y < H:
+        if x > 0 and x < W and y > 0 and y < H:  # pyrefly: ignore[unsupported-operation]
             pass
         else:
             print(
@@ -5282,8 +5282,8 @@ def vector_to_gif(
             "The specified xy is invalid. It must be formatted like this: (10, 10) or ('10%', '10%')"
         )
 
-    x = bbox[0] + x
-    y = bbox[1] + y
+    x = bbox[0] + x  # pyrefly: ignore[unbound-name]
+    y = bbox[1] + y  # pyrefly: ignore[unbound-name]
 
     for index, v in enumerate(options):
         if verbose:
@@ -5468,14 +5468,14 @@ def sentinel1_timelapse_with_samples(
         marker_colors = ["red", "blue", "green", "orange", "purple"][
             : len(sample_points)
         ]
-    elif sample_points is not None and len(marker_colors) < len(sample_points):
+    elif sample_points is not None and len(marker_colors) < len(sample_points):  # pyrefly: ignore[bad-argument-type]
         default_colors = ["red", "blue", "green", "orange", "purple"]
-        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
+        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])  # pyrefly: ignore[bad-argument-type, missing-attribute]
 
     # Adjust dimensions to avoid Earth Engine limits.
     # Calculate optimal dimensions based on ROI.
     if isinstance(roi, ee.Geometry):
-        roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+        roi_bounds = roi.bounds().getInfo()["coordinates"][0]  # pyrefly: ignore[unsupported-operation]
         min_lon = min([coord[0] for coord in roi_bounds])
         max_lon = max([coord[0] for coord in roi_bounds])
         min_lat = min([coord[1] for coord in roi_bounds])
@@ -5711,7 +5711,7 @@ def sentinel1_timelapse_with_samples(
                             "dates": datetimes,
                             "values": list(values),
                             "date_strings": list(dates),
-                            "color": marker_colors[i],
+                            "color": marker_colors[i],  # pyrefly: ignore[unsupported-operation]
                             "geometry": geometry,
                         }
 
@@ -6437,9 +6437,9 @@ def sentinel2_timelapse_with_samples(
         marker_colors = ["red", "blue", "green", "orange", "purple"][
             : len(sample_points)
         ]
-    elif sample_points is not None and len(marker_colors) < len(sample_points):
+    elif sample_points is not None and len(marker_colors) < len(sample_points):  # pyrefly: ignore[bad-argument-type]
         default_colors = ["red", "blue", "green", "orange", "purple"]
-        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
+        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])  # pyrefly: ignore[bad-argument-type, missing-attribute]
 
     # Set default sample bands if not provided.
     if sample_bands is None:
@@ -6465,7 +6465,7 @@ def sentinel2_timelapse_with_samples(
 
     # Adjust dimensions to avoid Earth Engine limits.
     if isinstance(roi, ee.Geometry):
-        roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+        roi_bounds = roi.bounds().getInfo()["coordinates"][0]  # pyrefly: ignore[unsupported-operation]
         min_lon = min([coord[0] for coord in roi_bounds])
         max_lon = max([coord[0] for coord in roi_bounds])
         min_lat = min([coord[1] for coord in roi_bounds])
@@ -6789,8 +6789,8 @@ def sentinel2_timelapse_with_samples(
                             # Color assignment for multi-band sampling.
                             if len(s2_sample_bands) > 1:
                                 base_color = (
-                                    marker_colors[i]
-                                    if i < len(marker_colors)
+                                    marker_colors[i]  # pyrefly: ignore[unsupported-operation]
+                                    if i < len(marker_colors)  # pyrefly: ignore[bad-argument-type]
                                     else "red"
                                 )
                                 # Modify color for different bands.
@@ -6810,8 +6810,8 @@ def sentinel2_timelapse_with_samples(
                                     )
                             else:
                                 color = (
-                                    marker_colors[i]
-                                    if i < len(marker_colors)
+                                    marker_colors[i]  # pyrefly: ignore[unsupported-operation]
+                                    if i < len(marker_colors)  # pyrefly: ignore[bad-argument-type]
                                     else "red"
                                 )
 
@@ -7602,9 +7602,9 @@ def landsat_timelapse_with_samples(
         marker_colors = ["red", "blue", "green", "orange", "purple"][
             : len(sample_points)
         ]
-    elif sample_points is not None and len(marker_colors) < len(sample_points):
+    elif sample_points is not None and len(marker_colors) < len(sample_points):  # pyrefly: ignore[bad-argument-type]
         default_colors = ["red", "blue", "green", "orange", "purple"]
-        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])
+        marker_colors.extend(default_colors[len(marker_colors) : len(sample_points)])  # pyrefly: ignore[bad-argument-type, missing-attribute]
 
     # Set default sample bands if not provided.
     if sample_bands is None:
@@ -7619,7 +7619,7 @@ def landsat_timelapse_with_samples(
 
     # Adjust dimensions to avoid Earth Engine limits.
     if isinstance(roi, ee.Geometry):
-        roi_bounds = roi.bounds().getInfo()["coordinates"][0]
+        roi_bounds = roi.bounds().getInfo()["coordinates"][0]  # pyrefly: ignore[unsupported-operation]
         min_lon = min([coord[0] for coord in roi_bounds])
         max_lon = max([coord[0] for coord in roi_bounds])
         min_lat = min([coord[1] for coord in roi_bounds])
@@ -7835,7 +7835,7 @@ def landsat_timelapse_with_samples(
             )
 
             # Select the sample bands.
-            ts_collection = base_landsat_collection.select(landsat_sample_bands)
+            ts_collection = base_landsat_collection.select(landsat_sample_bands)  # pyrefly: ignore[missing-attribute]
 
         # Check if time series is empty.
         ts_size = ts_collection.size().getInfo()
@@ -7921,8 +7921,8 @@ def landsat_timelapse_with_samples(
                             # Color assignment for multi-band sampling.
                             if len(landsat_sample_bands) > 1:
                                 base_color = (
-                                    marker_colors[i]
-                                    if i < len(marker_colors)
+                                    marker_colors[i]  # pyrefly: ignore[unsupported-operation]
+                                    if i < len(marker_colors)  # pyrefly: ignore[bad-argument-type]
                                     else "red"
                                 )
                                 # Modify color for different bands.
@@ -7942,8 +7942,8 @@ def landsat_timelapse_with_samples(
                                     )
                             else:
                                 color = (
-                                    marker_colors[i]
-                                    if i < len(marker_colors)
+                                    marker_colors[i]  # pyrefly: ignore[unsupported-operation]
+                                    if i < len(marker_colors)  # pyrefly: ignore[bad-argument-type]
                                     else "red"
                                 )
 
@@ -8155,7 +8155,7 @@ def calculate_landsat_indices(image: ee.Image) -> ee.Image:
     ).rename("TCW")
 
     return image.addBands(
-        [
+        [  # pyrefly: ignore[bad-argument-type]
             ndvi,
             evi,
             ndwi,
