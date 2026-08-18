@@ -21,12 +21,11 @@ class DatasetsTest(unittest.TestCase):
 
     def test_import_does_not_call_network(self):
         """Verifies that importing datasets does not make network calls."""
-        # Unload geemap.datasets to test a fresh import
-        if "geemap.datasets" in sys.modules:
-            del sys.modules["geemap.datasets"]
+        # Reset cached _DATA to simulate fresh state
+        datasets._DATA = None
 
         with mock.patch("urllib.request.urlopen") as mock_urlopen:
-            importlib.import_module("geemap.datasets")
+            importlib.reload(datasets)
             mock_urlopen.assert_not_called()
 
     def test_lazy_data_access(self):
