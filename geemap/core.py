@@ -83,7 +83,7 @@ class AbstractDrawControl:
     @property
     def last_feature(self) -> ee.Feature | None:
         """Returns the last feature created."""
-        property = self.get_geometry_properties(self.last_geometry)
+        property = self.get_geometry_properties(self.last_geometry)  # pyrefly: ignore[bad-argument-type]
         return ee.Feature(self.last_geometry, property) if self.last_geometry else None
 
     @property
@@ -98,7 +98,7 @@ class AbstractDrawControl:
             clear_draw_control: Whether to clear the draw control.
         """
         if self.layer is not None:
-            self.host_map.remove_layer(self.layer)
+            self.host_map.remove_layer(self.layer)  # pyrefly: ignore[missing-attribute]
         self.geometries = []
         self.properties = []
         self.last_geometry = None
@@ -301,9 +301,9 @@ class AbstractDrawControl:
             del self.properties[index]
             if self.count:
                 self._redraw_layer()
-            elif _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:
+            elif _DRAWN_FEATURES_LAYER in self.host_map.ee_layers:  # pyrefly: ignore[missing-attribute]
                 # Remove drawn features layer if there are no geometries.
-                self.host_map.remove_layer(_DRAWN_FEATURES_LAYER)
+                self.host_map.remove_layer(_DRAWN_FEATURES_LAYER)  # pyrefly: ignore[missing-attribute]
             self._geometry_delete_dispatcher(self, geometry=geometry)
 
 
@@ -512,7 +512,7 @@ class MapInterface:
         raise NotImplementedError()
 
 
-class Map(ipyleaflet.Map, MapInterface):
+class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inheritance]
     """The Map class inherits the ipyleaflet Map class.
 
     Args:
@@ -686,7 +686,7 @@ class Map(ipyleaflet.Map, MapInterface):
         """Returns the current center of the map (lat, lon)."""
         return self.center
 
-    def get_bounds(
+    def get_bounds(  # pyrefly: ignore[bad-override]
         self, as_geojson: bool = False
     ) -> Sequence:  # pytype: disable=signature-mismatch
         """Returns the bounds of the current map view.
@@ -707,7 +707,7 @@ class Map(ipyleaflet.Map, MapInterface):
         coords = [bounds[0][1], bounds[0][0], bounds[1][1], bounds[1][0]]
 
         if as_geojson:
-            return ee.Geometry.BBox(*coords).getInfo()
+            return ee.Geometry.BBox(*coords).getInfo()  # pyrefly: ignore[bad-return]
         return coords
 
     def get_scale(self) -> float:
@@ -746,7 +746,7 @@ class Map(ipyleaflet.Map, MapInterface):
         if isinstance(ee_object, ee.Geometry):
             return ee_object
         try:
-            return ee_object.geometry(maxError=max_error)
+            return ee_object.geometry(maxError=max_error)  # pyrefly: ignore[missing-attribute]
         except Exception as exc:
             raise Exception(
                 "ee_object must be one of ee.Geometry, ee.FeatureCollection, ee.Image, "
@@ -770,7 +770,7 @@ class Map(ipyleaflet.Map, MapInterface):
             maxError=max_error
         )
         if zoom is None:
-            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][
+            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][  # pyrefly: ignore[unsupported-operation]
                 0
             ]
             x_vals = [c[0] for c in coordinates]
@@ -779,7 +779,7 @@ class Map(ipyleaflet.Map, MapInterface):
         else:
             if not isinstance(zoom, int):
                 raise ValueError("Zoom must be an integer.")
-            centroid = geometry.centroid(maxError=max_error).getInfo()["coordinates"]
+            centroid = geometry.centroid(maxError=max_error).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
             self.set_center(centroid[0], centroid[1], zoom)
 
     def _find_widget_of_type(
@@ -806,7 +806,7 @@ class Map(ipyleaflet.Map, MapInterface):
                     return child
         return None
 
-    def add(
+    def add(  # pyrefly: ignore[bad-override]
         self, obj: Any, position: str = "", **kwargs: Any
     ) -> None:  # pytype: disable=signature-mismatch
         """Adds a widget or control to the map.
@@ -1075,7 +1075,7 @@ class Map(ipyleaflet.Map, MapInterface):
         if isinstance(widget, ipywidgets.Widget):
             widget.close()
 
-    def add_layer(
+    def add_layer(  # pyrefly: ignore[bad-override]
         self,
         ee_object: ee.ComputedObject,
         vis_params: dict[str, Any] | None = None,
@@ -1161,7 +1161,7 @@ class Map(ipyleaflet.Map, MapInterface):
         control = ipyleaflet.WidgetControl(
             widget=legend, position=position, transparent_bg=True
         )
-        if layer := self.ee_layers.get(layer_name, None):
+        if layer := self.ee_layers.get(layer_name, None):  # pyrefly: ignore[no-matching-overload]
             if old_legend := layer.pop("legend", None):
                 self.remove(old_legend)
             layer["legend"] = control
@@ -1226,7 +1226,7 @@ class Map(ipyleaflet.Map, MapInterface):
             **kwargs,
         )
         control = ipyleaflet.WidgetControl(widget=colorbar, position=position)
-        if layer := self.ee_layers.get(layer_name, None):
+        if layer := self.ee_layers.get(layer_name, None):  # pyrefly: ignore[no-matching-overload]
             if old_colorbar := layer.pop("colorbar", None):
                 self.remove(old_colorbar)
             layer["colorbar"] = control

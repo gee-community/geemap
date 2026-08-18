@@ -42,6 +42,7 @@ dependencies = [
     "requests",
     "scooby",
     "xarray",
+    "xee>=0.1.0",
 ]
 
 [project.scripts]
@@ -70,28 +71,31 @@ dev = [
     "jupyterlab",
 ]
 extra = [
+    "cartopy",
     "ee_extra>=0.0.15",
     "ffmpeg-python",
     "gdown",
     "geeadd>=0.5.1",
     "geojson",
     "geopandas",
+    "googledrivedownloader",
     "ipynb-py-convert",
     "ipytree",
     "jupyterlab>=3",
     "mapclassify>=2.4.0",
     "mss",
     "oeel",
+    "opencv-python",
     "owslib",
     "palettable",
     "pycrs",
+    "rasterio",
     "sankee>=0.1.0",
     "whiteboxgui>=0.6.0",
     "xee",
 ]
 lidar = [
     "ipygany",
-    "ipyvtklink",
     "laspy[lazrs]",
     "panel",
     "pyntcloud[LAS]",
@@ -108,7 +112,7 @@ raster = [
     "pyvista-xarray",
 ]
 sql = [
-    "psycopg2",
+    "psycopg2-binary",
     "sqlalchemy",
 ]
 tests = [
@@ -171,6 +175,13 @@ exclude = [
 ]
 max-line-length = 88
 
+[dependency-groups]
+dev = [
+    "beautifulsoup4>=4.12.0",
+    "pyrefly>=1.2.0",
+    "pytest>=9.1.1",
+]
+
 [tool.hatch.envs.default]
 features = ["dev"]
 
@@ -183,6 +194,7 @@ artifacts = [
 
 [tool.hatch.build.hooks.jupyter-builder]
 build-function = "hatch_jupyter_builder.npm_builder"
+optional-editable-build = true
 ensured-targets = [
     "geemap/static/container.js",
     "geemap/static/inspector.js",
@@ -205,3 +217,16 @@ build_cmd = "build"
 
 [project.urls]
 Homepage = "https://github.com/gee-community/geemap"
+
+[tool.pyrefly]
+preset = "basic"
+project-includes = ["geemap", "tests"]
+ignore-missing-imports = ["arcpy", "datapane", "gdal", "google.colab", "google_drive_downloader", "langchain.embeddings.base", "langchain.indexes", "langchain.indexes.vectorstore", "langchain.schema", "osgeo", "rasterio.crs"]
+
+[tool.uv]
+no-build-isolation-package = ["keplergl"]
+
+[[tool.uv.index]]
+name = "default"
+url = "https://pypi.org/simple"
+default = true
