@@ -1301,6 +1301,7 @@ ai = [
     { name = "langchain-google-genai" },
 ]
 all = [
+    { name = "beautifulsoup4" },
     { name = "cartopy" },
     { name = "ee-extra" },
     { name = "ffmpeg-python" },
@@ -1343,6 +1344,8 @@ all = [
     { name = "pycrs" },
     { name = "pydeck" },
     { name = "pyntcloud", extra = ["las"] },
+    { name = "pyrefly" },
+    { name = "pytest" },
     { name = "pyvista" },
     { name = "pyvista-xarray" },
     { name = "rasterio" },
@@ -1368,7 +1371,10 @@ backends = [
     { name = "pydeck" },
 ]
 dev = [
+    { name = "beautifulsoup4" },
     { name = "jupyterlab" },
+    { name = "pyrefly" },
+    { name = "pytest" },
     { name = "watchfiles" },
 ]
 extra = [
@@ -1429,6 +1435,8 @@ sql = [
 tests = [
     { name = "beautifulsoup4" },
     { name = "psutil" },
+    { name = "pyrefly" },
+    { name = "pytest" },
 ]
 vector = [
     { name = "geopandas" },
@@ -1451,6 +1459,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "anywidget" },
+    { name = "beautifulsoup4", marker = "extra == 'dev'", specifier = ">=4.12.0" },
     { name = "beautifulsoup4", marker = "extra == 'tests'" },
     { name = "bqplot" },
     { name = "cartopy", marker = "extra == 'extra'" },
@@ -1518,7 +1527,11 @@ requires-dist = [
     { name = "pydeck", marker = "extra == 'backends'" },
     { name = "pyntcloud", extras = ["las"], marker = "extra == 'lidar'" },
     { name = "pyperclip" },
+    { name = "pyrefly", marker = "extra == 'dev'", specifier = ">=1.2.0" },
+    { name = "pyrefly", marker = "extra == 'tests'", specifier = ">=1.2.0" },
     { name = "pyshp", specifier = ">=2.3.1" },
+    { name = "pytest", marker = "extra == 'dev'", specifier = ">=9.1.1" },
+    { name = "pytest", marker = "extra == 'tests'", specifier = ">=9.1.1" },
     { name = "python-box" },
     { name = "pyvista", marker = "extra == 'lidar'" },
     { name = "pyvista-xarray", marker = "extra == 'lidar'" },

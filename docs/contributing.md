@@ -75,17 +75,21 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
 
     Now you can make your changes locally.
 
-5. When you're done making changes, check that your changes pass flake8 and the tests, including testing other Python versions with tox:
+5. When you're done making changes, check that your changes pass pre-commit checks (including Black formatting and Pyrefly type checking) and tests:
 
-    ```
-    flake8 geemap tests
-    ```
-
-    ```
-    python setup.py test or pytest
+    ```bash
+    pre-commit run --all-files
     ```
 
-    To get pflake8 and tox, just pip install them into your conda env (`pip install pyproject-flake8` and `pip install tox`).
+    ```bash
+    pytest
+    ```
+
+    You can also run Pyrefly type checking directly:
+
+    ```bash
+    pyrefly check
+    ```
 
 6. Commit your changes and push your branch to GitHub:
 
