@@ -49,27 +49,27 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
     git clone git@github.com:your_name_here/geemap.git
     ```
 
-3. Install your local copy into a conda env. Assuming you have conda installed, this is how you set up your fork for local development:
+3. Install your local copy into a virtual environment or conda env. Assuming you have conda installed, this is how you set up your fork for local development:
 
-    ```
-    conda create -n geemap-test python
-    ```
-
-    ```
+    ```bash
+    conda create -n geemap-test python=3.12
     conda activate geemap-test
-    ```
-
-    ```
     cd geemap/
+    pip install -e ".[dev]" pre-commit
+    pre-commit install
     ```
 
-    ```
-    pip install -e .
+    Alternatively, if using `uv`:
+
+    ```bash
+    cd geemap/
+    uv sync
+    pre-commit install
     ```
 
 4. Create a branch for local development:
 
-    ```
+    ```bash
     git checkout -b name-of-your-bugfix-or-feature
     ```
 
@@ -88,7 +88,7 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
     You can also run Pyrefly type checking directly:
 
     ```bash
-    pyrefly check
+    uv run pyrefly check
     ```
 
 6. Commit your changes and push your branch to GitHub:
