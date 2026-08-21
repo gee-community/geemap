@@ -6,7 +6,7 @@
 # *******************************************************************************#
 
 from functools import lru_cache
-from typing import Any
+from typing import Any, Sequence
 
 import box
 import ee
@@ -260,7 +260,7 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         self,
         *,
         bounds: ee.Geometry | ee.Feature | ee.FeatureCollection,
-        bands: list[str] | None = None,
+        bands: Sequence[str] | None = None,
         percent: float | None = None,
         sigma: float | None = None,
     ) -> tuple[float, float]:
@@ -275,14 +275,14 @@ class EELeafletTileLayer(ipyleaflet.TileLayer):
         Returns:
             The minimum and maximum values to clip to.
         """
-        bands = (
-            self._ee_object.bandNames()  # pyrefly: ignore[missing-attribute]
+        band_tuple = (
+            tuple(self._ee_object.bandNames())  # pyrefly: ignore[missing-attribute]
             if bands is None
             else tuple(bands)
-        )  # pyrefly: ignore[bad-assignment]
+        )
         try:
             min_val, max_val, std, mean = self._calculate_vis_stats(
-                bounds=bounds, bands=bands  # pyrefly: ignore[bad-argument-type]
+                bounds=bounds, bands=band_tuple
             )
         except ValueError:
             return (0, 0)
