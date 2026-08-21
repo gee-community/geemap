@@ -57,7 +57,7 @@ jobs:
 
             - name: Pyrefly type check
               run: |
-                  uv run --all-extras pyrefly check
+                  uv run pyrefly check
 
             - name: Running tests
               run: |
