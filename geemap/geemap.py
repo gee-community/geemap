@@ -520,7 +520,9 @@ class Map(core.Map):
             elif isinstance(basemap, str) and basemap.startswith(
                 ("http://", "https://")
             ):
-                self.add_tile_layer(url=basemap, shown=show, **kwargs)  # pyrefly: ignore[bad-argument-type]
+                self.add_tile_layer(
+                    url=basemap, shown=show, **kwargs
+                )  # pyrefly: ignore[bad-argument-type]
             else:
                 print(
                     "Basemap can only be one of the following:\n  {}".format(
@@ -1391,7 +1393,9 @@ class Map(core.Map):
             latlon = kwargs.get("coordinates")
             if kwargs.get("type") == "click":
                 coordinates.append(latlon)
-                geom = ee.Geometry.Point(latlon[1], latlon[0])  # pyrefly: ignore[unsupported-operation]
+                geom = ee.Geometry.Point(
+                    latlon[1], latlon[0]
+                )  # pyrefly: ignore[unsupported-operation]
                 feature = ee.Feature(geom)
                 self.ee_markers.append(feature)
                 self.last_click = latlon
@@ -1579,14 +1583,18 @@ class Map(core.Map):
                     markers.append(ipyleaflet.Marker(location=latlon))
                     marker_cluster.markers = markers
                     self.default_style = {"cursor": "wait"}
-                    xy = ee.Geometry.Point(latlon[::-1])  # pyrefly: ignore[unsupported-operation]
+                    xy = ee.Geometry.Point(
+                        latlon[::-1]
+                    )  # pyrefly: ignore[unsupported-operation]
                     dict_values = (
                         ee_object.sample(xy, scale=sample_scale)
                         .first()
                         .toDictionary()
                         .getInfo()
                     )
-                    band_values = list(dict_values.values())  # pyrefly: ignore[missing-attribute]
+                    band_values = list(
+                        dict_values.values()
+                    )  # pyrefly: ignore[missing-attribute]
                     self.plot(
                         band_names,
                         band_values,
@@ -2476,7 +2484,9 @@ class Map(core.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(source, **array_args)  # pyrefly: ignore[bad-assignment]
+            source = array_to_image(
+                source, **array_args
+            )  # pyrefly: ignore[bad-assignment]
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -3554,7 +3564,9 @@ class Map(core.Map):
             )
 
             if labels is not None:
-                if len(labels) != int(ee_object.size().getInfo()):  # pyrefly: ignore[bad-argument-type]
+                if len(labels) != int(
+                    ee_object.size().getInfo()
+                ):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of bands in the image."
                     )
@@ -3569,7 +3581,9 @@ class Map(core.Map):
                     ee_object = ee_object.map(lambda img: img.clipToCollection(region))
 
             if labels is not None:
-                if len(labels) != int(ee_object.size().getInfo()):  # pyrefly: ignore[bad-argument-type]
+                if len(labels) != int(
+                    ee_object.size().getInfo()
+                ):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of images in the ImageCollection."
                     )
@@ -3596,7 +3610,10 @@ class Map(core.Map):
             layout=ipywidgets.Layout(width=slider_length),
         )
         label = ipywidgets.Label(
-            value=labels[0], layout=ipywidgets.Layout(padding="0px 5px 0px 5px")  # pyrefly: ignore[unsupported-operation]
+            value=labels[0],
+            layout=ipywidgets.Layout(
+                padding="0px 5px 0px 5px"
+            ),  # pyrefly: ignore[unsupported-operation]
         )
 
         play_btn = ipywidgets.Button(
@@ -3840,7 +3857,9 @@ class Map(core.Map):
                     f"The number of unique values in the color column {color_column} is greater than the number of available colors."
                 )
             else:
-                marker_colors = color_options[: len(items)]  # pyrefly: ignore[bad-argument-type]
+                marker_colors = color_options[
+                    : len(items)
+                ]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
             if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
                 raise ValueError(
@@ -3978,13 +3997,19 @@ class Map(core.Map):
                 )
                 markers.append(marker)
 
-        marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)  # pyrefly: ignore[unbound-name]
+        marker_cluster = ipyleaflet.MarkerCluster(
+            markers=markers, name=layer_name
+        )  # pyrefly: ignore[unbound-name]
         self.add(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [coreutils.check_color(c) for c in marker_colors]  # pyrefly: ignore[not-iterable]
+            marker_colors = [
+                coreutils.check_color(c) for c in marker_colors
+            ]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(), colors=marker_colors, keys=items  # pyrefly: ignore[missing-attribute]
+                title=color_column.title(),
+                colors=marker_colors,
+                keys=items,  # pyrefly: ignore[missing-attribute]
             )
 
         self.default_style = {"cursor": "default"}
