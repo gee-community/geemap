@@ -150,14 +150,10 @@ def add_layer(
         raise ValueError("provided `ee_object` is not of type ee.Image")
 
     if region is not None:
-        map_region = ee.Geometry.Rectangle(region).getInfo()[
-            "coordinates"
-        ]  # pyrefly: ignore[unsupported-operation]
+        map_region = ee.Geometry.Rectangle(region).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
         view_extent = (region[2], region[0], region[1], region[3])
     else:
-        map_region = (
-            ee_object.geometry(100).bounds(1).getInfo()["coordinates"]
-        )  # pyrefly: ignore[unsupported-operation]
+        map_region = ee_object.geometry(100).bounds(1).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
         # Get the image bounds.
         x, y = list(zip(*map_region[0]))
         view_extent = [min(x), max(x), min(y), max(y)]
@@ -363,15 +359,9 @@ def add_colorbar(
             hexcodes = [i if i[0] == "#" else "#" + i for i in hexcodes]
 
             if discrete:
-                cmap = mpl.colors.ListedColormap(
-                    hexcodes
-                )  # pyrefly: ignore[bad-assignment]
-                vals = np.linspace(
-                    vmin, vmax, cmap.N + 1
-                )  # pyrefly: ignore[missing-attribute]
-                norm = mpl.colors.BoundaryNorm(
-                    vals, cmap.N
-                )  # pyrefly: ignore[missing-attribute]
+                cmap = mpl.colors.ListedColormap(hexcodes)  # pyrefly: ignore[bad-assignment]
+                vals = np.linspace(vmin, vmax, cmap.N + 1)  # pyrefly: ignore[missing-attribute]
+                norm = mpl.colors.BoundaryNorm(vals, cmap.N)  # pyrefly: ignore[missing-attribute]
 
             else:
                 cmap = mpl.colors.LinearSegmentedColormap.from_list(
@@ -407,9 +397,7 @@ def add_colorbar(
     if "label_font_size" in kwargs:
         label_font_size = kwargs.pop("label_font_size")
 
-    cb = mpl.colorbar.ColorbarBase(
-        cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs
-    )  # pyrefly: ignore[unbound-name]
+    cb = mpl.colorbar.ColorbarBase(cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs)  # pyrefly: ignore[unbound-name]
 
     if label is not None:
         if label_font_size is not None and label_font_family is not None:

@@ -269,9 +269,7 @@ def check_map_functions(input_lines: list[str]) -> list[str]:
             try:
                 bracket_index = line.index("{")
                 matching_line_index, matching_char_index = find_matching_bracket(
-                    input_lines,
-                    index,
-                    bracket_index,  # pyrefly: ignore[bad-argument-type]
+                    input_lines, index, bracket_index  # pyrefly: ignore[bad-argument-type]
                 )  # pytype: disable=wrong-arg-types
 
                 func_start_index = line.index("function")
@@ -296,9 +294,7 @@ def check_map_functions(input_lines: list[str]) -> list[str]:
                         current_num_of_nested_funcs += 1
                     if "}" in tmp_line:
                         current_num_of_nested_funcs -= 1
-                    input_lines[
-                        index + 1 + sub_index
-                    ] = (  # pyrefly: ignore[unsupported-operation]
+                    input_lines[index + 1 + sub_index] = (  # pyrefly: ignore[unsupported-operation]
                         ""  # pytype: disable=unsupported-operands
                     )
 
@@ -319,9 +315,7 @@ def check_map_functions(input_lines: list[str]) -> list[str]:
                     header_line = header_line + footer_line
                     footer_line = ""
 
-                input_lines[
-                    matching_line_index
-                ] = (  # pyrefly: ignore[unsupported-operation]
+                input_lines[matching_line_index] = (  # pyrefly: ignore[unsupported-operation]
                     footer_line  # pytype: disable=unsupported-operands
                 )
 

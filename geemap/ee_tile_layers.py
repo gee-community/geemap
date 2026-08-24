@@ -28,9 +28,7 @@ def _get_tile_url_format(
         ee_object: The EE object.
         vis_params: The visualization parameters.
     """
-    image = _ee_object_to_image(
-        ee_object, vis_params
-    )  # pyrefly: ignore[bad-argument-type]
+    image = _ee_object_to_image(ee_object, vis_params)  # pyrefly: ignore[bad-argument-type]
     map_id_dict = ee.Image(image).getMapId(vis_params)
     return map_id_dict["tile_fetcher"].url_format
 
