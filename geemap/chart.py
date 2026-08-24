@@ -6,7 +6,7 @@
 # *******************************************************************************#
 
 import math
-from typing import Any, Sequence
+from typing import Any
 
 import ee
 import bqplot as bq
@@ -117,8 +117,8 @@ def pivot_df(df: pd.DataFrame, index: str, columns: str, values: str) -> pd.Data
 
 
 def array_to_df(
-    y_values: ee.Array | ee.List | Sequence[Sequence[float]] | list[list[Any]],
-    x_values: ee.Array | ee.List | Sequence[float] | list[Any] | None = None,
+    y_values: ee.Array | ee.List | list[list[float]],
+    x_values: ee.Array | ee.List | list[float] | None = None,
     y_labels: list[str] | None = None,
     x_label: str = "x",
     axis: int = 1,

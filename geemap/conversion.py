@@ -236,7 +236,7 @@ def remove_all_indentation(input_lines: Sequence[str]) -> list[str]:
     return output_lines
 
 
-def check_map_functions(input_lines: list[str]) -> list[str]:
+def check_map_functions(input_lines: Sequence[str]) -> list[str]:
     """Extracts Earth Engine map function.
 
     Args:
