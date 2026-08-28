@@ -1552,7 +1552,7 @@ def image_histogram(
     min_bucket_width: float,
     max_raw: int,
     max_pixels: int,
-    reducer_args: dict[str, Any] = {},
+    reducer_args: dict[str, Any] | None = None,
     **kwargs: dict[str, Any],
 ) -> bq.Figure:
     """Creates a histogram for each band of the specified image within the given region.
@@ -1576,6 +1576,9 @@ def image_histogram(
     Returns:
         The bqplot figure containing the histograms.
     """
+    if reducer_args is None:
+        reducer_args = {}
+
     # Calculate the histogram data.
     histogram = image.reduceRegion(
         reducer=ee.Reducer.histogram(
