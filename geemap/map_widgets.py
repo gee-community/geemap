@@ -910,6 +910,7 @@ class LayerEditor(anywidget.AnyWidget):
     layer_type: traitlets.Unicode = traitlets.Unicode("").tag(sync=True)
     band_names: traitlets.List = traitlets.List([]).tag(sync=True)
     colormaps: traitlets.List = traitlets.List([]).tag(sync=True)
+    vis_params: traitlets.Dict = traitlets.Dict({}).tag(sync=True)
 
     # Child widgets in the container. Using a tuple here to force reassignment to update
     # the list. When a proper notifying-list trait exists, use that instead.
@@ -943,6 +944,7 @@ class LayerEditor(anywidget.AnyWidget):
             self._ee_layer = layer_dict["ee_layer"]
             self.layer_name = self._ee_layer.name
             self.colormaps = self._get_colormaps()
+            self.vis_params = layer_dict.get("vis_params") or {}
 
             if isinstance(self._ee_object, ee.FeatureCollection):
                 self.layer_type = LayerEditor.LayerType.VECTOR.value

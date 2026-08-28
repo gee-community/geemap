@@ -22,6 +22,8 @@ export interface LayerEditorModel {
     band_names: Array<string>;
     // Colormaps available to select.
     colormaps: Array<string>;
+    // Visualization parameters passed to the layer.
+    vis_params: Record<string, any>;
 }
 
 export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
@@ -54,6 +56,7 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
     @property({ type: String }) layerType: string = "";
     @property({ type: Array }) bandNames: Array<string> = [];
     @property({ type: Array }) colormaps: Array<string> = [];
+    @property({ type: Object }) visParams: Record<string, any> = {};
 
     @query("raster-layer-editor") rasterEditor?: RasterLayerEditor;
     @query("vector-layer-editor") vectorEditor?: VectorLayerEditor;
@@ -67,6 +70,7 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
             ["layer_type", "layerType"],
             ["band_names", "bandNames"],
             ["colormaps", "colormaps"],
+            ["vis_params", "visParams"],
             ["children", null],
         ]);
     }
@@ -119,6 +123,7 @@ export class LayerEditor extends LitWidget<LayerEditorModel, LayerEditor> {
                 <raster-layer-editor
                     .bandNames="${this.bandNames}"
                     .colormaps="${this.colormaps}"
+                    .visParams="${this.visParams}"
                     @calculate-band-stats="${this.calculateBandStats}"
                     @calculate-palette="${this.calculatePalette}"
                 >
