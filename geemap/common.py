@@ -11919,10 +11919,7 @@ def classify(
 
     if cmap is None:
         cmap = "Blues"
-    try:
-        cmap = plt.get_cmap(cmap, k)
-    except:
-        cmap = plt.cm.get_cmap(cmap, k)
+    cmap = plt.get_cmap(cmap, k)
     if colors is None:
         colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
         colors = ["#" + i for i in colors]
@@ -12676,10 +12673,7 @@ def get_palette_colors(
         n_class: The number of colors. Defaults to None.
         hashtag: Whether to return a list of hex colors. Defaults to False.
     """
-    try:
-        cmap = plt.get_cmap(cmap_name, n_class)
-    except:
-        cmap = plt.cm.get_cmap(cmap_name, n_class)
+    cmap = plt.get_cmap(cmap_name, n_class)
     colors = [mpl.colors.rgb2hex(cmap(i))[1:] for i in range(cmap.N)]
     if hashtag:
         colors = ["#" + i for i in colors]
