@@ -64,7 +64,7 @@ def get_map(
             style = {}
 
         props = features.first().propertyNames().getInfo()
-        if "style" in props:
+        if "style" in props:  # pyrefly: ignore[not-iterable]
             ee_object = features.style(**{"styleProperty": "style"})
         else:
             ee_object = features.style(**style)
@@ -82,7 +82,7 @@ def get_map(
     if basemap is not None:
         if isinstance(basemap, str):
             if basemap.upper() in ["ROADMAP", "SATELLITE", "TERRAIN", "HYBRID"]:
-                basemap = cimgt.GoogleTiles(
+                basemap = cimgt.GoogleTiles(  # pyrefly: ignore[bad-assignment]
                     url=basemaps.custom_tiles["xyz"][basemap.upper()]["url"]
                 )
 
@@ -139,7 +139,7 @@ def add_layer(
             style = {}
 
         props = features.first().propertyNames().getInfo()
-        if "style" in props:
+        if "style" in props:  # pyrefly: ignore[not-iterable]
             ee_object = features.style(**{"styleProperty": "style"})
         else:
             ee_object = features.style(**style)
@@ -150,10 +150,10 @@ def add_layer(
         raise ValueError("provided `ee_object` is not of type ee.Image")
 
     if region is not None:
-        map_region = ee.Geometry.Rectangle(region).getInfo()["coordinates"]
+        map_region = ee.Geometry.Rectangle(region).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
         view_extent = (region[2], region[0], region[1], region[3])
     else:
-        map_region = ee_object.geometry(100).bounds(1).getInfo()["coordinates"]
+        map_region = ee_object.geometry(100).bounds(1).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
         # Get the image bounds.
         x, y = list(zip(*map_region[0]))
         view_extent = [min(x), max(x), min(y), max(y)]
@@ -178,7 +178,7 @@ def add_layer(
     args = {"format": "png", "crs": "EPSG:4326"}
     args["region"] = map_region
     if dims:
-        args["dimensions"] = dims
+        args["dimensions"] = dims  # pyrefly: ignore[bad-assignment]
 
     if vis_params:
         keys = list(vis_params.keys())
@@ -359,9 +359,9 @@ def add_colorbar(
             hexcodes = [i if i[0] == "#" else "#" + i for i in hexcodes]
 
             if discrete:
-                cmap = mpl.colors.ListedColormap(hexcodes)
-                vals = np.linspace(vmin, vmax, cmap.N + 1)
-                norm = mpl.colors.BoundaryNorm(vals, cmap.N)
+                cmap = mpl.colors.ListedColormap(hexcodes)  # pyrefly: ignore[bad-assignment]
+                vals = np.linspace(vmin, vmax, cmap.N + 1)  # pyrefly: ignore[missing-attribute]
+                norm = mpl.colors.BoundaryNorm(vals, cmap.N)  # pyrefly: ignore[missing-attribute]
 
             else:
                 cmap = mpl.colors.LinearSegmentedColormap.from_list(
@@ -397,7 +397,7 @@ def add_colorbar(
     if "label_font_size" in kwargs:
         label_font_size = kwargs.pop("label_font_size")
 
-    cb = mpl.colorbar.ColorbarBase(cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs)
+    cb = mpl.colorbar.ColorbarBase(cax, norm=norm, alpha=alpha, cmap=cmap, **kwargs)  # pyrefly: ignore[unbound-name]
 
     if label is not None:
         if label_font_size is not None and label_font_family is not None:

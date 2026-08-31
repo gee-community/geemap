@@ -163,7 +163,7 @@ class PlotlymapTest(unittest.TestCase):
         m.add_layer(layer)
         m.set_layer_visibility("vis_test", show=False)
         index = m.find_layer_index("vis_test")
-        self.assertFalse(m.data[index].visible)
+        self.assertFalse(m.data[index].visible)  # pyrefly: ignore[bad-index]
 
     def test_set_layer_opacity(self):
         m = plotlymap.Map(ee_initialize=False)
