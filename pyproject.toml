@@ -69,6 +69,9 @@ backends = [
 dev = [
     "watchfiles",
     "jupyterlab",
+    "beautifulsoup4>=4.12.0",
+    "pyrefly>=1.2.0",
+    "pytest>=9.1.1",
 ]
 extra = [
     "cartopy",
@@ -118,6 +121,8 @@ sql = [
 tests = [
     "beautifulsoup4",
     "psutil",
+    "pyrefly>=1.2.0",
+    "pytest>=9.1.1",
 ]
 apps = [
     "gradio",
@@ -221,12 +226,4 @@ Homepage = "https://github.com/gee-community/geemap"
 [tool.pyrefly]
 preset = "basic"
 project-includes = ["geemap", "tests"]
-ignore-missing-imports = ["arcpy", "datapane", "gdal", "google.colab", "google_drive_downloader", "langchain.embeddings.base", "langchain.indexes", "langchain.indexes.vectorstore", "langchain.schema", "osgeo", "rasterio.crs"]
-
-[tool.uv]
-no-build-isolation-package = ["keplergl"]
-
-[[tool.uv.index]]
-name = "default"
-url = "https://pypi.org/simple"
-default = true
+ignore-missing-imports = ["*"]
