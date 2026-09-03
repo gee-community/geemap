@@ -67,6 +67,12 @@ Ready to contribute? Here's how to set up _geemap_ for local development.
     pre-commit install
     ```
 
+    For documentation work, install doc tooling from the `pyproject.toml` docs dependency group:
+
+    ```bash
+    uv sync --extra docs
+    ```
+
 4. Create a branch for local development:
 
     ```bash
