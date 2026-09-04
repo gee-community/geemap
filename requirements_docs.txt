@@ -1,2 +1,2 @@
-# Compatibility shim: docs dependencies are defined in pyproject.toml [project.optional-dependencies.docs].
+# Compatibility shim: docs dependencies are defined in pyproject.toml under [project.optional-dependencies] as the "docs" extra.
 .[docs]
