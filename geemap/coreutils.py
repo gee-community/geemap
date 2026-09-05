@@ -546,7 +546,7 @@ def widget_template(
 
     try:
         toolbar_button = ipywidgets.ToggleButton(**widget_args)
-    except:
+    except Exception:
         widget_args.pop("layout")
         toolbar_button = ipywidgets.ToggleButton(**widget_args)
         toolbar_button.layout.width = "28px"
@@ -555,7 +555,7 @@ def widget_template(
 
     try:
         close_button = ipywidgets.ToggleButton(**close_button_args)
-    except:
+    except Exception:
         close_button_args.pop("layout")
         close_button = ipywidgets.ToggleButton(**close_button_args)
         close_button.layout.width = "28px"
