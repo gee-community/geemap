@@ -1,0 +1,55 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number to release (e.g., 0.39.0)'
+        required: true
+        type: string
+      publish_immediately:
+        description: 'Publish release immediately (false = creates draft release)'
+        required: false
+        type: boolean
+        default: true
+
+jobs:
+  create-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Tag release
+        id: tag
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          TAG_NAME="v${VERSION}"
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+
+          git tag -a "${TAG_NAME}" -m "Release ${TAG_NAME}"
+          git push origin "${TAG_NAME}"
+
+      - name: Create GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ steps.tag.outputs.tag_name }}"
+          DRAFT_FLAG="${{ github.event.inputs.publish_immediately == 'false' && '--draft' || '' }}"
+
+          gh release create "${TAG}" \
+            --title "${TAG}" \
+            --latest \
+            $DRAFT_FLAG \
+            --generate-notes
