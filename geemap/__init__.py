@@ -1,3 +1,5 @@
+"""Top-level package for geemap."""
+
 import importlib.metadata
 import os
 import sys

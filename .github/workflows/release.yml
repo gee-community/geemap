@@ -33,10 +33,14 @@ jobs:
 
       - name: Tag release
         id: tag
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
         run: |
-          VERSION="${{ inputs.version }}"
-          # Strip leading 'v' or 'V' if present
-          VERSION="${VERSION#[vV]}"
+          VERSION="${INPUT_VERSION#[vV]}"
+          if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+)+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: '${INPUT_VERSION}'. Expected semantic version like '0.39.0'."
+            exit 1
+          fi
           TAG_NAME="v${VERSION}"
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
 
@@ -52,9 +56,13 @@ jobs:
       - name: Create GitHub Release
         env:
           GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag_name }}
+          PUBLISH_IMMEDIATELY: ${{ inputs.publish_immediately }}
         run: |
-          TAG="${{ steps.tag.outputs.tag_name }}"
-          DRAFT_FLAG="${{ !inputs.publish_immediately && '--draft' || '' }}"
+          DRAFT_FLAG=""
+          if [ "${PUBLISH_IMMEDIATELY}" != "true" ]; then
+            DRAFT_FLAG="--draft"
+          fi
 
           gh release create "${TAG}" \
             --title "${TAG}" \
