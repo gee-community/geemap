@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "geemap"
-version = "0.38.5.post0"
+dynamic = ["version"]
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -191,20 +191,11 @@ exclude = ["docs*"]
 [tool.distutils.bdist_wheel]
 universal = true
 
-[tool.bumpversion]
-current_version = "0.38.5.post0"
-commit = true
-tag = true
+[tool.hatch.version]
+source = "vcs"
 
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "geemap/__init__.py"
-search = '__version__ = "{current_version}"'
-replace = '__version__ = "{new_version}"'
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
 
 [tool.flake8]
 exclude = [
