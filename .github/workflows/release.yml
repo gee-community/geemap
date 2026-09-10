@@ -34,9 +34,17 @@ jobs:
       - name: Tag release
         id: tag
         run: |
-          VERSION="${{ github.event.inputs.version }}"
+          VERSION="${{ inputs.version }}"
+          # Strip leading 'v' or 'V' if present
+          VERSION="${VERSION#[vV]}"
           TAG_NAME="v${VERSION}"
           echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+
+          # Guard against reusing existing tag
+          if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "::error::Tag ${TAG_NAME} already exists in git history. Aborting."
+            exit 1
+          fi
 
           git tag -a "${TAG_NAME}" -m "Release ${TAG_NAME}"
           git push origin "${TAG_NAME}"
@@ -46,7 +54,7 @@ jobs:
           GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
         run: |
           TAG="${{ steps.tag.outputs.tag_name }}"
-          DRAFT_FLAG="${{ github.event.inputs.publish_immediately == 'false' && '--draft' || '' }}"
+          DRAFT_FLAG="${{ !inputs.publish_immediately && '--draft' || '' }}"
 
           gh release create "${TAG}" \
             --title "${TAG}" \

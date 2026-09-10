@@ -4,6 +4,15 @@ on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish (e.g., v0.39.0)'
+        required: true
+        type: string
+      confirm:
+        description: 'Type YES to confirm manual publish to PyPI'
+        required: true
+        type: string
 
 jobs:
   pypi-publish:
@@ -14,8 +23,18 @@ jobs:
       contents: read
 
     steps:
-      - uses: actions/checkout@v7
+      - name: Validate manual confirmation
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          if [ "${{ inputs.confirm }}" != "YES" ]; then
+            echo "::error::Manual publish requires confirm=YES. Aborting."
+            exit 1
+          fi
+
+      - name: Checkout repository
+        uses: actions/checkout@v7
         with:
+          ref: ${{ github.event.release.tag_name || inputs.tag }}
           fetch-depth: 0
 
       - name: Set up Python
@@ -30,3 +49,5 @@ jobs:
 
       - name: Publish to PyPI
         uses: pypa/gh-action-pypi-publish@v1.14.0
+        with:
+          password: ${{ secrets.PYPI_PASSWORD || secrets.PYPI_API_TOKEN }}

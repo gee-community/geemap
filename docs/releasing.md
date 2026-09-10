@@ -4,7 +4,7 @@
 
 The `geemap` release process is aligned with the **weekly Earth Engine client library release**, with **Thursday** being the target release day.
 
-Releases are created directly from the `master` branch using GitHub Actions and dynamic versioning (`hatch-vcs` / `setuptools_scm`).
+Releases are created directly from the `master` branch using GitHub Actions and dynamic versioning (`hatch-vcs`).
 
 ---
 
