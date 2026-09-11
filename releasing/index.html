@@ -6856,15 +6856,12 @@
 <h2 id="how-to-determine-the-version-number">🔍 How to Determine the Version Number<a class="headerlink" href="#how-to-determine-the-version-number" title="Permanent link">&para;</a></h2>
 <p>Before triggering a release, the releaser needs to choose the target version number according to <a href="https://semver.org">Semantic Versioning</a> (<code>MAJOR.MINOR.PATCH</code>).</p>
 <h3 id="1-check-the-latest-released-version">1. Check the Latest Released Version<a class="headerlink" href="#1-check-the-latest-released-version" title="Permanent link">&para;</a></h3>
-<ul>
-<li>On GitHub: Visit the <strong><a href="https://github.com/gee-community/geemap/releases">Releases</a></strong> page (e.g., <code>v0.38.6</code>).</li>
-<li>In Git: Run <code>git describe --tags --abbrev=0 origin/master</code> or <code>git tag -l "v[0-9]*" --sort=-v:refname | head -n 1</code>.</li>
-</ul>
+<p>Visit the <strong><a href="https://github.com/gee-community/geemap/releases">Releases</a></strong> page and look for the release with the green <code>Latest</code> badge at the top (e.g., <code>v0.38.6</code>).</p>
 <h3 id="2-inspect-changes-since-the-last-release">2. Inspect Changes Since the Last Release<a class="headerlink" href="#2-inspect-changes-since-the-last-release" title="Permanent link">&para;</a></h3>
-<p>Compare <code>master</code> against the previous tag to see all merged PRs and commits:
-* On GitHub: Visit <code>https://github.com/gee-community/geemap/compare/&lt;LATEST_TAG&gt;...master</code>
-  <em>(Example: <a href="https://github.com/gee-community/geemap/compare/v0.38.6...master"><code>v0.38.6...master</code></a>)</em>.
-* In Git: Run <code>git log &lt;LATEST_TAG&gt;..origin/master --oneline</code>.</p>
+<p>Visit the GitHub compare page comparing the latest tag to <code>master</code>:
+<code>https://github.com/gee-community/geemap/compare/&lt;LATEST_TAG&gt;...master</code>
+<em>(Example: <a href="https://github.com/gee-community/geemap/compare/v0.38.6...master"><code>v0.38.6...master</code></a>)</em>.</p>
+<p>This view lists all merged PRs, commits, and file diffs since the last release.</p>
 <h3 id="3-choose-the-version-bump-major-minor-or-patch">3. Choose the Version Bump (Major, Minor, or Patch)<a class="headerlink" href="#3-choose-the-version-bump-major-minor-or-patch" title="Permanent link">&para;</a></h3>
 <p>Given the latest version <code>0.Y.Z</code> (e.g., <code>0.38.6</code>):</p>
 <ul>
@@ -6936,7 +6933,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 11, 2026 17:39:24 UTC"><span class="timeago" datetime="2026-09-11T17:39:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 11, 2026 17:39:24 UTC">2026-09-11</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 11, 2026 18:04:17 UTC"><span class="timeago" datetime="2026-09-11T18:04:17+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 11, 2026 18:04:17 UTC">2026-09-11</span>
   </span>
 
     
