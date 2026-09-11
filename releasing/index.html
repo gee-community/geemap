@@ -6726,6 +6726,56 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#how-to-determine-the-version-number" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        🔍 How to Determine the Version Number
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="🔍 How to Determine the Version Number">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-check-the-latest-released-version" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Check the Latest Released Version
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-inspect-changes-since-the-last-release" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Inspect Changes Since the Last Release
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-choose-the-version-bump-major-minor-or-patch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Choose the Version Bump (Major, Minor, or Patch)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#step-by-step-release-instructions" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -6738,10 +6788,10 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-trigger-the-release-workflow" class="md-nav__link">
+  <a href="#step-1-trigger-the-release-workflow-creates-draft" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Trigger the Release Workflow
+        Step 1: Trigger the Release Workflow (Creates Draft)
       
     </span>
   </a>
@@ -6749,10 +6799,21 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-verify-automated-publishing" class="md-nav__link">
+  <a href="#step-2-review-and-publish-the-release" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Verify Automated Publishing
+        Step 2: Review and Publish the Release
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-verify-pypi-and-merge-conda-forge-pr" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Verify PyPI and Merge Conda-Forge PR
       
     </span>
   </a>
@@ -6792,22 +6853,66 @@
 <p>The <code>geemap</code> release process is aligned with the <strong>weekly Earth Engine client library release</strong>, with <strong>Thursday</strong> being the target release day.</p>
 <p>Releases are created directly from the <code>master</code> branch using GitHub Actions and dynamic versioning (<code>hatch-vcs</code>).</p>
 <hr />
+<h2 id="how-to-determine-the-version-number">🔍 How to Determine the Version Number<a class="headerlink" href="#how-to-determine-the-version-number" title="Permanent link">&para;</a></h2>
+<p>Before triggering a release, the releaser needs to choose the target version number according to <a href="https://semver.org">Semantic Versioning</a> (<code>MAJOR.MINOR.PATCH</code>).</p>
+<h3 id="1-check-the-latest-released-version">1. Check the Latest Released Version<a class="headerlink" href="#1-check-the-latest-released-version" title="Permanent link">&para;</a></h3>
+<ul>
+<li>On GitHub: Visit the <strong><a href="https://github.com/gee-community/geemap/releases">Releases</a></strong> page (e.g., <code>v0.38.6</code>).</li>
+<li>In Git: Run <code>git describe --tags --abbrev=0 origin/master</code> or <code>git tag -l "v[0-9]*" --sort=-v:refname | head -n 1</code>.</li>
+</ul>
+<h3 id="2-inspect-changes-since-the-last-release">2. Inspect Changes Since the Last Release<a class="headerlink" href="#2-inspect-changes-since-the-last-release" title="Permanent link">&para;</a></h3>
+<p>Compare <code>master</code> against the previous tag to see all merged PRs and commits:
+* On GitHub: Visit <code>https://github.com/gee-community/geemap/compare/&lt;LATEST_TAG&gt;...master</code>
+  <em>(Example: <a href="https://github.com/gee-community/geemap/compare/v0.38.6...master"><code>v0.38.6...master</code></a>)</em>.
+* In Git: Run <code>git log &lt;LATEST_TAG&gt;..origin/master --oneline</code>.</p>
+<h3 id="3-choose-the-version-bump-major-minor-or-patch">3. Choose the Version Bump (Major, Minor, or Patch)<a class="headerlink" href="#3-choose-the-version-bump-major-minor-or-patch" title="Permanent link">&para;</a></h3>
+<p>Given the latest version <code>0.Y.Z</code> (e.g., <code>0.38.6</code>):</p>
+<ul>
+<li><strong>Patch Bump (<code>0.Y.Z+1</code> ➔ <code>0.38.7</code>):</strong></li>
+<li>Use for routine maintenance releases containing <strong>bug fixes</strong>, <strong>dependency bumps</strong>, <strong>documentation updates</strong>, <strong>type annotations</strong>, or internal CI/build improvements without new user-facing APIs.</li>
+<li><strong>Minor Bump (<code>0.Y+1.0</code> ➔ <code>0.39.0</code>):</strong></li>
+<li>Use when <strong>new user-facing features</strong>, <strong>new interactive map tools/widgets</strong>, <strong>new backend integrations</strong>, or new functions/modules are added in a backward-compatible manner.</li>
+<li><strong>Major Bump (<code>X+1.0.0</code> ➔ <code>1.0.0</code>):</strong></li>
+<li>Reserved for major milestone releases or incompatible public API changes.</li>
+</ul>
+<hr />
 <h2 id="step-by-step-release-instructions">📅 Step-by-Step Release Instructions<a class="headerlink" href="#step-by-step-release-instructions" title="Permanent link">&para;</a></h2>
-<h3 id="1-trigger-the-release-workflow">1. Trigger the Release Workflow<a class="headerlink" href="#1-trigger-the-release-workflow" title="Permanent link">&para;</a></h3>
+<p>The release process follows a safe <strong>Draft ➔ Review ➔ Publish</strong> workflow.</p>
+<h3 id="step-1-trigger-the-release-workflow-creates-draft">Step 1: Trigger the Release Workflow (Creates Draft)<a class="headerlink" href="#step-1-trigger-the-release-workflow-creates-draft" title="Permanent link">&para;</a></h3>
 <ol>
 <li>Navigate to the <strong><a href="https://github.com/gee-community/geemap/actions">Actions</a></strong> tab on GitHub.</li>
-<li>Under <strong>Workflows</strong> on the left, select <strong><code>Release</code></strong> (or go to <code>.github/workflows/release.yml</code>).</li>
+<li>Under <strong>Workflows</strong> on the left, select <strong><code>Release</code></strong> (or go to <a href="https://github.com/gee-community/geemap/actions/workflows/release.yml"><code>.github/workflows/release.yml</code></a>).</li>
 <li>Click <strong>Run workflow</strong>:</li>
 <li><strong>Branch:</strong> <code>master</code></li>
-<li><strong>Version number to release:</strong> Enter the target version (e.g., <code>0.39.0</code>).</li>
-<li><strong>Publish immediately:</strong> Leave as <code>true</code> (or set <code>false</code> to generate a draft first).</li>
+<li><strong>Version number to release:</strong> Enter the target version (e.g., <code>0.38.7</code> or <code>0.39.0</code>).</li>
 <li>Click <strong>Run workflow</strong>.</li>
+<li>The workflow will validate the version, tag <code>master</code> (e.g. <code>v0.38.7</code>), and create a <strong>Draft Release</strong> with auto-generated release notes.</li>
 </ol>
-<h3 id="2-verify-automated-publishing">2. Verify Automated Publishing<a class="headerlink" href="#2-verify-automated-publishing" title="Permanent link">&para;</a></h3>
+<h3 id="step-2-review-and-publish-the-release">Step 2: Review and Publish the Release<a class="headerlink" href="#step-2-review-and-publish-the-release" title="Permanent link">&para;</a></h3>
 <ol>
-<li><strong>GitHub Release</strong>: Verify the release was created under the <strong><a href="https://github.com/gee-community/geemap/releases">Releases</a></strong> page with auto-generated release notes.</li>
-<li><strong>PyPI Publishing</strong>: Once the GitHub Release is published, the <strong><code>Publish to PyPI</code></strong> workflow triggers automatically. Verify the new version is live on <a href="https://pypi.org/project/geemap">PyPI</a>.</li>
-<li><strong>Conda-Forge</strong>: The Conda-Forge bot will automatically create a feedstock PR within ~1 hour.</li>
+<li>Navigate to the <strong><a href="https://github.com/gee-community/geemap/releases">Releases</a></strong> page on GitHub.</li>
+<li>Find the newly created <strong>Draft Release</strong> and click <strong>Edit</strong>.</li>
+<li><strong>Review the draft against the following checklist:</strong></li>
+<li><strong>Tag &amp; Title:</strong> Verify that the release title and tag match the target version exactly (e.g., <code>v0.39.0</code>) with no typos or extra prefixes.</li>
+<li><strong>Changelog Scope:</strong> Check the auto-generated <strong>What's Changed</strong> section and the <strong>Full Changelog</strong> compare link at the bottom (e.g. <code>compare/v0.38.6...v0.39.0</code>). Ensure the listed PRs and commits accurately span <em>only</em> the changes merged since the previous release.</li>
+<li><strong>Release Notes:</strong> Clean up any redundant entries or formatting issues and highlight key new features or breaking changes if applicable.</li>
+<li>Click <strong>Publish release</strong> (ensure "Set as latest release" is checked).</li>
+</ol>
+<h3 id="step-3-verify-pypi-and-merge-conda-forge-pr">Step 3: Verify PyPI and Merge Conda-Forge PR<a class="headerlink" href="#step-3-verify-pypi-and-merge-conda-forge-pr" title="Permanent link">&para;</a></h3>
+<ol>
+<li><strong>PyPI Publishing (Automated)</strong>:</li>
+<li>Publishing the GitHub release in the web UI automatically triggers the <strong><code>Publish to PyPI</code></strong> workflow.</li>
+<li>Check the <strong><a href="https://github.com/gee-community/geemap/actions/workflows/publish.yml">Actions</a></strong> tab to verify the build and upload succeed.</li>
+<li>Verify the new version is live on <a href="https://pypi.org/project/geemap">PyPI</a>.</li>
+<li><strong>Conda-Forge Feedstock (Action Required)</strong>:</li>
+<li>Within ~1 hour of the PyPI publish, the <code>regro-cf-autotick-bot</code> will automatically open a version bump PR on the <strong><a href="https://github.com/conda-forge/geemap-feedstock/pulls">geemap-feedstock</a></strong> repository.</li>
+<li><strong>Releaser Action Checklist:</strong><ol>
+<li>Open the new PR on the <strong><a href="https://github.com/conda-forge/geemap-feedstock/pulls">geemap-feedstock</a></strong> repo.</li>
+<li><strong>If dependencies have not changed:</strong> Wait for the CI checks (Linux, macOS, Windows) to turn green, then click <strong>Merge</strong>.</li>
+<li><strong>If dependencies changed in <code>pyproject.toml</code>:</strong> Edit <code>recipe/meta.yaml</code> in the PR branch to add, remove, or pin the updated <code>host</code> and <code>run</code> dependencies before merging.</li>
+<li>Once merged, Conda-Forge will automatically build and distribute the new package to the <code>conda-forge</code> channel.</li>
+</ol>
+</li>
 </ol>
 
 
@@ -6831,7 +6936,7 @@
     <span class="md-icon" title="Last update">
       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M21 13.1c-.1 0-.3.1-.4.2l-1 1 2.1 2.1 1-1c.2-.2.2-.6 0-.8l-1.3-1.3c-.1-.1-.2-.2-.4-.2m-1.9 1.8-6.1 6V23h2.1l6.1-6.1zM12.5 7v5.2l4 2.4-1 1L11 13V7zM11 21.9c-5.1-.5-9-4.8-9-9.9C2 6.5 6.5 2 12 2c5.3 0 9.6 4.1 10 9.3-.3-.1-.6-.2-1-.2s-.7.1-1 .2C19.6 7.2 16.2 4 12 4c-4.4 0-8 3.6-8 8 0 4.1 3.1 7.5 7.1 7.9l-.1.2z"/></svg>
     </span>
-    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 10, 2026 22:45:08 UTC"><span class="timeago" datetime="2026-09-10T22:45:08+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 10, 2026 22:45:08 UTC">2026-09-10</span>
+    <span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-timeago" title="September 11, 2026 17:39:24 UTC"><span class="timeago" datetime="2026-09-11T17:39:24+00:00" locale="en"></span></span><span class="git-revision-date-localized-plugin git-revision-date-localized-plugin-iso_date" title="September 11, 2026 17:39:24 UTC">2026-09-11</span>
   </span>
 
     
