@@ -18,7 +18,7 @@ Before triggering a release, the releaser needs to choose the target version num
 
 ### 2. Inspect Changes Since the Last Release
 Compare `master` against the previous tag to see all merged PRs and commits:
-* On GitHub: Visit `https://github.com/gee-community/geemap/compare/<LATEST_TAG>...master`  
+* On GitHub: Visit `https://github.com/gee-community/geemap/compare/<LATEST_TAG>...master`
   *(Example: [`v0.38.6...master`](https://github.com/gee-community/geemap/compare/v0.38.6...master))*.
 * In Git: Run `git log <LATEST_TAG>..origin/master --oneline`.
 
