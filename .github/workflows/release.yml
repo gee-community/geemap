@@ -7,14 +7,9 @@ on:
         description: 'Version number to release (e.g., 0.39.0)'
         required: true
         type: string
-      publish_immediately:
-        description: 'Publish release immediately (false = creates draft release)'
-        required: false
-        type: boolean
-        default: true
 
 jobs:
-  create-release:
+  create-draft-release:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -53,19 +48,12 @@ jobs:
           git tag -a "${TAG_NAME}" -m "Release ${TAG_NAME}"
           git push origin "${TAG_NAME}"
 
-      - name: Create GitHub Release
+      - name: Create GitHub Draft Release
         env:
           GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.tag.outputs.tag_name }}
-          PUBLISH_IMMEDIATELY: ${{ inputs.publish_immediately }}
         run: |
-          DRAFT_FLAG=""
-          if [ "${PUBLISH_IMMEDIATELY}" != "true" ]; then
-            DRAFT_FLAG="--draft"
-          fi
-
           gh release create "${TAG}" \
             --title "${TAG}" \
-            --latest \
-            $DRAFT_FLAG \
+            --draft \
             --generate-notes
