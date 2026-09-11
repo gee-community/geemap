@@ -14,7 +14,7 @@ Before triggering a release, the releaser needs to choose the target version num
 
 ### 1. Check the Latest Released Version
 * On GitHub: Visit the **[Releases](https://github.com/gee-community/geemap/releases)** page (e.g., `v0.38.6`).
-* In Git: Run `git describe --tags origin/master` or `git tag -l "v0.*" --sort=-v:refname | head -n 1`.
+* In Git: Run `git describe --tags --abbrev=0 origin/master` or `git tag -l "v[0-9]*" --sort=-v:refname | head -n 1`.
 
 ### 2. Inspect Changes Since the Last Release
 Compare `master` against the previous tag to see all merged PRs and commits:
