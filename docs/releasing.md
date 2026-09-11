@@ -13,14 +13,14 @@ Releases are created directly from the `master` branch using GitHub Actions and 
 Before triggering a release, the releaser needs to choose the target version number according to [Semantic Versioning](https://semver.org) (`MAJOR.MINOR.PATCH`).
 
 ### 1. Check the Latest Released Version
-* On GitHub: Visit the **[Releases](https://github.com/gee-community/geemap/releases)** page (e.g., `v0.38.6`).
-* In Git: Run `git describe --tags --abbrev=0 origin/master` or `git tag -l "v[0-9]*" --sort=-v:refname | head -n 1`.
+Visit the **[Releases](https://github.com/gee-community/geemap/releases)** page and look for the release with the green `Latest` badge at the top (e.g., `v0.38.6`).
 
 ### 2. Inspect Changes Since the Last Release
-Compare `master` against the previous tag to see all merged PRs and commits:
-* On GitHub: Visit `https://github.com/gee-community/geemap/compare/<LATEST_TAG>...master`
-  *(Example: [`v0.38.6...master`](https://github.com/gee-community/geemap/compare/v0.38.6...master))*.
-* In Git: Run `git log <LATEST_TAG>..origin/master --oneline`.
+Visit the GitHub compare page comparing the latest tag to `master`:
+`https://github.com/gee-community/geemap/compare/<LATEST_TAG>...master`
+*(Example: [`v0.38.6...master`](https://github.com/gee-community/geemap/compare/v0.38.6...master))*.
+
+This view lists all merged PRs, commits, and file diffs since the last release.
 
 ### 3. Choose the Version Bump (Major, Minor, or Patch)
 
