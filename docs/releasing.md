@@ -51,11 +51,21 @@ The release process follows a safe **Draft ➔ Review ➔ Publish** workflow.
 ### Step 2: Review and Publish the Release
 1. Navigate to the **[Releases](https://github.com/gee-community/geemap/releases)** page on GitHub.
 2. Find the newly created **Draft Release** and click **Edit**.
-3. Review the auto-generated changelog notes and make any necessary edits or formatting adjustments.
-4. Click **Publish release** (ensuring "Set as latest release" is checked).
+3. **Review the draft against the following checklist:**
+   * **Tag & Title:** Verify that the release title and tag match the target version exactly (e.g., `v0.39.0`) with no typos or extra prefixes.
+   * **Changelog Scope:** Check the auto-generated **What's Changed** section and the **Full Changelog** compare link at the bottom (e.g. `compare/v0.38.6...v0.39.0`). Ensure the listed PRs and commits accurately span *only* the changes merged since the previous release.
+   * **Release Notes:** Clean up any redundant entries or formatting issues and highlight key new features or breaking changes if applicable.
+4. Click **Publish release** (ensure "Set as latest release" is checked).
 
-### Step 3: Verify Automated PyPI & Conda-Forge Publishing
-1. **PyPI Publishing**: Publishing the GitHub release in the web UI automatically triggers the **`Publish to PyPI`** workflow.
-   * Check the **[Actions](https://github.com/gee-community/geemap/actions/workflows/publish.yml)** tab to verify the build and upload.
-   * Verify the new package is live on [PyPI](https://pypi.org/project/geemap).
-2. **Conda-Forge**: The Conda-Forge automation bot will detect the new release and open a feedstock update PR on [conda-forge/geemap-feedstock](https://github.com/conda-forge/geemap-feedstock) within ~1 hour.
+### Step 3: Verify PyPI and Merge Conda-Forge PR
+1. **PyPI Publishing (Automated)**:
+   * Publishing the GitHub release in the web UI automatically triggers the **`Publish to PyPI`** workflow.
+   * Check the **[Actions](https://github.com/gee-community/geemap/actions/workflows/publish.yml)** tab to verify the build and upload succeed.
+   * Verify the new version is live on [PyPI](https://pypi.org/project/geemap).
+2. **Conda-Forge Feedstock (Action Required)**:
+   * Within ~1 hour of the PyPI publish, the `regro-cf-autotick-bot` will automatically open a version bump PR on the **[geemap-feedstock](https://github.com/conda-forge/geemap-feedstock/pulls)** repository.
+   * **Releaser Action Checklist:**
+     1. Open the new PR on the **[geemap-feedstock](https://github.com/conda-forge/geemap-feedstock/pulls)** repo.
+     2. **If dependencies have not changed:** Wait for the CI checks (Linux, macOS, Windows) to turn green, then click **Merge**.
+     3. **If dependencies changed in `pyproject.toml`:** Edit `recipe/meta.yaml` in the PR branch to add, remove, or pin the updated `host` and `run` dependencies before merging.
+     4. Once merged, Conda-Forge will automatically build and distribute the new package to the `conda-forge` channel.
