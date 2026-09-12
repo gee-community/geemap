@@ -3857,7 +3857,7 @@ def search_ee_data(
     regex: bool = False,
     source: str = "ee",
     types=None,
-    keys: list[str] = ["id", "provider", "tags", "title"],
+    keys: list[str] | None = None,
 ):
     """Searches Earth Engine data catalog.
 
@@ -3875,6 +3875,9 @@ def search_ee_data(
     Returns:
         list: Returns a list of assets.
     """
+    if keys is None:
+        keys = ["id", "provider", "tags", "title"]
+
     if isinstance(keywords, str):
         keywords = keywords.split(" ")
 
@@ -12457,7 +12460,7 @@ def download_ee_image_tiles_parallel(
     scale_offset: bool = False,
     unmask_value: float | None = None,
     column: str | None = None,
-    job_args: dict[str, Any] = {"n_jobs": -1},
+    job_args: dict[str, Any] | None = None,
     ee_init: bool = True,
     project_id: str | None = None,
     **kwargs,
@@ -12499,6 +12502,9 @@ def download_ee_image_tiles_parallel(
 
     """
     import joblib
+
+    if job_args is None:
+        job_args = {"n_jobs": -1}
 
     start = time.time()
 

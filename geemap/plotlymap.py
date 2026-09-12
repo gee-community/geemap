@@ -419,7 +419,7 @@ class Map(go.FigureWidget):
     def add_ee_layer(
         self,
         ee_object,
-        vis_params={},
+        vis_params=None,
         name: str | None = None,
         shown: bool = True,
         opacity: float = 1.0,
@@ -429,7 +429,7 @@ class Map(go.FigureWidget):
 
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
-            vis_params (dict, optional): The visualization parameters. Defaults to {}.
+            vis_params (dict, optional): The visualization parameters. Defaults to None.
             name: The name of the layer. Defaults to 'Layer N'.
             shown: A flag indicating whether the layer should be on by default.
             opacity: The layer's opacity represented as a number between 0 and 1.
