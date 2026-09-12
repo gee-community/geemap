@@ -162,4 +162,19 @@ def get_metadata(asset_id: str, source: str = "ee") -> None:
     display(html_widget)
 
 
-DATA = box.Box(get_data_dict(), frozen_box=True)
+_DATA = None
+
+
+def __getattr__(name: str) -> Any:
+    """Lazily loads module attributes to avoid network requests on import."""
+    global _DATA
+    if name == "DATA":
+        if _DATA is None:
+            _DATA = box.Box(get_data_dict(), frozen_box=True)
+        return _DATA
+    raise AttributeError(f"module '{__name__}' has no attribute '{name}'")
+
+
+def __dir__() -> list[str]:
+    """Returns the list of names in the module namespace."""
+    return list(globals().keys()) + ["DATA"]
