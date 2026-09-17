@@ -114,6 +114,7 @@ class ColormapsTest(unittest.TestCase):
         self.assertIsInstance(kwargs["cmap"], mpl.colors.ListedColormap)
         self.assertEqual(kwargs["cmap"].colors, ["#000000", "#ffffff"])
         self.assertIsInstance(kwargs["norm"], mpl.colors.BoundaryNorm)
+        self.assertEqual(kwargs["norm"].boundaries.tolist(), [0.0, 0.5, 1.0])
         self.assertEqual(kwargs["orientation"], "horizontal")
 
     def test_get_colorbar_shows_by_default(self):
