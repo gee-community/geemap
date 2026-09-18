@@ -305,7 +305,7 @@ def inspector_gui(m: geemap.Map | None = None):
         if hasattr(m, "pixel_values"):
             m.pixel_values = []  # pyrefly: ignore[missing-attribute]
         if hasattr(m, "marker_cluster"):
-            m.marker_cluster.markers = []
+            m.marker_cluster.markers = []  # pyrefly: ignore[missing-attribute]
         output.outputs = ()
 
     bands_chk.observe(chk_change, "value")
@@ -341,7 +341,7 @@ def inspector_gui(m: geemap.Map | None = None):
                 m.tool_control = None
             m.default_style = {"cursor": "default"}
 
-            m.marker_cluster.markers = []
+            m.marker_cluster.markers = []  # pyrefly: ignore[missing-attribute]
             m.pixel_values = []
             marker_cluster_layer = m.find_layer("Inspector Markers")
             if marker_cluster_layer is not None:
@@ -386,7 +386,7 @@ def inspector_gui(m: geemap.Map | None = None):
             if hasattr(m, "pixel_values"):
                 m.pixel_values = []  # pyrefly: ignore[missing-attribute]
             if hasattr(m, "marker_cluster"):
-                m.marker_cluster.markers = []
+                m.marker_cluster.markers = []  # pyrefly: ignore[missing-attribute]
         elif change["new"] == "Close":
             assert m.tool_control  # For pytype.  # pyrefly: ignore[missing-attribute]
             m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
