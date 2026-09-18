@@ -17898,7 +17898,7 @@ function.</p>
             <span class="n">tree_dict</span><span class="p">[</span><span class="n">first</span><span class="p">]</span><span class="o">.</span><span class="n">opened</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="n">tree</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">tree_dict</span><span class="p">[</span><span class="n">first</span><span class="p">])</span>
 
-        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">func_list</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
+        <span class="k">for</span> <span class="n">index</span><span class="p">,</span> <span class="n">func</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">func_list</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[bad-argument-type, not-iterable]</span>
             <span class="k">if</span> <span class="n">index</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">if</span> <span class="n">func</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tree_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                     <span class="n">node</span> <span class="o">=</span> <span class="n">tree_dict</span><span class="p">[</span><span class="n">func_list</span><span class="p">[</span><span class="n">index</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]]</span>  <span class="c1"># pyrefly: ignore[unsupported-operation]</span>
@@ -43131,7 +43131,7 @@ reinitialize with the current project to switch to the specified opt_url.</p>
 
     <span class="n">style_dict</span> <span class="o">=</span> <span class="p">{}</span>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">labels</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[bad-argument-type, not-iterable]</span>
         <span class="n">style_dict</span><span class="p">[</span><span class="n">label</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">color</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
             <span class="s2">&quot;pointSize&quot;</span><span class="p">:</span> <span class="n">pointSize</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
@@ -63539,7 +63539,7 @@ os.environ[&#39;LOCALTILESERVER_CLIENT_PREFIX&#39;] = f&#39;{os.environ[&#39;JUP
         <span class="k">else</span><span class="p">:</span>
             <span class="n">image</span> <span class="o">=</span> <span class="n">list_to_ee</span><span class="p">(</span><span class="n">np_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
             <span class="k">for</span> <span class="n">z</span> <span class="ow">in</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">dimz</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
-                <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">addBands</span><span class="p">(</span><span class="n">list_to_ee</span><span class="p">(</span><span class="n">np_array</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>
+                <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">addBands</span><span class="p">(</span><span class="n">list_to_ee</span><span class="p">(</span><span class="n">np_array</span><span class="p">[</span><span class="n">z</span><span class="p">]</span><span class="o">.</span><span class="n">tolist</span><span class="p">()))</span>  <span class="c1"># pyrefly: ignore[bad-index]</span>
 
         <span class="k">if</span> <span class="n">band_names</span><span class="p">:</span>
             <span class="n">image</span> <span class="o">=</span> <span class="n">image</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span><span class="n">band_names</span><span class="p">)</span>
@@ -69021,7 +69021,7 @@ not exist in the PMTiles file.</p>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The layers argument must be a string or a list.&quot;</span><span class="p">)</span>
 
-    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
+    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">layer_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">layers</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[bad-argument-type, not-iterable]</span>
         <span class="n">layer_point</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;id&quot;</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">layer_name</span><span class="si">}</span><span class="s2">_point&quot;</span><span class="p">,</span>
             <span class="s2">&quot;source&quot;</span><span class="p">:</span> <span class="s2">&quot;source&quot;</span><span class="p">,</span>
