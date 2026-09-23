@@ -4372,7 +4372,7 @@ class Map(core.Map):
 
         try:
             size = int(font_size.replace("pt", ""))
-        except:
+        except Exception:
             raise ValueError("font_size must be something like '10pt'")
 
         labels = []
