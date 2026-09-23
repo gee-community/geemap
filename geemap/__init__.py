@@ -1,11 +1,16 @@
 """Top-level package for geemap."""
 
-__author__ = """Qiusheng Wu"""
-__email__ = "giswqs@gmail.com"
-__version__ = "0.38.4.post0"
-
+import importlib.metadata
 import os
 import sys
+
+__author__ = """Qiusheng Wu"""
+__email__ = "giswqs@gmail.com"
+
+try:
+    __version__ = importlib.metadata.version(__package__ or __name__)
+except importlib.metadata.PackageNotFoundError:
+    __version__ = "unknown"
 
 import eerepr
 

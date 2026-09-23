@@ -30,7 +30,7 @@ jobs:
               run: uv python install ${{ matrix.python-version }}
 
             - name: Install dependencies
-              run: uv sync --python ${{ matrix.python-version }}
+              run: uv sync --python ${{ matrix.python-version }} --extra docs
 
             - name: Install optional dependencies
               run: |
@@ -46,7 +46,5 @@ jobs:
             - name: Running tests
               run: |
                   uv run python -m unittest discover tests/
-            - name: Install mkdocs
-              run: |
-                  uv pip install -r requirements_docs.txt
-                  uv run mkdocs gh-deploy --force
+            - name: Deploy docs
+              run: uv run mkdocs gh-deploy --force

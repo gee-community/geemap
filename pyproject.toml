@@ -1,10 +1,10 @@
 [build-system]
-requires = ["hatchling"]
+requires = ["hatchling", "hatch-vcs"]
 build-backend = "hatchling.build"
 
 [project]
 name = "geemap"
-version = "0.38.4.post0"
+dynamic = ["version"]
 description = "A Python package for interactive mapping using Google Earth Engine and ipyleaflet"
 readme = "README.md"
 requires-python = ">=3.12"
@@ -69,6 +69,41 @@ backends = [
 dev = [
     "watchfiles",
     "jupyterlab",
+    "beautifulsoup4>=4.12.0",
+    "pyrefly>=1.2.0",
+    "pytest>=9.1.1",
+]
+docs = [
+    "black",
+    "black[jupyter]",
+    "bump-my-version",
+    "codespell",
+    "coverage",
+    "deadlink",
+    "ipykernel",
+    "jupyter-client<8.11",
+    "livereload",
+    "mkdocs",
+    "mkdocs-git-revision-date-localized-plugin",
+    "mkdocs-git-revision-date-plugin",
+    "mkdocs-jupyter>=0.26.3",
+    "mkdocs-material>=9.7.7",
+    "mkdocs-pdf-export-plugin",
+    "mkdocstrings",
+    "mkdocstrings-crystal",
+    "mkdocstrings-python",
+    "nbconvert",
+    "nbformat",
+    "pip",
+    "pre-commit",
+    "pygments",
+    "pymdown-extensions",
+    "pyproject-flake8",
+    "sphinx",
+    "tox",
+    "twine",
+    "watchdog",
+    "wheel",
 ]
 extra = [
     "cartopy",
@@ -118,6 +153,8 @@ sql = [
 tests = [
     "beautifulsoup4",
     "psutil",
+    "pyrefly>=1.2.0",
+    "pytest>=9.1.1",
 ]
 apps = [
     "gradio",
@@ -154,20 +191,11 @@ exclude = ["docs*"]
 [tool.distutils.bdist_wheel]
 universal = true
 
-[tool.bumpversion]
-current_version = "0.38.4.post0"
-commit = true
-tag = true
+[tool.hatch.version]
+source = "vcs"
 
-[[tool.bumpversion.files]]
-filename = "pyproject.toml"
-search = 'version = "{current_version}"'
-replace = 'version = "{new_version}"'
-
-[[tool.bumpversion.files]]
-filename = "geemap/__init__.py"
-search = '__version__ = "{current_version}"'
-replace = '__version__ = "{new_version}"'
+[tool.hatch.version.raw-options]
+local_scheme = "no-local-version"
 
 [tool.flake8]
 exclude = [
@@ -221,12 +249,4 @@ Homepage = "https://github.com/gee-community/geemap"
 [tool.pyrefly]
 preset = "basic"
 project-includes = ["geemap", "tests"]
-ignore-missing-imports = ["arcpy", "datapane", "gdal", "google.colab", "google_drive_downloader", "langchain.embeddings.base", "langchain.indexes", "langchain.indexes.vectorstore", "langchain.schema", "osgeo", "rasterio.crs"]
-
-[tool.uv]
-no-build-isolation-package = ["keplergl"]
-
-[[tool.uv.index]]
-name = "default"
-url = "https://pypi.org/simple"
-default = true
+ignore-missing-imports = ["*"]
