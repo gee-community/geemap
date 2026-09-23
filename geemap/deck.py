@@ -131,8 +131,7 @@ class Map(pdk.Deck):
     def add_ee_layer(
         self,
         ee_object,
-        # TODO(schwehr): Do not use a mutable object as the default.
-        vis_params: dict[Any, Any] = {},
+        vis_params: dict[Any, Any] | None = None,
         name: str | None = None,
         **kwargs,
     ):
@@ -140,7 +139,7 @@ class Map(pdk.Deck):
 
         Args:
             ee_object (Collection|Feature|Image|MapId): The object to add to the map.
-            vis_params: The visualization parameters. Defaults to {}.
+            vis_params: The visualization parameters. Defaults to None.
             name: The name of the layer. Defaults to 'Layer N'.
             **kwargs: Additional keyword arguments for the pydeck Layer object.
         """
