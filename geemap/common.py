@@ -14848,7 +14848,7 @@ def geotiff_to_image(image: str, output: str) -> None:
 
         image = Image.fromarray(data.transpose(1, 2, 0))
 
-        image.save(output)
+        image.save(output)  # pyrefly: ignore[missing-attribute]
 
 
 def xee_to_image(
@@ -14981,7 +14981,7 @@ def array_to_memory_file(
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
             array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")  # pyrefly: ignore[missing-attribute]
-        array = array.values
+        array = array.values  # pyrefly: ignore[missing-attribute]
 
     if array.ndim == 3 and transpose:
         array = np.transpose(array, (1, 2, 0))
@@ -15127,7 +15127,7 @@ def array_to_image(
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
             array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")  # pyrefly: ignore[missing-attribute]
-        array = array.values
+        array = array.values  # pyrefly: ignore[missing-attribute]
 
     if array.ndim == 3 and transpose:
         array = np.transpose(array, (1, 2, 0))
