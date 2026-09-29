@@ -8285,13 +8285,13 @@ CA bundle to use.</p>
         <span class="n">url</span><span class="p">,</span> <span class="n">output</span><span class="p">,</span> <span class="n">quiet</span><span class="p">,</span> <span class="n">proxy</span><span class="p">,</span> <span class="n">speed</span><span class="p">,</span> <span class="n">use_cookies</span><span class="p">,</span> <span class="n">verify</span><span class="p">,</span> <span class="nb">id</span><span class="p">,</span> <span class="n">fuzzy</span><span class="p">,</span> <span class="n">resume</span>
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">unzip</span> <span class="ow">and</span> <span class="n">output</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.zip&quot;</span><span class="p">):</span>
-        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">unzip</span> <span class="ow">and</span> <span class="n">output</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.zip&quot;</span><span class="p">):</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">zip_ref</span><span class="p">:</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">quiet</span><span class="p">:</span>
                 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Extracting files...&quot;</span><span class="p">)</span>
-            <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>
+            <span class="n">zip_ref</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">output</span><span class="p">))</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
 
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
