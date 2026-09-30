@@ -55,6 +55,10 @@ jobs:
                   uv run python -c "from osgeo import gdal; print('gdal import successful')"
                   uv run gdalinfo --version
 
+            - name: Pyrefly type check
+              run: |
+                  uv run pyrefly check
+
             - name: Running tests
               run: |
                   uv run python -m unittest discover tests/

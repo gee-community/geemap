@@ -2874,7 +2874,7 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         else:
             image = list_to_ee(np_array[0].tolist())
             for z in np.arange(1, dimz):  # pyrefly: ignore[unbound-name]
-                image = image.addBands(list_to_ee(np_array[z].tolist()))
+                image = image.addBands(list_to_ee(np_array[z].tolist()))  # pyrefly: ignore[bad-index]
 
         if band_names:
             image = image.rename(band_names)
@@ -4346,7 +4346,7 @@ def build_api_tree(api_dict: dict, output_widget, layout_width: str = "100%"):
             tree_dict[first].opened = False
             tree.add_node(tree_dict[first])
 
-        for index, func in enumerate(func_list):  # pyrefly: ignore[bad-argument-type]
+        for index, func in enumerate(func_list):  # pyrefly: ignore[bad-argument-type, not-iterable]
             if index > 0:
                 if func not in tree_dict.keys():
                     node = tree_dict[func_list[index - 1]]  # pyrefly: ignore[unsupported-operation]
@@ -13059,7 +13059,7 @@ def ee_vector_style(
 
     style_dict = {}
 
-    for i, label in enumerate(labels):  # pyrefly: ignore[bad-argument-type]
+    for i, label in enumerate(labels):  # pyrefly: ignore[bad-argument-type, not-iterable]
         style_dict[label] = {
             "color": color[i],
             "pointSize": pointSize[i],
@@ -14848,7 +14848,7 @@ def geotiff_to_image(image: str, output: str) -> None:
 
         image = Image.fromarray(data.transpose(1, 2, 0))
 
-        image.save(output)
+        image.save(output)  # pyrefly: ignore[missing-attribute]
 
 
 def xee_to_image(
@@ -14981,7 +14981,7 @@ def array_to_memory_file(
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
             array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")  # pyrefly: ignore[missing-attribute]
-        array = array.values
+        array = array.values  # pyrefly: ignore[missing-attribute]
 
     if array.ndim == 3 and transpose:
         array = np.transpose(array, (1, 2, 0))
@@ -15127,7 +15127,7 @@ def array_to_image(
                 array = array.isel(time=0)  # pyrefly: ignore[bad-assignment]
 
             array = array.rename({y_dim: "y", x_dim: "x"}).transpose("y", "x")  # pyrefly: ignore[missing-attribute]
-        array = array.values
+        array = array.values  # pyrefly: ignore[missing-attribute]
 
     if array.ndim == 3 and transpose:
         array = np.transpose(array, (1, 2, 0))
@@ -15499,7 +15499,7 @@ def pmtiles_style(
     else:
         raise ValueError("The layers argument must be a string or a list.")
 
-    for i, layer_name in enumerate(layers):  # pyrefly: ignore[bad-argument-type]
+    for i, layer_name in enumerate(layers):  # pyrefly: ignore[bad-argument-type, not-iterable]
         layer_point = {
             "id": f"{layer_name}_point",
             "source": "source",

@@ -40,6 +40,6 @@ repos:
       hooks:
           - id: pyrefly-check
             name: pyrefly check
-            entry: uv run --all-extras pyrefly check
+            entry: uv run pyrefly check
             language: system
             pass_filenames: false

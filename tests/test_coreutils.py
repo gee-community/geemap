@@ -109,6 +109,15 @@ class TestHelpers(unittest.TestCase):
         with self.assertRaises(ValueError):
             coreutils.hex_to_rgb("garbage")
 
+    def test_rgb_to_hex(self):
+        """Tests rgb_to_hex."""
+        self.assertEqual(coreutils.rgb_to_hex(), "ffffff")
+        self.assertEqual(coreutils.rgb_to_hex((0, 0, 0)), "000000")
+        self.assertEqual(coreutils.rgb_to_hex((255, 0, 0)), "ff0000")
+        self.assertEqual(coreutils.rgb_to_hex((0, 255, 0)), "00ff00")
+        self.assertEqual(coreutils.rgb_to_hex((0, 0, 255)), "0000ff")
+        self.assertEqual(coreutils.rgb_to_hex((255, 127, 0)), "ff7f00")
+
     def test_random_string(self):
         """Tests random_string."""
         s = coreutils.random_string()

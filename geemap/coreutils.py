@@ -714,13 +714,13 @@ def download_file(
         url, output, quiet, proxy, speed, use_cookies, verify, id, fuzzy, resume
     )
 
-    if unzip and output.endswith(".zip"):
-        with zipfile.ZipFile(output, "r") as zip_ref:
+    if unzip and output.endswith(".zip"):  # pyrefly: ignore[missing-attribute]
+        with zipfile.ZipFile(output, "r") as zip_ref:  # pyrefly: ignore[no-matching-overload]
             if not quiet:
                 print("Extracting files...")
-            zip_ref.extractall(os.path.dirname(output))
+            zip_ref.extractall(os.path.dirname(output))  # pyrefly: ignore[no-matching-overload]
 
-    return os.path.abspath(output)
+    return os.path.abspath(output)  # pyrefly: ignore[no-matching-overload]
 
 
 def geojson_to_ee(

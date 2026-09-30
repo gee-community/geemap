@@ -1,0 +1,59 @@
+name: Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version number to release (e.g., 0.39.0)'
+        required: true
+        type: string
+
+jobs:
+  create-draft-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+        with:
+          ref: master
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Tag release
+        id: tag
+        env:
+          INPUT_VERSION: ${{ inputs.version }}
+        run: |
+          VERSION="${INPUT_VERSION#[vV]}"
+          if [[ ! "${VERSION}" =~ ^[0-9]+(\.[0-9]+)+(-[a-zA-Z0-9.]+)?$ ]]; then
+            echo "::error::Invalid version format: '${INPUT_VERSION}'. Expected semantic version like '0.39.0'."
+            exit 1
+          fi
+          TAG_NAME="v${VERSION}"
+          echo "tag_name=${TAG_NAME}" >> $GITHUB_OUTPUT
+
+          # Guard against reusing existing tag
+          if git rev-parse "${TAG_NAME}" >/dev/null 2>&1; then
+            echo "::error::Tag ${TAG_NAME} already exists in git history. Aborting."
+            exit 1
+          fi
+
+          git tag -a "${TAG_NAME}" -m "Release ${TAG_NAME}"
+          git push origin "${TAG_NAME}"
+
+      - name: Create GitHub Draft Release
+        env:
+          GH_TOKEN: ${{ secrets.REPO_WRITE_TOKEN || secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag_name }}
+        run: |
+          gh release create "${TAG}" \
+            --title "${TAG}" \
+            --draft \
+            --generate-notes
