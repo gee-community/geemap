@@ -23,7 +23,7 @@ import ee
 import matplotlib as mpl
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-from matplotlib import cm, colors
+from matplotlib import colors
 from matplotlib import font_manager as mfonts
 from matplotlib.lines import Line2D
 import numpy as np
@@ -235,7 +235,7 @@ def build_palette(cmap: str, n: int = 256) -> list[str]:
         colormap = mpl.colormaps[cmap].resampled(n)
     else:
         # For older matplotlib versions
-        colormap = cm.get_cmap(cmap, n)
+        colormap = plt.get_cmap(cmap, n)
 
     return [colors.rgb2hex(colormap(i / (n - 1) if n > 1 else 0)[:3]) for i in range(n)]
 
