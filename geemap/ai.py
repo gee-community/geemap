@@ -20,6 +20,20 @@ import logging
 import re
 import sys
 from typing import Any
+import builtins
+
+SAFE_BUILTINS = {
+    k: getattr(builtins, k) for k in [
+        'abs', 'all', 'any', 'ascii', 'bin', 'bool', 'bytearray', 'bytes', 'callable',
+        'chr', 'complex', 'dict', 'dir', 'divmod', 'enumerate', 'filter', 'float',
+        'format', 'frozenset', 'getattr', 'hasattr', 'hash', 'hex', 'id', 'int',
+        'isinstance', 'issubclass', 'iter', 'len', 'list', 'map', 'max', 'min',
+        'next', 'object', 'oct', 'ord', 'pow', 'print', 'property', 'range',
+        'repr', 'reversed', 'round', 'set', 'setattr', 'slice', 'sorted',
+        'str', 'sum', 'tuple', 'type', 'zip', 'Exception', 'ValueError', 'TypeError',
+        'KeyError', 'IndexError', 'AttributeError'
+    ]
+}
 import uuid
 
 import numpy as np
@@ -270,9 +284,9 @@ class Genie(ipywidgets.VBox):
             with debug_output:
                 print(f"IMAGE:\n {python_code}\n")
             try:
-                locals = {}
-                exec(f"import ee; im = {python_code}", {}, locals)
-                m.addLayer(locals["im"])
+                locals_env = {}
+                exec(f"im = {python_code}", {"__builtins__": SAFE_BUILTINS, "ee": ee}, locals_env)
+                m.addLayer(locals_env["im"])
             except Exception as e:
                 with debug_output:
                     print(f"ERROR: {e}")
@@ -790,7 +804,15 @@ def run_ee_code(code: str, ee: Any, geemap_instance: Map) -> None:
         with redirect_stdout(_):
             # Note that sometimes the geemap code uses both 'Map' and 'm' to refer to
             # a map instance.
-            exec(code, {"ee": ee, "Map": geemap_instance, "m": geemap_instance})
+            exec(
+                code,
+                {
+                    "__builtins__": SAFE_BUILTINS,
+                    "ee": ee,
+                    "Map": geemap_instance,
+                    "m": geemap_instance,
+                },
+            )
     except Exception:
         # Re-raise the exception with the original traceback.
         exc_type, exc_value, exc_traceback = sys.exc_info()
