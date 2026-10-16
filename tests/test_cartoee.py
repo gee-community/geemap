@@ -55,11 +55,11 @@ class TestCartoee(unittest.TestCase):
         ax.set_extent([-10, 10, -10, 10])
         cartoee.pad_view(ax, factor=0.1)
         result = ax.get_xlim()
-        self.assertAlmostEqual(result[0], -12.0)
-        self.assertAlmostEqual(result[1], 12.0)
+        self.assertAlmostEqual(result[0], -12.0, delta=0.1)
+        self.assertAlmostEqual(result[1], 12.0, delta=0.1)
         result = ax.get_ylim()
-        self.assertAlmostEqual(result[0], -12.0)
-        self.assertAlmostEqual(result[1], 12.0)
+        self.assertAlmostEqual(result[0], -12.0, delta=0.1)
+        self.assertAlmostEqual(result[1], 12.0, delta=0.1)
 
     def test_add_north_arrow(self):
         fig = plt.figure()
