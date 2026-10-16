@@ -10493,9 +10493,9 @@ the draw control.</p>
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_draw_control</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">MapDrawControl</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;The draw control widget in the map controls.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_find_widget_of_type</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-return]</span>
             <span class="n">MapDrawControl</span>
-        <span class="p">)</span>  <span class="c1"># pytype: disable=bad-return-type</span>
+        <span class="p">)</span>
 
     <span class="nd">@property</span>
     <span class="k">def</span><span class="w"> </span><span class="nf">_layer_manager</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">LayerManager</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
@@ -10587,7 +10587,7 @@ the draw control.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
 
 <span class="sd">        Args:</span>
@@ -10707,7 +10707,7 @@ the draw control.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Adds a widget or control to the map.</span>
 
 <span class="sd">        Args:</span>
@@ -10924,7 +10924,7 @@ the draw control.</p>
         <span class="p">)</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">basemap_control</span><span class="p">)</span>
 
-    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Removes a widget from the map.&quot;&quot;&quot;</span>
         <span class="n">basic_controls</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;search_control&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">,</span>
@@ -11268,7 +11268,7 @@ the draw control.</p>
                 <span class="k">if</span> <span class="n">provider</span> <span class="o">:=</span> <span class="n">ret_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">map_name</span><span class="p">):</span>
                     <span class="n">aliased_maps</span><span class="p">[</span><span class="n">alias</span><span class="p">]</span> <span class="o">=</span> <span class="n">provider</span>
                     <span class="k">break</span>
-        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">aliased_maps</span><span class="p">,</span> <span class="o">**</span><span class="n">ret_dict</span><span class="p">}</span>  <span class="c1"># pytype: disable=bad-return-type</span>
+        <span class="k">return</span> <span class="p">{</span><span class="o">**</span><span class="n">aliased_maps</span><span class="p">,</span> <span class="o">**</span><span class="n">ret_dict</span><span class="p">}</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">_get_preferred_basemap_name</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">basemap_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the aliased basemap name.</span>
@@ -11642,7 +11642,7 @@ the draw control.</p>
 <span class="normal">857</span>
 <span class="normal">858</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">add</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="n">position</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Adds a widget or control to the map.</span>
 
 <span class="sd">    Args:</span>
@@ -12130,7 +12130,7 @@ the draw control.</p>
 <span class="normal">710</span>
 <span class="normal">711</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_bounds</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">as_geojson</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
+<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Sequence</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the current map view.</span>
 
 <span class="sd">    Args:</span>
@@ -12370,7 +12370,7 @@ the draw control.</p>
 <span class="normal">1073</span>
 <span class="normal">1074</span>
 <span class="normal">1075</span>
-<span class="normal">1076</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pytype: disable=signature-mismatch</span>
+<span class="normal">1076</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">remove</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">widget</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Removes a widget from the map.&quot;&quot;&quot;</span>
     <span class="n">basic_controls</span> <span class="o">=</span> <span class="p">{</span>
         <span class="s2">&quot;search_control&quot;</span><span class="p">:</span> <span class="n">map_widgets</span><span class="o">.</span><span class="n">SearchBar</span><span class="p">,</span>

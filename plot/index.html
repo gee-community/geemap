@@ -7931,12 +7931,12 @@ template: str or dict or plotly.graph_objects.layout.Template instance
     <span class="n">labels</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;labels&quot;</span><span class="p">,</span> <span class="p">{})</span>
 
     <span class="k">if</span> <span class="n">x_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">labels</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_label</span>  <span class="c1"># pytype: disable=unsupported-operands</span>
+        <span class="n">labels</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">x_label</span>
     <span class="k">if</span> <span class="n">y_label</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
-            <span class="n">labels</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_label</span>  <span class="c1"># pytype: disable=unsupported-operands</span>
+            <span class="n">labels</span><span class="p">[</span><span class="n">y</span><span class="p">]</span> <span class="o">=</span> <span class="n">y_label</span>
         <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
-            <span class="n">labels</span><span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">y_label</span>  <span class="c1"># pytype: disable=unsupported-operands</span>
+            <span class="n">labels</span><span class="p">[</span><span class="n">y</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="n">y_label</span>
 
     <span class="k">if</span> <span class="n">layout_args</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">layout_args</span> <span class="o">=</span> <span class="p">{}</span>

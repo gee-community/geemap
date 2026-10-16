@@ -8177,9 +8177,7 @@
 <span class="normal">627</span>
 <span class="normal">628</span>
 <span class="normal">629</span>
-<span class="normal">630</span>
-<span class="normal">631</span>
-<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BarChart</span><span class="p">(</span><span class="n">BaseChartClass</span><span class="p">):</span>
+<span class="normal">630</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">BarChart</span><span class="p">(</span><span class="n">BaseChartClass</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Create Bar Chart.</span>
 
 <span class="sd">    All histogram/bar charts can use this object.</span>
@@ -8214,7 +8212,7 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">bar_chart</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">bq</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span>
                 <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]</span>
-            <span class="p">)</span>  <span class="c1"># pytype: disable=attribute-error</span>
+            <span class="p">)</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Gets the y-axis limits for the bar chart.</span>
@@ -8225,17 +8223,15 @@
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">:</span>
             <span class="n">ylim_min</span><span class="p">,</span> <span class="n">ylim_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># pytype: disable=attribute-error</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;feature.byFeature&quot;</span><span class="p">,</span> <span class="s2">&quot;feature.byProperty&quot;</span><span class="p">]:</span>
-                <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>
-                <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span>
-                    <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>
+                <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                    <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="p">)</span>
             <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;feature.groups&quot;</span><span class="p">]:</span>
-                <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>
-                <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>
+                <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
                 <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">ylim_max</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ylim_max</span> <span class="o">-</span> <span class="n">ylim_min</span><span class="p">)</span>
-            <span class="c1"># pytype: enable=attribute-error</span>
 
         <span class="k">return</span> <span class="n">ylim_min</span><span class="p">,</span> <span class="n">ylim_max</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
 
@@ -8247,8 +8243,8 @@
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">bar_chart</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
             <span class="n">display_legend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">display_legend</span><span class="p">,</span>
         <span class="p">)</span>
@@ -8473,7 +8469,7 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">bar_chart</span><span class="o">.</span><span class="n">tooltip</span> <span class="o">=</span> <span class="n">bq</span><span class="o">.</span><span class="n">Tooltip</span><span class="p">(</span>
             <span class="n">fields</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">]</span>
-        <span class="p">)</span>  <span class="c1"># pytype: disable=attribute-error</span>
+        <span class="p">)</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -8538,9 +8534,7 @@
 <span class="normal">596</span>
 <span class="normal">597</span>
 <span class="normal">598</span>
-<span class="normal">599</span>
-<span class="normal">600</span>
-<span class="normal">601</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="normal">599</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_ylim</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">float</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Gets the y-axis limits for the bar chart.</span>
 
 <span class="sd">    Returns:</span>
@@ -8549,17 +8543,15 @@
     <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">:</span>
         <span class="n">ylim_min</span><span class="p">,</span> <span class="n">ylim_max</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">ylim</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="c1"># pytype: disable=attribute-error</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;feature.byFeature&quot;</span><span class="p">,</span> <span class="s2">&quot;feature.byProperty&quot;</span><span class="p">]:</span>
-            <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>
-            <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span>
-                <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>
+            <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+            <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+                <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="p">)</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;feature.groups&quot;</span><span class="p">]:</span>
-            <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>
-            <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>
+            <span class="n">ylim_min</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+            <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">df</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">yProperty</span><span class="p">])</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="n">ylim_max</span> <span class="o">=</span> <span class="n">ylim_max</span> <span class="o">+</span> <span class="mf">0.2</span> <span class="o">*</span> <span class="p">(</span><span class="n">ylim_max</span> <span class="o">-</span> <span class="n">ylim_min</span><span class="p">)</span>
-        <span class="c1"># pytype: enable=attribute-error</span>
 
     <span class="k">return</span> <span class="n">ylim_min</span><span class="p">,</span> <span class="n">ylim_max</span>  <span class="c1"># pyrefly: ignore[unbound-name]</span>
 </code></pre></div></td></tr></table></div>
@@ -8584,7 +8576,9 @@
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">603</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">601</span>
+<span class="normal">602</span>
+<span class="normal">603</span>
 <span class="normal">604</span>
 <span class="normal">605</span>
 <span class="normal">606</span>
@@ -8611,9 +8605,7 @@
 <span class="normal">627</span>
 <span class="normal">628</span>
 <span class="normal">629</span>
-<span class="normal">630</span>
-<span class="normal">631</span>
-<span class="normal">632</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">630</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots the bar chart.&quot;&quot;&quot;</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
@@ -8621,8 +8613,8 @@
     <span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">bar_chart</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
         <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
         <span class="n">display_legend</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">display_legend</span><span class="p">,</span>
     <span class="p">)</span>
@@ -11196,7 +11188,9 @@ constructor.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">683</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">681</span>
+<span class="normal">682</span>
+<span class="normal">683</span>
 <span class="normal">684</span>
 <span class="normal">685</span>
 <span class="normal">686</span>
@@ -11230,9 +11224,7 @@ constructor.</p>
 <span class="normal">714</span>
 <span class="normal">715</span>
 <span class="normal">716</span>
-<span class="normal">717</span>
-<span class="normal">718</span>
-<span class="normal">719</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByFeature</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">717</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByFeature</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Define variables and get_data method for features by feature.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -11396,7 +11388,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">686</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">684</span>
+<span class="normal">685</span>
+<span class="normal">686</span>
 <span class="normal">687</span>
 <span class="normal">688</span>
 <span class="normal">689</span>
@@ -11413,9 +11407,7 @@ constructor.</p>
 <span class="normal">700</span>
 <span class="normal">701</span>
 <span class="normal">702</span>
-<span class="normal">703</span>
-<span class="normal">704</span>
-<span class="normal">705</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">703</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -11504,7 +11496,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">707</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">705</span>
+<span class="normal">706</span>
+<span class="normal">707</span>
 <span class="normal">708</span>
 <span class="normal">709</span>
 <span class="normal">710</span>
@@ -11514,9 +11508,7 @@ constructor.</p>
 <span class="normal">714</span>
 <span class="normal">715</span>
 <span class="normal">716</span>
-<span class="normal">717</span>
-<span class="normal">718</span>
-<span class="normal">719</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
+<span class="normal">717</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the x and y data for the chart.</span>
@@ -11571,7 +11563,9 @@ constructor.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">722</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">720</span>
+<span class="normal">721</span>
+<span class="normal">722</span>
 <span class="normal">723</span>
 <span class="normal">724</span>
 <span class="normal">725</span>
@@ -11622,9 +11616,7 @@ constructor.</p>
 <span class="normal">770</span>
 <span class="normal">771</span>
 <span class="normal">772</span>
-<span class="normal">773</span>
-<span class="normal">774</span>
-<span class="normal">775</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByProperty</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">773</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_ByProperty</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Define variables and get_data method for features by property.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -11650,7 +11642,7 @@ constructor.</p>
         <span class="n">default_labels</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
             <span class="n">features</span><span class="p">,</span> <span class="n">default_labels</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
-        <span class="p">)</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
+        <span class="p">)</span>
         <span class="k">if</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
             <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Please remove labels in kwargs and try again.&quot;</span><span class="p">)</span>
 
@@ -11828,7 +11820,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">725</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">723</span>
+<span class="normal">724</span>
+<span class="normal">725</span>
 <span class="normal">726</span>
 <span class="normal">727</span>
 <span class="normal">728</span>
@@ -11854,9 +11848,7 @@ constructor.</p>
 <span class="normal">748</span>
 <span class="normal">749</span>
 <span class="normal">750</span>
-<span class="normal">751</span>
-<span class="normal">752</span>
-<span class="normal">753</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">751</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">x_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">],</span>
@@ -11879,7 +11871,7 @@ constructor.</p>
     <span class="n">default_labels</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span>
         <span class="n">features</span><span class="p">,</span> <span class="n">default_labels</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
-    <span class="p">)</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
+    <span class="p">)</span>
     <span class="k">if</span> <span class="s2">&quot;labels&quot;</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
         <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="s2">&quot;Please remove labels in kwargs and try again.&quot;</span><span class="p">)</span>
 
@@ -11961,7 +11953,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">755</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">753</span>
+<span class="normal">754</span>
+<span class="normal">755</span>
 <span class="normal">756</span>
 <span class="normal">757</span>
 <span class="normal">758</span>
@@ -11979,9 +11973,7 @@ constructor.</p>
 <span class="normal">770</span>
 <span class="normal">771</span>
 <span class="normal">772</span>
-<span class="normal">773</span>
-<span class="normal">774</span>
-<span class="normal">775</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
+<span class="normal">773</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the x and y data for the chart.</span>
@@ -12044,7 +12036,9 @@ constructor.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">778</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">776</span>
+<span class="normal">777</span>
+<span class="normal">778</span>
 <span class="normal">779</span>
 <span class="normal">780</span>
 <span class="normal">781</span>
@@ -12104,9 +12098,7 @@ constructor.</p>
 <span class="normal">835</span>
 <span class="normal">836</span>
 <span class="normal">837</span>
-<span class="normal">838</span>
-<span class="normal">839</span>
-<span class="normal">840</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_Groups</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">838</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">Feature_Groups</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Define variables and get_data method for feature groups.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -12328,7 +12320,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">781</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">779</span>
+<span class="normal">780</span>
+<span class="normal">781</span>
 <span class="normal">782</span>
 <span class="normal">783</span>
 <span class="normal">784</span>
@@ -12354,9 +12348,7 @@ constructor.</p>
 <span class="normal">804</span>
 <span class="normal">805</span>
 <span class="normal">806</span>
-<span class="normal">807</span>
-<span class="normal">808</span>
-<span class="normal">809</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">807</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -12454,7 +12446,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">811</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">809</span>
+<span class="normal">810</span>
+<span class="normal">811</span>
 <span class="normal">812</span>
 <span class="normal">813</span>
 <span class="normal">814</span>
@@ -12467,9 +12461,7 @@ constructor.</p>
 <span class="normal">821</span>
 <span class="normal">822</span>
 <span class="normal">823</span>
-<span class="normal">824</span>
-<span class="normal">825</span>
-<span class="normal">826</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="normal">824</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_column_names</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">series_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">y_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the new column names for the DataFrame.</span>
 
 <span class="sd">    Args:</span>
@@ -12554,7 +12546,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">828</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">826</span>
+<span class="normal">827</span>
+<span class="normal">828</span>
 <span class="normal">829</span>
 <span class="normal">830</span>
 <span class="normal">831</span>
@@ -12564,9 +12558,7 @@ constructor.</p>
 <span class="normal">835</span>
 <span class="normal">836</span>
 <span class="normal">837</span>
-<span class="normal">838</span>
-<span class="normal">839</span>
-<span class="normal">840</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
+<span class="normal">838</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_data</span><span class="p">(</span>  <span class="c1"># pyrefly: ignore[bad-override]</span>
     <span class="bp">self</span><span class="p">,</span> <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">new_column_names</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">tuple</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the x and y data for the chart.</span>
@@ -12621,7 +12613,9 @@ constructor.</p>
 
               <details class="mkdocstrings-source">
                 <summary>Source code in <code>geemap/chart.py</code></summary>
-                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">635</span>
+                <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">633</span>
+<span class="normal">634</span>
+<span class="normal">635</span>
 <span class="normal">636</span>
 <span class="normal">637</span>
 <span class="normal">638</span>
@@ -12664,9 +12658,7 @@ constructor.</p>
 <span class="normal">675</span>
 <span class="normal">676</span>
 <span class="normal">677</span>
-<span class="normal">678</span>
-<span class="normal">679</span>
-<span class="normal">680</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LineChart</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
+<span class="normal">678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">class</span><span class="w"> </span><span class="nc">LineChart</span><span class="p">(</span><span class="n">BarChart</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A class to define variables and get_data method for a line chart.&quot;&quot;&quot;</span>
 
     <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
@@ -12694,8 +12686,8 @@ constructor.</p>
         <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">line_chart</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
             <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -12823,7 +12815,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">638</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">636</span>
+<span class="normal">637</span>
+<span class="normal">638</span>
 <span class="normal">639</span>
 <span class="normal">640</span>
 <span class="normal">641</span>
@@ -12836,9 +12830,7 @@ constructor.</p>
 <span class="normal">648</span>
 <span class="normal">649</span>
 <span class="normal">650</span>
-<span class="normal">651</span>
-<span class="normal">652</span>
-<span class="normal">653</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
+<span class="normal">651</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span>
     <span class="bp">self</span><span class="p">,</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">labels</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -12876,7 +12868,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">655</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">653</span>
+<span class="normal">654</span>
+<span class="normal">655</span>
 <span class="normal">656</span>
 <span class="normal">657</span>
 <span class="normal">658</span>
@@ -12899,9 +12893,7 @@ constructor.</p>
 <span class="normal">675</span>
 <span class="normal">676</span>
 <span class="normal">677</span>
-<span class="normal">678</span>
-<span class="normal">679</span>
-<span class="normal">680</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="normal">678</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">plot_chart</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Plots the line chart.&quot;&quot;&quot;</span>
     <span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span>
         <span class="n">title</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">title</span><span class="p">,</span>
@@ -12909,8 +12901,8 @@ constructor.</p>
     <span class="p">)</span>
 
     <span class="bp">self</span><span class="o">.</span><span class="n">line_chart</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pytype: disable=attribute-error</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">x_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">y_data</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[missing-attribute]</span>
         <span class="n">label</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">labels</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -13163,10 +13155,10 @@ constructor.</p>
 <span class="sd">        pd.DataFrame: The resulting DataFrame.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">y_values</span><span class="p">,</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span><span class="p">)):</span>
-        <span class="n">y_values</span> <span class="o">=</span> <span class="n">y_values</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>  <span class="c1"># pytype: disable=attribute-error</span>
+        <span class="n">y_values</span> <span class="o">=</span> <span class="n">y_values</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>  <span class="c1"># pyrefly: ignore[bad-assignment]</span>
 
     <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x_values</span><span class="p">,</span> <span class="p">(</span><span class="n">ee</span><span class="o">.</span><span class="n">Array</span><span class="p">,</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span><span class="p">)):</span>
-        <span class="n">x_values</span> <span class="o">=</span> <span class="n">x_values</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>  <span class="c1"># pytype: disable=attribute-error</span>
+        <span class="n">x_values</span> <span class="o">=</span> <span class="n">x_values</span><span class="o">.</span><span class="n">getInfo</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">axis</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="n">y_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">transpose</span><span class="p">(</span><span class="n">y_values</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[no-matching-overload]</span>
@@ -13411,7 +13403,9 @@ constructor.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1853</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1851</span>
+<span class="normal">1852</span>
+<span class="normal">1853</span>
 <span class="normal">1854</span>
 <span class="normal">1855</span>
 <span class="normal">1856</span>
@@ -13449,9 +13443,7 @@ constructor.</p>
 <span class="normal">1888</span>
 <span class="normal">1889</span>
 <span class="normal">1890</span>
-<span class="normal">1891</span>
-<span class="normal">1892</span>
-<span class="normal">1893</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
+<span class="normal">1891</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">array_values</span><span class="p">(</span>
     <span class="n">array</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]],</span>
     <span class="n">x_labels</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Array</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">List</span> <span class="o">|</span> <span class="nb">list</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">axis</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
@@ -13788,7 +13780,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1420</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1418</span>
+<span class="normal">1419</span>
+<span class="normal">1420</span>
 <span class="normal">1421</span>
 <span class="normal">1422</span>
 <span class="normal">1423</span>
@@ -13910,9 +13904,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1539</span>
 <span class="normal">1540</span>
 <span class="normal">1541</span>
-<span class="normal">1542</span>
-<span class="normal">1543</span>
-<span class="normal">1544</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doy_series_by_year</span><span class="p">(</span>
+<span class="normal">1542</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">doy_series_by_year</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">band_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -14026,7 +14018,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
     <span class="n">y_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
     <span class="n">x_cols</span> <span class="o">=</span> <span class="s2">&quot;doy&quot;</span>
 
-    <span class="k">return</span> <span class="n">Chart</span><span class="p">(</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
+    <span class="k">return</span> <span class="n">Chart</span><span class="p">(</span>
         <span class="n">df</span><span class="p">,</span>
         <span class="n">chart_type</span><span class="p">,</span>
         <span class="n">x_cols</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
@@ -14144,7 +14136,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">843</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">841</span>
+<span class="normal">842</span>
+<span class="normal">843</span>
 <span class="normal">844</span>
 <span class="normal">845</span>
 <span class="normal">846</span>
@@ -14165,9 +14159,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">861</span>
 <span class="normal">862</span>
 <span class="normal">863</span>
-<span class="normal">864</span>
-<span class="normal">865</span>
-<span class="normal">866</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_feature</span><span class="p">(</span>
+<span class="normal">864</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_feature</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">y_properties</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span>
@@ -14285,7 +14277,9 @@ feature in the legend.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">869</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">867</span>
+<span class="normal">868</span>
+<span class="normal">869</span>
 <span class="normal">870</span>
 <span class="normal">871</span>
 <span class="normal">872</span>
@@ -14311,9 +14305,7 @@ feature in the legend.</p>
 <span class="normal">892</span>
 <span class="normal">893</span>
 <span class="normal">894</span>
-<span class="normal">895</span>
-<span class="normal">896</span>
-<span class="normal">897</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_property</span><span class="p">(</span>
+<span class="normal">895</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_by_property</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">x_properties</span><span class="p">:</span> <span class="nb">list</span> <span class="o">|</span> <span class="nb">dict</span><span class="p">,</span>
     <span class="n">series_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -14465,7 +14457,9 @@ feature in the legend.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">900</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">898</span>
+<span class="normal">899</span>
+<span class="normal">900</span>
 <span class="normal">901</span>
 <span class="normal">902</span>
 <span class="normal">903</span>
@@ -14493,9 +14487,7 @@ feature in the legend.</p>
 <span class="normal">925</span>
 <span class="normal">926</span>
 <span class="normal">927</span>
-<span class="normal">928</span>
-<span class="normal">929</span>
-<span class="normal">930</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_groups</span><span class="p">(</span>
+<span class="normal">928</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_groups</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">x_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">y_property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
@@ -14725,7 +14717,9 @@ which can be used to retrieve data for the chart.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 933</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal"> 931</span>
+<span class="normal"> 932</span>
+<span class="normal"> 933</span>
 <span class="normal"> 934</span>
 <span class="normal"> 935</span>
 <span class="normal"> 936</span>
@@ -14870,9 +14864,7 @@ which can be used to retrieve data for the chart.</p>
 <span class="normal">1075</span>
 <span class="normal">1076</span>
 <span class="normal">1077</span>
-<span class="normal">1078</span>
-<span class="normal">1079</span>
-<span class="normal">1080</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_histogram</span><span class="p">(</span>
+<span class="normal">1078</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">feature_histogram</span><span class="p">(</span>
     <span class="n">features</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="nb">property</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">max_buckets</span><span class="p">:</span> <span class="nb">int</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15205,7 +15197,9 @@ which can be used to retrieve data for the chart.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1083</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1081</span>
+<span class="normal">1082</span>
+<span class="normal">1083</span>
 <span class="normal">1084</span>
 <span class="normal">1085</span>
 <span class="normal">1086</span>
@@ -15254,9 +15248,7 @@ which can be used to retrieve data for the chart.</p>
 <span class="normal">1129</span>
 <span class="normal">1130</span>
 <span class="normal">1131</span>
-<span class="normal">1132</span>
-<span class="normal">1133</span>
-<span class="normal">1134</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_class</span><span class="p">(</span>
+<span class="normal">1132</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_class</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">class_band</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
@@ -15304,7 +15296,7 @@ which can be used to retrieve data for the chart.</p>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">y_cols</span> <span class="o">=</span> <span class="n">class_labels</span>
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">Chart</span><span class="p">(</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">Chart</span><span class="p">(</span>
         <span class="n">df_transposed</span><span class="p">,</span> <span class="n">chart_type</span><span class="o">=</span><span class="n">chart_type</span><span class="p">,</span> <span class="n">x_cols</span><span class="o">=</span><span class="s2">&quot;label&quot;</span><span class="p">,</span> <span class="n">y_cols</span><span class="o">=</span><span class="n">y_cols</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
     <span class="p">)</span>
     <span class="k">return</span> <span class="n">fig</span>
@@ -15447,7 +15439,9 @@ function.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1137</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1135</span>
+<span class="normal">1136</span>
+<span class="normal">1137</span>
 <span class="normal">1138</span>
 <span class="normal">1139</span>
 <span class="normal">1140</span>
@@ -15475,9 +15469,7 @@ function.</p>
 <span class="normal">1162</span>
 <span class="normal">1163</span>
 <span class="normal">1164</span>
-<span class="normal">1165</span>
-<span class="normal">1166</span>
-<span class="normal">1167</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_region</span><span class="p">(</span>
+<span class="normal">1165</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_by_region</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="p">,</span>
@@ -15758,7 +15750,9 @@ objects. For axes_options, see https://bqplot.github.io/bqplot/api/axes.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1170</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1168</span>
+<span class="normal">1169</span>
+<span class="normal">1170</span>
 <span class="normal">1171</span>
 <span class="normal">1172</span>
 <span class="normal">1173</span>
@@ -15873,9 +15867,7 @@ objects. For axes_options, see https://bqplot.github.io/bqplot/api/axes.</p>
 <span class="normal">1282</span>
 <span class="normal">1283</span>
 <span class="normal">1284</span>
-<span class="normal">1285</span>
-<span class="normal">1286</span>
-<span class="normal">1287</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series</span><span class="p">(</span>
+<span class="normal">1285</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
     <span class="n">region_reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -15981,7 +15973,7 @@ objects. For axes_options, see https://bqplot.github.io/bqplot/api/axes.</p>
     <span class="n">y_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">y_cols</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;doy&quot;</span><span class="p">)</span>
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">Chart</span><span class="p">(</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">Chart</span><span class="p">(</span>
         <span class="n">df</span><span class="p">,</span>
         <span class="n">chart_type</span><span class="p">,</span>
         <span class="n">x_cols</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
@@ -16304,7 +16296,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1290</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1288</span>
+<span class="normal">1289</span>
+<span class="normal">1290</span>
 <span class="normal">1291</span>
 <span class="normal">1292</span>
 <span class="normal">1293</span>
@@ -16429,9 +16423,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1412</span>
 <span class="normal">1413</span>
 <span class="normal">1414</span>
-<span class="normal">1415</span>
-<span class="normal">1416</span>
-<span class="normal">1417</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series_by_region</span><span class="p">(</span>
+<span class="normal">1415</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_doy_series_by_region</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">band_name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
@@ -16547,7 +16539,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
     <span class="n">y_cols</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">tolist</span><span class="p">()</span>
     <span class="n">y_cols</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="s2">&quot;doy&quot;</span><span class="p">)</span>
 
-    <span class="n">fig</span> <span class="o">=</span> <span class="n">Chart</span><span class="p">(</span>  <span class="c1"># pytype: disable=wrong-arg-types</span>
+    <span class="n">fig</span> <span class="o">=</span> <span class="n">Chart</span><span class="p">(</span>
         <span class="n">df</span><span class="p">,</span>
         <span class="n">chart_type</span><span class="p">,</span>
         <span class="s2">&quot;doy&quot;</span><span class="p">,</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
@@ -16805,7 +16797,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1547</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1545</span>
+<span class="normal">1546</span>
+<span class="normal">1547</span>
 <span class="normal">1548</span>
 <span class="normal">1549</span>
 <span class="normal">1550</span>
@@ -16906,9 +16900,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1645</span>
 <span class="normal">1646</span>
 <span class="normal">1647</span>
-<span class="normal">1648</span>
-<span class="normal">1649</span>
-<span class="normal">1650</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
+<span class="normal">1648</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_histogram</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">scale</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
@@ -17163,7 +17155,9 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1653</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1651</span>
+<span class="normal">1652</span>
+<span class="normal">1653</span>
 <span class="normal">1654</span>
 <span class="normal">1655</span>
 <span class="normal">1656</span>
@@ -17189,9 +17183,7 @@ Can be one of 'mean', 'median', 'sum', 'min', 'max', etc.</p>
 <span class="normal">1676</span>
 <span class="normal">1677</span>
 <span class="normal">1678</span>
-<span class="normal">1679</span>
-<span class="normal">1680</span>
-<span class="normal">1681</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
+<span class="normal">1679</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_regions</span><span class="p">(</span>
     <span class="n">image</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Image</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span><span class="p">,</span>
@@ -17495,7 +17487,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1684</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1682</span>
+<span class="normal">1683</span>
+<span class="normal">1684</span>
 <span class="normal">1685</span>
 <span class="normal">1686</span>
 <span class="normal">1687</span>
@@ -17574,9 +17568,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1760</span>
 <span class="normal">1761</span>
 <span class="normal">1762</span>
-<span class="normal">1763</span>
-<span class="normal">1764</span>
-<span class="normal">1765</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
+<span class="normal">1763</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">region</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -17965,7 +17957,9 @@ https://bqplot.github.io/bqplot/api/axes</p>
 
             <details class="mkdocstrings-source">
               <summary>Source code in <code>geemap/chart.py</code></summary>
-              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1768</span>
+              <div class="highlight"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre><span></span><span class="normal">1766</span>
+<span class="normal">1767</span>
+<span class="normal">1768</span>
 <span class="normal">1769</span>
 <span class="normal">1770</span>
 <span class="normal">1771</span>
@@ -18045,9 +18039,7 @@ https://bqplot.github.io/bqplot/api/axes</p>
 <span class="normal">1845</span>
 <span class="normal">1846</span>
 <span class="normal">1847</span>
-<span class="normal">1848</span>
-<span class="normal">1849</span>
-<span class="normal">1850</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
+<span class="normal">1848</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">image_series_by_region</span><span class="p">(</span>
     <span class="n">image_collection</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">ImageCollection</span><span class="p">,</span>
     <span class="n">regions</span><span class="p">:</span> <span class="n">ee</span><span class="o">.</span><span class="n">FeatureCollection</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Geometry</span><span class="p">,</span>
     <span class="n">reducer</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="n">ee</span><span class="o">.</span><span class="n">Reducer</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
@@ -18486,7 +18478,7 @@ rows in the transposed DataFrame.</p>
 <span class="normal">96</span>
 <span class="normal">97</span>
 <span class="normal">98</span>
-<span class="normal">99</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">transpose_df</span><span class="p">(</span>  <span class="c1"># pytype: disable=annotation-type-mismatch</span>
+<span class="normal">99</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">transpose_df</span><span class="p">(</span>
     <span class="n">df</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">,</span>
     <span class="n">label_col</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span>
     <span class="n">index_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
