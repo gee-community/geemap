@@ -79,7 +79,7 @@ class TestXyzToFolium(unittest.TestCase):
         tiles = xyz_to_folium()
         self.assertIn("OpenStreetMap", tiles)  # custom xyz
         self.assertIn("FWS NWI Wetlands", tiles)  # custom wms
-        self.assertIn("CartoDB.Positron", tiles)  # xyzservices
+        self.assertIn("OpenTopoMap", tiles)  # xyzservices
 
         for name, tile_layer in tiles.items():
             if name in custom_tiles["wms"]:
@@ -176,7 +176,7 @@ class TestXyzToPlotly(unittest.TestCase):
         """Tests that xyz_to_plotly has custom xyz and xyzservices."""
         tiles = xyz_to_plotly()
         self.assertIn("OpenStreetMap", tiles)  # custom xyz
-        self.assertIn("CartoDB.Positron", tiles)  # xyzservices
+        self.assertIn("OpenTopoMap", tiles)  # xyzservices
 
         for _, tile_layer in tiles.items():
             self.assertIn("below", tile_layer)
