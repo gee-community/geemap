@@ -257,7 +257,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
         ):
             input_lines[index + 1] = (  # pyrefly: ignore[unsupported-operation]
                 line + input_lines[index + 1]
-            )  # pytype: disable=unsupported-operands
+            )
 
             continue
 
@@ -270,7 +270,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                 bracket_index = line.index("{")
                 matching_line_index, matching_char_index = find_matching_bracket(
                     input_lines, index, bracket_index  # pyrefly: ignore[bad-argument-type]
-                )  # pytype: disable=wrong-arg-types
+                )
 
                 func_start_index = line.index("function")
                 func_name = "func_" + coreutils.random_string()
@@ -295,7 +295,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                     if "}" in tmp_line:
                         current_num_of_nested_funcs -= 1
                     input_lines[index + 1 + sub_index] = (  # pyrefly: ignore[unsupported-operation]
-                        ""  # pytype: disable=unsupported-operands
+                        ""
                     )
 
                 current_num_of_nested_funcs -= 1
@@ -316,7 +316,7 @@ def check_map_functions(input_lines: Sequence[str]) -> list[str]:
                     footer_line = ""
 
                 input_lines[matching_line_index] = (  # pyrefly: ignore[unsupported-operation]
-                    footer_line  # pytype: disable=unsupported-operands
+                    footer_line
                 )
 
                 output_lines.append(header_line)
@@ -857,7 +857,7 @@ def js_to_python_dir(
         print(f"Processing {index + 1}/{len(files)}: {in_file}")
         out_file = os.path.splitext(in_file)[0] + "_geemap.py"
         out_file = out_file.replace(in_dir, out_dir)
-        js_to_python(  # pytype: disable=wrong-arg-types
+        js_to_python(
             in_file,  # pyrefly: ignore[bad-argument-type]
             out_file,
             use_qgis,

@@ -23,11 +23,9 @@ from . import common
 def get_data_csv() -> str:
     """Returns the path to the CSV file summarizing the Earth Engine Data Catalog."""
     pkg_dir = str(
-        # pytype: disable=attribute-error
-        importlib.resources.files("geemap")
+        importlib.resources.files("geemap")  # pyrefly: ignore[missing-attribute]
         .joinpath("geemap.py")
         .parent
-        # pytype: enable=attribute-error
     )
     template_dir = os.path.join(pkg_dir, "data/template")
     data_csv = os.path.join(template_dir, "ee_data_catalog.csv")

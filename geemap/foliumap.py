@@ -2031,7 +2031,7 @@ class Map(folium.Map):
             marker_icon = BeautifyIcon(
                 icon, icon_shape, border_width, border_color, **kwargs
             )
-            folium.Marker(  # pytype: disable=wrong-arg-types
+            folium.Marker(
                 location=[getattr(row, y), getattr(row, x)],
                 popup=popup_html,
                 icon=marker_icon,  # pyrefly: ignore[bad-argument-type]
@@ -2767,7 +2767,7 @@ class Map(folium.Map):
             encoding: The encoding of the GeoJSON file.
 
         """
-        gdf, legend_dict = classify(  # pytype: disable=attribute-error
+        gdf, legend_dict = classify(
             data=data,
             column=column,
             cmap=cmap,

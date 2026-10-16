@@ -605,7 +605,7 @@ def ee_export_image_collection_to_drive(
                 fileNamePrefix,
                 dimensions,
                 region,
-                scale,  # pytype: disable=attribute-error
+                scale,
                 crs,
                 crsTransform,
                 maxPixels,
@@ -1677,7 +1677,7 @@ def install_package(package: str | list[str]) -> None:
 
         # Print output in real-time
         while True:
-            output = process.stdout.readline()  # pytype: disable=attribute-error
+            output = process.stdout.readline()  # pyrefly: ignore[missing-attribute]
             if output == b"" and process.poll() is not None:
                 break
             if output:
@@ -1934,7 +1934,7 @@ def upload_to_imgur(in_gif: str) -> None:
     ):
         proc = subprocess.Popen(["imgur-uploader", in_gif], stdout=subprocess.PIPE)
         for _ in range(0, 2):
-            line = proc.stdout.readline()  # pytype: disable=attribute-error
+            line = proc.stdout.readline()  # pyrefly: ignore[missing-attribute]
             print(line.rstrip().decode("utf-8"))
     else:
         print(
@@ -2180,7 +2180,7 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
         latitude (str, optional): Column name for the latitude column. Defaults to 'latitude'.
         longitude (str, optional): Column name for the longitude column. Defaults to 'longitude'.
     """
-    import whitebox
+    import whitebox  # pyrefly: ignore[missing-import]
 
     if in_csv.startswith(("http://", "https://")) and in_csv.endswith(".csv"):
         out_dir = os.path.join(os.path.expanduser("~"), "Downloads")
@@ -2201,11 +2201,9 @@ def csv_points_to_shp(in_csv, out_shp, latitude="latitude", longitude="longitude
     with open(in_csv, encoding="utf-8") as csv_file:
         reader = csv.DictReader(csv_file)
         fields = reader.fieldnames
-        # pytype: disable=attribute-error
         # TODO(schwehr): Fix this.
-        xfield = fields.index(longitude)
-        yfield = fields.index(latitude)
-        # pytype: enable=attribute-error
+        xfield = fields.index(longitude)  # pyrefly: ignore[missing-attribute]
+        yfield = fields.index(latitude)  # pyrefly: ignore[missing-attribute]
 
     wbt.csv_points_to_vector(in_csv, out_shp, xfield=xfield, yfield=yfield, epsg=4326)
 
@@ -2443,7 +2441,7 @@ def shp_to_geojson(in_shp, filename=None, **kwargs):
     Returns:
         object: The json object representing the shapefile.
     """
-    import shapefile
+    import shapefile  # pyrefly: ignore[missing-import]
 
     in_shp = os.path.abspath(in_shp)
 
@@ -2874,7 +2872,7 @@ def numpy_to_ee(np_array, crs=None, transform=None, transformWkt=None, band_name
         else:
             image = list_to_ee(np_array[0].tolist())
             for z in np.arange(1, dimz):  # pyrefly: ignore[unbound-name]
-                image = image.addBands(list_to_ee(np_array[z].tolist()))  # pyrefly: ignore[bad-index]
+                image = image.addBands(list_to_ee(np_array[z].tolist()))
 
         if band_names:
             image = image.rename(band_names)
@@ -3392,9 +3390,7 @@ def create_colorbar(
     from PIL import Image, ImageDraw, ImageFont
 
     warnings.simplefilter("ignore")
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
 
     if out_file is None:
         filename = f"colorbar_{coreutils.random_string()}.png"
@@ -3485,7 +3481,7 @@ def create_colorbar(
         del draw
 
     if vertical:
-        im = im.transpose(Image.ROTATE_90)
+        im = im.transpose(Image.ROTATE_90)  # pyrefly: ignore[missing-attribute]
 
     width, height = im.size
 
@@ -3530,10 +3526,10 @@ def create_colorbar(
         font_color = coreutils.check_color(font_color)
 
         draw = ImageDraw.Draw(im)
-        w, h = draw.textsize(labels[0], font=font)  # pytype: disable=attribute-error
+        w, h = draw.textsize(labels[0], font=font)  # pyrefly: ignore[missing-attribute]
 
         for label in labels:
-            w_tmp, h_tmp = draw.textsize(label, font)  # pytype: disable=attribute-error
+            w_tmp, h_tmp = draw.textsize(label, font)  # pyrefly: ignore[missing-attribute]
             if w_tmp > w:
                 w = w_tmp
             if h_tmp > h:
@@ -3550,7 +3546,7 @@ def create_colorbar(
         background.paste(im, xy, im)
 
         for index, label in enumerate(labels):
-            w_tmp, h_tmp = draw.textsize(label, font)  # pytype: disable=attribute-error
+            w_tmp, h_tmp = draw.textsize(label, font)  # pyrefly: ignore[missing-attribute]
 
             if vertical:
                 spacing = 5
@@ -3741,7 +3737,7 @@ def geocode(location: str, max_rows: int = 10, reverse: bool = False):
     Returns:
         list: Returns a list of locations.
     """
-    import geocoder
+    import geocoder  # pyrefly: ignore[missing-import]
 
     if not isinstance(location, str):
         print("The location must be a string.")
@@ -4068,9 +4064,7 @@ def ee_api_to_csv(
     """
     import bs4
 
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
     csv_file = os.path.join(template_dir, "ee_api_docs.csv")
@@ -4190,9 +4184,7 @@ def read_api_csv() -> dict[str, Any]:
         The dictionary containing information about each function, including name,
             description, function form, return type, arguments, html.
     """
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
 
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
@@ -4226,22 +4218,20 @@ def read_api_csv() -> dict[str, Any]:
             types = line.get("type")
             details = line.get("details")
 
-            # pytype: disable=attribute-error
-            if "|" in arguments:
-                argument_items = arguments.split("|")
+            if "|" in arguments:  # pyrefly: ignore[not-iterable]
+                argument_items = arguments.split("|")  # pyrefly: ignore[missing-attribute]
             else:
                 argument_items = [arguments]
 
-            if "|" in types:
-                types_items = types.split("|")
+            if "|" in types:  # pyrefly: ignore[not-iterable]
+                types_items = types.split("|")  # pyrefly: ignore[missing-attribute]
             else:
                 types_items = [types]
 
-            if "|" in details:
-                details_items = details.split("|")
+            if "|" in details:  # pyrefly: ignore[not-iterable]
+                details_items = details.split("|")  # pyrefly: ignore[missing-attribute]
             else:
                 details_items = [details]
-            # pytype: enable=attribute-error
 
             out_argument_lines = []
 
@@ -4346,7 +4336,7 @@ def build_api_tree(api_dict: dict, output_widget, layout_width: str = "100%"):
             tree_dict[first].opened = False
             tree.add_node(tree_dict[first])
 
-        for index, func in enumerate(func_list):  # pyrefly: ignore[bad-argument-type, not-iterable]
+        for index, func in enumerate(func_list):  # pyrefly: ignore[not-iterable]
             if index > 0:
                 if func not in tree_dict.keys():
                     node = tree_dict[func_list[index - 1]]  # pyrefly: ignore[unsupported-operation]
@@ -4486,11 +4476,9 @@ def ee_search(asset_limit: int = 100):
             right_widget.children = [output_widget]
             search_box.value = "Loading..."
             if flags.assets is None:
-                # pytype: disable=attribute-error
                 asset_tree, asset_widget, asset_dict = build_asset_tree(
                     limit=asset_limit
                 )
-                # pytype: enable=attribute-error
                 flags.assets = asset_tree
                 flags.asset_dict = asset_dict
                 flags.asset_import = asset_widget
@@ -4594,10 +4582,8 @@ def build_asset_tree(limit: int = 100):
     tree_dict[user_id] = root_node
     tree.add_node(root_node)
 
-    # pytype: disable=module-attr
     # TODO: fparse is no longer in geeadd.
-    collection_list, table_list, image_list, folder_paths = geeadd.fparse(user_path)
-    # pytype: enable=module-attr
+    collection_list, table_list, image_list, folder_paths = geeadd.fparse(user_path)  # pyrefly: ignore[missing-attribute]
     collection_list = collection_list[:limit]
     table_list = table_list[:limit]
     image_list = image_list[:limit]
@@ -5117,9 +5103,7 @@ def vis_to_qml(ee_class_table: str, out_qml: str) -> None:
         ee_class_table: An Earth Engine class table with triple quotes.
         out_qml: File path to the output QGIS Layer Style (.qml).
     """
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
 
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
@@ -5167,9 +5151,7 @@ def create_nlcd_qml(out_qml: str) -> None:
     Args:
         out_qml: File path to the output qml.
     """
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
 
     data_dir = os.path.join(pkg_dir, "data")
     template_dir = os.path.join(data_dir, "template")
@@ -5749,11 +5731,9 @@ def stac_tile(
             timeout=timeout,
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_item(), params=kwargs, timeout=timeout
+            titiler_endpoint.url_for_stac_item(), params=kwargs, timeout=timeout  # pyrefly: ignore[missing-attribute]
         ).json()
-        # pytype: enable=attribute-error
 
     return r["tiles"][0]
 
@@ -5803,11 +5783,9 @@ def stac_bounds(
             f"{titiler_endpoint}/stac/bounds", params=kwargs, timeout=timeout
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_bounds(), params=kwargs, timeout=timeout
+            titiler_endpoint.url_for_stac_bounds(), params=kwargs, timeout=timeout  # pyrefly: ignore[missing-attribute]
         ).json()
-        # pytype: enable=attribute-error
 
     return r["bounds"]
 
@@ -5885,11 +5863,9 @@ def stac_bands(
             f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout
+            titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout  # pyrefly: ignore[missing-attribute]
         ).json()
-        # pytype: enable=attribute-error
 
     return r
 
@@ -5944,11 +5920,9 @@ def stac_stats(
             f"{titiler_endpoint}/stac/statistics", params=kwargs, timeout=timeout
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_statistics(), params=kwargs, timeout=timeout
+            titiler_endpoint.url_for_stac_statistics(), params=kwargs, timeout=timeout  # pyrefly: ignore[missing-attribute]
         ).json()
-        # pytype: enable=attribute-error
 
     return r
 
@@ -6003,11 +5977,9 @@ def stac_info(
             f"{titiler_endpoint}/stac/info", params=kwargs, timeout=timeout
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_info(), params=kwargs, timeout=timeout
+            titiler_endpoint.url_for_stac_info(), params=kwargs, timeout=timeout  # pyrefly: ignore[missing-attribute]
         ).json()
-        # pytype: enable=attribute-error
 
     return r
 
@@ -6062,11 +6034,9 @@ def stac_info_geojson(
             f"{titiler_endpoint}/stac/info.geojson", params=kwargs, timeout=timeout
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_info_geojson(), params=kwargs, timeout=timeout
+            titiler_endpoint.url_for_stac_info_geojson(), params=kwargs, timeout=timeout  # pyrefly: ignore[missing-attribute]
         ).json()
-        # pytype: enable=attribute-error
 
     return r
 
@@ -6116,11 +6086,9 @@ def stac_assets(
             f"{titiler_endpoint}/stac/assets", params=kwargs, timeout=timeout
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout
+            titiler_endpoint.url_for_stac_assets(), params=kwargs, timeout=timeout  # pyrefly: ignore[missing-attribute]
         ).json()
-        # pytype: enable=attribute-error
 
     return r
 
@@ -6189,13 +6157,11 @@ def stac_pixel_value(
             f"{titiler_endpoint}/stac/{lon},{lat}", params=kwargs, timeout=timeout
         ).json()
     else:
-        # pytype: disable=attribute-error
         r = requests.get(
-            titiler_endpoint.url_for_stac_pixel_value(lon, lat),
+            titiler_endpoint.url_for_stac_pixel_value(lon, lat),  # pyrefly: ignore[missing-attribute]
             params=kwargs,
             timeout=timeout,
         ).json()
-        # pytype: enable=attribute-error
 
     if "detail" in r:
         if verbose:
@@ -8680,7 +8646,7 @@ def vector_styling(
 
 
 def is_GCS(in_shp):
-    import pycrs
+    import pycrs  # pyrefly: ignore[missing-import]
 
     if not os.path.exists(in_shp):
         raise FileNotFoundError("The input shapefile could not be found.")
@@ -10011,7 +9977,7 @@ def planet_tile_by_month(
 
 def get_current_latlon():
     """Get the current latitude and longitude based on the user's location."""
-    import geocoder
+    import geocoder  # pyrefly: ignore[missing-import]
 
     g = geocoder.ip("me")
     props = g.geojson["features"][0]["properties"]
@@ -10029,9 +9995,7 @@ def get_census_dict(reset=False):
     Returns:
         dict: A dictionary of Census data.
     """
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
 
     census_data = os.path.join(pkg_dir, "data/census_data.json")
 
@@ -10575,7 +10539,7 @@ def get_palettable(types=None):
     Returns:
         list: A list of palettable color palettes.
     """
-    import palettable
+    import palettable  # pyrefly: ignore[missing-import]
 
     if types is not None and (not isinstance(types, list)):
         raise ValueError("The types must be a list.")
@@ -10839,7 +10803,7 @@ def points_from_xy(
     else:
         raise TypeError("The data must be a pandas DataFrame or a csv file path.")
 
-    return gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs))  # pyrefly: ignore[bad-index]
+    return gpd.GeoDataFrame(df, geometry=gpd.points_from_xy(df[x], df[y], z=z, crs=crs))
 
 
 def vector_centroids(ee_object):
@@ -11324,7 +11288,7 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
 
     backend = backend.lower()
     if backend in ["pyvista", "ipygany", "panel"]:
-        import pyntcloud
+        import pyntcloud  # pyrefly: ignore[missing-import]
 
         if backend == "pyvista":
             backend = None
@@ -11342,7 +11306,7 @@ def view_lidar(filename, cmap="terrain", backend="pyvista", background=None, **k
         )
 
     elif backend == "open3d":
-        import laspy
+        import laspy  # pyrefly: ignore[missing-import]
         import open3d as o3d
 
         try:
@@ -11371,7 +11335,7 @@ def read_lidar(filename, **kwargs):
     Returns:
         LasData: The LasData object return by laspy.read.
     """
-    import laspy
+    import laspy  # pyrefly: ignore[missing-import]
 
     if (
         isinstance(filename, str)
@@ -11400,7 +11364,7 @@ def convert_lidar(
     Returns:
         aspy.lasdatas.base.LasBase: The converted LasData object.
     """
-    import laspy
+    import laspy  # pyrefly: ignore[missing-import]
 
     if isinstance(source, str):
         source = read_lidar(source)
@@ -11431,14 +11395,12 @@ def write_lidar(
         do_compress: Flags to indicate if you want to compress the data. Defaults to None.
         laz_backend: The laz backend to use. Defaults to None.
     """
-    import laspy
+    import laspy  # pyrefly: ignore[missing-import]
 
     if isinstance(source, str):
         source = read_lidar(source)
 
-    # pytype: disable=attribute-error
     source.write(destination, do_compress=do_compress, laz_backend=laz_backend)
-    # pytype: enable=attribute-error
 
 
 def download_folder(
@@ -11466,7 +11428,7 @@ def download_folder(
     Returns:
         list: List of files downloaded, or None if failed.
     """
-    import gdown
+    import gdown  # pyrefly: ignore[missing-import]
 
     return gdown.download_folder(
         url, id, output, quiet, proxy, speed, use_cookies, remaining_ok
@@ -11859,7 +11821,7 @@ def classify(
         pd.DataFrame, dict: A pandas dataframe with the classification applied and a legend dictionary.
     """
     import geopandas as gpd
-    import mapclassify
+    import mapclassify  # pyrefly: ignore[missing-import]
 
     if isinstance(data, (gpd.GeoDataFrame, pd.DataFrame)):
         df = data
@@ -12712,7 +12674,7 @@ def plot_raster(
         print("The plot_raster() function is not supported in Colab.")
         return
 
-    import pvxarray
+    import pvxarray  # pyrefly: ignore[missing-import]
     import rioxarray
 
     if isinstance(image, str):
@@ -12722,12 +12684,10 @@ def plot_raster(
     else:
         raise ValueError("image must be a string or xarray.Dataset.")
 
-    # pytype: disable=attribute-error
     if band is not None:
-        da = da[dict(band=band)]
+        da = da[dict(band=band)]  # pyrefly: ignore[bad-index]
 
-    da = da.rio.reproject(proj)
-    # pytype: enable=attribute-error
+    da = da.rio.reproject(proj)  # pyrefly: ignore[missing-attribute]
     kwargs["cmap"] = cmap
     kwargs["figsize"] = figsize
     da.plot(**kwargs)
@@ -12771,8 +12731,8 @@ def plot_raster_3d(
         print("The plot_raster_3d() function is not supported in Colab.")
         return
 
-    import pvxarray
-    import pyvista
+    import pvxarray  # pyrefly: ignore[missing-import]
+    import pyvista  # pyrefly: ignore[missing-import]
     import rioxarray
 
     open_kwargs = open_kwargs or {}
@@ -12788,12 +12748,10 @@ def plot_raster_3d(
     else:
         raise ValueError("image must be a string or xarray.Dataset.")
 
-    # pytype: disable=attribute-error
     if band is not None:
-        da = da[dict(band=band)]
+        da = da[dict(band=band)]  # pyrefly: ignore[bad-index]
 
-    da = da.rio.reproject(proj)
-    # pytype: enable=attribute-error
+    da = da.rio.reproject(proj)  # pyrefly: ignore[missing-attribute]
     mesh_kwargs["factor"] = factor
     kwargs["cmap"] = cmap
 
@@ -13059,7 +13017,7 @@ def ee_vector_style(
 
     style_dict = {}
 
-    for i, label in enumerate(labels):  # pyrefly: ignore[bad-argument-type, not-iterable]
+    for i, label in enumerate(labels):  # pyrefly: ignore[not-iterable]
         style_dict[label] = {
             "color": color[i],
             "pointSize": pointSize[i],
@@ -13437,9 +13395,7 @@ def mosaic(
 
     if verbose:
         print("Merging rasters...")
-    # pytype: disable=attribute-error
     arr, transform = merge(raster_to_mosiac, **merge_args)
-    # pytype: enable=attribute-error
 
     output_meta = raster.meta.copy()
     output_meta.update(
@@ -13565,9 +13521,7 @@ def create_legend(
 
     style = style or {}
 
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
 
     legend_template = os.path.join(pkg_dir, "data/template/legend_style.html")
 
@@ -13746,10 +13700,8 @@ def create_legend(
             elif index == 22:
                 for index, key in enumerate(labels):
                     color = colors[index]
-                    # pytype: disable=attribute-error
                     if not color.startswith("#"):
                         color = "#" + color
-                    # pytype: enable=attribute-error
                     item = "                    <li><span style='background:{};opacity:{};'></span>{}</li>\n".format(
                         color, opacity, key
                     )
@@ -13787,7 +13739,7 @@ def arc_active_map():
         arcpy.Map: The active map in ArcGIS Pro.
     """
     if is_arcpy():
-        import arcpy
+        import arcpy  # pyrefly: ignore[missing-import]
 
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         m = aprx.activeMap
@@ -13803,7 +13755,7 @@ def arc_active_view():
         arcpy.MapView: The active view in ArcGIS Pro.
     """
     if is_arcpy():
-        import arcpy
+        import arcpy  # pyrefly: ignore[missing-import]
 
         aprx = arcpy.mp.ArcGISProject("CURRENT")
         view = aprx.activeView
@@ -13844,7 +13796,7 @@ def arc_zoom_to_extent(xmin: float, ymin: float, xmax: float, ymax: float) -> No
         ymax: The maximum y value of the extent.
     """
     if is_arcpy():
-        import arcpy
+        import arcpy  # pyrefly: ignore[missing-import]
 
         view = arc_active_view()
         if view is not None:
@@ -14404,7 +14356,7 @@ def tms_to_geotiff(
     gdal.UseExceptions()
 
     try:
-        import httpx
+        import httpx  # pyrefly: ignore[missing-import]
 
         SESSION = httpx.Client()
     except ImportError:
@@ -14518,12 +14470,10 @@ def tms_to_geotiff(
         y2 = round(base_size[1] * yfrac)
         imgw = round(base_size[0] * (x1 - x0))
         imgh = round(base_size[1] * (y1 - y0))
-        # pytype: disable=attribute-error
         retim = bigim.crop((x2, y2, x2 + imgw, y2 + imgh))
-        # pytype: enable=attribute-error
         if retim.mode == "RGBA" and retim.getextrema()[3] == (255, 255):
             retim = retim.convert("RGB")
-        bigim.close()  # pytype: disable=attribute-error
+        bigim.close()
         return retim
 
     def get_tile(url):
@@ -14563,11 +14513,9 @@ def tms_to_geotiff(
         futures = []
         with concurrent.futures.ThreadPoolExecutor(5) as executor:
             for x, y in corners:
-                # pytype: disable=attribute-error
                 futures.append(
                     executor.submit(get_tile, source.format(z=zoom, x=x, y=y))
                 )
-                # pytype: enable=attribute-error
             bbox = (math.floor(x0), math.floor(y0), math.ceil(x1), math.ceil(y1))
             bigim = None
             base_size = [256, 256]
@@ -14846,7 +14794,7 @@ def geotiff_to_image(image: str, output: str) -> None:
             data = data.reshape((1, data.shape[0], data.shape[1]))
             data = data.repeat(3, axis=0)
 
-        image = Image.fromarray(data.transpose(1, 2, 0))
+        image = Image.fromarray(data.transpose(1, 2, 0))  # pyrefly: ignore[bad-assignment]
 
         image.save(output)  # pyrefly: ignore[missing-attribute]
 
@@ -15499,7 +15447,7 @@ def pmtiles_style(
     else:
         raise ValueError("The layers argument must be a string or a list.")
 
-    for i, layer_name in enumerate(layers):  # pyrefly: ignore[bad-argument-type, not-iterable]
+    for i, layer_name in enumerate(layers):  # pyrefly: ignore[not-iterable]
         layer_point = {
             "id": f"{layer_name}_point",
             "source": "source",

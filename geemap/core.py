@@ -594,9 +594,9 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
     @property
     def _draw_control(self) -> MapDrawControl | None:
         """The draw control widget in the map controls."""
-        return self._find_widget_of_type(
+        return self._find_widget_of_type(  # pyrefly: ignore[bad-return]
             MapDrawControl
-        )  # pytype: disable=bad-return-type
+        )
 
     @property
     def _layer_manager(self) -> map_widgets.LayerManager | None:
@@ -688,7 +688,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
 
     def get_bounds(  # pyrefly: ignore[bad-override]
         self, as_geojson: bool = False
-    ) -> Sequence:  # pytype: disable=signature-mismatch
+    ) -> Sequence:
         """Returns the bounds of the current map view.
 
         Args:
@@ -808,7 +808,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
 
     def add(  # pyrefly: ignore[bad-override]
         self, obj: Any, position: str = "", **kwargs: Any
-    ) -> None:  # pytype: disable=signature-mismatch
+    ) -> None:
         """Adds a widget or control to the map.
 
         Args:
@@ -1025,7 +1025,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
         )
         super().add(basemap_control)
 
-    def remove(self, widget: Any) -> None:  # pytype: disable=signature-mismatch
+    def remove(self, widget: Any) -> None:
         """Removes a widget from the map."""
         basic_controls = {
             "search_control": map_widgets.SearchBar,
@@ -1369,7 +1369,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
                 if provider := ret_dict.get(map_name):
                     aliased_maps[alias] = provider
                     break
-        return {**aliased_maps, **ret_dict}  # pytype: disable=bad-return-type
+        return {**aliased_maps, **ret_dict}
 
     def _get_preferred_basemap_name(self, basemap_name: str) -> str:
         """Returns the aliased basemap name.

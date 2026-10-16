@@ -53,7 +53,7 @@ class DataTable(pd.DataFrame):
             )
 
 
-def transpose_df(  # pytype: disable=annotation-type-mismatch
+def transpose_df(
     df: pd.DataFrame,
     label_col: str,
     index_name: str | None = None,
@@ -138,10 +138,10 @@ def array_to_df(
         pd.DataFrame: The resulting DataFrame.
     """
     if isinstance(y_values, (ee.Array, ee.List)):
-        y_values = y_values.getInfo()  # pytype: disable=attribute-error
+        y_values = y_values.getInfo()  # pyrefly: ignore[bad-assignment]
 
     if isinstance(x_values, (ee.Array, ee.List)):
-        x_values = x_values.getInfo()  # pytype: disable=attribute-error
+        x_values = x_values.getInfo()
 
     if axis == 0:
         y_values = np.transpose(y_values)  # pyrefly: ignore[no-matching-overload]
@@ -575,7 +575,7 @@ class BarChart(BaseChartClass):
         else:
             self.bar_chart.tooltip = bq.Tooltip(
                 fields=["x", "y"]
-            )  # pytype: disable=attribute-error
+            )
 
     def get_ylim(self) -> tuple[float, float]:
         """Gets the y-axis limits for the bar chart.
@@ -586,17 +586,15 @@ class BarChart(BaseChartClass):
         if self.ylim:
             ylim_min, ylim_max = self.ylim[0], self.ylim[1]
         else:
-            # pytype: disable=attribute-error
             if self.name in ["feature.byFeature", "feature.byProperty"]:
-                ylim_min = np.min(self.y_data)
-                ylim_max = np.max(self.y_data) + 0.2 * (
-                    np.max(self.y_data) - np.min(self.y_data)
+                ylim_min = np.min(self.y_data)  # pyrefly: ignore[missing-attribute]
+                ylim_max = np.max(self.y_data) + 0.2 * (  # pyrefly: ignore[missing-attribute]
+                    np.max(self.y_data) - np.min(self.y_data)  # pyrefly: ignore[missing-attribute]
                 )
             if self.name in ["feature.groups"]:
-                ylim_min = np.min(self.df[self.yProperty])
-                ylim_max = np.max(self.df[self.yProperty])
+                ylim_min = np.min(self.df[self.yProperty])  # pyrefly: ignore[missing-attribute]
+                ylim_max = np.max(self.df[self.yProperty])  # pyrefly: ignore[missing-attribute]
                 ylim_max = ylim_max + 0.2 * (ylim_max - ylim_min)
-            # pytype: enable=attribute-error
 
         return ylim_min, ylim_max  # pyrefly: ignore[unbound-name]
 
@@ -608,8 +606,8 @@ class BarChart(BaseChartClass):
         )
 
         self.bar_chart = plt.bar(
-            self.x_data,  # pytype: disable=attribute-error
-            self.y_data,  # pytype: disable=attribute-error
+            self.x_data,  # pyrefly: ignore[missing-attribute]
+            self.y_data,  # pyrefly: ignore[missing-attribute]
             labels=self.labels,
             display_legend=self.display_legend,
         )
@@ -660,8 +658,8 @@ class LineChart(BarChart):
         )
 
         self.line_chart = plt.plot(
-            self.x_data,  # pytype: disable=attribute-error
-            self.y_data,  # pytype: disable=attribute-error
+            self.x_data,  # pyrefly: ignore[missing-attribute]
+            self.y_data,  # pyrefly: ignore[missing-attribute]
             label=self.labels,
         )
 
@@ -745,7 +743,7 @@ class Feature_ByProperty(BarChart):
         default_labels = None
         super().__init__(
             features, default_labels, name, **kwargs  # pyrefly: ignore[bad-argument-type]
-        )  # pytype: disable=wrong-arg-types
+        )
         if "labels" in kwargs:
             raise Exception("Please remove labels in kwargs and try again.")
 
@@ -1128,7 +1126,7 @@ def image_by_class(
     else:
         y_cols = class_labels
 
-    fig = Chart(  # pytype: disable=wrong-arg-types
+    fig = Chart(
         df_transposed, chart_type=chart_type, x_cols="label", y_cols=y_cols, **kwargs  # pyrefly: ignore[bad-argument-type]
     )
     return fig
@@ -1273,7 +1271,7 @@ def image_doy_series(
     y_cols = df.columns.tolist()
     y_cols.remove("doy")
 
-    fig = Chart(  # pytype: disable=wrong-arg-types
+    fig = Chart(
         df,
         chart_type,
         x_cols,  # pyrefly: ignore[bad-argument-type]
@@ -1403,7 +1401,7 @@ def image_doy_series_by_region(
     y_cols = df.columns.tolist()
     y_cols.remove("doy")
 
-    fig = Chart(  # pytype: disable=wrong-arg-types
+    fig = Chart(
         df,
         chart_type,
         "doy",  # pyrefly: ignore[bad-argument-type]
@@ -1531,7 +1529,7 @@ def doy_series_by_year(
     y_cols = df.columns.tolist()[1:]
     x_cols = "doy"
 
-    return Chart(  # pytype: disable=wrong-arg-types
+    return Chart(
         df,
         chart_type,
         x_cols,  # pyrefly: ignore[bad-argument-type]

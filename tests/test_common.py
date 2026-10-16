@@ -1271,7 +1271,7 @@ class CommonTest(unittest.TestCase):
 
             # Test with invalid type.
             with self.assertRaises(TypeError):
-                common.check_dir(123)  # pytype: disable=wrong-arg-types
+                common.check_dir(123)
 
     def test_check_file_path(self):
         with tempfile.TemporaryDirectory() as tmpdir:
@@ -1296,7 +1296,7 @@ class CommonTest(unittest.TestCase):
 
             # Test with invalid type.
             with self.assertRaises(TypeError):
-                common.check_file_path(123)  # pytype: disable=wrong-arg-types
+                common.check_file_path(123)
 
     # TODO: test_image_to_cog
     # TODO: test_cog_validate
@@ -1405,7 +1405,7 @@ class CommonTest(unittest.TestCase):
 
         # Test with non-string URL.
         with self.assertRaisesRegex(ValueError, "url must be a string."):
-            common.get_direct_url(123)  # pytype: disable=wrong-arg-types
+            common.get_direct_url(123)
 
     # TODO: test_add_crs
     # TODO: test_jrc_hist_monthly_history
@@ -1702,10 +1702,8 @@ class CommonTest(unittest.TestCase):
         self.assertEqual(common.check_basemap("hybrid"), "Google Hybrid")
         self.assertEqual(common.check_basemap("OpenStreetMap"), "OpenStreetMap")
 
-        # pytype: disable=wrong-arg-types
         self.assertIsNone(common.check_basemap(None))
         self.assertEqual(common.check_basemap(123), 123)
-        # pytype: enable=wrong-arg-types
 
     @mock.patch.object(os.path, "exists")
     @mock.patch.object(
@@ -1850,9 +1848,7 @@ class CommonTest(unittest.TestCase):
             "center": [0, 0, 0],
             "bounds": [0, 0, 0, 0],
         }
-        # pytype: disable=wrong-arg-types
         style = common.pmtiles_style("some_url", cmap=["#1a9850", "#91cf60"])
-        # pytype: enable=wrong-arg-types
         self.assertEqual(style["layers"][0]["paint"]["circle-color"], "#1a9850")
         self.assertEqual(style["layers"][1]["paint"]["line-color"], "#1a9850")
         self.assertEqual(style["layers"][2]["paint"]["fill-color"], "#1a9850")
@@ -1919,7 +1915,7 @@ class CommonTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             common.pmtiles_style(
                 "some_url", layers=123
-            )  # pytype: disable=wrong-arg-types
+            )
 
     def test_check_html_string(self):
         with tempfile.TemporaryDirectory() as root_dir:

@@ -351,7 +351,7 @@ class Map(core.Map):
 
     setOptions = set_options
 
-    def add_ee_layer(  # pytype: disable=signature-mismatch
+    def add_ee_layer(
         self,
         ee_object: ee.FeatureCollection | ee.Feature | ee.Image | ee.ImageCollection,
         vis_params: dict[str, Any] | None = None,
@@ -424,7 +424,7 @@ class Map(core.Map):
 
     setCenter = set_center
 
-    def center_object(  # pytype: disable=signature-mismatch
+    def center_object(
         self,
         ee_object: ee.Element | ee.Geometry,
         zoom: int | None = None,
@@ -576,7 +576,7 @@ class Map(core.Map):
         layer = self.find_layer(name)
 
         if layer is not None:
-            layer.visible = show
+            layer.visible = show  # pyrefly: ignore[missing-attribute]
 
     def find_layer_index(self, name: str) -> int:
         """Finds the index of a layer by name.
@@ -1229,7 +1229,7 @@ class Map(core.Map):
             gdf (GeoDataFrame): A GeoPandas GeoDataFrame.
         """
         bounds = gdf.total_bounds
-        self.zoom_to_bounds(bounds)  # pytype: disable=wrong-arg-types
+        self.zoom_to_bounds(bounds)
 
     def get_bounds(self, asGeoJSON: bool = False):
         """Returns the bounds of the current map view.
@@ -1542,9 +1542,7 @@ class Map(core.Map):
             "more than one band."
         )
         if (ee_object is None) and len(self.ee_raster_layers) > 0:
-            # pytype: disable=unsupported-operands
-            ee_object = self.ee_raster_layers.values()[-1]["ee_object"]
-            # pytype: enable=unsupported-operands
+            ee_object = self.ee_raster_layers.values()[-1]["ee_object"]  # pyrefly: ignore[bad-index]
             if isinstance(ee_object, ee.ImageCollection):
                 ee_object = ee_object.mosaic()
         elif isinstance(ee_object, ee.ImageCollection):
@@ -3959,11 +3957,9 @@ class Map(core.Map):
             markers = []
             for point in points:
                 if items is not None:
-                    # pytype: disable=name-error
-                    marker_color = marker_colors[items.index(df[color_column][index])]
+                    marker_color = marker_colors[items.index(df[color_column][index])]  # pyrefly: ignore[unbound-name, unsupported-operation]
                     icon_name = icon_names[items.index(df[color_column][index])]
                     icon_color = icon_colors[items.index(df[color_column][index])]
-                    # pytype: enable=name-error
                     marker_icon = ipyleaflet.AwesomeIcon(
                         name=icon_name,
                         marker_color=marker_color,
@@ -4629,7 +4625,7 @@ class Map(core.Map):
         """
         hover_style = hover_style or {}
 
-        gdf, legend_dict = classify(  # pytype: disable=attribute-error
+        gdf, legend_dict = classify(
             data=data,
             column=column,
             cmap=cmap,
@@ -5186,17 +5182,13 @@ def ts_inspector(
 
     def left_change(change):
         del change  # Unused.
-        # pytype: disable=attribute-error
-        split_control.left_layer.url = layers_dict[left_dropdown.value].url
-        # pytype: enable=attribute-error
+        split_control.left_layer.url = layers_dict[left_dropdown.value].url  # pyrefly: ignore[missing-attribute]
 
     left_dropdown.observe(left_change, "value")
 
     def right_change(change):
         del change  # Unused.
-        # pytype: disable=attribute-error
-        split_control.right_layer.url = layers_dict[right_dropdown.value].url
-        # pytype: enable=attribute-error
+        split_control.right_layer.url = layers_dict[right_dropdown.value].url  # pyrefly: ignore[missing-attribute]
 
     right_dropdown.observe(right_change, "value")
 

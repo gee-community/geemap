@@ -32,7 +32,7 @@ except:
 
 
 def add_overlay(
-    collection: ee.ImageCollection,  # pytype: disable=annotation-type-mismatch
+    collection: ee.ImageCollection,
     overlay_data: str | ee.Geometry | ee.FeatureCollection,
     color: str = "black",
     width: int = 1,
@@ -406,9 +406,7 @@ def add_text_to_gif(
     """
     warnings.simplefilter("ignore")
 
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
     default_font = os.path.join(pkg_dir, "data/fonts/arial.ttf")
 
     in_gif = os.path.abspath(in_gif)
@@ -452,7 +450,7 @@ def add_text_to_gif(
         print(e)
         return
 
-    count = image.n_frames
+    count = image.n_frames  # pyrefly: ignore[missing-attribute]
     W, H = image.size
     progress_bar_widths = [i * 1.0 / count * W for i in range(1, count + 1)]
     progress_bar_shapes = [
@@ -613,7 +611,7 @@ def add_image_to_gif(
     )
 
     logo_image = logo_raw_image.convert("RGBA")  # pyrefly: ignore[missing-attribute]
-    logo_image.thumbnail(image_size, Image.LANCZOS)
+    logo_image.thumbnail(image_size, Image.LANCZOS)  # pyrefly: ignore[missing-attribute]
 
     gif_width, gif_height = gif.size
     mask_im = None
@@ -2768,8 +2766,7 @@ def landsat_timelapse(
         step,
     )
 
-    # pytype: disable=attribute-error
-    col = raw_col.select(bands).map(
+    col = raw_col.select(bands).map(  # pyrefly: ignore[missing-attribute]
         lambda img: img.visualize(**vis_params).set(
             {
                 "system:time_start": img.get("system:time_start"),
@@ -2777,7 +2774,6 @@ def landsat_timelapse(
             }
         )
     )
-    # pytype: enable=attribute-error
     if overlay_data is not None:
         col = add_overlay(
             col, overlay_data, overlay_color, overlay_width, overlay_opacity
@@ -3048,8 +3044,7 @@ def landsat_timelapse_legacy(
         date_format,
     )
 
-    # pytype: disable=attribute-error
-    col = raw_col.select(bands).map(
+    col = raw_col.select(bands).map(  # pyrefly: ignore[missing-attribute]
         lambda img: img.visualize(**vis_params).set(
             {
                 "system:time_start": img.get("system:time_start"),
@@ -3057,7 +3052,6 @@ def landsat_timelapse_legacy(
             }
         )
     )
-    # pytype: enable=attribute-error
     if overlay_data is not None:
         col = add_overlay(
             col, overlay_data, overlay_color, overlay_width, overlay_opacity
@@ -3670,13 +3664,11 @@ def landsat_ts_norm_diff(
     """
     bands = bands or ["Green", "SWIR1"]
 
-    # pytype: disable=attribute-error
     return collection.map(
         lambda img: img.normalizedDifference(bands)
         .gt(threshold)
         .copyProperties(img, img.propertyNames())
     )
-    # pytype: enable=attribute-error
 
 
 def landsat_ts_norm_diff_gif(
@@ -5121,7 +5113,7 @@ def add_progress_bar_to_gif(
 
     image = Image.open(in_gif)
 
-    count = image.n_frames
+    count = image.n_frames  # pyrefly: ignore[missing-attribute]
     W, H = image.size
     progress_bar_widths = [i * 1.0 / count * W for i in range(1, count + 1)]
     progress_bar_shapes = [
@@ -5583,9 +5575,7 @@ def sentinel1_timelapse_with_samples(
     if sample_points is None or len(sample_points) == 0:
         print("No sample points provided. Returning map-only timelapse.")
         if mp4:
-            # pytype: disable=attribute-error
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
-            # pytype: enable=attribute-error
         return base_gif
 
     # Get the Sentinel-1 time series for sampling.
@@ -5618,9 +5608,7 @@ def sentinel1_timelapse_with_samples(
             print("Warning: No Sentinel-1 images found for the specified parameters")
             # Return base gif without sampling.
             if mp4:
-                # pytype: disable=attribute-error
                 gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
-                # pytype: enable=attribute-error
             return base_gif
 
         print(f"Found {collection_size} Sentinel-1 images for sampling")
@@ -5645,9 +5633,7 @@ def sentinel1_timelapse_with_samples(
         if ts_size == 0:
             print("Warning: No time series data generated")
             if mp4:
-                # pytype: disable=attribute-error
                 gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
-                # pytype: enable=attribute-error
             return base_gif
 
         print(f"Generated {ts_size} time series images")
@@ -5798,9 +5784,7 @@ def sentinel1_timelapse_with_samples(
         final_gif = base_gif
 
     if mp4:
-        # pytype: disable=attribute-error
         gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
-        # pytype: enable=attribute-error
 
     return final_gif
 
@@ -6605,9 +6589,7 @@ def sentinel2_timelapse_with_samples(
     if sample_points is None or len(sample_points) == 0:
         print("No sample points provided. Returning map-only timelapse.")
         if mp4:
-            # pytype: disable=attribute-error
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
-            # pytype: enable=attribute-error
         return base_gif
 
     # Get the Sentinel-2 time series for sampling.
@@ -6676,9 +6658,7 @@ def sentinel2_timelapse_with_samples(
             )
 
             # Add indices to each image.
-            # pytype: disable=attribute-error
             ts_collection = base_ts_collection.map(calculate_sentinel2_indices)
-            # pytype: enable=attribute-error
 
             # Select only the bands we need for sampling.
             ts_collection = ts_collection.select(s2_sample_bands)
@@ -6706,9 +6686,7 @@ def sentinel2_timelapse_with_samples(
         if ts_size == 0:
             print("Warning: No time series data generated")
             if mp4:
-                # pytype: disable=attribute-error
                 gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
-                # pytype: enable=attribute-error
             return base_gif
 
         print(f"Generated {ts_size} time series images")
@@ -6717,9 +6695,7 @@ def sentinel2_timelapse_with_samples(
         print(f"Error creating time series: {str(e)}")
         # Return base gif without sampling.
         if mp4:
-            # pytype: disable=attribute-error
             gif_to_mp4(base_gif, base_gif.replace(".gif", ".mp4"))
-            # pytype: enable=attribute-error
         return base_gif
 
     # Sample points from the time series.
@@ -6908,9 +6884,7 @@ def sentinel2_timelapse_with_samples(
         final_gif = base_gif
 
     if mp4:
-        # pytype: disable=attribute-error
         gif_to_mp4(final_gif, final_gif.replace(".gif", ".mp4"))
-        # pytype: enable=attribute-error
 
     return final_gif
 
@@ -7814,9 +7788,7 @@ def landsat_timelapse_with_samples(
             )
 
             # Add indices to each image.
-            # pytype: disable=attribute-error
-            ts_collection = base_ts_collection.map(calculate_landsat_indices)
-            # pytype: enable=attribute-error
+            ts_collection = base_ts_collection.map(calculate_landsat_indices)  # pyrefly: ignore[missing-attribute]
 
             # Select only the bands we need for sampling.
             ts_collection = ts_collection.select(landsat_sample_bands)
@@ -8358,9 +8330,7 @@ def create_landsat_index_timelapse(
     )
 
     # Add indices to each image.
-    # pytype: disable=attribute-error
-    ts_collection = base_ts_collection.map(calculate_landsat_indices)
-    # pytype: enable=attribute-error
+    ts_collection = base_ts_collection.map(calculate_landsat_indices)  # pyrefly: ignore[missing-attribute]
 
     # Use create_timelapse with the index collection.
     start = f"{start_year}-{start_date}"

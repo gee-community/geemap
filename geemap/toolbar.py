@@ -736,9 +736,7 @@ def ee_plot_gui(m, position: str = "topright", **kwargs):
     m._plot_dropdown_control.cleanup = cleanup
 
     def close_click(_) -> None:
-        # pytype: disable=attribute-error
         m._plot_dropdown_control.cleanup()
-        # pytype: enable=attribute-error
 
     close_btn.on_click(close_click)
 
@@ -1582,9 +1580,7 @@ def collect_samples(m):
 
 def get_tools_dict():
     """Returns a dictionary of tools."""
-    # pytype: disable=attribute-error
-    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)
-    # pytype: enable=attribute-error
+    pkg_dir = str(importlib.resources.files("geemap").joinpath("geemap.py").parent)  # pyrefly: ignore[missing-attribute]
     toolbox_csv = os.path.join(pkg_dir, "data/template/toolbox.csv")
 
     df = pd.read_csv(toolbox_csv).set_index("index")
@@ -2283,9 +2279,7 @@ def timelapse_gui(m: geemap.Map | None = None, basemap: str = "HYBRID"):
             m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
 
     close_btn.on_click(
-        # pytype: disable=attribute-error
-        lambda _: m.tool_control.cleanup()
-        # pytype: enable=attribute-error
+        lambda _: m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
     )
     close_button.observe(close_btn_click, "value")
 
@@ -2983,7 +2977,7 @@ def time_slider(m: geemap.Map | None = None):
 
     def close_btn_click(change) -> None:
         if change["new"]:
-            m.tool_control.cleanup()  # pytype: disable=attribute-error
+            m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
 
     close_button.observe(close_btn_click, "value")
 
@@ -3389,7 +3383,7 @@ def plot_transect(m=None):
 
     def close_btn_click(change) -> None:
         if change["new"]:
-            m.tool_control.cleanup()  # pytype: disable=attribute-error
+            m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
 
     close_button.observe(close_btn_click, "value")
 
@@ -3435,7 +3429,7 @@ def plot_transect(m=None):
         elif change["new"] == "Reset":
             output.outputs = ()
         elif change["new"] == "Close":
-            m.tool_control.cleanup()  # pytype: disable=attribute-error
+            m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
 
         buttons.value = None
 
@@ -3463,7 +3457,7 @@ def sankee_gui(m=None):
     Returns:
         ipywidgets: The interactive GUI.
     """
-    import sankee
+    import sankee  # pyrefly: ignore[missing-import]
 
     widget_width = "250px"
     padding = "0px 0px 0px 5px"  # upper, right, bottom, left
@@ -3816,7 +3810,7 @@ def sankee_gui(m=None):
 
     def close_btn_click(change) -> None:
         if change["new"]:
-            m.tool_control.cleanup()  # pytype: disable=attribute-error
+            m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
 
     close_button.observe(close_btn_click, "value")
 
@@ -3917,7 +3911,7 @@ def sankee_gui(m=None):
             plot_widget.children = []
 
         elif change["new"] == "Close":
-            m.tool_control.cleanup()  # pytype: disable=attribute-error
+            m.tool_control.cleanup()  # pyrefly: ignore[missing-attribute]
 
         buttons.value = None
 
@@ -4039,17 +4033,13 @@ def split_basemaps(
 
     def left_change(change) -> None:
         del change  # Unused.
-        # pytype: disable=attribute-error
-        split_control.left_layer.url = layers_dict[left_dropdown.value].url
-        # pytype: enable=attribute-error
+        split_control.left_layer.url = layers_dict[left_dropdown.value].url  # pyrefly: ignore[missing-attribute]
 
     left_dropdown.observe(left_change, "value")
 
     def right_change(change) -> None:
         del change  # Unused.
-        # pytype: disable=attribute-error
-        split_control.right_layer.url = layers_dict[right_dropdown.value].url
-        # pytype: enable=attribute-error
+        split_control.right_layer.url = layers_dict[right_dropdown.value].url  # pyrefly: ignore[missing-attribute]
 
     right_dropdown.observe(right_change, "value")
 
