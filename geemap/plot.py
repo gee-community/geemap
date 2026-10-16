@@ -261,12 +261,12 @@ def bar_chart(
     labels = kwargs.pop("labels", {})
 
     if x_label is not None:
-        labels[x] = x_label  # pytype: disable=unsupported-operands
+        labels[x] = x_label
     if y_label is not None:
         if isinstance(y, str):
-            labels[y] = y_label  # pytype: disable=unsupported-operands
+            labels[y] = y_label
         elif isinstance(y, list):
-            labels[y[0]] = y_label  # pytype: disable=unsupported-operands
+            labels[y[0]] = y_label
 
     if layout_args is None:
         layout_args = {}

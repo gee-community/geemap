@@ -172,19 +172,19 @@ class Colorbar(ipywidgets.Output):
 
         vmin = vis_params.get("min", kwargs.pop("vmin", 0))
         try:
-            vmin = float(vmin)  # pyrefly: ignore[bad-argument-type]
+            vmin = float(vmin)
         except ValueError as err:
             raise ValueError("The provided min value must be scalar type.")
 
         vmax = vis_params.get("max", kwargs.pop("vmax", 1))
         try:
-            vmax = float(vmax)  # pyrefly: ignore[bad-argument-type]
+            vmax = float(vmax)
         except ValueError as err:
             raise ValueError("The provided max value must be scalar type.")
 
         alpha = vis_params.get("opacity", kwargs.pop("alpha", 1))
         try:
-            alpha = float(alpha)  # pyrefly: ignore[bad-argument-type]
+            alpha = float(alpha)
         except ValueError as err:
             raise ValueError("opacity or alpha value must be scalar type.")
 
@@ -356,7 +356,7 @@ class Legend(anywidget.AnyWidget):
         if builtin_legend is not None:
             builtin_legend_allowed = self._check_if_allowed(
                 builtin_legend, "builtin legend", allowed_builtin_legends  # pyrefly: ignore[bad-argument-type]
-            )  # pytype: disable=wrong-arg-types
+            )
             if builtin_legend_allowed:
                 legend_dict = builtin_legends[builtin_legend]  # pyrefly: ignore[bad-assignment]
                 self.legend_keys = list(legend_dict.keys())  # pyrefly: ignore[missing-attribute]
@@ -541,11 +541,9 @@ class Inspector(anywidget.AnyWidget):
         layers = {}
         if self._names is not None:
             names = (
-                # pytype: disable=name-error
                 [names]
-                if isinstance(names, str)
+                if isinstance(names, str)  # pyrefly: ignore[unbound-name]
                 else self._names
-                # pytype: enable=name-error
             )
             for name in names:
                 if name in self._host_map.ee_layers:
@@ -638,7 +636,7 @@ class Inspector(anywidget.AnyWidget):
 
     def _get_bbox(
         self, latlon: list[float]
-    ) -> ee.Geometry.BBox:  # pytype: disable=invalid-annotation
+    ) -> ee.Geometry.BBox:  # pyrefly: ignore[not-a-type]
         """Gets a bounding box around a point.
 
         Args:
@@ -707,10 +705,8 @@ class LayerManagerRow(anywidget.AnyWidget):
         self.visible = self._get_layer_visibility()
         self.opacity = self._get_layer_opacity()
 
-        # pytype: disable=invalid-annotation
-        self.opacity_link: ipywidgets.widget_link.Link | None = None
-        self.visibility_link: ipywidgets.widget_link.Link | None = None
-        # pytype: enable=invalid-annotation
+        self.opacity_link: ipywidgets.widget_link.Link | None = None  # pyrefly: ignore[missing-attribute]
+        self.visibility_link: ipywidgets.widget_link.Link | None = None  # pyrefly: ignore[missing-attribute]
         self._setup_event_listeners()
 
     def _can_set_up_jslink(self, obj: Any, trait: str) -> bool:
@@ -1003,9 +999,7 @@ class LayerEditor(anywidget.AnyWidget):
 
         stretch_params = {}
         stretch_value = int(
-            # pytype: disable=attribute-error
-            re.search(r"\d+", stretch).group()
-            # pytype: enable=attribute-error
+            re.search(r"\d+", stretch).group()  # pyrefly: ignore[missing-attribute]
         )
         if stretch.startswith("percent"):
             stretch_params["percent"] = stretch_value / 100.0
@@ -1429,11 +1423,9 @@ class SearchBar(anywidget.AnyWidget):
     def get_ee_example(self, asset_id):
         try:
             pkg_dir = str(
-                # pytype: disable=attribute-error
-                importlib.resources.files("geemap")
+                importlib.resources.files("geemap")  # pyrefly: ignore[missing-attribute]
                 .joinpath("geemap.py")
                 .parent
-                # pytype: enable=attribute-error
             )
             with open(os.path.join(pkg_dir, "data/gee_f.json"), encoding="utf-8") as f:
                 functions = json.load(f)

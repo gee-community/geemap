@@ -123,7 +123,7 @@ def osm_gdf_from_place(query, tags: dict[str, Any], which_result: int | None = N
     Returns:
         GeoDataFrame: A GeoDataFrame of OSM entities.
     """
-    ox.config(use_cache=True, log_console=True)  # pytype: disable=module-attr
+    ox.config(use_cache=True, log_console=True)  # pyrefly: ignore[missing-attribute]
 
     return ox.features.features_from_place(query, tags, which_result=which_result)
 
