@@ -75,7 +75,7 @@ class Canvas:
                 tool.value = False
 
 
-class Map(go.FigureWidget):
+class Map(go.FigureWidget):  # pyrefly: ignore[invalid-inheritance]
     """The Map class inherits the Plotly FigureWidget class.
 
     More info at https://plotly.com/python/figurewidget.
