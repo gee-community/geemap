@@ -3459,7 +3459,7 @@ def create_colorbar(
         r, g, b = pixel(x, width=width, color_map=heatmap)
         r, g, b = (int(256 * v) for v in (r, g, b))
         for y in range(im.size[1]):
-            ld[x, y] = r, g, b
+            ld[x, y] = r, g, b  # pyrefly: ignore[unsupported-operation]
 
     if add_outline:
         draw = ImageDraw.Draw(im)
@@ -4849,7 +4849,7 @@ def file_browser(
     search_box.layout.width = "310px"
     tree_widget = ipywidgets.Output()
     tree_widget.layout.max_width = "310px"
-    tree_widget.overflow = "auto"
+    tree_widget.overflow = "auto"  # pyrefly: ignore[missing-attribute]
 
     left_widget.children = [search_box, tree_widget]
 

@@ -676,7 +676,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
 
     def get_zoom(self) -> int:
         """Returns the current zoom level of the map."""
-        return self.zoom
+        return self.zoom  # pyrefly: ignore[bad-return]
 
     def set_zoom(self, value: int) -> None:
         """Sets the current zoom level of the map."""
@@ -727,7 +727,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
             lat: Latitude of the center.
             zoom: Zoom level to set.
         """
-        self.center = (lat, lon)
+        self.center = (lat, lon)  # pyrefly: ignore[bad-argument-type]
         if zoom is not None:
             self.zoom = zoom
 
@@ -1334,12 +1334,12 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
             attribution=basemap.get("attribution", None),
         )
         if not self.layers:
-            self.add_layer(new_layer)
+            self.add_layer(new_layer)  # pyrefly: ignore[bad-argument-type]
         elif len(self.layers) == 1:
             # TODO check if this quirk/bug is still present:
             # substitute_layer is broken when the map has a single layer.
             self.clear_layers()
-            self.add_layer(new_layer)
+            self.add_layer(new_layer)  # pyrefly: ignore[bad-argument-type]
         else:
             self.substitute_layer(self.layers[0], new_layer)
 

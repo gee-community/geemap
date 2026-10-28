@@ -277,7 +277,7 @@ def get_info(
                 node.add_node(_create_node(child))
         else:
             node.icon = "file"
-            node.value = str(data)  # Store the entire data as a string.
+            node.value = str(data)  # Store the entire data as a string.  # pyrefly: ignore[missing-attribute]
         return node
 
     root_node = _create_node(tree_json)
