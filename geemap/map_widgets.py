@@ -944,7 +944,7 @@ class LayerEditor(anywidget.AnyWidget):
                 self.layer_type = LayerEditor.LayerType.VECTOR.value
             elif isinstance(self._ee_object, ee.Image):
                 self.layer_type = LayerEditor.LayerType.RASTER.value
-                self.band_names = self._ee_object.bandNames().getInfo()
+                self.band_names = self._ee_object.bandNames().getInfo()  # pyrefly: ignore[bad-argument-type]
 
         self.on_msg(self._handle_message_event)
 

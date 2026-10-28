@@ -1397,7 +1397,7 @@ class Map(core.Map):
                 self.last_click = latlon
                 self.all_clicks = coordinates
                 markers.append(ipyleaflet.Marker(location=latlon))
-                marker_cluster.markers = markers
+                marker_cluster.markers = markers  # pyrefly: ignore[bad-argument-type]
             elif kwargs.get("type") == "mousemove":
                 pass
 
@@ -1466,7 +1466,7 @@ class Map(core.Map):
                 round(latitudes[i], 2),
                 round(longitudes[i], 2),
             )
-            marker.location = (latitudes[i], longitudes[i])
+            marker.location = (latitudes[i], longitudes[i])  # pyrefly: ignore[bad-argument-type]
             self.plot(
                 band_names,
                 band_values,
@@ -1575,7 +1575,7 @@ class Map(core.Map):
                     self.last_click = latlon
                     self.all_clicks = coordinates
                     markers.append(ipyleaflet.Marker(location=latlon))
-                    marker_cluster.markers = markers
+                    marker_cluster.markers = markers  # pyrefly: ignore[bad-argument-type]
                     self.default_style = {"cursor": "wait"}
                     xy = ee.Geometry.Point(latlon[::-1])  # pyrefly: ignore[unsupported-operation]
                     dict_values = (
@@ -1635,7 +1635,7 @@ class Map(core.Map):
                 self.all_clicks = coordinates
                 if add_marker:
                     markers.append(ipyleaflet.Marker(location=latlon))
-                    marker_cluster.markers = markers
+                    marker_cluster.markers = markers  # pyrefly: ignore[bad-argument-type]
             elif kwargs.get("type") == "mousemove":
                 pass
 

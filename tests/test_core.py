@@ -48,8 +48,8 @@ class TestMap(unittest.TestCase):
         controls = self.core_map.controls
         self.assertEqual(len(controls), 7)
         self.assertIsInstance(controls[0], ipyleaflet.WidgetControl)
-        self.assertIsInstance(controls[0].widget.children[0], map_widgets.LayerManager)
-        self.assertIsInstance(controls[0].widget.children[1], toolbar.Toolbar)
+        self.assertIsInstance(controls[0].widget.children[0], map_widgets.LayerManager)  # pyrefly: ignore[missing-attribute]
+        self.assertIsInstance(controls[0].widget.children[1], toolbar.Toolbar)  # pyrefly: ignore[missing-attribute]
         self.assertIsInstance(controls[1].widget, map_widgets.SearchBar)
         self.assertIsInstance(controls[2], ipyleaflet.ZoomControl)
         self.assertIsInstance(controls[3], ipyleaflet.FullScreenControl)
