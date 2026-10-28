@@ -10575,7 +10575,7 @@ the draw control.</p>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">get_zoom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the current zoom level of the map.&quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span>  <span class="c1"># pyrefly: ignore[bad-return]</span>
 
     <span class="k">def</span><span class="w"> </span><span class="nf">set_zoom</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Sets the current zoom level of the map.&quot;&quot;&quot;</span>
@@ -10626,7 +10626,7 @@ the draw control.</p>
 <span class="sd">            lat: Latitude of the center.</span>
 <span class="sd">            zoom: Zoom level to set.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
         <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="n">zoom</span>
 
@@ -11233,12 +11233,12 @@ the draw control.</p>
             <span class="n">attribution</span><span class="o">=</span><span class="n">basemap</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;attribution&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">new_layer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">new_layer</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
         <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
             <span class="c1"># TODO check if this quirk/bug is still present:</span>
             <span class="c1"># substitute_layer is broken when the map has a single layer.</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">clear_layers</span><span class="p">()</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">new_layer</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">add_layer</span><span class="p">(</span><span class="n">new_layer</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">substitute_layer</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">new_layer</span><span class="p">)</span>
 
@@ -12299,7 +12299,7 @@ the draw control.</p>
 <span class="normal">678</span>
 <span class="normal">679</span></pre></div></td><td class="code"><div><pre><span></span><code><span class="k">def</span><span class="w"> </span><span class="nf">get_zoom</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the current zoom level of the map.&quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span>
+    <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span>  <span class="c1"># pyrefly: ignore[bad-return]</span>
 </code></pre></div></td></tr></table></div>
             </details>
     </div>
@@ -12522,7 +12522,7 @@ the draw control.</p>
 <span class="sd">        lat: Latitude of the center.</span>
 <span class="sd">        zoom: Zoom level to set.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">center</span> <span class="o">=</span> <span class="p">(</span><span class="n">lat</span><span class="p">,</span> <span class="n">lon</span><span class="p">)</span>  <span class="c1"># pyrefly: ignore[bad-argument-type]</span>
     <span class="k">if</span> <span class="n">zoom</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">zoom</span> <span class="o">=</span> <span class="n">zoom</span>
 </code></pre></div></td></tr></table></div>

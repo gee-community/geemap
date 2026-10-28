@@ -9377,7 +9377,7 @@ If False, returns the widget as ipytree.Tree.</p>
                 <span class="n">node</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">_create_node</span><span class="p">(</span><span class="n">child</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">node</span><span class="o">.</span><span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;file&quot;</span>
-            <span class="n">node</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Store the entire data as a string.</span>
+            <span class="n">node</span><span class="o">.</span><span class="n">value</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>  <span class="c1"># Store the entire data as a string.  # pyrefly: ignore[missing-attribute]</span>
         <span class="k">return</span> <span class="n">node</span>
 
     <span class="n">root_node</span> <span class="o">=</span> <span class="n">_create_node</span><span class="p">(</span><span class="n">tree_json</span><span class="p">)</span>
