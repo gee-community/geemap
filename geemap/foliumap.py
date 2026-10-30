@@ -6,6 +6,7 @@
 # *******************************************************************************#
 
 import base64
+import copy
 import io
 import json
 import logging
@@ -29,7 +30,13 @@ import pandas as pd
 import requests
 import xarray as xr
 
-from . import basemaps
+from .basemaps import (
+    OSM_ATTRIBUTION,
+    OSM_MAX_NATIVE_ZOOM,
+    configure_folium_tile_layer as _configure_folium_tile_layer,
+    get_default_referrer_policy as _get_default_referrer_policy,
+    xyz_to_folium,
+)
 from . import common
 from .common import *
 from .conversion import *
@@ -43,7 +50,7 @@ if not coreutils.in_colab_shell():
     from .plot import *
 
 
-basemaps = box.Box(basemaps.xyz_to_folium(), frozen_box=True)
+basemaps = box.Box(xyz_to_folium(), frozen_box=True)
 
 
 class Map(folium.Map):
@@ -130,6 +137,8 @@ class Map(folium.Map):
                 kwargs["basemap"] = "OpenStreetMap"
 
         super().__init__(**kwargs)
+        for child in self._children.values():
+            _configure_folium_tile_layer(child)
         self.baseclass = "folium"
 
         # The list of Earth Engine Geometry objects converted from geojson.
@@ -148,9 +157,18 @@ class Map(folium.Map):
             self.add_to(f)
 
         if kwargs.get("add_google_map"):
-            basemaps["ROADMAP"].add_to(self)
+            copy.deepcopy(basemaps["ROADMAP"]).add_to(self)
         if kwargs.get("basemap"):
-            basemaps[kwargs.get("basemap")].add_to(self)
+            basemap_key = kwargs.get("basemap")
+            if basemap_key not in basemaps and isinstance(basemap_key, str):
+                if basemap_key.upper() in ("DEFAULT", "OPENSTREETMAP"):
+                    basemap_key = "OpenStreetMap"
+                else:
+                    for key in basemaps:
+                        if key.upper() == basemap_key.upper():
+                            basemap_key = key
+                            break
+            copy.deepcopy(basemaps[basemap_key]).add_to(self)
         if kwargs.get("plugin_LatLngPopup"):
             folium.LatLngPopup().add_to(self)
         if kwargs.get("plugin_Fullscreen"):
@@ -196,7 +214,7 @@ class Map(folium.Map):
         types = types or {}
 
         try:
-            basemaps[mapTypeId].add_to(self)
+            copy.deepcopy(basemaps[mapTypeId]).add_to(self)
         except Exception:
             raise Exception(
                 "Basemap can only be one of the following: {}".format(
@@ -222,7 +240,27 @@ class Map(folium.Map):
                 "HYBRID": "Esri.WorldImagery",
             }
 
-            if isinstance(basemap, str):
+            if isinstance(basemap, xyzservices.TileProvider):
+                name = basemap.name
+                url = basemap.build_url()
+                attribution = basemap.get("html_attribution") or basemap.attribution
+                if "max_native_zoom" not in kwargs and "max_zoom" in basemap:
+                    kwargs["max_native_zoom"] = basemap["max_zoom"]
+                max_zoom = max(basemap.get("max_zoom", 30), 30)
+                layer = folium.TileLayer(
+                    tiles=url,
+                    attr=attribution,
+                    name=name,
+                    max_zoom=max_zoom,
+                    overlay=True,
+                    control=True,
+                    show=show,
+                    **kwargs,
+                )
+                _configure_folium_tile_layer(layer)
+                layer.add_to(self)
+                arc_add_layer(url, name)
+            elif isinstance(basemap, str):
                 if basemap.upper() in map_dict:
                     if basemap in os.environ:
                         if "name" in kwargs:
@@ -232,40 +270,21 @@ class Map(folium.Map):
 
                     else:
                         basemap = basemap.upper()
-                        basemaps[basemap].add_to(self)
-
-                elif isinstance(basemap, xyzservices.TileProvider):
-                    name = basemap.name
-                    url = basemap.build_url()
-                    attribution = basemap.attribution
-                    if "max_zoom" in basemap.keys():
-                        max_zoom = basemap["max_zoom"]
-                    else:
-                        max_zoom = 22
-                    layer = folium.TileLayer(
-                        tiles=url,
-                        attr=attribution,
-                        name=name,
-                        max_zoom=max_zoom,
-                        overlay=True,
-                        control=True,
-                        show=show,
-                        **kwargs,
-                    )
-
-                    self.add_layer(layer)
-
-                    arc_add_layer(url, name)
+                        bmap = copy.deepcopy(basemaps[basemap])
+                        bmap.show = show
+                        bmap.add_to(self)
 
                 elif basemap in basemaps:
-                    bmap = basemaps[basemap]
+                    bmap = copy.deepcopy(basemaps[basemap])
                     bmap.show = show
                     bmap.add_to(self)
-                    if isinstance(basemaps[basemap], folium.TileLayer):
-                        url = basemaps[basemap].tiles
-                    elif isinstance(basemaps[basemap], folium.WmsTileLayer):
-                        url = basemaps[basemap].url
+                    if isinstance(bmap, folium.TileLayer):
+                        url = bmap.tiles
+                    elif isinstance(bmap, folium.WmsTileLayer):
+                        url = bmap.url
                     arc_add_layer(url, basemap)  # pyrefly: ignore[unbound-name]
+                elif basemap.startswith(("http://", "https://")):
+                    self.add_tile_layer(tiles=basemap, shown=show, **kwargs)
                 else:
                     print(
                         "Basemap can only be one of the following: {}".format(
@@ -371,7 +390,9 @@ class Map(folium.Map):
             geometry = ee_object.transform(maxError=max_error)
         else:
             try:
-                geometry = ee_object.geometry(maxError=max_error).transform(  # pyrefly: ignore[missing-attribute]
+                geometry = ee_object.geometry(
+                    maxError=max_error
+                ).transform(  # pyrefly: ignore[missing-attribute]
                     maxError=max_error
                 )
             except Exception:
@@ -384,7 +405,9 @@ class Map(folium.Map):
             if not isinstance(zoom, int):
                 raise Exception("Zoom must be an integer.")
 
-            centroid = geometry.centroid(maxError=max_error).getInfo()["coordinates"]  # pyrefly: ignore[unsupported-operation]
+            centroid = geometry.centroid(maxError=max_error).getInfo()[
+                "coordinates"
+            ]  # pyrefly: ignore[unsupported-operation]
             lat = centroid[1]
             lon = centroid[0]
             self.set_center(lon, lat, zoom)
@@ -393,7 +416,9 @@ class Map(folium.Map):
                 arc_zoom_to_extent(lon, lat, lon, lat)
 
         else:
-            coordinates = geometry.bounds(maxError=max_error).getInfo()["coordinates"][  # pyrefly: ignore[unsupported-operation]
+            coordinates = geometry.bounds(maxError=max_error).getInfo()[
+                "coordinates"
+            ][  # pyrefly: ignore[unsupported-operation]
                 0
             ]
             x = [c[0] for c in coordinates]
@@ -556,13 +581,20 @@ class Map(folium.Map):
             API_key: – API key for Cloudmade or Mapbox tiles.
         """
 
+        policy = _get_default_referrer_policy(tiles)
+        if policy is not None:
+            kwargs.setdefault("referrer_policy", policy)
+            if attribution == ".":
+                attribution = OSM_ATTRIBUTION
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 100
         if "max_native_zoom" not in kwargs:
-            kwargs["max_native_zoom"] = 100
+            kwargs["max_native_zoom"] = (
+                OSM_MAX_NATIVE_ZOOM if policy is not None else 100
+            )
 
         try:
-            folium.raster_layers.TileLayer(
+            tile_layer = folium.raster_layers.TileLayer(
                 tiles=tiles,
                 name=name,
                 attr=attribution,
@@ -572,7 +604,9 @@ class Map(folium.Map):
                 opacity=opacity,
                 API_key=API_key,
                 **kwargs,
-            ).add_to(self)
+            )
+            _configure_folium_tile_layer(tile_layer)
+            tile_layer.add_to(self)
         except Exception:
             raise Exception("Failed to add the specified TileLayer.")
 
@@ -709,7 +743,9 @@ class Map(folium.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(source, **array_args)  # pyrefly: ignore[bad-assignment]
+            source = array_to_image(
+                source, **array_args
+            )  # pyrefly: ignore[bad-assignment]
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -1800,7 +1836,9 @@ class Map(folium.Map):
                     f"The number of unique values in the color column {color_column} is greater than the number of available colors."
                 )
             else:
-                marker_colors = color_options[: len(items)]  # pyrefly: ignore[bad-argument-type]
+                marker_colors = color_options[
+                    : len(items)
+                ]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
             if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
                 raise ValueError(
@@ -1842,7 +1880,9 @@ class Map(folium.Map):
             if items is not None:
                 index = items.index(row[color_column])
                 marker_icon = folium.Icon(
-                    color=marker_colors[index],  # pyrefly: ignore[unsupported-operation]
+                    color=marker_colors[
+                        index
+                    ],  # pyrefly: ignore[unsupported-operation]
                     icon_color=icon_colors[index],
                     icon=icon_names[index],
                     angle=angle,
@@ -1858,9 +1898,13 @@ class Map(folium.Map):
             ).add_to(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [coreutils.check_color(c) for c in marker_colors]  # pyrefly: ignore[not-iterable]
+            marker_colors = [
+                coreutils.check_color(c) for c in marker_colors
+            ]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(), colors=marker_colors, labels=items  # pyrefly: ignore[missing-attribute]
+                title=color_column.title(),
+                colors=marker_colors,
+                labels=items,  # pyrefly: ignore[missing-attribute]
             )
 
     def add_circle_markers_from_xy(
@@ -2499,7 +2543,7 @@ class Map(folium.Map):
                 right_name = "Right Layer"
 
             if left_layer in basemaps.keys():
-                left_layer = basemaps[left_layer]
+                left_layer = copy.deepcopy(basemaps[left_layer])
             elif isinstance(left_layer, str):
                 if left_layer.startswith(
                     ("http://", "https://")
@@ -2530,10 +2574,11 @@ class Map(folium.Map):
                         overlay=True,
                         **left_args,
                     )
+                    _configure_folium_tile_layer(left_layer)
             elif isinstance(
                 left_layer, (folium.raster_layers.TileLayer, folium.WmsTileLayer)
             ):
-                pass
+                _configure_folium_tile_layer(left_layer)
             else:
                 raise ValueError(
                     "left_layer must be one of the following: "
@@ -2541,7 +2586,7 @@ class Map(folium.Map):
                 )
 
             if right_layer in basemaps.keys():
-                right_layer = basemaps[right_layer]
+                right_layer = copy.deepcopy(basemaps[right_layer])
             elif isinstance(right_layer, str):
                 if right_layer.startswith(
                     ("http://", "https://")
@@ -2571,10 +2616,11 @@ class Map(folium.Map):
                         overlay=True,
                         **right_args,
                     )
+                    _configure_folium_tile_layer(right_layer)
             elif isinstance(
                 right_layer, (folium.raster_layers.TileLayer, folium.WmsTileLayer)
             ):
-                pass
+                _configure_folium_tile_layer(right_layer)
             else:
                 raise ValueError(
                     "right_layer must be one of the following: "

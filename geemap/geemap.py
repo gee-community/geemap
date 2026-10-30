@@ -34,7 +34,17 @@ import requests
 import xarray as xr
 
 from IPython.display import display
-from .basemaps import get_xyz_dict, xyz_to_leaflet
+from .basemaps import (
+    OSM_ATTRIBUTION,
+    OSM_MAX_NATIVE_ZOOM,
+    OSM_URL,
+    TileLayer as _BasemapTileLayer,
+    basemap_to_tiles as _basemap_to_tiles,
+    configure_leaflet_tile_layer as _configure_leaflet_tile_layer,
+    get_default_referrer_policy as _get_default_referrer_policy,
+    get_xyz_dict,
+    xyz_to_leaflet,
+)
 from . import colormaps
 from .common import *
 from .conversion import *
@@ -136,6 +146,12 @@ class Map(core.Map):
 
         self.baseclass = "ipyleaflet"
         self._USER_AGENT_PREFIX = "geemap"
+        if (
+            isinstance(kwargs.get("basemap"), str)
+            and kwargs["basemap"] in basemaps
+            and basemaps[kwargs["basemap"]].get("type") == "wms"
+        ):
+            kwargs["basemap"] = get_basemap(kwargs["basemap"])
         self.kwargs = kwargs
         super().__init__(**kwargs)
         self._var_name = "Map"  # The Map variable name for converting JS to Python
@@ -191,9 +207,10 @@ class Map(core.Map):
                 topright.append("layer_manager")
                 topright.append(control)
 
-        for control in ["attribution_control"]:
-            if self.kwargs.get(control, True):
-                bottomright.append(control)
+        if self.kwargs.get("attribution_ctrl", True) and self.kwargs.get(
+            "attribution_control", True
+        ):
+            bottomright.append("attribution_control")
 
         return {
             "topleft": topleft,
@@ -284,6 +301,15 @@ class Map(core.Map):
             if basemap in basemaps.keys():
                 super().add(get_basemap(basemap))
                 return
+            resolved_basemap = self._resolve_basemap(obj)
+            if resolved_basemap is not None:
+                super().add(
+                    _basemap_to_tiles(
+                        resolved_basemap,
+                        max_zoom=max(resolved_basemap.get("max_zoom") or 30, 30),
+                    )
+                )
+                return
 
         if not isinstance(obj, str):
             super().add(obj, position=position, **kwargs)
@@ -299,6 +325,7 @@ class Map(core.Map):
             "draw_ctrl": "draw_control",
             "data_ctrl": "search_control",
             "search_ctrl": "search_control",
+            "attribution_ctrl": "attribution_control",
         }
         obj = backward_compatibilities.get(obj, obj)
         if obj == "measure_ctrl":
@@ -496,16 +523,10 @@ class Map(core.Map):
             if isinstance(basemap, xyzservices.TileProvider):
                 name = basemap.name
                 url = basemap.build_url()
-                attribution = basemap.attribution
-                if "max_zoom" in basemap.keys():
-                    max_zoom = basemap["max_zoom"]
-                else:
-                    max_zoom = 30
-                layer = ipyleaflet.TileLayer(
-                    url=url,
-                    name=name,
+                max_zoom = max(basemap.get("max_zoom") or 30, 30)
+                layer = _basemap_to_tiles(
+                    basemap,
                     max_zoom=max_zoom,
-                    attribution=attribution,
                     visible=show,
                     **kwargs,
                 )
@@ -520,7 +541,9 @@ class Map(core.Map):
             elif isinstance(basemap, str) and basemap.startswith(
                 ("http://", "https://")
             ):
-                self.add_tile_layer(url=basemap, shown=show, **kwargs)  # pyrefly: ignore[bad-argument-type]
+                self.add_tile_layer(
+                    url=basemap, shown=show, **kwargs
+                )  # pyrefly: ignore[bad-argument-type]
             else:
                 print(
                     "Basemap can only be one of the following:\n  {}".format(
@@ -607,7 +630,7 @@ class Map(core.Map):
 
     def add_tile_layer(
         self,
-        url: str = "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
+        url: str = OSM_URL,
         name: str = "Untitled",
         attribution: str = "",
         opacity: float = 1.0,
@@ -618,20 +641,23 @@ class Map(core.Map):
 
         Args:
             url: The URL of the tile layer. Defaults to
-                'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png'.
+                'https://tile.openstreetmap.org/{z}/{x}/{y}.png'.
             name: The layer name to use for the layer. Defaults to 'Untitled'.
             attribution: The attribution to use. Defaults to ''.
             opacity: The opacity of the layer. Defaults to 1.0.
             shown: A flag indicating whether the layer should
                 be on by default. Defaults to True.
         """
+        is_osm = _get_default_referrer_policy(url) is not None
+        if not attribution and is_osm:
+            attribution = OSM_ATTRIBUTION
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 100
         if "max_native_zoom" not in kwargs:
-            kwargs["max_native_zoom"] = 100
+            kwargs["max_native_zoom"] = OSM_MAX_NATIVE_ZOOM if is_osm else 100
 
         try:
-            tile_layer = ipyleaflet.TileLayer(
+            tile_layer = _BasemapTileLayer(
                 url=url,
                 name=name,
                 attribution=attribution,
@@ -1391,7 +1417,9 @@ class Map(core.Map):
             latlon = kwargs.get("coordinates")
             if kwargs.get("type") == "click":
                 coordinates.append(latlon)
-                geom = ee.Geometry.Point(latlon[1], latlon[0])  # pyrefly: ignore[unsupported-operation]
+                geom = ee.Geometry.Point(
+                    latlon[1], latlon[0]
+                )  # pyrefly: ignore[unsupported-operation]
                 feature = ee.Feature(geom)
                 self.ee_markers.append(feature)
                 self.last_click = latlon
@@ -1466,7 +1494,10 @@ class Map(core.Map):
                 round(latitudes[i], 2),
                 round(longitudes[i], 2),
             )
-            marker.location = (latitudes[i], longitudes[i])  # pyrefly: ignore[bad-argument-type]
+            marker.location = (
+                latitudes[i],
+                longitudes[i],
+            )  # pyrefly: ignore[bad-argument-type]
             self.plot(
                 band_names,
                 band_values,
@@ -1542,7 +1573,9 @@ class Map(core.Map):
             "more than one band."
         )
         if (ee_object is None) and len(self.ee_raster_layers) > 0:
-            ee_object = self.ee_raster_layers.values()[-1]["ee_object"]  # pyrefly: ignore[bad-index]
+            ee_object = self.ee_raster_layers.values()[-1][
+                "ee_object"
+            ]  # pyrefly: ignore[bad-index]
             if isinstance(ee_object, ee.ImageCollection):
                 ee_object = ee_object.mosaic()
         elif isinstance(ee_object, ee.ImageCollection):
@@ -1575,16 +1608,22 @@ class Map(core.Map):
                     self.last_click = latlon
                     self.all_clicks = coordinates
                     markers.append(ipyleaflet.Marker(location=latlon))
-                    marker_cluster.markers = markers  # pyrefly: ignore[bad-argument-type]
+                    marker_cluster.markers = (
+                        markers  # pyrefly: ignore[bad-argument-type]
+                    )
                     self.default_style = {"cursor": "wait"}
-                    xy = ee.Geometry.Point(latlon[::-1])  # pyrefly: ignore[unsupported-operation]
+                    xy = ee.Geometry.Point(
+                        latlon[::-1]
+                    )  # pyrefly: ignore[unsupported-operation]
                     dict_values = (
                         ee_object.sample(xy, scale=sample_scale)
                         .first()
                         .toDictionary()
                         .getInfo()
                     )
-                    band_values = list(dict_values.values())  # pyrefly: ignore[missing-attribute]
+                    band_values = list(
+                        dict_values.values()
+                    )  # pyrefly: ignore[missing-attribute]
                     self.plot(
                         band_names,
                         band_values,
@@ -1635,7 +1674,9 @@ class Map(core.Map):
                 self.all_clicks = coordinates
                 if add_marker:
                     markers.append(ipyleaflet.Marker(location=latlon))
-                    marker_cluster.markers = markers  # pyrefly: ignore[bad-argument-type]
+                    marker_cluster.markers = (
+                        markers  # pyrefly: ignore[bad-argument-type]
+                    )
             elif kwargs.get("type") == "mousemove":
                 pass
 
@@ -1696,9 +1737,11 @@ class Map(core.Map):
             widget_layout (str, optional): The layout of the label widget, such as ipywidgets.Layout(padding="0px 4px 0px 4px"). Defaults to None.
             kwargs: Other arguments for ipyleaflet.TileLayer.
         """
+        has_custom_max_native_zoom = "max_native_zoom" in kwargs
+        has_custom_attribution = "attribution" in kwargs
         if "max_zoom" not in kwargs:
             kwargs["max_zoom"] = 100
-        if "max_native_zoom" not in kwargs:
+        if not has_custom_max_native_zoom:
             kwargs["max_native_zoom"] = 100
         try:
             controls = self.controls
@@ -1720,29 +1763,43 @@ class Map(core.Map):
             else:
                 right_name = "Right Layer"
 
-            if "attribution" not in kwargs:
+            if not has_custom_attribution:
                 kwargs["attribution"] = " "
 
             if left_layer in basemaps.keys():
                 left_layer = get_basemap(left_layer)
+            elif (
+                isinstance(left_layer, str)
+                and (resolved_left := self._resolve_basemap(left_layer)) is not None
+            ):
+                left_layer = _basemap_to_tiles(
+                    resolved_left,
+                    max_zoom=max(resolved_left.get("max_zoom") or 30, 30),
+                )
             elif isinstance(left_layer, str):
                 if left_layer.startswith(
                     ("http://", "https://")
                 ) and left_layer.endswith(".tif"):
                     url = cog_tile(left_layer)
-                    left_layer = ipyleaflet.TileLayer(
+                    left_layer = _BasemapTileLayer(
                         url=url,
                         name=left_name,
                         **kwargs,
                     )
                 else:
-                    left_layer = ipyleaflet.TileLayer(
+                    left_kwargs = dict(kwargs)
+                    if _get_default_referrer_policy(left_layer) is not None:
+                        if not has_custom_attribution:
+                            left_kwargs["attribution"] = OSM_ATTRIBUTION
+                        if not has_custom_max_native_zoom:
+                            left_kwargs["max_native_zoom"] = OSM_MAX_NATIVE_ZOOM
+                    left_layer = _BasemapTileLayer(
                         url=left_layer,
                         name=left_name,
-                        **kwargs,
+                        **left_kwargs,
                     )
             elif isinstance(left_layer, ipyleaflet.TileLayer):
-                pass
+                _configure_leaflet_tile_layer(left_layer)
             else:
                 raise ValueError(
                     "left_layer must be one of the following: "
@@ -1751,24 +1808,38 @@ class Map(core.Map):
 
             if right_layer in basemaps.keys():
                 right_layer = get_basemap(right_layer)
+            elif (
+                isinstance(right_layer, str)
+                and (resolved_right := self._resolve_basemap(right_layer)) is not None
+            ):
+                right_layer = _basemap_to_tiles(
+                    resolved_right,
+                    max_zoom=max(resolved_right.get("max_zoom") or 30, 30),
+                )
             elif isinstance(right_layer, str):
                 if right_layer.startswith(
                     ("http://", "https://")
                 ) and right_layer.endswith(".tif"):
                     url = cog_tile(right_layer)
-                    right_layer = ipyleaflet.TileLayer(
+                    right_layer = _BasemapTileLayer(
                         url=url,
                         name=right_name,
                         **kwargs,
                     )
                 else:
-                    right_layer = ipyleaflet.TileLayer(
+                    right_kwargs = dict(kwargs)
+                    if _get_default_referrer_policy(right_layer) is not None:
+                        if not has_custom_attribution:
+                            right_kwargs["attribution"] = OSM_ATTRIBUTION
+                        if not has_custom_max_native_zoom:
+                            right_kwargs["max_native_zoom"] = OSM_MAX_NATIVE_ZOOM
+                    right_layer = _BasemapTileLayer(
                         url=right_layer,
                         name=right_name,
-                        **kwargs,
+                        **right_kwargs,
                     )
             elif isinstance(right_layer, ipyleaflet.TileLayer):
-                pass
+                _configure_leaflet_tile_layer(right_layer)
             else:
                 raise ValueError(
                     "right_layer must be one of the following: "
@@ -2474,7 +2545,9 @@ class Map(core.Map):
         array_args = array_args or {}
 
         if isinstance(source, (np.ndarray, xr.DataArray)):
-            source = array_to_image(source, **array_args)  # pyrefly: ignore[bad-assignment]
+            source = array_to_image(
+                source, **array_args
+            )  # pyrefly: ignore[bad-assignment]
 
         tile_layer, tile_client = get_local_tile_layer(
             source,
@@ -3552,7 +3625,9 @@ class Map(core.Map):
             )
 
             if labels is not None:
-                if len(labels) != int(ee_object.size().getInfo()):  # pyrefly: ignore[bad-argument-type]
+                if len(labels) != int(
+                    ee_object.size().getInfo()
+                ):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of bands in the image."
                     )
@@ -3567,7 +3642,9 @@ class Map(core.Map):
                     ee_object = ee_object.map(lambda img: img.clipToCollection(region))
 
             if labels is not None:
-                if len(labels) != int(ee_object.size().getInfo()):  # pyrefly: ignore[bad-argument-type]
+                if len(labels) != int(
+                    ee_object.size().getInfo()
+                ):  # pyrefly: ignore[bad-argument-type]
                     raise ValueError(
                         "The length of labels must be equal to the number of images in the ImageCollection."
                     )
@@ -3594,7 +3671,10 @@ class Map(core.Map):
             layout=ipywidgets.Layout(width=slider_length),
         )
         label = ipywidgets.Label(
-            value=labels[0], layout=ipywidgets.Layout(padding="0px 5px 0px 5px")  # pyrefly: ignore[unsupported-operation]
+            value=labels[0],
+            layout=ipywidgets.Layout(
+                padding="0px 5px 0px 5px"
+            ),  # pyrefly: ignore[unsupported-operation]
         )
 
         play_btn = ipywidgets.Button(
@@ -3838,7 +3918,9 @@ class Map(core.Map):
                     f"The number of unique values in the color column {color_column} is greater than the number of available colors."
                 )
             else:
-                marker_colors = color_options[: len(items)]  # pyrefly: ignore[bad-argument-type]
+                marker_colors = color_options[
+                    : len(items)
+                ]  # pyrefly: ignore[bad-argument-type]
         elif color_column is not None and marker_colors is not None:
             if len(items) != len(marker_colors):  # pyrefly: ignore[bad-argument-type]
                 raise ValueError(
@@ -3957,7 +4039,9 @@ class Map(core.Map):
             markers = []
             for point in points:
                 if items is not None:
-                    marker_color = marker_colors[items.index(df[color_column][index])]  # pyrefly: ignore[unbound-name, unsupported-operation]
+                    marker_color = marker_colors[
+                        items.index(df[color_column][index])
+                    ]  # pyrefly: ignore[unbound-name, unsupported-operation]
                     icon_name = icon_names[items.index(df[color_column][index])]
                     icon_color = icon_colors[items.index(df[color_column][index])]
                     marker_icon = ipyleaflet.AwesomeIcon(
@@ -3974,13 +4058,19 @@ class Map(core.Map):
                 )
                 markers.append(marker)
 
-        marker_cluster = ipyleaflet.MarkerCluster(markers=markers, name=layer_name)  # pyrefly: ignore[unbound-name]
+        marker_cluster = ipyleaflet.MarkerCluster(
+            markers=markers, name=layer_name
+        )  # pyrefly: ignore[unbound-name]
         self.add(marker_cluster)
 
         if items is not None and add_legend:
-            marker_colors = [coreutils.check_color(c) for c in marker_colors]  # pyrefly: ignore[not-iterable]
+            marker_colors = [
+                coreutils.check_color(c) for c in marker_colors
+            ]  # pyrefly: ignore[not-iterable]
             self.add_legend(
-                title=color_column.title(), colors=marker_colors, keys=items  # pyrefly: ignore[missing-attribute]
+                title=color_column.title(),
+                colors=marker_colors,
+                keys=items,  # pyrefly: ignore[missing-attribute]
             )
 
         self.default_style = {"cursor": "default"}
@@ -5182,13 +5272,17 @@ def ts_inspector(
 
     def left_change(change):
         del change  # Unused.
-        split_control.left_layer.url = layers_dict[left_dropdown.value].url  # pyrefly: ignore[missing-attribute]
+        split_control.left_layer.url = layers_dict[
+            left_dropdown.value
+        ].url  # pyrefly: ignore[missing-attribute]
 
     left_dropdown.observe(left_change, "value")
 
     def right_change(change):
         del change  # Unused.
-        split_control.right_layer.url = layers_dict[right_dropdown.value].url  # pyrefly: ignore[missing-attribute]
+        split_control.right_layer.url = layers_dict[
+            right_dropdown.value
+        ].url  # pyrefly: ignore[missing-attribute]
 
     right_dropdown.observe(right_change, "value")
 
@@ -5205,11 +5299,9 @@ def get_basemap(name: str) -> ipyleaflet.TileLayer | ipyleaflet.WMSLayer:
         if name in basemaps.keys():
             basemap = basemaps[name]
             if basemap["type"] in ["xyz", "normal", "grau"]:
-                layer = ipyleaflet.TileLayer(
-                    url=basemap["url"],
-                    name=basemap["name"],
-                    max_zoom=24,
-                    attribution=basemap["attribution"],
+                layer = _basemap_to_tiles(
+                    basemap,
+                    max_zoom=basemap.get("max_zoom", 24),
                 )
             elif basemap["type"] == "wms":
                 layer = ipyleaflet.WMSLayer(

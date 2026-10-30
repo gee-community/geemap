@@ -7,7 +7,14 @@ from unittest import mock
 import ee
 import ipyleaflet
 
+from geemap.basemaps import (
+    OSM_ATTRIBUTION,
+    OSM_MAX_NATIVE_ZOOM,
+    OSM_REFERRER_POLICY,
+    OSM_URL,
+)
 from geemap import core
+from geemap import coreutils
 from geemap import map_widgets
 from geemap import toolbar
 from tests import fake_ee
@@ -48,8 +55,12 @@ class TestMap(unittest.TestCase):
         controls = self.core_map.controls
         self.assertEqual(len(controls), 7)
         self.assertIsInstance(controls[0], ipyleaflet.WidgetControl)
-        self.assertIsInstance(controls[0].widget.children[0], map_widgets.LayerManager)  # pyrefly: ignore[missing-attribute]
-        self.assertIsInstance(controls[0].widget.children[1], toolbar.Toolbar)  # pyrefly: ignore[missing-attribute]
+        self.assertIsInstance(
+            controls[0].widget.children[0], map_widgets.LayerManager
+        )  # pyrefly: ignore[missing-attribute]
+        self.assertIsInstance(
+            controls[0].widget.children[1], toolbar.Toolbar
+        )  # pyrefly: ignore[missing-attribute]
         self.assertIsInstance(controls[1].widget, map_widgets.SearchBar)
         self.assertIsInstance(controls[2], ipyleaflet.ZoomControl)
         self.assertIsInstance(controls[3], ipyleaflet.FullScreenControl)
@@ -184,6 +195,93 @@ class TestMap(unittest.TestCase):
 
         # Basemap selector and top right layout box.
         self.assertEqual(len(self.core_map.controls), 2)
+
+    @mock.patch.object(coreutils, "get_google_maps_api_key", return_value=None)
+    def test_basemap_initialization_variants(self, unused_mock_api_key):
+        """Tests OpenStreetMap and non-OSM basemap initialization options."""
+        for bmap in (
+            None,
+            "DEFAULT",
+            "OpenStreetMap",
+            "OpenStreetMap.Mapnik",
+            "openstreetmap",
+            ipyleaflet.basemaps.OpenStreetMap.Mapnik,
+        ):
+            kwargs = {"ee_initialize": False}
+            if bmap is not None:
+                kwargs["basemap"] = bmap
+            m = core.Map(**kwargs)
+            base_layer = m.layers[0]
+            self.assertIsInstance(base_layer, ipyleaflet.TileLayer)
+            self.assertEqual(base_layer.url, OSM_URL)
+            self.assertEqual(base_layer.attribution, OSM_ATTRIBUTION)
+            self.assertTrue(base_layer.base)
+            self.assertEqual(base_layer.max_zoom, 30)
+            self.assertEqual(base_layer.max_native_zoom, OSM_MAX_NATIVE_ZOOM)
+            self.assertEqual(
+                getattr(base_layer, "referrer_policy", None),
+                OSM_REFERRER_POLICY,
+            )
+            self.assertIn("referrer_policy", base_layer.options)
+
+        esri_map = core.Map(ee_initialize=False, basemap="HYBRID")
+        esri_layer = esri_map.layers[0]
+        self.assertTrue(esri_layer.base)
+        self.assertEqual(esri_layer.name, "Esri.WorldImagery")
+        self.assertIsNone(getattr(esri_layer, "referrer_policy", None))
+
+        external_tile = ipyleaflet.TileLayer()
+        tile_map = core.Map(ee_initialize=False, basemap=external_tile)
+        self.assertEqual(
+            getattr(tile_map.layers[0], "referrer_policy", None),
+            OSM_REFERRER_POLICY,
+        )
+        self.assertIn("referrer_policy", tile_map.layers[0].options)
+
+        layers_tile = ipyleaflet.TileLayer()
+        layers_map = core.Map(ee_initialize=False, layers=[layers_tile])
+        self.assertIn(layers_tile, layers_map.layers)
+        self.assertEqual(
+            getattr(layers_tile, "referrer_policy", None),
+            OSM_REFERRER_POLICY,
+        )
+
+    @mock.patch.object(coreutils, "get_google_maps_api_key", return_value=None)
+    def test_replace_and_add_basemap_layers(self, unused_mock_api_key):
+        """Tests replacing basemaps and adding TileLayer instances on core.Map."""
+        m = core.Map(ee_initialize=False)
+        m._replace_basemap("HYBRID")
+        self.assertEqual(m.layers[0].name, "Esri.WorldImagery")
+        self.assertTrue(m.layers[0].base)
+        self.assertIsNone(getattr(m.layers[0], "referrer_policy", None))
+
+        overlay = ipyleaflet.TileLayer(
+            url="https://example.com/{z}/{x}/{y}.png", name="Overlay"
+        )
+        m.add_layer(overlay)
+        self.assertFalse(overlay.has_trait("referrer_policy"))
+
+        for osm_name in ("OpenStreetMap.Mapnik", "OpenStreetMap"):
+            m._replace_basemap(osm_name)
+            base_layer = m.layers[0]
+            self.assertEqual(base_layer.url, OSM_URL)
+            self.assertEqual(base_layer.attribution, OSM_ATTRIBUTION)
+            self.assertTrue(base_layer.base)
+            self.assertEqual(base_layer.max_zoom, 30)
+            self.assertEqual(base_layer.max_native_zoom, OSM_MAX_NATIVE_ZOOM)
+            self.assertEqual(
+                getattr(base_layer, "referrer_policy", None),
+                OSM_REFERRER_POLICY,
+            )
+            self.assertEqual(m.layers[1].name, "Overlay")
+
+        added_osm = ipyleaflet.TileLayer()
+        m.add(added_osm)
+        self.assertEqual(
+            getattr(added_osm, "referrer_policy", None),
+            OSM_REFERRER_POLICY,
+        )
+        self.assertIn("referrer_policy", added_osm.options)
 
 
 @mock.patch.object(ee, "FeatureCollection", fake_ee.FeatureCollection)

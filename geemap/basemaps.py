@@ -22,20 +22,31 @@ More WMS basemaps can be found at the following websites:
 import collections
 import os
 from typing import Any
+import urllib.parse
 
 import folium
 import ipyleaflet
 import requests
+import traitlets
 import xyzservices
 
 from . import common
 from . import coreutils
 
+OSM_URL = "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+OSM_ATTRIBUTION = (
+    '&copy; <a href="https://www.openstreetmap.org/copyright">'
+    "OpenStreetMap</a> contributors"
+)
+OSM_MAX_NATIVE_ZOOM = 19
+OSM_REFERRER_POLICY = "strict-origin-when-cross-origin"
+
 XYZ_TILES = {
     "OpenStreetMap": {
-        "url": "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png",
-        "attribution": "OpenStreetMap",
+        "url": OSM_URL,
+        "attribution": OSM_ATTRIBUTION,
         "name": "OpenStreetMap",
+        "max_native_zoom": OSM_MAX_NATIVE_ZOOM,
     },
     "ROADMAP": {
         "url": "https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
@@ -327,7 +338,9 @@ class GoogleMapsTileProvider(xyzservices.TileProvider):
             timeout=3,
         )
 
-        if response.status_code == requests.codes.ok:  # pyrefly: ignore[missing-attribute]
+        if (
+            response.status_code == requests.codes.ok
+        ):  # pyrefly: ignore[missing-attribute]
             json = response.json()
             map_name = map_type.capitalize()
             super().__init__(
@@ -412,6 +425,126 @@ def get_xyz_dict(free_only: bool = True, france: bool = False) -> dict[str, Any]
     return xyz_dict
 
 
+def get_default_referrer_policy(url: str) -> str | None:
+    """Returns the default referrer policy required for a tile URL, if any.
+
+    OpenStreetMap's tile servers block browser tile requests that omit the HTTP
+    Referer header (such as cells rendered inside no-referrer sandboxed iframes).
+    Using strict-origin-when-cross-origin sends only the origin over HTTPS
+    without exposing URL paths or query parameters.
+    """
+    if not isinstance(url, str) or not url:
+        return None
+    if url.strip().lower() == "openstreetmap":
+        return OSM_REFERRER_POLICY
+    hostname = urllib.parse.urlparse(url.replace("{s}.", "")).hostname or ""
+    hostname = hostname.lower()
+    if hostname == "openstreetmap.org" or hostname.endswith(".openstreetmap.org"):
+        return OSM_REFERRER_POLICY
+    return None
+
+
+class TileLayer(ipyleaflet.TileLayer):
+    """An ipyleaflet TileLayer with referrerPolicy support."""
+
+    referrer_policy = traitlets.Unicode(default_value=None, allow_none=True).tag(
+        sync=True, o=True
+    )
+
+    def __init__(self, **kwargs: Any) -> None:
+        url = kwargs.setdefault("url", OSM_URL)
+        if "referrer_policy" not in kwargs:
+            policy = get_default_referrer_policy(url)
+            if policy is not None:
+                kwargs["referrer_policy"] = policy
+        super().__init__(**kwargs)
+
+
+def configure_leaflet_tile_layer(layer: Any) -> None:
+    """Ensures an ipyleaflet TileLayer sets referrerPolicy when required."""
+    if not isinstance(layer, ipyleaflet.TileLayer):
+        return
+    policy = get_default_referrer_policy(getattr(layer, "url", ""))
+    if policy is None:
+        return
+    if not layer.has_trait("referrer_policy"):
+        layer.add_traits(
+            referrer_policy=traitlets.Unicode(default_value=None, allow_none=True).tag(
+                sync=True, o=True
+            )
+        )
+    if getattr(layer, "referrer_policy", None) is None:
+        layer.referrer_policy = policy  # pyrefly: ignore[missing-attribute]
+    if "referrer_policy" not in layer.options:
+        layer.options = list(layer.options) + ["referrer_policy"]
+
+
+def configure_folium_tile_layer(layer: Any) -> None:
+    """Ensures a Folium TileLayer sets referrerPolicy when required."""
+    if not isinstance(layer, folium.raster_layers.TileLayer):
+        return
+    policy = get_default_referrer_policy(getattr(layer, "tiles", ""))
+    if policy is None:
+        return
+    if "referrer_policy" not in layer.options and "referrerPolicy" not in layer.options:
+        layer.options["referrer_policy"] = policy
+
+
+def basemap_to_tiles(basemap: Any, **kwargs: Any) -> TileLayer:
+    """Converts a basemap TileProvider or dictionary into a TileLayer."""
+    if isinstance(basemap, xyzservices.TileProvider):
+        url = basemap.build_url()
+    elif isinstance(basemap, dict):
+        url = basemap.get("url", "")
+    else:
+        raise ValueError(f"Invalid basemap type: {type(basemap)}")
+
+    if "attribution" in kwargs and kwargs["attribution"] is not None:
+        attribution = kwargs.pop("attribution")
+    else:
+        kwargs.pop("attribution", None)
+        attribution = (
+            basemap.get("html_attribution") or basemap.get("attribution") or ""
+        )
+
+    if "name" in kwargs and kwargs["name"] is not None:
+        name = kwargs.pop("name")
+    else:
+        kwargs.pop("name", None)
+        name = basemap.get("name", "")
+
+    max_zoom = kwargs.pop("max_zoom", None)
+    if max_zoom is None:
+        max_zoom = basemap.get("max_zoom")
+    if max_zoom is None:
+        max_zoom = 24
+
+    min_zoom = kwargs.pop("min_zoom", None)
+    if min_zoom is None:
+        min_zoom = basemap.get("min_zoom")
+    if min_zoom is None:
+        min_zoom = 0
+
+    max_native_zoom = kwargs.pop("max_native_zoom", basemap.get("max_native_zoom"))
+    if (
+        max_native_zoom is None
+        and "max_zoom" in basemap
+        and basemap["max_zoom"] is not None
+        and max_zoom > basemap["max_zoom"]
+    ):
+        max_native_zoom = basemap["max_zoom"]
+
+    return TileLayer(
+        url=url,
+        name=name,
+        attribution=attribution,
+        max_zoom=max_zoom,
+        min_zoom=min_zoom,
+        max_native_zoom=max_native_zoom,
+        **kwargs,
+    )
+
+
 def xyz_to_leaflet() -> dict[str, Any]:
     """Convert xyz tile services to ipyleaflet tile layers.
 
@@ -427,6 +560,10 @@ def xyz_to_leaflet() -> dict[str, Any]:
         for tile_provider, tile_info in tile_dict.items():
             del tile_provider  # Unused.
             tile_info["type"] = tile_type
+            if "max_zoom" in tile_info and "max_native_zoom" not in tile_info:
+                tile_info["max_native_zoom"] = tile_info[
+                    "max_zoom"
+                ]  # pyrefly: ignore[unsupported-operation]
             tile_info["max_zoom"] = 30  # pyrefly: ignore[unsupported-operation]
             leaflet_dict[tile_info["name"]] = tile_info
 
@@ -436,6 +573,10 @@ def xyz_to_leaflet() -> dict[str, Any]:
         if tile_info["name"] in ignore_list:
             continue
         tile_info["url"] = tile_info.build_url()
+        if "html_attribution" in tile_info:
+            tile_info["attribution"] = tile_info["html_attribution"]
+        if "max_zoom" in tile_info and "max_native_zoom" not in tile_info:
+            tile_info["max_native_zoom"] = tile_info["max_zoom"]
         tile_info["max_zoom"] = 30
         leaflet_dict[tile_info["name"]] = tile_info
 
@@ -453,6 +594,12 @@ def xyz_to_folium() -> dict[str, Any]:
     ignore_list = [XYZ_TILES[tile]["name"] for tile in XYZ_TILES]
 
     for key, tile in custom_tiles["xyz"].items():
+        tile_kwargs: dict[str, Any] = {}
+        if "max_native_zoom" in tile:
+            tile_kwargs["max_native_zoom"] = tile["max_native_zoom"]
+        policy = get_default_referrer_policy(str(tile["url"]))
+        if policy is not None:
+            tile_kwargs["referrer_policy"] = policy
         folium_dict[key] = folium.TileLayer(
             tiles=tile["url"],
             attr=tile["attribution"],
@@ -460,6 +607,7 @@ def xyz_to_folium() -> dict[str, Any]:
             overlay=True,
             control=True,
             max_zoom=30,
+            **tile_kwargs,
         )
 
     for key, tile in custom_tiles["wms"].items():
@@ -478,13 +626,23 @@ def xyz_to_folium() -> dict[str, Any]:
     for item in get_xyz_dict().values():
         if item["name"] in ignore_list:
             continue
+        url = item.build_url()
+        tile_kwargs = {}
+        if "max_native_zoom" in item:
+            tile_kwargs["max_native_zoom"] = item["max_native_zoom"]
+        elif "max_zoom" in item:
+            tile_kwargs["max_native_zoom"] = item["max_zoom"]
+        policy = get_default_referrer_policy(url)
+        if policy is not None:
+            tile_kwargs["referrer_policy"] = policy
         folium_dict[item.name] = folium.TileLayer(
-            tiles=item.build_url(),
-            attr=item.attribution,
+            tiles=url,
+            attr=item.get("html_attribution") or item.attribution,
             name=item.name,
-            max_zoom=item.get("max_zoom", 30),
+            max_zoom=max(item.get("max_zoom", 30), 30),
             overlay=True,
             control=True,
+            **tile_kwargs,
         )
 
     if os.environ.get("PLANET_API_KEY") is not None:
@@ -570,7 +728,7 @@ def xyz_to_plotly() -> dict[str, Any]:
         plotly_dict[item.name] = {
             "below": "traces",
             "sourcetype": "raster",
-            "sourceattribution": item.attribution,
+            "sourceattribution": item.get("html_attribution") or item.attribution,
             "source": [item.build_url()],
             "name": item.name,
         }
@@ -622,5 +780,5 @@ def qms_to_geemap(service_id: str) -> ipyleaflet.TileLayer:
     url = service_details["url"]
     attribution = service_details["copyright_text"]
 
-    layer = ipyleaflet.TileLayer(url=url, name=name, attribution=attribution)
+    layer = TileLayer(url=url, name=name, attribution=attribution)
     return layer
