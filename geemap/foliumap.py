@@ -2222,7 +2222,7 @@ class Map(folium.Map):
         """Returns the center of the map.
 
         Args:
-            st_folium (streamlit-folium): The streamlit component.
+            st_component (streamlit-folium): The streamlit component.
         """
         bounds = st_component["bounds"]
         west = bounds["_southWest"]["lng"]
@@ -2235,7 +2235,7 @@ class Map(folium.Map):
         """Returns the bounds of the map in the format of (miny, minx, maxy, maxx).
 
         Args:
-            st_folium (streamlit-folium): The streamlit component.
+            st_component (streamlit-folium): The streamlit component.
         """
         bounds = st_component["bounds"]
         south = bounds["_southWest"]["lat"]
@@ -2258,7 +2258,7 @@ class Map(folium.Map):
         """Returns the last draw feature of the map.
 
         Args:
-            st_folium (streamlit-folium): The streamlit component.
+            st_component (streamlit-folium): The streamlit component.
         """
         return st_component["last_active_drawing"]
 
@@ -2266,7 +2266,7 @@ class Map(folium.Map):
         """Returns the last click feature of the map.
 
         Args:
-            st_folium (streamlit-folium): The streamlit component.
+            st_component (streamlit-folium): The streamlit component.
         """
         coords = st_component["last_clicked"]
         return coords["lat"], coords["lng"]
@@ -2275,7 +2275,7 @@ class Map(folium.Map):
         """Get the draw features of the map.
 
         Args:
-            st_folium (streamlit-folium): The streamlit component.
+            st_component (streamlit-folium): The streamlit component.
 
         Returns:
             list: The draw features of the map.
@@ -3385,7 +3385,7 @@ def st_save_bounds(st_component) -> None:
     """Saves the map bounds to the session state.
 
     Args:
-        map (folium.folium.Map): The map to save the bounds from.
+        st_component (streamlit-folium): The streamlit component.
     """
     import streamlit as st
 
