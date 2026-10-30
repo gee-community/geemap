@@ -5,12 +5,22 @@ import unittest
 from unittest import mock
 
 import folium
+import ipyleaflet
 import requests
 import xyzservices
 
 # TODO - Why can't we just import basemaps?
 from geemap.basemaps import (
+    OSM_ATTRIBUTION,
+    OSM_MAX_NATIVE_ZOOM,
+    OSM_REFERRER_POLICY,
+    OSM_URL,
+    TileLayer,
+    basemap_to_tiles,
+    configure_folium_tile_layer,
+    configure_leaflet_tile_layer,
     custom_tiles,
+    get_default_referrer_policy,
     get_qms,
     get_xyz_dict,
     search_qms,
@@ -50,6 +60,127 @@ class TestCustomTiles(unittest.TestCase):
             self.assertIsInstance(value["name"], str)
             self.assertTrue(value["url"].startswith("http"))
 
+    def test_openstreetmap_custom_tile_definition(self):
+        """Tests that the custom OpenStreetMap entry uses standard URL and attribution."""
+        osm = custom_tiles["xyz"]["OpenStreetMap"]
+        self.assertEqual(osm["url"], OSM_URL)
+        self.assertNotIn("{s}", osm["url"])
+        self.assertEqual(osm["attribution"], OSM_ATTRIBUTION)
+        self.assertIn("https://www.openstreetmap.org/copyright", osm["attribution"])
+        self.assertEqual(osm["max_native_zoom"], OSM_MAX_NATIVE_ZOOM)
+
+
+class TestReferrerPolicyAndTileConversion(unittest.TestCase):
+
+    def test_get_default_referrer_policy(self):
+        """Tests referrer policy detection for OpenStreetMap and non-OSM URLs."""
+        self.assertEqual(get_default_referrer_policy(OSM_URL), OSM_REFERRER_POLICY)
+        self.assertEqual(
+            get_default_referrer_policy(
+                "https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            ),
+            OSM_REFERRER_POLICY,
+        )
+        self.assertEqual(
+            get_default_referrer_policy(
+                "https://a.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            ),
+            OSM_REFERRER_POLICY,
+        )
+        self.assertEqual(
+            get_default_referrer_policy("OpenStreetMap"), OSM_REFERRER_POLICY
+        )
+        self.assertIsNone(get_default_referrer_policy(""))
+        self.assertIsNone(
+            get_default_referrer_policy(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"
+            )
+        )
+        self.assertIsNone(
+            get_default_referrer_policy(
+                "https://a.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
+            )
+        )
+        self.assertIsNone(
+            get_default_referrer_policy(
+                "https://a.tile.opentopomap.org/{z}/{x}/{y}.png"
+            )
+        )
+        self.assertIsNone(
+            get_default_referrer_policy(
+                "https://a.tile.openstreetmap.fr/hot/{z}/{x}/{y}.png"
+            )
+        )
+        self.assertIsNone(
+            get_default_referrer_policy("https://notopenstreetmap.org/{z}/{x}/{y}.png")
+        )
+
+    def test_tile_layer_and_leaflet_configuration(self):
+        """Tests TileLayer and configure_leaflet_tile_layer referrer policy behavior."""
+        osm_layer = TileLayer()
+        self.assertEqual(osm_layer.url, OSM_URL)
+        self.assertEqual(osm_layer.referrer_policy, OSM_REFERRER_POLICY)
+        self.assertIn("referrer_policy", osm_layer.options)
+
+        custom_policy_layer = TileLayer(url=OSM_URL, referrer_policy="origin")
+        self.assertEqual(custom_policy_layer.referrer_policy, "origin")
+
+        non_osm_layer = TileLayer(url="https://example.com/{z}/{x}/{y}.png")
+        self.assertIsNone(non_osm_layer.referrer_policy)
+
+        plain_osm = ipyleaflet.TileLayer()
+        configure_leaflet_tile_layer(plain_osm)
+        self.assertEqual(
+            getattr(plain_osm, "referrer_policy", None), OSM_REFERRER_POLICY
+        )
+        self.assertIn("referrer_policy", plain_osm.options)
+
+        plain_non_osm = ipyleaflet.TileLayer(url="https://example.com/{z}/{x}/{y}.png")
+        configure_leaflet_tile_layer(plain_non_osm)
+        self.assertFalse(plain_non_osm.has_trait("referrer_policy"))
+
+    def test_configure_folium_tile_layer(self):
+        """Tests configure_folium_tile_layer for OpenStreetMap and non-OSM layers."""
+        osm_folium = folium.TileLayer("OpenStreetMap")
+        configure_folium_tile_layer(osm_folium)
+        self.assertEqual(osm_folium.options.get("referrer_policy"), OSM_REFERRER_POLICY)
+
+        non_osm_folium = folium.TileLayer(
+            tiles="https://example.com/{z}/{x}/{y}.png", attr="Example"
+        )
+        configure_folium_tile_layer(non_osm_folium)
+        self.assertNotIn("referrer_policy", non_osm_folium.options)
+
+    def test_basemap_to_tiles(self):
+        """Tests basemap_to_tiles across providers and custom dicts."""
+        osm_provider = get_xyz_dict()["OpenStreetMap.Mapnik"]
+        osm_tile = basemap_to_tiles(osm_provider, max_zoom=30, base=True)
+        self.assertEqual(osm_tile.url, OSM_URL)
+        self.assertEqual(osm_tile.attribution, OSM_ATTRIBUTION)
+        self.assertTrue(osm_tile.base)
+        self.assertEqual(osm_tile.max_zoom, 30)
+        self.assertEqual(osm_tile.max_native_zoom, OSM_MAX_NATIVE_ZOOM)
+        self.assertEqual(osm_tile.referrer_policy, OSM_REFERRER_POLICY)
+
+        for provider in get_xyz_dict().values():
+            layer = basemap_to_tiles(provider, max_zoom=30)
+            self.assertIsInstance(layer, ipyleaflet.TileLayer)
+
+        custom_dict = {
+            "url": "https://example.com/{z}/{x}/{y}.png",
+            "name": "Example",
+            "attribution": "Example Attr",
+            "min_zoom": None,
+            "max_zoom": None,
+        }
+        custom_tile = basemap_to_tiles(custom_dict)
+        self.assertEqual(custom_tile.min_zoom, 0)
+        self.assertEqual(custom_tile.max_zoom, 24)
+        self.assertIsNone(custom_tile.referrer_policy)
+
+        with self.assertRaises(ValueError):
+            basemap_to_tiles("invalid")
+
 
 class TestXyzToLeaflet(unittest.TestCase):
 
@@ -71,6 +202,15 @@ class TestXyzToLeaflet(unittest.TestCase):
         for _, expected_name in expected_keys.items():
             self.assertIn(expected_name, self.tiles)
 
+    def test_xyz_to_leaflet_openstreetmap_metadata(self):
+        """Tests OpenStreetMap URL, HTML attribution, and zoom metadata in xyz_to_leaflet."""
+        for key in ("OpenStreetMap", "OpenStreetMap.Mapnik"):
+            info = self.tiles[key]
+            self.assertEqual(info["url"], OSM_URL)
+            self.assertEqual(info["attribution"], OSM_ATTRIBUTION)
+            self.assertEqual(info["max_zoom"], 30)
+            self.assertEqual(info["max_native_zoom"], OSM_MAX_NATIVE_ZOOM)
+
 
 class TestXyzToFolium(unittest.TestCase):
 
@@ -86,6 +226,17 @@ class TestXyzToFolium(unittest.TestCase):
                 self.assertIsInstance(tile_layer, folium.WmsTileLayer)
             else:
                 self.assertIsInstance(tile_layer, folium.TileLayer)
+
+        for key in ("OpenStreetMap", "OpenStreetMap.Mapnik"):
+            osm_layer = tiles[key]
+            self.assertEqual(osm_layer.tiles, OSM_URL)
+            self.assertEqual(osm_layer.options["attribution"], OSM_ATTRIBUTION)
+            self.assertEqual(osm_layer.options["max_zoom"], 30)
+            self.assertEqual(osm_layer.options["max_native_zoom"], OSM_MAX_NATIVE_ZOOM)
+            self.assertEqual(osm_layer.options["referrer_policy"], OSM_REFERRER_POLICY)
+
+        self.assertNotIn("referrer_policy", tiles["OpenTopoMap"].options)
+        self.assertNotIn("referrer_policy", tiles["ROADMAP"].options)
 
     @mock.patch.dict(os.environ, {"PLANET_API_KEY": "fake_api_key"})
     @mock.patch.object(common, "planet_tiles")
