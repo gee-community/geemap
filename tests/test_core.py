@@ -57,6 +57,31 @@ class TestMap(unittest.TestCase):
         self.assertIsInstance(controls[5], ipyleaflet.ScaleControl)
         self.assertIsInstance(controls[6], ipyleaflet.AttributionControl)
 
+    def test_available_basemaps_survive_google_maps_error(self):
+        """Map creation should not fail when Google Maps basemaps can't load.
+
+        Regression test for #2701: having GOOGLE_MAPS_API_KEY set should not
+        crash map creation if the account/region can't access the Tiles API.
+        """
+        with (
+            mock.patch.object(
+                core.coreutils, "get_google_maps_api_key", return_value="fake-key"
+            ),
+            mock.patch.object(
+                core.basemaps,
+                "get_google_map_tile_providers",
+                side_effect=RuntimeError("Error creating a Maps API session"),
+            ),
+        ):
+            with self.assertLogs(level="WARNING") as logged:
+                new_map = core.Map(ee_initialize=False)
+
+        # Standard basemaps are still available despite the Google Maps failure.
+        self.assertGreater(len(new_map._available_basemaps), 0)
+        self.assertTrue(
+            any("Unable to load Google Maps" in message for message in logged.output)
+        )
+
     def test_set_center(self):
         """Tests that `set_center` sets the center and zoom."""
         self.core_map.set_center(1, 2, 3)
