@@ -44,6 +44,7 @@ class TestMap(unittest.TestCase):
         self.assertEqual(self.core_map.height, "600px")
         self.assertEqual(self.core_map.get_center(), [0, 0])
         self.assertEqual(self.core_map.get_zoom(), 2)
+        self.assertEqual(self.core_map.layers[0].name, "OpenStreetMap.HOT")
 
         controls = self.core_map.controls
         self.assertEqual(len(controls), 7)
