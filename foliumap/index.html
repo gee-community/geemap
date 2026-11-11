@@ -23056,7 +23056,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the center of the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">            st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
         <span class="n">west</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;_southWest&quot;</span><span class="p">][</span><span class="s2">&quot;lng&quot;</span><span class="p">]</span>
@@ -23069,7 +23069,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the map in the format of (miny, minx, maxy, maxx).</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">            st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">bounds</span> <span class="o">=</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
         <span class="n">south</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;_southWest&quot;</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span>
@@ -23092,7 +23092,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the last draw feature of the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">            st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;last_active_drawing&quot;</span><span class="p">]</span>
 
@@ -23100,7 +23100,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Returns the last click feature of the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">            st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">coords</span> <span class="o">=</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;last_clicked&quot;</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">coords</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="s2">&quot;lng&quot;</span><span class="p">]</span>
@@ -23109,7 +23109,7 @@
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the draw features of the map.</span>
 
 <span class="sd">        Args:</span>
-<span class="sd">            st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">            st_component (streamlit-folium): The streamlit component.</span>
 
 <span class="sd">        Returns:</span>
 <span class="sd">            list: The draw features of the map.</span>
@@ -36179,7 +36179,7 @@ basemap name.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>st_folium</code>
+                <code>st_component</code>
             </td>
             <td>
                   <code><span title="streamlit">streamlit</span> - <span title="folium">folium</span></code>
@@ -36234,7 +36234,7 @@ basemap name.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Get the draw features of the map.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">        st_component (streamlit-folium): The streamlit component.</span>
 
 <span class="sd">    Returns:</span>
 <span class="sd">        list: The draw features of the map.</span>
@@ -36310,7 +36310,7 @@ basemap name.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>st_folium</code>
+                <code>st_component</code>
             </td>
             <td>
                   <code><span title="streamlit">streamlit</span> - <span title="folium">folium</span></code>
@@ -36341,7 +36341,7 @@ basemap name.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the last click feature of the map.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">        st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">coords</span> <span class="o">=</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;last_clicked&quot;</span><span class="p">]</span>
     <span class="k">return</span> <span class="n">coords</span><span class="p">[</span><span class="s2">&quot;lat&quot;</span><span class="p">],</span> <span class="n">coords</span><span class="p">[</span><span class="s2">&quot;lng&quot;</span><span class="p">]</span>
@@ -36378,7 +36378,7 @@ basemap name.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>st_folium</code>
+                <code>st_component</code>
             </td>
             <td>
                   <code><span title="streamlit">streamlit</span> - <span title="folium">folium</span></code>
@@ -36408,7 +36408,7 @@ basemap name.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the last draw feature of the map.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">        st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;last_active_drawing&quot;</span><span class="p">]</span>
 </code></pre></div></td></tr></table></div>
@@ -36444,7 +36444,7 @@ basemap name.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>st_folium</code>
+                <code>st_component</code>
             </td>
             <td>
                   <code><span title="streamlit">streamlit</span> - <span title="folium">folium</span></code>
@@ -36480,7 +36480,7 @@ basemap name.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the bounds of the map in the format of (miny, minx, maxy, maxx).</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">        st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
     <span class="n">south</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;_southWest&quot;</span><span class="p">][</span><span class="s2">&quot;lat&quot;</span><span class="p">]</span>
@@ -36522,7 +36522,7 @@ basemap name.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>st_folium</code>
+                <code>st_component</code>
             </td>
             <td>
                   <code><span title="streamlit">streamlit</span> - <span title="folium">folium</span></code>
@@ -36557,7 +36557,7 @@ basemap name.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Returns the center of the map.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        st_folium (streamlit-folium): The streamlit component.</span>
+<span class="sd">        st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">bounds</span> <span class="o">=</span> <span class="n">st_component</span><span class="p">[</span><span class="s2">&quot;bounds&quot;</span><span class="p">]</span>
     <span class="n">west</span> <span class="o">=</span> <span class="n">bounds</span><span class="p">[</span><span class="s2">&quot;_southWest&quot;</span><span class="p">][</span><span class="s2">&quot;lng&quot;</span><span class="p">]</span>
@@ -137788,14 +137788,14 @@ returned.</p>
       <tbody>
           <tr class="doc-section-item">
             <td>
-                <code>map</code>
+                <code>st_component</code>
             </td>
             <td>
-                  <code><span title="folium.folium.Map">Map</span></code>
+                  <code><span title="streamlit">streamlit</span> - <span title="folium">folium</span></code>
             </td>
             <td>
               <div class="doc-md-description">
-                <p>The map to save the bounds from.</p>
+                <p>The streamlit component.</p>
               </div>
             </td>
             <td>
@@ -137831,7 +137831,7 @@ returned.</p>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Saves the map bounds to the session state.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        map (folium.folium.Map): The map to save the bounds from.</span>
+<span class="sd">        st_component (streamlit-folium): The streamlit component.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span><span class="w"> </span><span class="nn">streamlit</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">st</span>
 
