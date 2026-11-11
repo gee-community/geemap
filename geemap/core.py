@@ -535,7 +535,7 @@ class Map(ipyleaflet.Map, MapInterface):  # pyrefly: ignore[inconsistent-inherit
     }
 
     _BASEMAP_ALIASES: dict[str, list[str]] = {
-        "DEFAULT": ["Google.Roadmap", "OpenStreetMap.Mapnik"],
+        "DEFAULT": ["Google.Roadmap", "OpenStreetMap.HOT"],
         "ROADMAP": ["Google.Roadmap", "Esri.WorldStreetMap"],
         "SATELLITE": ["Google.Satellite", "Esri.WorldImagery"],
         "TERRAIN": ["Google.Terrain", "Esri.WorldTopoMap"],
