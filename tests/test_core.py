@@ -8,6 +8,7 @@ import ee
 import ipyleaflet
 
 from geemap import core
+from geemap import coreutils
 from geemap import map_widgets
 from geemap import toolbar
 from tests import fake_ee
@@ -36,6 +37,7 @@ class TestMap(unittest.TestCase):
 
     def setUp(self):
         super().setUp()
+        self.enterContext(mock.patch.object(coreutils, "get_google_maps_api_key", return_value=None))
         self.core_map = core.Map(ee_initialize=False, width="100%")
 
     def test_defaults(self):
@@ -44,6 +46,7 @@ class TestMap(unittest.TestCase):
         self.assertEqual(self.core_map.height, "600px")
         self.assertEqual(self.core_map.get_center(), [0, 0])
         self.assertEqual(self.core_map.get_zoom(), 2)
+        self.assertEqual(self.core_map.layers[0].name, "OpenStreetMap.HOT")
 
         controls = self.core_map.controls
         self.assertEqual(len(controls), 7)
