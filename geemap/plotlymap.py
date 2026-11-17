@@ -244,7 +244,7 @@ class Map(go.FigureWidget):  # pyrefly: ignore[invalid-inheritance]
         """Adds a mapbox layer to the map.
 
         Args:
-            layer (str | dict): Layer to add. Can be "basic", "streets", "outdoors",
+            style (str | dict): Mapbox style to use. Can be "basic", "streets", "outdoors",
                 "light", "dark", "satellite", or "satellite-streets". See
                 https://plotly.com/python/mapbox-layers/ and
                 https://docs.mapbox.com/mapbox-gl-js/style-spec/

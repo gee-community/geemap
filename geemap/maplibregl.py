@@ -1006,7 +1006,7 @@ class Map(MapWidget):
             assets: The Microsoft Planetary Computer STAC asset ID, e.g., ["SR_B7",
                 "SR_B5", "SR_B4"].
             bands: A list of band names, e.g., ["SR_B7", "SR_B5", "SR_B4"].
-            no_data: The nodata value to use for the layer.
+            nodata: The nodata value to use for the layer.
             titiler_endpoint: Titiler endpoint, e.g.,
                 "https://giswqs-titiler-endpoint.hf.space",
                 "https://planetarycomputer.microsoft.com/api/data/v1",
@@ -1092,16 +1092,17 @@ class Map(MapWidget):
                 as not valid data.
             attribution (str, optional): Attribution for the source raster. This
                 defaults to a message about it being a local file.
-            layer_name (str, optional): The layer name to use.
-            layer_index (int, optional): The index of the layer.
-            zoom_to_layer (bool, optional): Whether to zoom to the extent of the
-                layer.
+            name (str, optional): The layer name to use. Defaults to "Raster".
+            before_id (str, optional): The ID of an existing layer before which
+                the new layer should be inserted.
+            fit_bounds (bool, optional): Whether to zoom to the extent of the
+                layer. Defaults to True.
             visible (bool, optional): Whether the layer is visible.
             opacity (float, optional): The opacity of the layer.
             array_args (dict, optional): Additional arguments to pass to
                 `array_to_memory_file` when reading the raster. Defaults to {}.
             client_args (dict, optional): Additional arguments to pass to
-                localtileserver.TileClient. Defaults to { "cors_all": False }.
+                localtileserver.TileClient. Defaults to { "cors_all": True }.
         """
         if isinstance(source, (np.ndarray, xr.DataArray)):
             source = array_to_image(source, **array_args)
@@ -1222,13 +1223,15 @@ class Map(MapWidget):
             return html
 
     def set_paint_property(self, name: str, prop: str, value: Any) -> None:
-        """Set the opacity of a layer.
+        """Set a paint property of a layer.
 
-        This method sets the opacity of the specified layer to the specified value.
+        This method sets the given paint property of the specified layer
+        to the specified value.
 
         Args:
             name: The name of the layer.
-            opacity: The opacity value to set.
+            prop: The paint property to set, for example "fill-opacity".
+            value: The value to set.
         """
         super().set_paint_property(name, prop, value)
 

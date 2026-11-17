@@ -7729,7 +7729,7 @@ def extract_values_to_points(
         scale (ee.Projectoin, optional): A nominal scale in meters of the projection to sample in. If unspecified,the scale of the image's first band is used.
         crs (str, optional): The projection to work in. If unspecified, the projection of the image's first band is used. If specified in addition to scale, rescaled to the specified scale. Defaults to None.
         crsTransform (list, optional): The list of CRS transform values. This is a row-major ordering of the 3x2 transform matrix. This option is mutually exclusive with 'scale', and will replace any transform already set on the projection.
-        tile_scale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default.
+        tileScale (float, optional): A scaling factor used to reduce aggregation tile size; using a larger tileScale (e.g. 2 or 4) may enable computations that run out of memory with the default.
         stats_type (str, optional): Statistic type to be calculated. Defaults to 'FIRST'.
         timeout (int, optional): The number of seconds after which the request will be terminated. Defaults to 300.
         proxies (dict, optional): A dictionary of proxy servers to use for each request. Defaults to None.
@@ -11423,7 +11423,8 @@ def download_folder(
         proxy (str, optional): Proxy. Defaults to None.
         speed (float, optional): Download byte size per second (e.g., 256KB/s = 256 * 1024). Defaults to None.
         use_cookies (bool, optional): Flag to use cookies. Defaults to True.
-        resume (bool, optional): Resume the download from existing tmp file if possible. Defaults to False.
+        remaining_ok (bool, optional): If True, allow remaining files when the
+            folder has more than 50 files. Defaults to False.
 
     Returns:
         list: List of files downloaded, or None if failed.
