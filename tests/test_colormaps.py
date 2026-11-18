@@ -77,6 +77,59 @@ class ColormapsTest(unittest.TestCase):
         self.assertEqual(palette[0], "0d0887")
         self.assertEqual(palette[255], "f0f921")
 
+    def test_plot_colormap_returns_figure(self):
+        """Returning a figure preserves the default layout without displaying it."""
+        with mock.patch.object(colormaps.plt, "show") as show:
+            fig = colormaps.plot_colormap("viridis", return_fig=True)
+
+        self.assertIsInstance(fig, mpl.figure.Figure)
+        self.assertEqual(tuple(fig.get_size_inches()), (8.0, 0.4))
+        self.assertEqual(len(fig.axes), 1)
+        self.assertFalse(fig.axes[0].axison)
+        self.assertEqual(fig.axes[0].get_xlim(), (0.0, 1.0))
+        self.assertEqual(len(fig.texts), 0)
+        show.assert_not_called()
+
+    def test_plot_colormap_vertical_with_custom_range(self):
+        """A vertical colorbar respects its size, range, and visible-axis option."""
+        fig = colormaps.plot_colormap(
+            "plasma",
+            width=1.5,
+            height=5,
+            orientation="vertical",
+            vmin=-10,
+            vmax=30,
+            axis_off=False,
+            return_fig=True,
+        )
+
+        self.assertEqual(tuple(fig.get_size_inches()), (1.5, 5.0))
+        self.assertTrue(fig.axes[0].axison)
+        self.assertEqual(fig.axes[0].get_ylim(), (-10.0, 30.0))
+        self.assertEqual(fig.axes[0].collections[-1].get_cmap().name, "plasma")
+        self.assertEqual(fig.axes[0].collections[-1].get_clim(), (-10.0, 30.0))
+
+    def test_plot_colormap_name(self):
+        """The optional label uses the requested colormap name and font size."""
+        fig = colormaps.plot_colormap(
+            "viridis", show_name=True, font_size=18, return_fig=True
+        )
+
+        self.assertEqual(len(fig.texts), 1)
+        label = fig.texts[0]
+        self.assertEqual(label.get_text(), "viridis")
+        self.assertEqual(label.get_fontsize(), 18)
+        self.assertEqual(label.get_horizontalalignment(), "right")
+        self.assertEqual(label.get_verticalalignment(), "center")
+
+    def test_plot_colormap_shows_by_default(self):
+        """The default call displays the plot and returns no figure."""
+        with mock.patch.object(colormaps.plt, "show") as show:
+            result = colormaps.plot_colormap("viridis")
+
+        self.assertIsNone(result)
+        show.assert_called_once_with()
+
     def test_get_colorbar_continuous(self):
         """Test a continuous colorbar returned as a figure."""
         with mock.patch.object(colormaps.mpl.colorbar, "ColorbarBase") as colorbar:
