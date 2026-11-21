@@ -16,6 +16,7 @@ import zipfile
 
 import ee
 import ipywidgets
+import pandas as pd
 from PIL import Image
 import psutil
 import requests
@@ -1128,7 +1129,108 @@ class CommonTest(unittest.TestCase):
     # TODO: test_kml_to_ee
     # TODO: test_kmz_to_ee
     # TODO: test_csv_to_df
-    # TODO: test_ee_to_df
+
+    def test_ee_to_df(self):
+        class Feature:
+            def __init__(self, geometry, properties):
+                self.geometry = geometry
+                self.properties = properties
+
+            def propertyNames(self):
+                return mock.Mock(sort=lambda: sorted(self.properties))
+
+            def toDictionary(self, names):
+                return {name: self.properties[name] for name in names}
+
+        class FeatureCollection:
+            def __init__(self, features):
+                self.features = features
+
+            def map(self, function):
+                return FeatureCollection([function(f) for f in self.features])
+
+        features = [
+            Feature("point-a", {"station": "A", "pm25": 12.5}),
+            Feature("point-b", {"station": "B", "pm25": None}),
+        ]
+        table = pd.DataFrame(
+            {
+                "station": ["A", "B"],
+                "pm25": [12.5, None],
+                "geo": ["point-a", "point-b"],
+            },
+            index=[3, 7],
+        )
+        cases = [
+            ({}, ["station", "pm25"]),
+            ({"remove_geom": False}, ["station", "pm25", "geo"]),
+            ({"sort_columns": True}, ["pm25", "station"]),
+            ({"remove_geom": False, "sort_columns": True}, ["geo", "pm25", "station"]),
+            ({"columns": ["pm25", "station"]}, ["pm25", "station"]),
+            (
+                {"columns": ["station", "pm25"], "sort_columns": True},
+                ["pm25", "station"],
+            ),
+            ({"columns": ["geo", "station"]}, ["station"]),
+            ({"columns": []}, []),
+        ]
+        for single_feature in (False, True):
+            source_features = features[:1] if single_feature else features
+            source_table = table.iloc[:1] if single_feature else table
+            source = features[0] if single_feature else FeatureCollection(features)
+            for options, expected_columns in cases:
+                with self.subTest(single_feature=single_feature, options=options):
+                    with (
+                        mock.patch.object(ee, "Feature", Feature),
+                        mock.patch.object(ee, "FeatureCollection", FeatureCollection),
+                        mock.patch.object(
+                            ee.data, "computeFeatures", return_value=source_table.copy()
+                        ) as compute,
+                    ):
+                        result = common.ee_to_df(source, pageSize=25, **options)
+
+                    pd.testing.assert_frame_equal(
+                        result, source_table[expected_columns]
+                    )
+                    compute.assert_called_once()
+                    request = compute.call_args.args[0]
+                    self.assertEqual(request["fileFormat"], "PANDAS_DATAFRAME")
+                    self.assertEqual(request["pageSize"], 25)
+                    converted = request["expression"].features
+                    self.assertEqual(len(converted), len(source_features))
+                    for actual, original in zip(converted, source_features):
+                        self.assertEqual(actual.properties, original.properties)
+                        if options.get("remove_geom", True):
+                            self.assertIsNone(actual.geometry)
+                        else:
+                            self.assertEqual(actual.geometry, original.geometry)
+
+    @mock.patch.object(ee.data, "computeFeatures")
+    def test_ee_to_df_invalid_input(self, compute):
+        for value in (None, "collection-id", [], {}):
+            with self.subTest(value=value):
+                with self.assertRaisesRegex(TypeError, "ee.FeatureCollection"):
+                    common.ee_to_df(value)
+        compute.assert_not_called()
+
+    @mock.patch.object(ee.data, "computeFeatures")
+    def test_ee_to_df_without_geometry_column(self, compute):
+        collection = mock.MagicMock(spec=ee.FeatureCollection)
+        for values in ([], [12.5, None]):
+            with self.subTest(values=values):
+                table = pd.DataFrame({"pm25": values})
+                compute.return_value = table.copy()
+                pd.testing.assert_frame_equal(common.ee_to_df(collection), table)
+
+    @mock.patch.object(ee.data, "computeFeatures")
+    def test_ee_to_df_backend_error(self, compute):
+        collection = mock.MagicMock(spec=ee.FeatureCollection)
+        error = RuntimeError("Table request failed")
+        compute.side_effect = error
+        with self.assertRaises(RuntimeError) as raised:
+            common.ee_to_df(collection, remove_geom=False)
+        self.assertIs(raised.exception, error)
+
     # TODO: test_shp_to_gdf
     # TODO: test_ee_to_gdf
 
