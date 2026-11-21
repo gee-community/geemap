@@ -1093,7 +1093,76 @@ class CommonTest(unittest.TestCase):
     # TODO: test_image_smoothing
     # TODO: test_rename_bands
     # TODO: test_bands_to_image_collection
-    # TODO: test_find_landsat_by_path_row
+    @mock.patch.object(ee.Filter, "eq", side_effect=lambda field, value: (field, value))
+    @mock.patch.object(ee, "ImageCollection")
+    def test_find_landsat_by_path_row(self, mock_collection, _mock_eq):
+        """Selects all and only scenes matching both WRS coordinates."""
+
+        class SceneCollection:
+            def __init__(self, scenes):
+                self.scenes = scenes
+
+            def filter(self, condition):
+                field, value = condition
+                return SceneCollection(
+                    [scene for scene in self.scenes if scene[field] == value]
+                )
+
+        scenes = [
+            {"id": "match_a", "WRS_PATH": 44, "WRS_ROW": 34},
+            {"id": "match_b", "WRS_PATH": 44, "WRS_ROW": 34},
+            {"id": "same_path", "WRS_PATH": 44, "WRS_ROW": 35},
+            {"id": "same_row", "WRS_PATH": 45, "WRS_ROW": 34},
+            {"id": "neither", "WRS_PATH": 45, "WRS_ROW": 35},
+        ]
+        cases = [
+            (44, 34, ["match_a", "match_b"]),
+            (44, 35, ["same_path"]),
+            (45, 34, ["same_row"]),
+            (99, 99, []),
+        ]
+        for collection_id in ("LANDSAT/LC08/C02/T1_L2", "LANDSAT/LC09/C02/T1_L2"):
+            for path, row, expected_ids in cases:
+                with self.subTest(collection_id=collection_id, path=path, row=row):
+                    mock_collection.reset_mock()
+                    mock_collection.return_value = SceneCollection(scenes)
+
+                    result = common.find_landsat_by_path_row(collection_id, path, row)
+
+                    mock_collection.assert_called_once_with(collection_id)
+                    self.assertIsNotNone(result)
+                    self.assertCountEqual(
+                        [scene["id"] for scene in result.scenes], expected_ids
+                    )
+
+    @mock.patch("builtins.print")
+    @mock.patch.object(ee.Filter, "eq", return_value=mock.sentinel.filter)
+    @mock.patch.object(ee, "ImageCollection")
+    def test_find_landsat_by_path_row_error(
+        self, mock_collection, _mock_eq, mock_print
+    ):
+        """Reports errors during collection creation or either filter."""
+        for stage in ("collection", "path_filter", "row_filter"):
+            with self.subTest(stage=stage):
+                mock_collection.reset_mock(return_value=True, side_effect=True)
+                mock_print.reset_mock()
+                error = ee.EEException("Collection unavailable")
+                if stage == "collection":
+                    mock_collection.side_effect = error
+                elif stage == "path_filter":
+                    mock_collection.return_value.filter.side_effect = error
+                else:
+                    mock_collection.return_value.filter.return_value.filter.side_effect = (
+                        error
+                    )
+
+                result = common.find_landsat_by_path_row(
+                    "LANDSAT/LC08/C02/T1_L2", 44, 34
+                )
+
+                self.assertIsNone(result)
+                mock_print.assert_called_once_with(error)
+
     # TODO: test_str_to_num
     # TODO: test_array_sum
     # TODO: test_array_mean
