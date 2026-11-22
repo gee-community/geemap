@@ -794,11 +794,11 @@ class TestBasemapSelector(unittest.TestCase):
 class TestLayerEditor(unittest.TestCase):
     """Tests for the `LayerEditor` class in the `map_widgets` module."""
 
-    def _fake_layer_dict(self, ee_object):
+    def _fake_layer_dict(self, ee_object, vis_params=None):
         return {
             "ee_object": ee_object,
             "ee_layer": fake_map.FakeEeTileLayer(name="fake-ee-layer-name"),
-            "vis_params": {},
+            "vis_params": vis_params or {},
         }
 
     def setUp(self):
@@ -852,6 +852,19 @@ class TestLayerEditor(unittest.TestCase):
         self.assertEqual(widget.layer_type, "raster")
         self.assertEqual(widget.band_names, ["B1", "B2"])
         self.assertEqual(widget.colormaps, _get_colormaps())
+
+    def test_layer_editor_uses_vis_params(self):
+        """Tests that vis_params from the layer dict are applied to the widget."""
+        vis_params = {
+            "bands": ["B4", "B3", "B2"],
+            "min": 20,
+            "max": 200,
+            "gamma": 1.5,
+        }
+        widget = map_widgets.LayerEditor(
+            self._fake_map, self._fake_layer_dict(ee.Image(), vis_params)
+        )
+        self.assertEqual(widget.vis_params, vis_params)
 
     def test_layer_editor_handle_calculate_band_stats(self):
         """Tests that calculate band stats works."""

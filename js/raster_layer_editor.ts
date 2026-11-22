@@ -73,6 +73,10 @@ export class RasterLayerEditor extends LitElement {
     @property({ type: String }) colorRamp: string = ColorRamp.Gamma;
     @property({ type: Number }) gamma: number = 1.0;
     @property({ type: Array }) colormaps: Array<string> = [];
+    @property({ type: Object }) visParams: Record<string, any> = {};
+    @property({ type: String }) initialPalette: string = "";
+
+    private _hasVisBands = false;
 
     @query("palette-editor") paletteEditor?: PaletteEditor;
     @query("legend-customization") legendCustomization?: LegendCustomization;
@@ -83,8 +87,42 @@ export class RasterLayerEditor extends LitElement {
 
     override connectedCallback() {
         super.connectedCallback();
-        this.colorModel =
-            this.bandNames.length > 1 ? ColorModel.RGB : ColorModel.Gray;
+        const visParams = this.visParams || {};
+        const bands = Array.isArray(visParams.bands)
+            ? (visParams.bands as Array<string>)
+            : [];
+
+        if (bands.length === 1) {
+            this.colorModel = ColorModel.Gray;
+        } else if (bands.length >= 3) {
+            this.colorModel = ColorModel.RGB;
+        } else {
+            this.colorModel =
+                this.bandNames.length > 1 ? ColorModel.RGB : ColorModel.Gray;
+        }
+
+        if (bands.length > 0) {
+            this.selectedBands = bands.slice();
+            this._hasVisBands = true;
+        }
+
+        if (visParams.min !== undefined) {
+            this.minValue = visParams.min;
+        }
+        if (visParams.max !== undefined) {
+            this.maxValue = visParams.max;
+        }
+        if (visParams.gamma !== undefined) {
+            this.gamma = visParams.gamma;
+        }
+
+        if (Array.isArray(visParams.palette)) {
+            this.colorRamp = ColorRamp.Palette;
+            this.initialPalette = visParams.palette.join(", ");
+        } else if (typeof visParams.palette === "string") {
+            this.colorRamp = ColorRamp.Palette;
+            this.initialPalette = visParams.palette;
+        }
     }
 
     getVisualizationOptions(): any {
@@ -202,7 +240,10 @@ export class RasterLayerEditor extends LitElement {
             this.colorModel === ColorModel.Gray
         ) {
             return html`
-                <palette-editor .colormaps="${this.colormaps}">
+                <palette-editor
+                    .colormaps="${this.colormaps}"
+                    .palette="${this.initialPalette}"
+                >
                     <slot></slot>
                 </palette-editor>
             `;
@@ -343,7 +384,7 @@ export class RasterLayerEditor extends LitElement {
     override updated(changedProperties: PropertyValues<RasterLayerEditor>): void {
         super.updated(changedProperties);
 
-        if (changedProperties.has("colorModel")) {
+        if (changedProperties.has("colorModel") && !this._hasVisBands) {
             if (this.colorModel === ColorModel.Gray) {
                 this.selectedBands = [this.bandNames[0]];
             } else if (this.colorModel == ColorModel.RGB) {
