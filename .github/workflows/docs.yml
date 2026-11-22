@@ -37,6 +37,7 @@ jobs:
                   uv cache clean
                   uv pip install --find-links https://girder.github.io/large_image_wheels GDAL pyproj
                   uv pip install -r pyproject.toml --extra all
+                  uv pip install joblib
             - name: Test import
               run: |
                   uv run python -c "import geemap; print('geemap import successful')"
