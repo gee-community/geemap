@@ -541,9 +541,7 @@ class Inspector(anywidget.AnyWidget):
         layers = {}
         if self._names is not None:
             names = (
-                [names]
-                if isinstance(names, str)  # pyrefly: ignore[unbound-name]
-                else self._names
+                [self._names] if isinstance(self._names, str) else self._names
             )
             for name in names:
                 if name in self._host_map.ee_layers:
